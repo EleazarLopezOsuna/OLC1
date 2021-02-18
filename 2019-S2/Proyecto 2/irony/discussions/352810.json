@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "825872",
+    "ThreadId": "352810",
+    "Html": "\r\n<p>Is there any good way that I can detect incomplete constructs (not just &quot;Error at line...&quot;)? Say for instance that I have a language that has block-statements using curly braces like most c-flavors do. If I pass the code</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>{\r\n    <span style=\"color:blue\">var</span> a = 5;\r\n</pre>\r\n</div>\r\nHow can I know that I'm in a incomplete statement, and that it has to be continued until I can parse correctly?\r\n<p></p>\r\n",
+    "PostedDate": "2012-04-19T03:43:14.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "826071",
+    "ThreadId": "352810",
+    "Html": "<p>what do you mean \"it has to be continued\"? we don't have any more input.</p>\r\n<p>If you mean something like \"how to inject this missing } and continue\" - this is one outstanding problem. Currently parser error recovery can only search forward until some key token, like \";\" or \"}\" marking end of construct, and will try to continue from there. More advanced option is to inject the missing token if we can guess that token is missing - this is not implemented yet.&nbsp;</p>\r\n<p>You can try to override Grammar.ReportParserError and try to do custom recovery there. Recognize the situation and push the missing \"}\" into the input queue in the parsing context.&nbsp;</p>",
+    "PostedDate": "2012-04-19T10:00:20.87-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "826292",
+    "ThreadId": "352810",
+    "Html": "<p>I don't need to recover, cause I do this line by line, while keeping the \"incomplete\" lines in memory.</p>\r\n<p>In other words: I first hit Irony with \"{\", then it tells me that the following statement is incomplete (ie. eof not expected). Then I enter \"var a = 5;\", and because my application know that the prev line was incomplete, it will append the two into \"{\\nvar a = 5;\" and try to parse that. Still getting that the statement is incomplete I enter \"}\" and that results in \"{\\nvar a = 5;\\n}\" beeing passed to Irony which is valid, and I get a parse-tree back.</p>",
+    "PostedDate": "2012-04-19T19:55:34.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "826297",
+    "ThreadId": "352810",
+    "Html": "<p>ah, you need then to run parser in Console mode, when it takes partial inputs - look at console sample</p>",
+    "PostedDate": "2012-04-19T20:21:54.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

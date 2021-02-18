@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "433074",
+    "ThreadId": "209866",
+    "Html": "Hi,\r\n\r\nI want to write a grammar for parsing function call. We have predefined function with its argument.\r\ne.g.  fun#(number,string).\r\n\r\nMy grammar should parse fun#(12,&quot;test&quot;) and it should not parse fun#(&quot;test&quot;,12)",
+    "PostedDate": "2010-04-20T01:13:26.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "433261",
+    "ThreadId": "209866",
+    "Html": "<p>ashishkundan,</p>\r\n<p>I want to clarify what you are asking.&nbsp; The parser aspect of Irony will parse all input you give it; the parser does not make a distinction between what it should parse and what it should not. So to clarify,&nbsp; are you asking how to return an Error Token if Irony comes across a set of invalid arguments for a function?</p>\r\n<p>Also, note that if you want your predefined functions to be more generic and allow nested expressions within the function's arguments, then this validation should be done by the interpreter; not by the parser/scanner.&nbsp; Not taking this generic approach would mean that you would have to update your grammar every time a function is added or it's inputs are changed.</p>\r\n<p>-MindCore</p>",
+    "PostedDate": "2010-04-20T10:39:06.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "433437",
+    "ThreadId": "209866",
+    "Html": "<p>Hi mindcore,</p>\r\n<p>I understand parser will parse all the argument.</p>\r\n<p>When&nbsp;we are defining Arglist for function we write</p>\r\n<p>Arglist.Rule=MakeStarRule(Arglist,Comma,funargument)</p>\r\n<p>funargument.Rule=expression|number|identifier</p>\r\n<p>funcall.Rule=identifier+OpenParen+Arglist+CloseParen</p>\r\n<p>Above rule will work for functionName(Arg1,Arg2,Arg3).</p>\r\n<p>Arg1, Arg2,Arg3 can be expression or number or identifier.</p>\r\n<p>My problem is I want function call argument should appear in specific order.</p>\r\n<p>like. It should work for functionName(expression,number), functionName(expression,identifier) but for functionName(number,expression) or functionName(identifer,expression) Isould get error token.</p>\r\n<p>Thanks,</p>\r\n<p>Ashish</p>",
+    "PostedDate": "2010-04-20T19:45:46.05-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "433456",
+    "ThreadId": "209866",
+    "Html": "Ashish,\r\n\r\nFunction arguments should be validated after parsing because during parsing you are not going to know the primitive type of an expression or identifier. In C#, each method has an argument signature that is used to validate.  This why you are able to code different methods with the same name in C#, but with varying arguments.\r\n\r\nSo, this validation has to be done after parsing.  It could possible be done during the AST Node creation using reflection to determine each methods parameter signature (compiled languages), or during Run-Time (DLR).  There are other places that this could be done as well, it all depends on what you are trying to do.\r\n\r\n\r\nRoman may be able to give more insight as to what he has planned for Irony's interpreter.\r\n\r\n-MindCore",
+    "PostedDate": "2010-04-20T21:35:09.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "433624",
+    "ThreadId": "209866",
+    "Html": "<p>I agree with Mindcore that the best way to do this is to verify function call nodes AFTER parsing, and not put these restrictions into the grammar</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-04-21T06:49:54.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "433968",
+    "ThreadId": "209866",
+    "Html": "<p>Thanks to all for valuable suggestion.</p>",
+    "PostedDate": "2010-04-21T20:57:30.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

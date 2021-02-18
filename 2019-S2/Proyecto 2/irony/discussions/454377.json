@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1084262",
+    "ThreadId": "454377",
+    "Html": "I've just finished a compiler for the Shakespeare programming language (<a href=\"http://shakespearelang.sourceforge.net/\" rel=\"nofollow\">http://shakespearelang.sourceforge.net/</a>).  I'm now working on separating the scanner/parser from the code generator.     The best way to handle this appears to be by replacing all the <code>typeof(MyAstNode)</code> references in my grammar with AstNodeCreator reference.  But that brings up the question::\r<br />\n<br />\n <strong>What exactly is a AstNodeCreator method supposed to do?</strong>\r<br />\n<br />\nCurrently, I'm using essentially:<br />\n<pre><code>MyAstNodeCreator(AstContext context, ParseTreeNode parseNode)\n{\n    parseNode.AstNode = new MyAstNode()\n    //Initialize node\n    var iInit = parseNode.AstNode as IAstNodeInit;\n     if (iInit != null)\n        iInit.Init(context, parseNode);\n};\n</code></pre>\n\n(to be strictly accurate, I'M using:)<br />\n<pre><code>    static private AstNodeCreator MakeCreator(Type type)\n    {\n        return (context, parseNode) =&gt;\n            {\n                parseNode.AstNode = Activator.CreateInstance(type);\n                //Initialize node\n                var iInit = parseNode.AstNode as IAstNodeInit;\n                if (iInit != null)\n                    iInit.Init(context, parseNode);\n\n            };\n    }</code></pre>\n\n",
+    "PostedDate": "2013-08-23T11:00:15.59-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1084353",
+    "ThreadId": "454377",
+    "Html": "there's nothing special about this method, it is just alternative, supposedly more flexible way to create AST nodes. You can provide custom code that creates the node object, depending on the context (parseNode in particular), maybe different node types for different cases.<br />\n",
+    "PostedDate": "2013-08-23T15:05:20.643-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1084404",
+    "ThreadId": "454377",
+    "Html": "one more comment. The initial 'reason' to introduce this creator method is to accommodate similar language constructs from different languages which have the same AST node. AST node is an 'implementation' of operation, while representation may differ. For example, the BinaryOp AST node from interpreter expects that it's operands are in the following order: left, op, right - this in normal, infix operator notation. However, in languages like Scheme which have prefix op order, like ' (+ a b)' the order of operands would be different in the parse tree. In order to use the standard AST node in Scheme, you need to intercept and reorder the operands - that's what you can do with node creator custom method. Essentially you can remap child nodes (in children of ParseTreeNode) into arguments of Ast node. <br />\n",
+    "PostedDate": "2013-08-23T22:48:36.473-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1084768",
+    "ThreadId": "454377",
+    "Html": "<blockquote>\nthere's nothing special about this method<br />\n</blockquote>\nI'm not interested in a <em>special</em> one.  I'd like to know what an <em>ordinary</em> one is supposed to do.   It returns void, so we are to assume it's supposed to DO something, but that &quot;something&quot; isn't documented anywhere.  I based the one I use on what the framework does when NodeCreator is null.\r<br />\n<br />\n<br />\nWhat I am doing, is, at first I had two assemblies, Shakespeare, which implemented the grammar, and Shakespeare2C, which defined the ASTNodes for a backend which output C code. In the grammar, non-terminals were defined in the form <code>var Title = new NonTerminal(&quot;Title&quot;, typeof(TitleNode));</code>    with Shakespeare.dll having a reference to Shakespeare2C.dll. \r<br />\n<br />\nHowever, I wish to create a number of different backends (C# source code, and eventually, direct IL generation). This means the grammar can't reference the backend dll.  I handled this by changing the grammar to define non-terminals as <code>var Title = new NonTerminal(&quot;Title&quot;, compiler.TitleNode);</code>   where <code>compiler.TitleNode</code>  returns a AstNodeCreator built using the MakeCreator method given above and a Type objected read from a dynamically loaded backend assembly.<br />\n",
+    "PostedDate": "2013-08-25T21:31:59.833-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1085029",
+    "ThreadId": "454377",
+    "Html": "Sorry, misunderstood, I thought you know what it supposed to do - your fragment does this - it must set the parseNode.AstNode property.\r<br />\nAs for your strategy, to use different set of AST nodes for different outputs. IMHO, that seems a little off-base. AST nodes purpose is to represent 'universal' structure or 'semantics' of the language construct, independent of syntactic representation. Like For-I loop in VB.NET and c# look different in source, and therefore have different concrete trees (parse nodes); but as every .NET programmer knows, they represent the same thing, so AST node (abstract, abstracted from representation) should be the same, and this same node would be in intermediate representation for code analysis and eventual compilation to IL or whatever final output is. It is the Code generator that would differ, not the nodes themselves. So that's my suggestion - to use the same set of AST nodes in all output generators, but put the differentiating logic into output generators \r<br />\nRoman<br />\n",
+    "PostedDate": "2013-08-26T11:15:39.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1085230",
+    "ThreadId": "454377",
+    "Html": "Well, that bring up a whole 'nother issue as the concept of attaching a separate code generator object to node is a complete mystery.<br />\n",
+    "PostedDate": "2013-08-26T23:07:56.173-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

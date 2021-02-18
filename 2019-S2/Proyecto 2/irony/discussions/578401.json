@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1345235",
+    "ThreadId": "578401",
+    "Html": "Hi Roman!<br />\n<br />\nI'd like to modify the expression evaluator to support short-circuiting binary operators like &amp;&amp; and || in C# (AndAlso and OrElse in VB.NET), ensuring that an error is not thrown even though an operator is not defined between String and Int32   (bar&lt;2)  in the following:<br />\n<pre><code>foo = 1\nbar = &quot;test&quot;\n(foo==1) | (bar&lt;2)</code></pre>\n\nIs this a simple task or am I looking at a fair amount of changes to the code base in order to implement this?<br />\n<br />\nThanks in advance,<br />\nMikkel<br />\n",
+    "PostedDate": "2015-01-22T15:19:28.557-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1346118",
+    "ThreadId": "578401",
+    "Html": "it is already supported. Just evaluated:<br />\n<br />\nx = true || (1 / 0 &gt; 0)<br />\n<br />\nthe result is True; for expr:<br />\n<br />\nx = false || (1/0 &gt; 0)<br />\n<br />\nshows error: attempt to divide by zero<br />\n",
+    "PostedDate": "2015-01-26T23:32:28.833-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

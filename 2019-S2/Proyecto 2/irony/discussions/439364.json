@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1026600",
+    "ThreadId": "439364",
+    "Html": "Hello. From several days I'm writing a simple 2D game in C#  presenting programming basic in an accessible form. In this game the player must write instructions for the robot to perform its task and upload it. Now all commands must be write in textbox (one command per lane) and then assign to string array.  This string array is parsed by string split method and switch with a lot of cases. But I want to make this better and learn something new so maybe Irony will be better solution for parsing? How you think it’s worth using Irony in game when I want get maybe 40-50 commands?<br />\n<br />\nSample commands:<br />\n<img src=\"http://i.imgur.com/d0FyTdE.jpg\" alt=\"Image\" /><br />\n",
+    "PostedDate": "2013-04-06T10:06:06.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026614",
+    "ThreadId": "439364",
+    "Html": "well, it depends.. you might be quite OK without Irony. Irony and alike BNF-based parsers are good for languages described by recursive(!) BNF expressions. ASM-like languages do not have recursive definitions, every command is a self-contained thing. The last few commands in your table - arithm expressions - if they might be more complex, then you would need Irony to parse and interpret them. For other commands, you might be OK as it is (as you have now)<br />\n",
+    "PostedDate": "2013-04-06T11:16:16.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

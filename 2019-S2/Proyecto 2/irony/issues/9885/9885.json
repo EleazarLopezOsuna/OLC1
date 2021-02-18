@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 3,
+    "Custom": null,
+    "Description": "My QA dept. has been seeing this error erratically (maybe once per day). Since it is in the constructor, it's not input related. Why would it not occur every time I instantiate my LanguageData?\r\n\r\nSystem.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.OutOfMemoryException: Exception of type 'System.OutOfMemoryException' was thrown.\r\n   at Irony.Parsing.Construction.ParserStateData.AddItem(LR0Item core)\r\n   at Irony.Parsing.Construction.ParserStateData.AddItem(LR0Item core)\r\n   at Irony.Parsing.Construction.ParserStateData.AddItem(LR0Item core)\r\n   at Irony.Parsing.Construction.ParserStateData.AddItem(LR0Item core)\r\n   at Irony.Parsing.Construction.ParserStateData.AddItem(LR0Item core)\r\n   at Irony.Parsing.Construction.ParserStateData.AddItem(LR0Item core)\r\n   at Irony.Parsing.Construction.ParserStateData.AddItem(LR0Item core)\r\n   at Irony.Parsing.Construction.ParserStateData..ctor(ParserState state, LR0ItemSet kernelCores)\r\n   at Irony.Parsing.Construction.ParserDataBuilder.FindOrCreateState(LR0ItemSet coreItems)\r\n   at Irony.Parsing.Construction.ParserDataBuilder.CreateInitialState(NonTerminal augmentedRoot)\r\n   at Irony.Parsing.Construction.ParserDataBuilder.CreateParserStates()\r\n   at Irony.Parsing.Construction.ParserDataBuilder.Build()\r\n   at Irony.Parsing.Construction.LanguageDataBuilder.Build()\r\n   at Irony.Parsing.LanguageData..ctor(Grammar grammar)",
+    "LastUpdatedDate": "2013-10-01T10:29:11.61-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2013-09-16T13:41:58.897-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "out of memory error",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9885
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "hm... have no idea.. can you pls provide more info - maybe share the grammar?",
+      "PostedDate": "2013-09-16T14:05:02.273-07:00",
+      "Id": 113729
+    },
+    {
+      "Message": "I think I was literally out of memory (on my 32bit app). I was creating multiple instances of the grammar (with slight variations in each). Each instance takes about 15MB. Honestly, it's way too large (at 84 bytes per terminal). It shouldn't be that large. There must be a lot of fields on the terminals that mostly go unused. I have restructured my code to not make so many instances of the parser.\n\nIn addition, I've been tracking it with the memory profiler. I discovered the CurrentGrammar property (and field) on Grammar. It keeps my most recently created 15MB parser hanging around in memory on a per-thread basis. Ouch! Would it work to just kill that in my personal compilation? After all, we have a Grammar property on BnfTerm. I've worked around this issue by calling \"new Grammar()\" after I construct mine.",
+      "PostedDate": "2013-09-24T14:49:16.987-07:00",
+      "Id": 115548
+    },
+    {
+      "Message": "I think CurrentGrammar is used only during Grammar construction (while constructor executes), to support some static methods, and can be cleared at the end of the constructor. And yes, 15MB per grammar seems huge. I don't think it has anything to do with terminals itself, as they basically defined, just something somewhere keeps hanging in memory. I can look at it if you provide me with the grammar, in some way I can compile it locally - with your too specific dependencies cut off, but with reproducible memory trouble. \n",
+      "PostedDate": "2013-10-01T10:29:11.61-07:00",
+      "Id": 116118
+    }
+  ]
+}

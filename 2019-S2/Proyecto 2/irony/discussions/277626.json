@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "691118",
+    "ThreadId": "277626",
+    "Html": "\r\n<p>I got an SQL SELECT statement of a large WHERE clause with 688 predicates from a client (production code).</p>\r\n<p>Parsing it with Irony takes 55 ms; with ANTLR&nbsp; generated Lexer/Parser (C#) takes 40 ms; and with Parser inside SQL Server 2008 R2 takes 17 ms.</p>\r\n<p>Is there any way to tune Irony's performance?</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-10-29T07:01:32.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "691152",
+    "ThreadId": "277626",
+    "Html": "<p>55 ms seems high; first of all, make sure environment/Irony is \"warmed-up\" when you run the test - are you sure parser construction time is not included? Create a parser object then run parse 100 times to measure perf. Make sure you don't introduce any extra hits like AST construction or custom code/terminals that do something unreasonable. If it's possible send me this file directly and I can play with it and see where's the bottleneck - that would actually help a lot, we can discover some loophole that leaks performance.&nbsp;</p>\r\n<p>I planned to start looking into this perf tuning, other folks already reported that Gold/Antlr run faster in some cases. See other recent discussion with Alexander Mutel.&nbsp;&nbsp;It is mainly scanner - most of the time is spent there (in Irony and in any other parser framework).&nbsp;</p>\r\n<p>I'm thinking about making a special facility for fast scanning simplified versions of terminals that falls back to full-scan mode when it hits some exotic terminal arrangement. &nbsp;</p>",
+    "PostedDate": "2011-10-29T10:09:37.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "710973",
+    "ThreadId": "277626",
+    "Html": "<p>Using the Performance Wizard in Visual Studio 2010, I can see the  bottleneck lies in CoreParser.ReadInput(), which spends most time in  calling FetchToekn().</p>",
+    "PostedDate": "2011-12-12T08:57:34.707-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "710980",
+    "ThreadId": "277626",
+    "Html": "<p>that's no surprise, FetchToken call Scanner to produce token, and it is well known that parsers in general spend most of their time in scanner. By the way, I just upgraded scanner, it should run much faster, the code is in Source Code page (in depo), not in Downloads zip yet. Try this new version, let me know the result.&nbsp;</p>\r\n<p>thanks</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-12-12T09:01:47.453-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "711041",
+    "ThreadId": "277626",
+    "Html": "<p>The new version is about the same in performance for my test case. However, the bottleneck is changed to Scanner.MatchTerminals().</p>",
+    "PostedDate": "2011-12-12T11:09:14.333-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

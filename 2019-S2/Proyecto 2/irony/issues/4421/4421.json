@@ -1,0 +1,65 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T11:41:05.023-07:00",
+    "CommentCount": 5,
+    "Custom": "",
+    "Description": "For some list nodes (I am not sure I can reproduce this reliably) AstNodeCreator is called when there is only a single ChildNode.\nI suppose this is related to code in CodeParser.ExecuteReduce, which adds children to the node (alreadyCreatedList) after AstNodeCreator was already called.\n\nI think the fix would be to postpone AstNodeCreator until there are no more child nodes.",
+    "LastUpdatedDate": "2010-03-26T11:41:05.023-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-05-18T13:10:10.12-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "AstNodeCreator is called too early on some plus/star NonTerminals",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 4421
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "yep, you're right, it should be created later. Will see how to fix it",
+      "PostedDate": "2009-05-18T14:20:46.467-07:00",
+      "Id": 29122
+    },
+    {
+      "Message": "Fixed, now AST nodes are created when parse tree node is popped from stack to be added to parent's child list\r\n\n\n** Closed by rivantsov 5/22/2009 2:29 PM",
+      "PostedDate": "2009-05-22T15:43:31.043-07:00",
+      "Id": 29123
+    },
+    {
+      "Message": "",
+      "PostedDate": "2009-05-22T15:43:31.42-07:00",
+      "Id": 29124
+    },
+    {
+      "Message": "Fixed in source drop on May 22",
+      "PostedDate": "2009-05-22T15:44:17.78-07:00",
+      "Id": 29125
+    },
+    {
+      "Message": "downloaded the latest drop, but encountered much more serious issue:\r\nhttp://irony.codeplex.com/WorkItem/View.aspx?WorkItemId=4451",
+      "PostedDate": "2009-05-23T11:08:58.64-07:00",
+      "Id": 29126
+    }
+  ]
+}

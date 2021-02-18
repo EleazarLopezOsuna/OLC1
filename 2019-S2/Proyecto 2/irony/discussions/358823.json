@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "846444",
+    "ThreadId": "358823",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>First of all i would like to say that after testing multiple parsing kits, this open source project is by far the best on the .Net platform if not all platforms.</p>\r\n<p>and now to get back on the topic of the discussion :)</p>\r\n<p>I am trying to get the following special characters accepted in a string when using stringliterals:</p>\r\n<p>&quot;check of cable1 is ok (&quot; ~ $Cable1.UC ~ &quot;)&quot;;</p>\r\n<p>I have tried all the StringOptions to get this text accepted, but it gives me an error on the ~ sign and the double quotes.</p>\r\n<p>Out of desperation i even configured my stringliteral like this:</p>\r\n<pre>StringLiteral str = new StringLiteral(&quot;str&quot;, &quot;\\&quot;&quot;,StringOptions.AllowsAllEscapes | StringOptions.AllowsDoubledQuote |  StringOptions.AllowsLineBreak | StringOptions.AllowsOctalEscapes \r\n| StringOptions.AllowsUEscapes | StringOptions.AllowsXEscapes);</pre>\r\n<p>&nbsp;</p>\r\n<p>But i haven't been able to get that working. Any suggestions regarding the matter would be greatly appreciated :)</p>\r\n<p><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"></span></span></span></span></p>\r\n<p><span style=\"font-family:Consolas; font-size:x-small\"></p>\r\n<p>&nbsp;</p>\r\n<span style=\"font-family:Consolas; font-size:x-small\">&nbsp;</span></span>\r\n<p></p>\r\n<p></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-06-08T01:10:15.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "846453",
+    "ThreadId": "358823",
+    "Html": "<p>Never mind, Just figured out why i should have my coffee early in the morning before starting to code :)</p>\r\n<p>My rule was not set up correctly to work with quotes so after the second quote, the string literal had ended and the rest because unrecognized string that werent part of the rule anymore.</p>\r\n<p>Coffee+ enough sleep = good coding</p>",
+    "PostedDate": "2012-06-08T01:37:44.617-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

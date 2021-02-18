@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "223014",
+    "ThreadId": "65490",
+    "Html": "<p>Hello,</p>\r\n<p>I have a rule:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>WaitStatement.Rule = _wait_ + Expression + (_ms_ | _sec_ | _min_ | _hour_);\r\n</pre>\r\n</div>\r\n<p>In older version of Irony I can parse the following: &quot;wait 10ms&quot;. <br>In the latest version this caused parsing error:<br>&quot;Number cannot be followed by a letter&quot;.<br>The &quot;wait 10 ms&quot; parsed okay in both.<br>How can I enable parsing without the required space?</p>\r\n<p>Thanks,<br>Zoltan</p>",
+    "PostedDate": "2009-08-13T09:27:22.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223017",
+    "ThreadId": "65490",
+    "Html": "<p>There's a new flag for number literal, smth like AllowLetterAfter, it is not set by default, because normally it is an error. You should set this explicitly when you create NumberLiteral</p>",
+    "PostedDate": "2009-08-13T09:36:59.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

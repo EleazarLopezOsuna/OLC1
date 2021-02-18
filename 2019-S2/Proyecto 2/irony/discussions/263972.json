@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "637625",
+    "ThreadId": "263972",
+    "Html": "\r\n<p>I have the need to use Irony with and with out the comments parsed&nbsp;</p>\r\n<p>What would be the best way to include / exclude comments?</p>\r\n<p>&nbsp;</p>\r\n<p>Andrew</p>\r\n",
+    "PostedDate": "2011-07-05T10:09:07.473-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "637633",
+    "ThreadId": "263972",
+    "Html": "<p>If you want to parse comments that supposedly have some internal structure (like xml comments in c#), your best way would be to handle ValidateToken event on the comment terminal and do all custom processing there. This event is invoked when scanner finishes producing token.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-07-05T10:24:01.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "637635",
+    "ThreadId": "263972",
+    "Html": "<p>thank you for your prompt reply</p>\r\n<p>Ill scurry off and investigate!</p>\r\n<p>Additionally ... if there is any way i can contribute? assist?</p>",
+    "PostedDate": "2011-07-05T10:28:27.973-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "639489",
+    "ThreadId": "263972",
+    "Html": "<p>Thank you for your offer to help!</p>\r\n<p>For now, I'm hacking core Irony assembly, mostly Interpreter part, and pushing it for Beta and release. I do not see how anybody can help in this, it would take longer to explain than to do it myself. The best help would be to USE Irony in real-life projects and discover bugs or critical missing features that must go into initial release - and maybe suggesting outlines of implementations of these features. Another area - help and docs, it would be really nice to have doc pages on this site, some Getting started guide. Once the core is in beta, we can start with Xml comments in code - but not yet I think</p>\r\n<p>Stay in touch, and thanks again.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-07-08T08:05:43.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "639560",
+    "ThreadId": "263972",
+    "Html": "<p>I'm preparing a list of tasks as a suggestion for possible contribute work, will publish it soon. Stay in touch</p>\r\n<p>Roman&nbsp;</p>",
+    "PostedDate": "2011-07-08T10:14:13.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

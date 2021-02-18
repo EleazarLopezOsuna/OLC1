@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "681368",
+    "ThreadId": "275133",
+    "Html": "\r\n<p>I've had fun creating a grammar.</p>\r\n<p>Now I need to build my domain-specific object graph from the parse tree. How do I do that? I just need confirmation that the following is the correct approach:</p>\r\n<p>&nbsp; foreach (ParseTreeNode node in tree.Root.ChildNodes.Where(node =&gt; node.Term.Name == &quot;Declaration&quot;)) {<br>\r\n&nbsp; &nbsp; variables.Add(new Variable(node.ChildNodes[1].Token.Text, node.ChildNodes[2].FirstChild.Token.Text));&nbsp;<br>\r\n&nbsp; }<span style=\"white-space:pre\"> </span></p>\r\n<p>It seems a little strange to be hardcoding indexes like this. Would you generally use constants to&nbsp;identify&nbsp;these indexes, or is there an alternative way?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks<br>\r\nRichard<br>\r\nps Is there a twitter account I can follow?&nbsp;</p>\r\n",
+    "PostedDate": "2011-10-07T09:43:25.97-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "681459",
+    "ThreadId": "275133",
+    "Html": "<p>Now it's up to you. You can use built-in facility to build AST (abstract syntax) nodes, similar to what interpreter/expression evaluator is doing. You need to define AstNode classes for your DSL and provide your grammar non-terminals with types of AST nodes.</p>\r\n<p>In this case Irony parser will create the AST tree for you. There is one facility recently added, to identify child nodes for some AST node. The idea is that AST node set might be a generic set (like AST nodes in Irony Interpreter), but particular language might have constructs that map to this set with some specifics, like \"if\" expression has slightly different structure than assumed in IfAstNode. To align AST nodes with your language, you can set AstPartsMap property for a grammatic construct like non-terminal. See BnfTerm.AstPartsMap property, there's some explanation there.</p>\r\n<p>Or you can implement your own construction by building parse tree visitors, or directly iterating the tree - like SearchGrammar does when converting search query.</p>\r\n<p>Hope this helps</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-10-07T12:42:21.847-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2011-09-15T09:17:04.417-07:00",
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "... but latest changeset (1cafb6bf3705) does",
+    "LastUpdatedDate": "2011-09-15T09:17:04.417-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2011-09-15T00:02:38.76-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "irony_2011_09_13.zip doesn't build...",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9864
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Thanks for letting me know. Fixed, file uploaded. Sorry for trouble.",
+      "PostedDate": "2011-09-15T00:45:16.55-07:00",
+      "Id": 44726
+    }
+  ]
+}

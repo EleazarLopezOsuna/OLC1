@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "362694",
+    "ThreadId": "155358",
+    "Html": "<p>Hi,</p>\r\n<p>I saw the article on SQL Server Central: A Google-like Full Text Search.</p>\r\n<p>Of course I would like to use the newest version of irony available. So far so good, I use the SearchGrammar that can be found in the project 020.Irony.Samples.</p>\r\n<p>Now the hardest part is transforming the searchquery into ParseTreeNode.</p>\r\n<p>I use VB.Net because I have to but I don't think it wouldn't be any problem to understand it.</p>\r\n<p>I saw some examples in the discussions and they all seem to use something that I cannot find in the library:&nbsp; LanguageCompiler and also Compiler.</p>\r\n<p>How can I transform the text in a textbox into a ParseTreeNode so I can use it in the function SearchGrammar.ConvertQuery?</p>\r\n<p>Can anyone help me with a simple example?</p>\r\n<p>Thanks.</p>\r\n<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow:hidden\">\r\n<h1>A Google-like Full Text Search</h1>\r\n</div>",
+    "PostedDate": "2010-02-22T08:31:14.74-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "362716",
+    "ThreadId": "155358",
+    "Html": "<p>Look at SearchGrammar.RunSample method - it converts input string directly into SQL Query</p>",
+    "PostedDate": "2010-02-22T09:11:31.08-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "362725",
+    "ThreadId": "155358",
+    "Html": "<p>I can't get it to work.</p>\r\n<p>I paste you the code that I have, I get <span id=lblInnerException>System.ArgumentNullException: Value cannot be null.  at System.String.IndexOfAny(Char[] anyOf, Int32 startIndex, Int32 count) at  System.String.IndexOfAny(Char[] anyOf, Int32 startIndex) at  Irony.Parsing.SourceStream.SetText(String text, Int32 offset, Boolean  keepLineNumbering)</span></p>\r\n<p>The problem occurs in the bold line.</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">        Private</span> _grammar <span style=\"color:Blue\">As</span> Grammar<br>\t<span style=\"color:Blue\">Private</span> _parser <span style=\"color:Blue\">As</span> Irony.Parsing.Parser<br>\t<span style=\"color:Blue\">Private</span> _compilerContext <span style=\"color:Blue\">As</span> ParsingContext<br>\t<span style=\"color:Blue\">Private</span> _parseTree <span style=\"color:Blue\">As</span> ParseTree<br><br><br>\t<span style=\"color:Blue\">Protected</span> <span style=\"color:Blue\">Sub</span> QuickSearch()<br>\t\t_grammar = <span style=\"color:Blue\">New</span> Grammar()<br>\t\t_parser = <span style=\"color:Blue\">New</span> Parser(_grammar)<br>\t\t_compilerContext = <span style=\"color:Blue\">New</span> ParsingContext(_parser)<br>\t\t_parseTree = <span style=\"color:Blue\">Nothing</span>\r\n\r\n\t\t_parser.Context.SetOption(ParseOptions.TraceParser, <span style=\"color:Blue\">True</span>)<br><br>\t\t<strong>_parser.Parse(tbxSearch.Text.Trim().ToLower(), <span style=\"color:#A31515\">&quot;&lt;source&gt;&quot;</span>)<br></strong><br>\t\t_parseTree = _parser.Context.CurrentParseTree<br><br><br>\t\tShowPrompt(Com_FTSGrammar.ConvertQuery(_parseTree.Root))<br>\t\t<span style=\"color:Blue\">Exit</span> <span style=\"color:Blue\">Sub</span>\r\n<span style=\"color:Blue\">End</span> <span style=\"color:Blue\">Sub</span>\r\n</pre>\r\n</div>\r\n</p>\r\n<p><span><br></span></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-02-22T09:27:43.097-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "362734",
+    "ThreadId": "155358",
+    "Html": "<p>Well, the converter should be working in Grammar Explorer, step through with debugger and see what's different with your app. Are you passing a non-null string in txtSearch.Text?</p>",
+    "PostedDate": "2010-02-22T09:43:11.473-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "362753",
+    "ThreadId": "155358",
+    "Html": "<p>Yes, i am testing with the word 'test'</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-02-22T10:34:20.167-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "362935",
+    "ThreadId": "155358",
+    "Html": "<p>Shouldn't it be</p>\r\n<p>_grammar = new SearchGrammar();</p>\r\n<p>&nbsp;</p>\r\n<p>????</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-02-22T16:41:23.65-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "363070",
+    "ThreadId": "155358",
+    "Html": "<p>Yes, it should. For me it is</p>\r\n<pre>_grammar = <span style=\"color:Blue\">New</span> Com_FTSGrammar()<br><br>Because I changed the name after conversion to VB.NET.<br><br>Thanks a lot.</pre>",
+    "PostedDate": "2010-02-23T01:31:04.23-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

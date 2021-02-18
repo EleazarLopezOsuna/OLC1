@@ -1,0 +1,98 @@
+[
+  {
+    "Id": "137394",
+    "ThreadId": "41414",
+    "Html": "The readme.txt file says it requires VS2005 and .NET Framework 3.5. I have both installed on WinXP. The solution file version is 10.0 and VS 2005 throws an error saying it cannot load the solution file because it is the wrong version. I tried loading in C# 2008 Express (since I had it handy), and it throws an error saying the express version of VS does not support solution folders. Either there is an error with my config or the alpha release needs VS2008.<br>\r\n",
+    "PostedDate": "2008-12-03T12:20:22.463-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137412",
+    "ThreadId": "41414",
+    "Html": "Information in Readme.txt is outdated, sorry for this, will fix in next checkin. It should be VS 2008. As for solution file, I'll remove solution folder with next checkin - they are not critical, didn't know about this problem with VS Express - thanks for pointing it out. For now, you can recreate the solution file and add the projects manually. Or maybe edit the solution file directly?<br>\r\nSorry again for inconvenience\r\n",
+    "PostedDate": "2008-12-03T13:13:17.013-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137427",
+    "ThreadId": "41414",
+    "Html": "Actually, this project is so fun that it has convinced me to move to VS2008. I've been holding off because SQL Server 2005 uses VS2005, and I'm going to be using SS2k5 for another few years at least. (I am a DBA for a hospital, and our vendors make glaciers look speedy when it comes to adopting new database systems.) But, Irony makes it so easy to play around with compiler designs that I'll adopt what it needs. My interests are in adding .NET code to a database server without having to load a new assembly everytime I make a change. There are times when T-SQL just doesn't do what I need to do, but writing a C# program is more effort than doing it manually. I'm going to be looking at Script.NET as a way to get the functionality of the .NET framework when I need to do stuff outside SS from within SS, e.g. text file importing and exporting. Plus, I'm an old computer science geek who always thought designing compilers was cool. :-)<br>\r\n<br>\r\nYou've created something incredibly cool that I think has the potential to be a game changer when it comes to adding dynamic functionality to applications. Thanks for the work you've put into this.<br>\r\n",
+    "PostedDate": "2008-12-03T13:56:59.273-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137440",
+    "ThreadId": "41414",
+    "Html": "Thanks for your praise - really appreciated. <br>\r\nAs for using it inside SS - please read an earlier discussion &quot;Adding assembly to SQL Server 2008&quot;. Looks like it is not so easy, at least loading Irony as &quot;safe&quot; assembly. I've tried to tweak things inside Irony to comply with some &quot;very strict&quot; requirements of SQL server, and finally had to give up. It turns out the HashSet generic type from .NET libraries (set of values or objects) that I use throughout Irony - it turns out it is &quot;unsafe&quot;; so I had to give up. You still can load it as unsafe assembly, and if you're ok with this (oh, you're DBA - so it's your call!) - then have fun!<br>\r\n",
+    "PostedDate": "2008-12-03T14:17:10.1-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137588",
+    "ThreadId": "41414",
+    "Html": "&gt;It turns out the HashSet generic type from&nbsp;.NET libraries&nbsp;(set of values\r\nor objects)&nbsp;that I use throughout Irony - it turns out it is &quot;unsafe&quot;;<br>\r\n<br>\r\nmight be a tip <br>\r\nif you use linq to objects you won't need hashset anymore.<br>\r\n<br>\r\nat least i was able to get rid of all my code that relied on hashsets.<br>\r\n<br>\r\n- lm<br>\r\n",
+    "PostedDate": "2008-12-04T02:19:34.193-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137627",
+    "ThreadId": "41414",
+    "Html": "I could certainly use plain lists or dictionaries instead of hashsets and  use linq to simplify some search code, but that would bring a serious performance hit. When I switched to hashsets I got almost two-fold performance improvement on initialization. Giving it up - not worth it I think<br>\r\nthanks for the tip anyway<br>\r\n",
+    "PostedDate": "2008-12-04T05:07:20.58-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137689",
+    "ThreadId": "41414",
+    "Html": "I saw the thread on SQL Server 2008, and I think I understand the problem. One advantage of being the senior DBA in charge of the servers is that I can make the decision about permitting &quot;unsafe&quot; assemblies. Also, I'm going to try to encapsulate your assembly in one that only exposes limited functionality to see if I can &quot;hide&quot; the parts that SQL Server doesn't like. I'm thinking I may have to do that anyway to keep from having to install all of .NET 3.5 on each server.<br>\r\n<br>\r\nMy time to tinker with new stuff comes in cycles, and it may be after New Year's before I can really dig into figuring out how to make it work on SS. I'll let you know if I find a better way than forcing SS to accept an &quot;unsafe&quot; assembly.<br>\r\n<br>\r\nBtw, one thought on leblanc's suggestion: hash sets are easy to implement with generics, so one path of exploration would be to write a replacement for .NET's hashset that meets the stricter requirements. That is my plan B if my first plan doesn't work.<br>\r\n",
+    "PostedDate": "2008-12-04T08:14:40.647-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137698",
+    "ThreadId": "41414",
+    "Html": "One additional thing to add to the notes is that the unit testing components need to be installed for the Irony.Tests project to load.<br>\r\n",
+    "PostedDate": "2008-12-04T08:36:52.73-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137734",
+    "ThreadId": "41414",
+    "Html": "Answering all at once. <br>\r\nAbout hiding Irony - I doubt it would work, because I think SQL server scans all used types, and all the chain through the hierarchy, so it will find the offending Hashset anyway. <br>\r\nImplementing replacement for hashset - I would certainly consider it if only I was sure it is the last one. As the story was going the SQL server was giving rejections one at a time, and after I was fixing one, it would come up with the next one. (I didn't try it myself, another user was reporting me stuff as I was fixing Irony) So I'm afraid the Hashset is not the last one. At the same time, I hope MS fixes this some time in the future, because clearly the thing is not right: a general-purpose innocent type from System.Collections.Generic namespace is rejected by SQL Server for security reasons. So I would suggest to wait and see... Especially considering the fact that Irony has a lot of other outstanding issues that need to be done to implement MUST-BE functionality. <br>\r\nTesting components - sorry folks, I wasn't aware about problems like these. I myself enjoy full-featured VS 2008 and never had a chance to try a &quot;downgraded&quot; environment. I know it's not fair for fellow developers, but I'm afraid I won't be able to get to this. Barely find time for mainstream features. I hope there are some workarounds, with full sources at hand. But if you or somebody else who has Express edition writes down some &quot;readme&quot; recipes for downgraded environment - I would be happy to add these to readme file, with full credit to the author. <br>\r\n",
+    "PostedDate": "2008-12-04T10:00:53.343-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138060",
+    "ThreadId": "41414",
+    "Html": "I wonder if there is a simpler way..<br>\r\n<br>\r\n<br>\r\n<br>\r\nMaybe it just needs to be signed <br>\r\nhttp://www.c-sharpcorner.com/UploadFile/rmcochran/reuse10312006141427PM/reuse.aspx<br>\r\n<br>\r\nExample I recently saw a project here on codeplex that when the project is built it is automatically signed:<br>\r\nhttp://www.codeplex.com/PreSharp/SourceControl/ListDownloadableCommits.aspx<br>\r\ncheck out Properties folder and find *.snk<br>\r\n<br>\r\n<br>\r\n<br>\r\n<br>\r\nMaybe all it needs is a [Security] attribute on a class.. .some type of AOP microsoft has.<br>\r\n<br>\r\n<br>\r\nTo avoid all this speculation someone that has paid microsoft support with their subscription should call and ask:<br>\r\n&quot;What are the requirements to create a safe assembly for sql server?&quot;&nbsp; <br>\r\nAnd give an example of this project.<br>\r\n<br>\r\n<br>\r\nLastly, if microsoft does agree that HashSet is the problem then create a new configuration using &quot;Configuration Manager&quot; and copy the release template and add a &quot;conditional compilation symbol&quot; called SAFE_ASSEMBLY<br>\r\n<br>\r\nIn your code you would have:<br>\r\n#if SAFE_ASSEMBLY<br>\r\nlinq stuff<br>\r\n#else<br>\r\nhashset<br>\r\n#endif<br>\r\n<br>\r\n<br>\r\n<br>\r\n<br>\r\n-lm<br>\r\n<br>\r\n<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2008-12-05T09:04:13.44-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138079",
+    "ThreadId": "41414",
+    "Html": "It is not signing, and security attribute cannot fix it. Here's a copy of Hashset header from MSDN:<br>\r\n<p dir=ltr style=\"margin-right:0px\"><em>[SerializableAttribute]<br>\r\n[HostProtectionAttribute(SecurityAction.LinkDemand, MayLeakOnAbort = true)]<br>\r\npublic class HashSet&lt;T&gt; : ICollection&lt;T&gt;, IEnumerable&lt;T&gt;, ...<br>\r\n</em><br>\r\nIt is this MayLeakOnAbort=true that SQL Server does not like. Note that this is MS developers who put this value on a class, and nothing we (class users) can do about it. <br>\r\n<br>\r\nAs for using conditional compilation - that's adding a lot of complexity to the code - I would say introducing quite a mess. Not worth it IMHO. Again, who garantees it is the last bump on the road?!<br>\r\nI would expect (ask?!) MS to fix this in the future...</p>\r\n<pre></pre>\r\n<pre></pre>\r\n",
+    "PostedDate": "2008-12-05T10:18:17.93-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138201",
+    "ThreadId": "41414",
+    "Html": "Here is another idea: (improvement on conditional compilation)<br>\r\n<br>\r\n<br>\r\ncreate a <br>\r\nIHashSetFactory<br>\r\nwhich centralizes the conditional compilation variable.<br>\r\nGetInstance()<br>\r\n{<br>\r\n#if SAFE_ASSEMBLY<br>\r\nreturn mono's version with cleaned up pieces causing problems<br>\r\n// http://anonsvn.mono-project.com/viewvc/trunk/mcs/class/System.Core/System.Collections.Generic/HashSet.cs?view=markup<br>\r\n<br>\r\n #else<br>\r\nreturn a copy of microsofts hashset that with applied attributes but extends or implements IHash<br>\r\n#endif<br>\r\n}<br>\r\n<br>\r\n<br>\r\nAll your code should be changed to:<br>\r\nIHash hashset = IHashSetFactory.GetInstance();<br>\r\nhashset.nochangeinyour your code usage only initialization.<br>\r\n<br>\r\n<br>\r\nthis could be tested by someone that really wants to create a safe version for sql server.. I use postgresql so it doesn't help me.<br>\r\nJust some thought for <a href=\"../../site/users/view/royalhale\" id=\"ctl00_ctl00_MasterContent_Content_PostRepeater_ctl36_UserNameLink\">royalhale</a>, <a href=\"../../site/users/view/Datawrangler\" id=\"ctl00_ctl00_MasterContent_Content_PostRepeater_ctl14_UserNameLink\">Datawrangler,</a><br>\r\nand anyone else with these problems.<br>\r\n<br>\r\n-lm <br>\r\n<br>\r\n<br>\r\n\r\n",
+    "PostedDate": "2008-12-05T21:46:57.17-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

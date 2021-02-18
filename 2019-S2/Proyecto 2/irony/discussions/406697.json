@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "955764",
+    "ThreadId": "406697",
+    "Html": "\r\n<p><span style=\"font-family:'Segoe UI','sans-serif'; color:black; font-size:10pt\">Hi,</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif'; color:black; font-size:10pt\">I have a couple of questions about how powerful Irony is. How does Irony handle context-sensitive tex? For example, in order to do this in ANTLR code needs to be injected to keep\r\n track of the state. </span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif'; color:black; font-size:10pt\">Another question I have is, how easy is it to call another parser during a parsing session. This is necessary when you have a mix of 2 or more languages ex) C# embedded in XML.</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif'; color:black; font-size:10pt\">Thank you!</span></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-12-13T12:32:18.967-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "955956",
+    "ThreadId": "406697",
+    "Html": "\r\n<p>as for custom code and tracking stuff. it's all c#, and there are events you can hook to. For example, NonTerminal has Reduced event which is fired when the rule is recognized and reduced. You can handle this event and do your custom stuff.</p>\r\n<p>As for #2 - mixing grammars. Directly and automatically it's not supported. But it is doable I think. Let's say you have a mix of HTML with JavaScript snippets inside closing tag. Something like this.&nbsp;</p>\r\n<p>Parsing 'combined' languages is an interesting feature, may be we'll get to support it in more direct way.</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2012-12-13T23:59:36.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

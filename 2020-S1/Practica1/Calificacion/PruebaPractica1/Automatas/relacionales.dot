@@ -1,0 +1,5 @@
+digraph{
+rankdir = LR;
+S0 -> S1[label="~"];
+S1[shape=doublecircle];
+}

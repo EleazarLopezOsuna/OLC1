@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1160281",
+    "ThreadId": "492280",
+    "Html": "Hi,\r<br />\n<br />\nI am new to Irony and language grammar. I want to know, if it is possible to parse only a specific block of a code\\text file and ignoring the rest, so that I do not have to define the grammer for the &quot;rest&quot;.\r<br />\n<br />\nExample text file content:\r<br />\n<br />\nsome text that I am not interesting in \r<br />\nmore text... more words...\r<br />\nsome code that I am not interesting in\r<br />\n<br />\nDEF VAR a int = 10;\r<br />\nDEF VAR b int = 20;\r<br />\n<br />\nsome text... many words...\r<br />\nmore text... more words...\r<br />\nsome code...\r<br />\n \r<br />\n<br />\n<br />\nThe question is now, how can I build a grammar\\parser that ignores all text except the &quot;DEF VAR...&quot; lines?\r<br />\nI alread have defined a grammar for the &quot;DEF VAR...&quot; lines, but when I am parsing the files I logically get parsing errors.\r<br />\n<br />\nThanks in advance!<br />\n",
+    "PostedDate": "2014-01-13T00:30:54.973-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1165828",
+    "ThreadId": "492280",
+    "Html": "I think your best approach would be to write pre-parser analyzers: break the file into lines, analyze each and see if it should be skipped or parsed. If not to skip, feed it to the parser.\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-01-14T10:38:14.183-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

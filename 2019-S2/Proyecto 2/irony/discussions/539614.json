@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1224856",
+    "ThreadId": "539614",
+    "Html": "I'm trying to parse a block of code that can contain among other things C# string literals. Therefore I have made a custom terminal, which has a StringLiteral instance inside. I call StringLiteral.Init in my custom init method, however when trying to call StringLiteral.TryMatch inside my custom TryMatch method I'm always getting null, even though PreviewPosition is located right before the &quot; character.\r<br />\n<br />\nAny ideas on how I can nest a terminal in this way so as to use it as a combination with my custom terminal, or why I'm getting nothing from the StringLiteral instance?\r<br />\n<br />\nRegards<br />\n",
+    "PostedDate": "2014-03-20T08:19:26.6-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1225053",
+    "ThreadId": "539614",
+    "Html": "Figured it out. Main thing was just to set ISourceStream.Position equal to PreviewPosition before calling StringLiteral.TryMatch, as uses Position to revert the PreviewPosition, should it not match.<br />\n",
+    "PostedDate": "2014-03-20T17:17:22.16-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

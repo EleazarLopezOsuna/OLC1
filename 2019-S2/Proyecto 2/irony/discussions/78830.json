@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "269881",
+    "ThreadId": "78830",
+    "Html": "<p>Hello,</p>\r\n<p>I am parsing code in which the time is expressed in the following format : HH:MM</p>\r\n<p>I&nbsp;need to be able to identify any 'time' occurence in the code. For example:</p>\r\n<p><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">IF $v_heure &lt; <span style=\"color:#ff0000\">23:59 </span>THEN<br>BEGIN<br>&nbsp;// Do something...<br>&nbsp;SET $v_heure TO $v_heure_ref - <span style=\"color:#ff0000\">23:59</span><br>END<br>ELSE<br>BEGIN<br>&nbsp;// Do something...<br>END</span></span></p>\r\n<p>I&nbsp;think&nbsp;I need to overload a Terminal for this purpose, but I'm not sure how to proceed.</p>\r\n<p>Thank you in advance for our help,</p>\r\n<p>Nicolas</p>",
+    "PostedDate": "2009-12-22T02:46:31.947-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "269999",
+    "ThreadId": "78830",
+    "Html": "<p>Hi</p>\r\n<p>I you are going to create an AST tree,&nbsp;I think the simples way is to define a NonTerminal for time with&nbsp;custom AstNodeCreator method:</p>\r\n<p>var&nbsp;timeLiteral = new NonTerminal(&quot;TimeLiteral&quot;, createTimeLiteral); &nbsp;</p>\r\n<p>ntTime.Rule = Number + &quot;:&quot; + Number</p>\r\n<p>In node creator method create a LiteralValueNode with appropriate time value computed from components.</p>\r\n<p>You can go with custom terminal, but then you need to make sure regular Number literal has lower priority than your custom time terminal, so that time term gets the first chance to recognize the input. This looks a bit inefficient as all regular numbers would have to be recognized twice - first by time terminal, and if it fails, regular Number terminal&nbsp;does the job.</p>\r\n<p>Hope this explains it</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-22T11:09:22.637-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270185",
+    "ThreadId": "78830",
+    "Html": "<p><span id=\"result_box\"><span style=\"background-color:#fff\" title=\"j'ai deja essayer cette methode mais la régle entre en conflit avec &quot;Case 12 :&quot; par exemple\">Hi</span></span></p>\r\n<p><span style=\"background-color:#fff\" title=\"j'ai deja essayer cette methode mais la régle entre en conflit avec &quot;Case 12 :&quot; par exemple\">I already try this method but the rule conflicted with&nbsp;the switch statement.</span></p>\r\n<p><span style=\"background-color:#fff\" title=\"j'ai deja essayer cette methode mais la régle entre en conflit avec &quot;Case 12 :&quot; par exemple\">for example:</span></p>\r\n<p><span style=\"background-color:#fff\" title=\"j'ai deja essayer cette methode mais la régle entre en conflit avec &quot;Case 12 :&quot; par exemple\"><span style=\"color:#0000ff\">SWITCH variable$<br>BEGIN<br>&nbsp;&nbsp;&nbsp; CASE <span style=\"color:#ff0000\">5 : </span><br>&nbsp;&nbsp;// code<br>&nbsp;CASE&nbsp; <span style=\"color:#ff0000\">12:<br></span>&nbsp;// code<br>END</span></span></p>\r\n<p><span style=\"background-color:#fff\" title=\"j'ai deja essayer cette methode mais la régle entre en conflit avec &quot;Case 12 :&quot; par exemple\"><span id=\"result_box\"><span style=\"background-color:#fff\" title=\"Je peut peut etre essayer avec RegexBasedTerminal ?\">May be I can try with RegexBasedTerminal?</span></span></span></p>\r\n<p><span style=\"background-color:#fff\" title=\"j'ai deja essayer cette methode mais la régle entre en conflit avec &quot;Case 12 :&quot; par exemple\"><span><span style=\"background-color:#fff\" title=\"Je peut peut etre essayer avec RegexBasedTerminal ?\">thanks</span></span></span></p>\r\n<p><span style=\"background-color:#fff\" title=\"j'ai deja essayer cette methode mais la régle entre en conflit avec &quot;Case 12 :&quot; par exemple\"><span><span style=\"background-color:#fff\" title=\"Je peut peut etre essayer avec RegexBasedTerminal ?\">Nicolas</span></span></span></p>\r\n<p><span style=\"background-color:#fff\" title=\"j'ai deja essayer cette methode mais la régle entre en conflit avec &quot;Case 12 :&quot; par exemple\"><span><span style=\"background-color:#fff\" title=\"Je peut peut etre essayer avec RegexBasedTerminal ?\">&nbsp;</span></span></span></p>\r\n<p><span style=\"background-color:#fff\" title=\"j'ai deja essayer cette methode mais la régle entre en conflit avec &quot;Case 12 :&quot; par exemple\">&nbsp;</span></p>",
+    "PostedDate": "2009-12-23T00:21:33.767-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270417",
+    "ThreadId": "78830",
+    "Html": "<p>You have to formulate clear disambiguation rule before you proceed. Whether you do it with NonTerminal or with custom terminal, you need a formal method to distinguish a time value from Case value. You should probably go with custom terminal and add checking of&nbsp;previous token (available through Context.PreviousToken) - check if it is &quot;case&quot; keyword and make decision based on that</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-23T13:12:09.793-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

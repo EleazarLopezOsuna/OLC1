@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1025414",
+    "ThreadId": "439103",
+    "Html": "Hello there,<br />\n<br />\nIrony is a really powerful tool, congratulations for your job!<br />\n<br />\nI've wrote a grammar for my needs, the tree is perfectly built. But the AST nodes doesn't have their children list filled up, so I need to add this code to every AstNode class:<br />\n<pre><code>        public override void Init(AstContext context, ParseTreeNode treeNode)\n            foreach (var childNode in treeNode.ChildNodes)\n            {\n                ChildNodes.Add(childNode.AstNode as AstNode);\n            }\n            base.Init(context, treeNode);\n        }\n</code></pre>\n\nAm I doing it right ?<br />\n<br />\nBTW, I've learned to use it following the tutorial on <a href=\"http://www.codeproject.com/Articles/29058/Writing-your-first-Domain-Specific-Language-Part-2\" rel=\"nofollow\">CodeProject</a>, which is very interesting but its not up to date so a lot of classes don't exist anymore, is there any other documentation more up to date ?<br />\n<br />\nThanks<br />\nElias<br />\n",
+    "PostedDate": "2013-04-04T07:37:38.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025508",
+    "ThreadId": "439103",
+    "Html": "AstNode class has following method, use it in your own subclasses:<br />\n<pre><code>AstNode AddChild(string role, ParseTreeNode childParseNode)</code></pre>\n\nAbout documentation. The only actual documentation is an Irony sourcecode, AFAIK.<br />\n",
+    "PostedDate": "2013-04-04T09:52:37.05-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

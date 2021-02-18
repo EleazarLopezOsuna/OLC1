@@ -1,0 +1,342 @@
+import "./src/app.css";
+
+/*Area de componentes */
+import notas1 from "./src/s1/s1.ufe";
+import notas2 from "./src/s2/s2.ufe";
+import notas3 from "./src/s3/s3.ufe";
+import notas4 from "./src/s4/s4.ufe";
+import notas5 from "./src/s5/s5.ufe";
+import notas6 from "./src/s6/s6.ufe";
+import notas7 from "./src/s7/s7.ufe";
+import notas8 from "./src/s8/s8.ufe";
+import notas9 from "./src/s9/s9.ufe";
+import notas10 from "./src/s10/s10.ufe";
+
+
+/*Area de variables*/
+var indexGrade = 0;
+var indexSemester = 1;
+var listaGrados = 
+{ /*         0         ,          1   ,       2    ,    3     ,    4    ,       5            */
+  "Ciencias y sistemas", "Electrónica", "Electrica","Mecánica","Química","Mecanica Industrial"
+};
+
+var listaEscuelas[6];
+listaEscuelas[5] = "Escuela de mecanica industrial";
+listaEscuelas[4] = "Escuela de ingeniería química";
+listaEscuelas[3] = "Escuela de mecanica ";
+listaEscuelas[2] = "Escuela de mecanica electrica";
+listaEscuelas[1] = "Escuela de telecomunicaciones";
+listaEscuelas[0] = "Escuela de ciencias y sistemas";
+
+//render (</pagina> , todapagina);
+render (</pagina> , todapagina2); // Error 
+
+Component pagina()
+{
+     var numero = 10;
+     var resultado = 0.00;
+     var equiz = 0.00;
+     var numeroIteraciones=100;
+     var factorial = 1.00;        
+     var i,j = 0;          
+     var contador = 0;  
+     var  mensajes[10];
+     mensajes[0]= "epowx(";
+     mensajes[1]= "ln(1+";
+     mensajes[2]= "ln(";
+     mensajes[3]= "sin(";
+     mensajes[4]= "cos(";
+     mensajes[5]= "arctan(";
+     mensajes[6]= "sinh(";
+     mensajes[7]= "cosh(";
+     var  parametros[10];
+     parametros[0] = 0.5;
+     parametros[1] = 0.5;
+     parametros[2] = 1.5;
+     parametros[3] = 2.0;
+     parametros[4] = 2.0;
+     parametros[5] = 0.2;
+     parametros[6] = 0.2;
+     parametros[7] = 0.2;
+     parametros[8] = 2.0;
+     parametros[9] = 3.0;
+ 
+ 
+ 
+     
+     repetir(10)
+     {
+         si(contador == 1)
+         {
+             /*  Calculo de epowx */
+             /*  Primero calculamos el factorial*/
+             resultado = 0;  
+             x = parametros[contador -1 ];    
+             //para(i = 0 ;i < numeroIteraciones; i++)
+             i=0;
+             mientras(i < numeroIteraciones)
+             {    
+                 factorial = 1.0;
+                 //para(j = 0 ; j < i ; j++)
+                 j= 0;
+                 mientras(j<i)
+                 {
+                     factorial = factorial * (j+1);
+                     j = j + 1 ; 
+                 }  
+                 imprimir(i +"! = " + factorial);
+                 resultado = resultado +  (x pow i) / factorial;                        
+                 i = i + 1;
+             }     
+             imprimir(contador +"--" + mensajes[contador-1]+x+") = " + resultado); 
+             imprimir("Operacion # " + contador + "," + contador +"--" + mensajes[contador-1]+x+") = " + resultado );            
+         }
+         sino
+         si(contador ==2 )
+         {
+             /*  2. Ln(1+x) 
+             para |x|<1
+             */
+             x = parametros[contador -1 ];
+             resultado = 0; // Limpiamos el resultado
+             //para(i = 1 ;i < numeroIteraciones; i++)
+             i = 1;
+             mientras(i < numeroIteraciones)
+             {    
+                 resultado = resultado +  (((-1) pow (i+1))/i)*((x pow i));            
+                 i = i +1;
+             } 
+             imprimir(contador +"--" + mensajes[contador-1]+x+") = " + resultado); 
+             imprimir("Operacion # " + contador + "," + contador +"--" + mensajes[contador-1]+x+") = " + resultado );                 
+         }
+         sino
+         si(contador == 3)
+         {
+             /*  3. Ln(x)         
+             */
+             x = parametros[contador -1 ];
+             resultado = 0; // Limpiamos el resultado
+             //para(i = 0 ;i < numeroIteraciones; i++)
+             i = 0 ;
+             mientras(i < numeroIteraciones)
+             {                
+                 resultado = resultado +   (1/(2*i+1))  * (((x-1)/(x+1)) pow (2*i +1));
+                 i =  i +1;
+             } 
+             resultado = resultado + resultado;
+             imprimir(contador +"--" + mensajes[contador-1]+x+") = " + resultado); 
+             imprimir("Operacion # " + contador + "," + contador +"--" + mensajes[contador-1]+x+") = " + resultado );                
+         }
+         sino
+         si(contador ==4)
+         {
+             /*  4. Sin(x)
+             */
+             x = parametros[contador -1 ];
+             resultado = 0; // Limpiamos el resultado       
+             //para(i = 0 ;i < numeroIteraciones; i++)
+             mientras(i < numeroIteraciones)
+             {                
+                 factorial = 1.0;
+                 //para(j = 0 ; j < 2*i +1 ; j++)
+                 mientras(j < 2* i +1)
+                 {
+                     factorial = factorial * (j+1);
+                     j = j +1 ;
+                 }              
+                 resultado = resultado +    ((((-1)pow i)) /(factorial)) *((x pow (2*i+1))) ;            
+                 i = i+1;
+             }         
+             imprimir(contador +"--" + mensajes[contador-1]+x+") = " + resultado);
+             imprimir("Operacion # " + contador + "," + contador +"--" + mensajes[contador-1]+x+") = " + resultado );                           
+         }
+         sino
+         si(contador ==5)
+         {
+             /*  5. cos(x)
+             */
+             x = parametros[contador -1 ];
+             resultado = 0; // Limpiamos el resultado        
+             //para(i = 0 ;i < numeroIteraciones; i++)
+             i =0 ;
+             mientras(i < numeroIteraciones)
+             {                
+                 factorial = 1.0;
+                 //para(j = 0 ; j < 2*i ; j++)
+                 j = 0;
+                 mientras(j < 2*i)
+                 {
+                     factorial = factorial * (j+1);
+                     j = j +1 ;
+                 }              
+                 resultado = resultado +    ((((-1)pow i)) /(factorial)) *((x pow(2*i))) ;            
+                 i = i + 1;
+             }         
+             imprimir(contador +"--" + mensajes[contador-1]+x+") = " + resultado);
+             imprimir("Operacion # " + contador + "," + contador +"--" + mensajes[contador-1]+x+") = " + resultado );                 
+         }
+         sino
+         si(contador == 6)
+         {
+             /*  6. arctan(x)
+             |x| < 1
+             */
+             x = parametros[contador -1 ];
+             resultado = 0; // Limpiamos el resultado        
+             //para(i = 0 ;i < numeroIteraciones; i++)
+             i = 0;
+             mientras(i < numeroIteraciones)
+             {                            
+                 resultado = resultado +  ((((-1) pow i))*(2*i+1)) *((x pow (2*i+1)));
+                 i = i  + 1;
+             }         
+             imprimir(contador +"--" + mensajes[contador-1]+x+") = " + resultado);
+             imprimir("Operacion # " + contador + "," + contador +"--" + mensajes[contador-1]+x+") = " + resultado );                  
+         }
+         sino 
+         si(contador ==7)
+         {
+             /*  7. sinh(x)
+             |x| < 1
+             */
+             x = parametros[contador -1 ];
+             resultado = 0; // Limpiamos el resultado        
+             //para(i = 0 ;i < numeroIteraciones; i++)
+             i =0 ;
+             mientras(i< numeroIteraciones)
+             {                            
+                 factorial = 1.0;
+                 //para(j = 0 ; j < 2*i +1 ; j++)
+                 j = 0;
+                 mientras(j<2*i +1)
+                 {
+                     factorial = factorial * (j+1);
+                     j = j + 1;
+                 }              
+                 resultado = resultado +   (1/(factorial))* (x pow (2*i+1)) ;
+                 i = i +1;
+             }         
+             imprimir(contador +"--" + mensajes[contador-1]+x+") = " + resultado);
+             imprimir("Operacion # " + contador + "," + contador +"--" + mensajes[contador-1]+x+") = " + resultado );                
+         }
+         sino si(contador == 8)
+         {
+             /*  8. cosh(x)       
+             */
+             x = parametros[contador -1 ];
+             resultado = 0; // Limpiamos el resultado        
+             //para(i = 0 ;i < numeroIteraciones; i++)
+             i = 0;
+             mientras(i < numeroIteraciones)
+             {                            
+                 factorial = 1.0;
+                 //para(j = 0 ; j < 2*i ; j++)
+                 j = 0 ;
+                 mientras(j < 2*i )
+                 {
+                     factorial = factorial * (j+1);
+                     j = j +1 ;
+                 }              
+                 resultado = resultado +   (1/(factorial))* (x pow (2*i)) ;
+                 i = i + 1;
+             }                     
+             imprimir(contador +"--" + mensajes[contador-1]+x+") = " + resultado); 
+             imprimir("Operacion # " + contador + "," + contador +"--" + mensajes[contador-1]+x+") = " + resultado );                
+         }
+         contador = contador +1;
+     }                   
+
+
+     return
+     (
+          <panel id= principal x = 0 y = 0 height = 480 width = 1010 color = "gray">          
+               </ panelTitulo>
+               </panelNotas>
+               </panelDescripcion>          
+          </panel>          
+     );
+}
+
+component panelTitulo()
+{
+     return
+     (
+          <panel id= paneltitulo x = 0 y = 0 className="panel" height = 500 width = 380>   
+               <text x = 20 y = 40 height = 28 width = 491 className ="titulo">
+                    Universidad de San Carlos de Guatemala
+               </text>
+               <text x = 57 y = 51 height = 28 width = 360 className ="titulo">
+                    {listaEscuelas[indexGrade]}
+               </text>                         
+               <text x = 658 y = 62 height = 28 width = 288 className ="titulo">
+                    Pensum de estudios
+               </text>   
+               <image x = 500 y = 20 height = 70 width = 70 src = "./logo.png">                                     
+          </panel>               
+     );
+}
+
+component panelDescripcion()
+{
+     var anio = 2019;
+     return
+     (          
+          <panel id= panelDescripcion x = 500 y = 100 height = 500 width = 380 className="panel">                  
+               <text x =10  y = 30 height = 28 width = 198 className ="titulo">
+                    Descripción
+               </text>                    
+               <text x = 40 y = 130 height = 30 width = 410 className ="titulo">
+                    {listaEscuelas[indexGrade] + "  " + anio}
+               </text>                   
+               <text x = 40 y = 80 height = 30 width = 410 className ="titulo">
+                    {listaGrados[indexGrade] + "  " + anio}
+               </text>                                        
+          </panel>               
+     );
+}
+
+component panelNotas()
+{
+     si(indexSemester==1)
+     {
+          return(</notas1>);
+     }
+     si(indexSemester==2)
+     {
+          return(</notas2>);
+     }
+     si(indexSemester==3)
+     {
+          return(</notas3>);
+     }
+     si(indexSemester==4)
+     {
+          return(</notas4>);
+     }
+     si(indexSemester==5)
+     {
+          return(</notas5>);
+     }
+     si(indexSemester==6)
+     {
+          return(</notas6>);
+     }
+     si(indexSemester==7)
+     {
+          return(</notas7>);
+     }
+     si(indexSemester==8)
+     {
+          return(</notas8>);
+     }
+     si(indexSemester==9)
+     {
+          return(</notas9>);
+     }                                        
+     si(indexSemester==10)
+     {
+          return(</notas10>);
+     }                        
+}
+

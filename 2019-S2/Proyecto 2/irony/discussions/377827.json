@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "878283",
+    "ThreadId": "377827",
+    "Html": "\r\n<p>Current project using iFTS (Integrated Full Text Search) and SQL Server 2008 R2.&nbsp; Attempting to convert Search Grammar Rules to VB.NET&nbsp;but get&nbsp;error&nbsp;message &quot;Operator '&amp;' is not defined for types 'String' and 'Irony.Compiler.NonTerminal'.\r\n &quot; on rules &quot; ParenthesizedExpresion.Rule = &quot;(&quot; &amp; OrExpression &amp; &quot;)&quot; &quot; and &quot; ProximityExpression.Rule = &quot;&lt;&quot; &amp; ProximityList &amp; &quot;&gt;&quot; &quot;.</p>\r\n<p>Any suggestions?</p>\r\n<p>Thanks in Advance</p>\r\n",
+    "PostedDate": "2012-07-19T18:09:43.93-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "878608",
+    "ThreadId": "377827",
+    "Html": "<p>Use \"+\" instead of \"&amp;\"</p>",
+    "PostedDate": "2012-07-19T20:52:53.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "889205",
+    "ThreadId": "377827",
+    "Html": "<p>Sorry for bothering you with this.&nbsp; I had changed the first &amp; to + and got the same error not realizing it was complaining about the second &amp;.&nbsp; Thanks for your quick response and MVVM sulotion is working per expectation.</p>",
+    "PostedDate": "2012-07-23T11:36:35.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

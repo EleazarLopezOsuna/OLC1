@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1035845",
+    "ThreadId": "441610",
+    "Html": "&quot;Reduce-reduce conflict. State S0, lookaheads: EOF LF. Selected reduce on first production in conflict set. (S0)&quot;\r<br />\n<br />\nMy grammar file is only 170 lines long, but I still have absolutely no idea where to even start with an error like this. Can we put the nearest non-terminal name in the error somewhere?\r<br />\n<br />\nAlso, I thought Irony treated EOF as an alternate for LF if I used this: LanguageFlags |= LanguageFlags.NewLineBeforeEOF. Is that not true? Why would it have a conflict between the two?<br />\n",
+    "PostedDate": "2013-04-25T14:31:33.81-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1036187",
+    "ThreadId": "441610",
+    "Html": "well sorry for your lunch, but - don't quite get what's the problem with the conflict? did you try to double-click on conflict message in Grammar Explorer? It will bring you to the state printout, which show you all.\r<br />\nAbout NewLineBeforeEOF - this has no impact on parser construction. It is at runtime, when parsing, the scanner injects NewLine before sending EOF to parser, just to adjust for source files that have no final line-break, but the language is line-based. <br />\n",
+    "PostedDate": "2013-04-26T10:13:11.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1036299",
+    "ThreadId": "441610",
+    "Html": "Here is the output from Grammar Explorer. I assume that I look in the &quot;Reduce Items&quot; section, but I don't know what to look for there.<br />\n<pre><code>State S0 (Inadequate)\n  Reduce-reduce conflicts on inputs: EOF LF\n  Shift items:\n    Program' -&gt; ·Program EOF \n    Program -&gt; ·StartSection.grp1 \n    StartSection.grp1 -&gt; ·StartSectionRow.grp1+ \n    StartSectionRow.grp1+ -&gt; ·StartSectionRow.grp1+ StartSectionRow.grp1 \n    StartSectionRow.grp1+ -&gt; ·StartSectionRow.grp1 \n    StartSectionRow.grp1 -&gt; ·OptionalTelemetryTriples.grp1 LF \n    OptionalTelemetryTriples.grp1 -&gt; ·TelemetryTriples.grp1 \n    TelemetryTriples.grp1 -&gt; ·Telemetry \n    Telemetry -&gt; ·until Unnamed0 Telemetry.Operator Telemetry.Value OptionalMetric \n    TelemetryTriples.grp1 -&gt; ·Telemetry \n    Telemetry -&gt; ·until Unnamed1 Telemetry.Operator Telemetry.Value OptionalMetric \n    StartSectionRow.grp1 -&gt; ·ActionTriplet.grp1 OptionalTelemetryTriples.grp1 LF \n    ActionTriplet.grp1 -&gt; ·ActionSetTriples.grp1 \n    ActionSetTriples.grp1 -&gt; ·Action \n    Action -&gt; ·set Unnamed2 at Action.Value OptionalMetric \n    ActionSetTriples.grp1 -&gt; ·Action \n    Action -&gt; ·set Unnamed3 at Action.Value OptionalMetric \n    ActionTriplet.grp1 -&gt; ·ActionIncTriples.grp1 \n    ActionIncTriples.grp1 -&gt; ·Action \n    Action -&gt; ·inc Unnamed4 by Action.Value OptionalMetric \n    ActionIncTriples.grp1 -&gt; ·Action \n    Action -&gt; ·inc Unnamed5 by Action.Value OptionalMetric \n    ActionTriplet.grp1 -&gt; ·ActionDecTriples.grp1 \n    ActionDecTriples.grp1 -&gt; ·Action \n    Action -&gt; ·dec Unnamed6 by Action.Value OptionalMetric \n    ActionDecTriples.grp1 -&gt; ·Action \n    Action -&gt; ·dec Unnamed7 by Action.Value OptionalMetric \n    ActionTriplet.grp1 -&gt; ·ActionMulTriples.grp1 \n    ActionMulTriples.grp1 -&gt; ·Action \n    Action -&gt; ·mul Unnamed8 by Action.Value OptionalMetric \n    ActionMulTriples.grp1 -&gt; ·Action \n    Action -&gt; ·mul Unnamed9 by Action.Value OptionalMetric \n    Program -&gt; ·StartSection.grp2 \n    StartSection.grp2 -&gt; ·StartSectionRow.grp2+ \n    StartSectionRow.grp2+ -&gt; ·StartSectionRow.grp2+ StartSectionRow.grp2 \n    StartSectionRow.grp2+ -&gt; ·StartSectionRow.grp2 \n    StartSectionRow.grp2 -&gt; ·OptionalTelemetryTriples.grp2 LF \n    OptionalTelemetryTriples.grp2 -&gt; ·TelemetryTriples.grp2 \n    TelemetryTriples.grp2 -&gt; ·Telemetry \n    Telemetry -&gt; ·until Unnamed10 Telemetry.Operator Tail OptionalMetric \n    TelemetryTriples.grp2 -&gt; ·Telemetry \n    Telemetry -&gt; ·until Unnamed11 Telemetry.Operator Telemetry.Value OptionalMetric \n    StartSectionRow.grp2 -&gt; ·ActionTriplet.grp2 OptionalTelemetryTriples.grp2 LF \n    ActionTriplet.grp2 -&gt; ·ActionSetTriples.grp2 \n    ActionSetTriples.grp2 -&gt; ·Action \n    Action -&gt; ·set Unnamed12 at Action.Value OptionalMetric \n    ActionTriplet.grp2 -&gt; ·ActionIncTriples.grp2 \n    ActionIncTriples.grp2 -&gt; ·Action \n    Action -&gt; ·inc Unnamed13 by Action.Value OptionalMetric \n    ActionTriplet.grp2 -&gt; ·ActionDecTriples.grp2 \n    ActionDecTriples.grp2 -&gt; ·Action \n    Action -&gt; ·dec Unnamed14 by Action.Value OptionalMetric \n    ActionTriplet.grp2 -&gt; ·ActionMulTriples.grp2 \n    ActionMulTriples.grp2 -&gt; ·Action \n    Action -&gt; ·mul Unnamed15 by Action.Value OptionalMetric \n  Reduce items:\n    StartSection.grp1 -&gt; · [EOF]\n    OptionalTelemetryTriples.grp1 -&gt; · [LF]\n    StartSection.grp2 -&gt; · [EOF]\n    OptionalTelemetryTriples.grp2 -&gt; · [LF]\n  Transitions: Program-&gt;S1, StartSection.grp1-&gt;S2, StartSectionRow.grp1+-&gt;S3, StartSectionRow.grp1-&gt;S4, OptionalTelemetryTriples.grp1-&gt;S5, TelemetryTriples.grp1-&gt;S6, Telemetry-&gt;S7, until-&gt;S8, Telemetry-&gt;S9, ActionTriplet.grp1-&gt;S10, ActionSetTriples.grp1-&gt;S11, Action-&gt;S12, set-&gt;S13, Action-&gt;S14, ActionIncTriples.grp1-&gt;S15, Action-&gt;S16, inc-&gt;S17, Action-&gt;S18, ActionDecTriples.grp1-&gt;S19, Action-&gt;S20, dec-&gt;S21, Action-&gt;S22, ActionMulTriples.grp1-&gt;S23, Action-&gt;S24, mul-&gt;S25, Action-&gt;S26, StartSection.grp2-&gt;S27, StartSectionRow.grp2+-&gt;S28, StartSectionRow.grp2-&gt;S29, OptionalTelemetryTriples.grp2-&gt;S30, TelemetryTriples.grp2-&gt;S31, Telemetry-&gt;S32, Telemetry-&gt;S33, ActionTriplet.grp2-&gt;S34, ActionSetTriples.grp2-&gt;S35, Action-&gt;S36, ActionIncTriples.grp2-&gt;S37, Action-&gt;S38, ActionDecTriples.grp2-&gt;S39, Action-&gt;S40, ActionMulTriples.grp2-&gt;S41, Action-&gt;S42\n</code></pre>\n\n",
+    "PostedDate": "2013-04-26T13:33:40.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1036306",
+    "ThreadId": "441610",
+    "Html": "my guess is that you have several optional sections, optionally (!) included, and parser does not know how to interpret an empty file. To say more, I need to see the grammar<br />\n",
+    "PostedDate": "2013-04-26T13:55:00.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1036325",
+    "ThreadId": "441610",
+    "Html": "Thanks for the clue! I've got it all figured out. Here's a little documentation for anyone else dealing with Reduce-Reduce errors:\r<br />\n<br />\nYou can only have one of each RValue (right-hand side of the arror value) in the &quot;Reduce Items&quot; section. If you have more than one it can't decide which non-terminal to use in a given scenario. (It likely doesn't matter which one gets used; I guess Irony doesn't want to take any chances.)\r<br />\n<br />\nThis won't work as all child trees support an Empty:<br />\n<pre><code>foreach(var group in groups)\n{\n   ....\n   var myRule = ....;\n   myRule.Rule = MakeStarRule(myRule, eachRowOfMyRule);\n\n   if(program.Rule == null)\n       program.Rule = myRule;\n   else program.Rule |= myRule;\n}\n</code></pre>\n\nYou have to do it like this instead:<br />\n<pre><code>foreach(var group in groups)\n{\n   ....\n   var myRule = ....;\n   if(program.Rule == null)\n      myRule.Rule = MakeStarRule(myRule, eachRowOfMyRule);\n   else\n      myRule.Rule = MakePlusRule(myRule, eachRowOfMyRule);\n\n   if(program.Rule == null)\n       program.Rule = myRule;\n   else program.Rule |= myRule;\n}\n</code></pre>\n\n",
+    "PostedDate": "2013-04-26T14:45:58.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

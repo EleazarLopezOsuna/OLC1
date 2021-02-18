@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1056857",
+    "ThreadId": "447072",
+    "Html": "Hello again Roman,<br />\nYour guidance is proving to be extremely helpful to me.<br />\n<br />\nI have created a node for statement and if else statement.<br />\n<br />\nI want to interpret following simple statement<br />\nif(3&lt;4){4+5}<br />\n<br />\nMy Grammar<br />\n<pre><code>public class MathEngineGrammar : InterpretedLanguageGrammar\n    {\n        public MathEngineGrammar()\n            : base(false)\n        {\n            NumberLiteral Number = TerminalFactory.CreateCSharpNumber(&quot;Number&quot;);\n            var statementList = new NonTerminal(&quot;statementList&quot;,typeof(StatementListNode));\n            var statement = new NonTerminal(&quot;statement&quot;,typeof(StatementNode));\n            var if_statement = new NonTerminal(&quot;if_statement&quot;,typeof(IfStatementNode));\n\n            var expression = new NonTerminal(&quot;expression&quot;);\n            var binexpr = new NonTerminal(&quot;binexpr&quot;, typeof(BinaryOperationNode));            \n            var binop = new NonTerminal(&quot;binop&quot;, &quot;operator&quot;);\n\n            \n            statementList.Rule = MakeStarRule(statementList, null, statement);\n            statement.Rule = expression | if_statement;\n            if_statement.Rule = ToTerm(&quot;if&quot;) + &quot;(&quot; + expression + &quot;)&quot; + &quot;{&quot;+expression+&quot;}&quot;;\n\n            expression.Rule = binexpr | Number;            \n            binexpr.Rule = expression + binop + expression;\n            binop.Rule = ToTerm(&quot;+&quot;) | &quot;-&quot; | &quot;/&quot; | &quot;*&quot; | &quot;&lt;&quot; | &quot;&gt;&quot; | &quot;&lt;=&quot; | &quot;&gt;=&quot;;\n\n            this.Root = statementList;\n\n            MarkPunctuation(&quot;(&quot;, &quot;)&quot;);\n\n            RegisterOperators(1, &quot;+&quot;, &quot;-&quot;);\n            RegisterOperators(2, &quot;*&quot;, &quot;/&quot;);\n            AddOperatorReportGroup(&quot;operator&quot;);\n\n            this.MarkTransient(expression, binop);\n            //LanguageFlags = LanguageFlags.CreateAst;\n        }\n    }</code></pre>\n\nI got following error<br />\n<blockquote>\nAttempt by method 'DynamicClass.CreateAstNode()' to access type 'MathEngineSample1.Nodes.IfStatementNode' failed.<br />\n</blockquote>\non following line<br />\n<pre><code>parseNode.AstNode = config.DefaultNodeCreator(); in AstBuilder.cs</code></pre>\n\nOn debugging i found that Language Error Level is &quot;Conflict&quot; and saying<br />\n<blockquote>\n<strong>Shift-reduce conflict. State S21, lookaheads [&lt; &gt; &lt;= &gt;=]. Selected shift as preferred action.</strong><br />\n</blockquote>\n",
+    "PostedDate": "2013-06-14T05:49:26.52-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1056929",
+    "ThreadId": "447072",
+    "Html": "perhaps i need to register the 4 operators.<br />\n",
+    "PostedDate": "2013-06-14T07:24:11.417-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1056933",
+    "ThreadId": "447072",
+    "Html": "I registered the operators and issue was gone but still got this error yet again.<br />\n<blockquote>\nAttempt by method 'DynamicClass.CreateAstNode()' to access type 'MathEngineSample1.Nodes.IfStatementNode' failed.<br />\n</blockquote>\nDebugging to find out where the issue is.\r<br />\n<br />\nAny suggestion ?<br />\n",
+    "PostedDate": "2013-06-14T07:34:12.303-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1056958",
+    "ThreadId": "447072",
+    "Html": "Silly me !! I had not declared the IfStatementNode public. Issue resolved .<br />\n",
+    "PostedDate": "2013-06-14T08:09:52.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

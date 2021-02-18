@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1463423",
+    "ThreadId": "651384",
+    "Html": "Hi!\r<br />\nI'm trying to create a parser for a custom UI language. I thought I was done with it, as it has successfully parsed other scripts, but all of a sudden I found a script that caused GrammarExplorer to say &quot;expected alignments&quot;. I searched for that syntax error on these boards, and I couldn't find it. Is this possibly a bug with Irony?\r<br />\n<br />\n<a href=\"http://pastebin.com/Qpz8ANgj\" rel=\"nofollow\">Here's my grammar</a>.\r<br />\n<a href=\"http://pastebin.com/6M9SFrcz\" rel=\"nofollow\">Here's the script I'm trying to parse.</a>\r<br />\n<a href=\"http://pastebin.com/tuLPkaUw\" rel=\"nofollow\">Here's my parser conflicts.</a>\r<br />\n<br />\nGrammar Explorer is complaining about line 204, character 17.\r<br />\n<br />\nPlease tell me what I can do to correct this, thanks!<br />\n",
+    "PostedDate": "2016-02-16T12:33:51.917-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1464449",
+    "ThreadId": "651384",
+    "Html": "Man, with so many conflicts you should not even start parsing test files. Fix all conflicts first! Read about shift-reduce and reduce-reduce conflicts in LALR parser, there's much info there, just google. Try to understand what causes the conflict from reading the state printout and its transitions<br />\n",
+    "PostedDate": "2016-02-24T09:59:03.57-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

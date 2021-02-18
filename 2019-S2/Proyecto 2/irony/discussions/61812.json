@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "209787",
+    "ThreadId": "61812",
+    "Html": "<p>I try to compile the last version, downloading the zip file, but in VS 2008 SP1 Italian version, don't compile the projects. I don't known why.<br>I think to modify a set of source (stable) for refactoring about write style identation, etc, add some comments /// ... /// &nbsp;and use for my project about an VS IDE integration for Atmel AVR Simulator project...</p>\r\n<p>Can I help you about source refactoring?</p>\r\n<p>So, the next stable version? (beta or RC)?</p>\r\n<p>Thank you.</p>\r\n<p>Riccardo</p>",
+    "PostedDate": "2009-07-08T00:17:04.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "209804",
+    "ThreadId": "61812",
+    "Html": "<p>what errors are you getting?</p>",
+    "PostedDate": "2009-07-08T01:01:06.623-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "209827",
+    "ThreadId": "61812",
+    "Html": "<p>When I open the solution, VS give me varius error in italian... result that all projects are not loaded (gray icons, unloaded status).<br>I have VS 2008 Developer and Database edition.</p>\r\n<p>Riccardo</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-08T02:18:52.847-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "209871",
+    "ThreadId": "61812",
+    "Html": "<p>I find this warning in CodePlex site:</p>\r\n<p>!! Warning !! - If you use the Team Explorer client then it will add source control binding information into your project files. When users download your source code and try to open it in Visual Studio they will get error messages because of the source control bindings. You can use any of the other available <a href=\"http://codeplex.codeplex.com/Wiki/View.aspx?title=Source control clients&referringTitle=Source control clients\">source control clients</a> as an alternative.</p>\r\n<p>My be it is the problem! I don't have installed Team Explorer.<br>If my suppose&nbsp;is right, you could delivery the source files after remove the source control binding.</p>\r\n<p>Is not my intention,&nbsp;to install Team Explorer and is not necessary for many people to do.</p>\r\n<p>Riccardo</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-08T04:38:21.11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "211342",
+    "ThreadId": "61812",
+    "Html": "<p>I can't compile the latest version (26611) either.</p>\r\n<p>I don't have TFS installed, and I did get a warning saying the source control would be offline.</p>\r\n<p>My problem when building is I get multiple errors saying that certain types are missing.</p>\r\n<p>Error&nbsp;&nbsp; &nbsp;1&nbsp;&nbsp; &nbsp;The type or namespace name 'Grammar' could not be found (are you missing a using directive or an assembly reference?)&nbsp;&nbsp; &nbsp;D:\\src\\Irony\\Irony\\Parsing\\LanguageData.cs&nbsp;&nbsp; &nbsp;8&nbsp;&nbsp; &nbsp;21&nbsp;&nbsp; &nbsp;010.Irony</p>\r\n<p>Error&nbsp;&nbsp; &nbsp;3&nbsp;&nbsp; &nbsp;The type or namespace name 'LanguageData' could not be found (are you missing a using directive or an assembly reference?)&nbsp;&nbsp; &nbsp;D:\\src\\Irony\\Irony\\Parsing\\Parser\\Parser.cs&nbsp;&nbsp; &nbsp;9&nbsp;&nbsp; &nbsp;21&nbsp;&nbsp; &nbsp;010.Irony</p>\r\n<p>Error&nbsp;&nbsp; &nbsp;4&nbsp;&nbsp; &nbsp;The type or namespace name 'GrammarData' could not be found (are you missing a using directive or an assembly reference?)&nbsp;&nbsp; &nbsp;D:\\src\\Irony\\Irony\\Parsing\\LanguageData.cs&nbsp;&nbsp; &nbsp;9&nbsp;&nbsp; &nbsp;21&nbsp;&nbsp; &nbsp;010.Irony</p>\r\n<p>Error&nbsp;&nbsp; &nbsp;8&nbsp;&nbsp; &nbsp;The type or namespace name 'LR0ItemSet' could not be found (are you missing a using directive or an assembly reference?)&nbsp;&nbsp; &nbsp;D:\\src\\Irony\\Irony\\Parsing\\Construction\\ParserDataBuilder_NonCanonical.cs&nbsp;&nbsp; &nbsp;10&nbsp;&nbsp; &nbsp;5&nbsp;&nbsp; &nbsp;010.Irony</p>\r\n<p>Once I fixed all the missing namespaces, I got the following errors.</p>\r\n<p>Error&nbsp;&nbsp; &nbsp;1&nbsp;&nbsp; &nbsp;The type or namespace name 'TokenEventArgs' could not be found (are you missing a using directive or an assembly reference?)&nbsp;&nbsp; &nbsp;D:\\src\\Irony\\Irony\\Parsing\\CompilerContext.cs&nbsp;&nbsp; &nbsp;85&nbsp;&nbsp; &nbsp;31&nbsp;&nbsp; &nbsp;010.Irony</p>\r\n<p>Error&nbsp;&nbsp; &nbsp;2&nbsp;&nbsp; &nbsp;The type or namespace name 'TokenEventArgs' could not be found (are you missing a using directive or an assembly reference?)&nbsp;&nbsp; &nbsp;D:\\src\\Irony\\Irony\\Parsing\\CompilerContext.cs&nbsp;&nbsp; &nbsp;86&nbsp;&nbsp; &nbsp;5&nbsp;&nbsp; &nbsp;010.Irony</p>\r\n<p>Error&nbsp;&nbsp; &nbsp;3&nbsp;&nbsp; &nbsp;The type or namespace name 'AstNodeEventArgs' could not be found (are you missing a using directive or an assembly reference?)&nbsp;&nbsp; &nbsp;D:\\src\\Irony\\Irony\\Parsing\\Grammar\\BnfTerm.cs&nbsp;&nbsp; &nbsp;113&nbsp;&nbsp; &nbsp;31&nbsp;&nbsp; &nbsp;010.Irony</p>\r\n<p>Error&nbsp;&nbsp; &nbsp;4&nbsp;&nbsp; &nbsp;The type or namespace name 'LR0ItemList' does not exist in the namespace 'Irony.Parsing.Construction' (are you missing an assembly reference?)&nbsp;&nbsp; &nbsp;D:\\src\\Irony\\Irony\\Parsing\\Parser\\ParserData.cs&nbsp;&nbsp; &nbsp;131&nbsp;&nbsp; &nbsp;36&nbsp;&nbsp; &nbsp;010.Irony</p>\r\n<p>Thanks</p>\r\n<p>Cameron</p>\r\n<p><strong>Edit:</strong> I found the problem. Some of the classes were still referencing the CompilerServices namespace instead of the Parsing one. I've submitted a patch to get revision 26611 building. Hope it helps.</p>",
+    "PostedDate": "2009-07-13T02:12:30.093-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "211377",
+    "ThreadId": "61812",
+    "Html": "<p>Yes, there's a problem there. Looks like my last checkin didn't go in correctly. Will update it asap</p>\r\n<p>Sorry for trouble</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-07-13T09:57:43.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "211383",
+    "ThreadId": "61812",
+    "Html": "<p>Repeated the checkin, downloaded back from Source page, compiled, run - seems to be working now</p>\r\n<p>Sorry again for troubles</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-07-13T10:06:12.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "212971",
+    "ThreadId": "61812",
+    "Html": "<p>I have the same problem as rimariot. I used TortoiseSVN to get the latest code from SVN. However when I try to open the solution, I get an error saying the project is under source control, finally all the projects show up as being grayed out. I would rather not use TeamExplorer. Any suggestions ?</p>",
+    "PostedDate": "2009-07-17T03:54:01.027-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "212974",
+    "ThreadId": "61812",
+    "Html": "<p>Just disable Visual Studio's source control when opening the solution for the first time. It will ask to remove the version control bindings permanently. After that you can re-enable your source control in VS.</p>",
+    "PostedDate": "2009-07-17T04:16:45.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "212986",
+    "ThreadId": "61812",
+    "Html": "<p>Thanks MichelangeloPM that worked. For anyone who does not know how to turn off source control in VS, go to Tools--&gt;Options. Next select Source-Control--&gt;Plug-in Selection&nbsp; and choose None from the&nbsp; &quot;Current source control plug-in&quot; drop box.</p>",
+    "PostedDate": "2009-07-17T04:50:50.407-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

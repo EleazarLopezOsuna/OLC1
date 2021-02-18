@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1291640",
+    "ThreadId": "561663",
+    "Html": "Hi,<br />\n<br />\nI am writing a grammar for Javascript language and I am facing with following recursive declaration problem for relationalExpression:<br />\n<pre><code>relationalExpression = shiftExpression\n     | relationalExpression LT shiftExpression\n     | relationalExpression GT shiftExpression\n;</code></pre>\n\nSeem that <br />\n<pre><code>relationalExpression.Rule = shiftExpression \n         | relationalExpression + LT + shiftExpression\n     | relationalExpression + GT + shiftExpression\n;</code></pre>\n\nCannot work.<br />\n<br />\nPlease can you help?<br />\nThank you.<br />\n",
+    "PostedDate": "2014-08-20T03:53:50.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1291767",
+    "ThreadId": "561663",
+    "Html": "What's wrong? Left recursion is OK for LALR parsers like Irony. Try it - unless you see grammar conflicts in Grammar Explorer, you're OK<br />\n",
+    "PostedDate": "2014-08-20T10:10:34.877-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1292043",
+    "ThreadId": "561663",
+    "Html": "Hi,\r<br />\n<br />\nThank you. Sorry I am a newbie and the above expression is correct. I had some warnings in the grammar and I supposed they came from the recursive expressions. My fault. Now I have fixed the warnings although other questions cropped up:\r<br />\n<br />\n1) What does it mean PreferShiftHere() and why it is useful to resolve conflicts\r<br />\n2) How can prevent an IdentifierTerminal from including some special characters. For instance:\r<br />\n<br />\nRegexIdentifier = identifier /<em> but not one of the following char : </em>,/,\\ */\r<br />\n<br />\nThank you again for your help.\r<br />\n<br />\nBest regards,\r<br />\nAlberto <br />\n",
+    "PostedDate": "2014-08-21T05:46:11.623-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1292888",
+    "ThreadId": "561663",
+    "Html": "PreferShiftHere - it's a hint to choose SHIFT action in shift/reduce conflict. The most common known case for using - 'danglinge else' conflict, in if-then-else statements. Google/read about it, there's plenty info on the web:\r<br />\n<a href=\"http://en.wikipedia.org/wiki/Dangling_else\" rel=\"nofollow\">http://en.wikipedia.org/wiki/Dangling_else</a>\r<br />\nand there's link there to shift-reduce conflict. \r<br />\nYour second question - I don't quite understand what you mean. Look at IdentifierTerminal constructor, it allows you to list explicitly what symbols are allowed (as first chars and inside chars), maybe that will help\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-08-24T11:16:06.607-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

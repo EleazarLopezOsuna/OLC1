@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "584900",
+    "ThreadId": "250821",
+    "Html": "\r\n<p>Can anyone please help me in creating a DateTime literal for Irony? I was using the one mentioned in this\r\n<a href=\"http://irony.codeplex.com/discussions/69232?ProjectName=ironyhttp://irony.codeplex.com/discussions/69232?ProjectName=irony\" target=\"_blank\">\r\nthread</a> but it seems to be faulty, in case of&nbsp;ANY parsing error (irrespective of date values) it is showing the message &quot;<strong><span style=\"color:#ffa851; font-style:normal\">A DateTime Literal must end with a&nbsp;#<span style=\"color:#000000\">&quot; .\r\n</span></span></strong><span style=\"color:#ffa851; font-style:normal\"><span style=\"color:#000000\">Really&nbsp;missing a built-in date-</span></span><span style=\"color:#ffa851; font-style:normal\"><span style=\"color:#000000\">time literal in Irony. Any kind of\r\n help would be highly appreciated.</span></span></p>\r\n<p>&nbsp;</p>\r\n<p><a href=\"http://irony.codeplex.com/discussions/69232?ProjectName=irony\"></a></p>\r\n",
+    "PostedDate": "2011-03-23T02:48:03.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "584940",
+    "ThreadId": "250821",
+    "Html": "<p>This is what I am using, it is not the ultimate best solution, but it works (btw, does anybody knows how to add rules of reduction to irony?):</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>            <span style=\"color: blue;\">var</span> digit = ToTerm( <span style=\"color: #a31515;\">\"0\"</span> ) | ToTerm( <span style=\"color: #a31515;\">\"1\"</span> ) | ToTerm( <span style=\"color: #a31515;\">\"2\"</span> ) | ToTerm( <span style=\"color: #a31515;\">\"3\"</span> ) | ToTerm( <span style=\"color: #a31515;\">\"4\"</span> ) | ToTerm( <span style=\"color: #a31515;\">\"5\"</span> ) | ToTerm( <span style=\"color: #a31515;\">\"6\"</span> ) | ToTerm( <span style=\"color: #a31515;\">\"7\"</span> ) | ToTerm( <span style=\"color: #a31515;\">\"8\"</span> ) | ToTerm( <span style=\"color: #a31515;\">\"9\"</span> );\r\n\r\n            <span style=\"color: blue;\">var</span> month = <span style=\"color: blue;\">new</span> NonTerminal( <span style=\"color: #a31515;\">\"month\"</span>, digit + digit );\r\n            <span style=\"color: blue;\">var</span> day = <span style=\"color: blue;\">new</span> NonTerminal( <span style=\"color: #a31515;\">\"day\"</span>, digit + digit );\r\n            <span style=\"color: blue;\">var</span> year = <span style=\"color: blue;\">new</span> NonTerminal( <span style=\"color: #a31515;\">\"year\"</span>, digit + digit + digit + digit );\r\n            <span style=\"color: blue;\">var</span> date = <span style=\"color: blue;\">new</span> NonTerminal( <span style=\"color: #a31515;\">\"date\"</span>, ToTerm( <span style=\"color: #a31515;\">\"#\"</span> ) + year + <span style=\"color: #a31515;\">\"-\"</span> + month + <span style=\"color: #a31515;\">\"-\"</span> + day + <span style=\"color: #a31515;\">\"#\"</span> );\r\n\r\nAnd to retrieve the date from the parse tree:<br /><br /><div style=\"color: black; background-color: white;\"><pre>           <span style=\"color: blue;\">switch</span> ( node.Term.Name ) {\r\n...\r\n                        <span style=\"color: blue;\">case</span> <span style=\"color: #a31515;\">\"date\"</span>:\r\n                            <span style=\"color: blue;\">var</span> d = node.ChildNodes[ 0 ].ChildNodes[ 1 ].ChildNodes[ 0 ].FirstChild.Term.Name\r\n                                + node.ChildNodes[ 0 ].ChildNodes[ 1 ].ChildNodes[ 1 ].FirstChild.Term.Name\r\n                                + node.ChildNodes[ 0 ].ChildNodes[ 1 ].ChildNodes[ 2 ].FirstChild.Term.Name\r\n                                + node.ChildNodes[ 0 ].ChildNodes[ 1 ].ChildNodes[ 3 ].FirstChild.Term.Name\r\n                                + <span style=\"color: #a31515;\">\"/\"</span>\r\n                                + node.ChildNodes[ 0 ].ChildNodes[ 3 ].ChildNodes[ 0 ].FirstChild.Term.Name\r\n                                + node.ChildNodes[ 0 ].ChildNodes[ 3 ].ChildNodes[ 1 ].FirstChild.Term.Name\r\n                                + <span style=\"color: #a31515;\">\"/\"</span>\r\n                                + node.ChildNodes[ 0 ].ChildNodes[ 5 ].ChildNodes[ 0 ].FirstChild.Term.Name\r\n                                + node.ChildNodes[ 0 ].ChildNodes[ 5 ].ChildNodes[ 1 ].FirstChild.Term.Name;\r\n                            <span style=\"color: blue;\">return</span> DateTime.Parse( d );\r\n...\r\n</pre>\r\n</div>\r\n<br />I would like to see better solutions... <br /></pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2011-03-23T04:24:18.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "585186",
+    "ThreadId": "250821",
+    "Html": "<p>If you want VB-like literal, use the following:</p>\r\n<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;dateLiteral&nbsp;=&nbsp;<span>new</span>&nbsp;<span>QuotedValueLiteral</span>(<span>\"dateLiteral\"</span>,&nbsp;<span>\"#\"</span>,&nbsp;<span>TypeCode</span>.DateTime);<br /></pre>\r\n<pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dateLiteral.ErrorAlias&nbsp;=&nbsp;<span>\"#MM/DD/YYYY#\"</span>;<br /></pre>\r\n<br /></pre>\r\n<pre>in this case it is date surrounded by \"#\". The second line is for better error reporting. You can also set DAteTimeFormat property if you want to change the default (american-style date).</pre>\r\n<pre><br /></pre>",
+    "PostedDate": "2011-03-23T10:35:35.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "585214",
+    "ThreadId": "250821",
+    "Html": "<p>First of all thanks for your responses. That was quick. Anyway @rivantsov the literal you specified would limit me to the #MM/DD/YYYY# format only. I was looking for a more generic literal who can parse those string values as datetime, which are&nbsp;parse-able by the .net framework's DateTime structure itself. Precisely I was looking for a date time literal which can recognize the following patterns as valid date-time value</p>\r\n<pre><span>#5/1/2008 8:30:52 AM#</span></pre>\r\n<pre><span>#2011-03-22T14:09:15.4205455+05:30#</span></pre>\r\n<pre>#5/1/2008#</pre>\r\n<pre>#2011-03-22#</pre>\r\n<pre>and so on.</pre>\r\n<p>&nbsp;Any idea on how to achieve that? Again thanks in advance.</p>",
+    "PostedDate": "2011-03-23T11:15:38.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "585218",
+    "ThreadId": "250821",
+    "Html": "<p>change the DateTimeFormat. If the format is not fixed, then make the output type string, hook to ValidateToken event, and inside the handler provide your own way of converting the token string to the DateTime value;</p>\r\n<p>you probably need to try different formats, with TryParse or smth like this; after you parse successfully, set the Value of the output token:</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>void</span>&nbsp;dateLiteral_ValidateToken(<span>object</span>&nbsp;sender,&nbsp;<span>ParsingEventArgs</span>&nbsp;e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</pre>\r\n<pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;dateString&nbsp;=&nbsp;e.Context.CurrentToken.Value;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//&nbsp;try&nbsp;parsing&nbsp;dateString</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>DateTime</span>&nbsp;dateValue;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(<span>DateTime</span>.TryParse(...,&nbsp;<span>out</span>&nbsp;dateValue))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.....<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.Context.CurrentToken.Value&nbsp;=&nbsp;dateValue;&nbsp;<br /></pre>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /></pre>",
+    "PostedDate": "2011-03-23T11:23:27.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "585224",
+    "ThreadId": "250821",
+    "Html": "<p>Excellent. This is even more quicker. That is the exact thing I was looking for. Thanks a million.</p>",
+    "PostedDate": "2011-03-23T11:41:55.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "585226",
+    "ThreadId": "250821",
+    "Html": "<p>@rivantsov just one more thing. Suppose DateTime is not able to parse the string, then how should report a parsing error in the else block of your code? Thanks in advance.</p>\n<p>Edit:</p>\n<p>Never mind I got it, which is as follows</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">else</span>\n{      <div style=\"color: black; background-color: white;\"><pre>e.Context.CurrentToken = e.Context.Source.CreateErrorToken(<span style=\"color: #a31515;\">\"{0} is not a valid date-time value\"</span>, dateString);</pre>\n<pre>}\n</pre>\n</div>\n</pre>\n</div>",
+    "PostedDate": "2011-03-23T11:47:42.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "217942",
+    "ThreadId": "64099",
+    "Html": "<p>Hi,</p>\r\n<p>&nbsp;</p>\r\n<p>I try to implement internationalization for Irony of error messages.</p>\r\n<p>Here is customized. Now, English or Japanese only.</p>\r\n<p><a title=\"http://knivez.homelinux.org/~spro/cs/Irony.l10n.zip\" href=\"http://knivez.homelinux.org/~spro/cs/Irony.l10n.zip\">http://knivez.homelinux.org/~spro/cs/Irony.l10n.zip</a></p>\r\n<p>&nbsp;</p>\r\n<p>Comments?</p>",
+    "PostedDate": "2009-07-31T03:32:59.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218204",
+    "ThreadId": "64099",
+    "Html": "<p>Thanks! I know, it is long overdue to make Irony support localization; will try to get to it soon</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-07-31T16:38:41.973-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "221434",
+    "ThreadId": "64099",
+    "Html": "<p>Ok,</p>\r\n<p>I do again for Irony from Repository.</p>\r\n<p><a title=\"http://knivez.homelinux.org/~spro/cs/Irony-31660-resourced.zip\" href=\"http://knivez.homelinux.org/~spro/cs/Irony-31660-resourced.zip\">http://knivez.homelinux.org/~spro/cs/Irony-31660-resourced.zip</a></p>\r\n<p><a title=\"http://knivez.homelinux.org/~spro/cs/Irony.31660.resources.patch\" href=\"http://knivez.homelinux.org/~spro/cs/Irony.31660.resources.patch\">http://knivez.homelinux.org/~spro/cs/Irony.31660.resources.patch</a></p>",
+    "PostedDate": "2009-08-10T01:30:52.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "222116",
+    "ThreadId": "64099",
+    "Html": "<p>thanks, will look at this and use in source base</p>",
+    "PostedDate": "2009-08-11T11:06:51.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

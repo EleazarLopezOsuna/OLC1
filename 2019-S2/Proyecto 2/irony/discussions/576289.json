@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1337190",
+    "ThreadId": "576289",
+    "Html": "Hi gyus,\r<br />\n<br />\nI am working on a project where I am using the JsonGrammer supplied in the Samples project.\r<br />\n<br />\n<a href=\"https://irony.codeplex.com/SourceControl/latest#Irony.Samples/DataGrammars/JsonGrammar.cs\" rel=\"nofollow\">https://irony.codeplex.com/SourceControl/latest#Irony.Samples/DataGrammars/JsonGrammar.cs</a>\r<br />\n<br />\nI would like to use Linq to find a specific property that I know right now always exists at the top level. So I don't need a fully recursive method.\r<br />\n<br />\nRight now I use this expression to find my property:<br />\n<pre><code>var propNode = jsonDocAst.Root.ChildNodes.SelectMany(x =&gt; x.ChildNodes).FirstOrDefault(y =&gt; y.Token.ValueString == &quot;myProperty&quot;);\n</code></pre>\n\nBut that only finds the property name node, and not the value node, that lives right next to it. The value node is just a sibling. \r<br />\n<br />\nAny suggestions on a how to do this in a nice way using Linq?<br />\n",
+    "PostedDate": "2014-12-25T13:11:46.657-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1341547",
+    "ThreadId": "576289",
+    "Html": "Instead try:<br />\n<pre><code>var propNode = jsonDocAst.Root.ChildNodes\n                                 .SelectMany(x =&gt; x.ChildNodes)\n                                 .SkipWhile(y =&gt; y.Token.ValueString != &quot;myProperty&quot;)\n                                 .Skip(1).Take(1);</code></pre>\n\n",
+    "PostedDate": "2015-01-13T11:20:48.243-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

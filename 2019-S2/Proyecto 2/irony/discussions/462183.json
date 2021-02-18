@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1107536",
+    "ThreadId": "462183",
+    "Html": "First off great work. This project is immense.\r<br />\n<br />\nI would like to use it to basically interrogate an SQL statement for the Parameters. Now that doesnt seem part of the SQL Grammer and I am not exactly sure how to implement it.\r<br />\n<br />\nBasically a parameter starts with @ and contains one or more alpha numeric characters after it. Parameters can only appear int the WHERE Clause.\r<br />\n<br />\nAny help, or pointers on how to start adding these commands would be very helpful.\r<br />\n<br />\nCheers, Nico<br />\n",
+    "PostedDate": "2013-10-15T02:02:28.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1107788",
+    "ThreadId": "462183",
+    "Html": "just start with defining parameter as IdentifierTerminal with only '@' as start symbol - you can specify it in constructor. Everything else should be the same, just add the parameter in appropriate place in expressions, (somewhere along with column references and constants/literals)<br />\n",
+    "PostedDate": "2013-10-15T10:07:53.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1108033",
+    "ThreadId": "462183",
+    "Html": "Hello rivantsov,\r<br />\n<br />\nThanks for the advice.. So i have added an IndetifierTerminal as below<br />\n<pre><code>var Parameter = new IdentifierTerminal(&quot;Parameter&quot;, &quot;&quot;, &quot;@&quot;);</code></pre>\n\nand then added it to the expression such as<br />\n<pre><code>expression.Rule = term |  unExpr | binExpr | Parameter;</code></pre>\n\nHowever by doing this now matches all IDs as parameters so I am not sure why when using the IdentifierTerminal start character of @ should do it? \r<br />\n<br />\nPlease help :)<br />\n",
+    "PostedDate": "2013-10-15T16:40:32.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1108040",
+    "ThreadId": "462183",
+    "Html": "Ok,\r<br />\n<br />\nSo I think I have gotten this to work but it made me have to enter the @ character as punctuation. Not sure if this is what it should be doing, but here is the changes.<br />\n<pre><code>NonTerminal p_term = new NonTerminal(&quot;Parameter&quot;);\nTerminal p_id = new IdentifierTerminal(&quot;param&quot;);\np_term.Rule = &quot;@&quot; + p_id;\n\nMarkPunctuation(&quot;@&quot;);</code></pre>\n\n<pre><code>expression.Rule = term | unExpr | binExpr | p_term;</code></pre>\n\nNext I need to figure out how to rebuild the statement after manipulating it... Hmmm<br />\n",
+    "PostedDate": "2013-10-15T17:28:19.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1108062",
+    "ThreadId": "462183",
+    "Html": "well, this is wrong way to go, with @ as punctuation symbol. \r<br />\nSorry I misled you in my advice. Specifying '@' in constructor adds the symbol to default list of characters, not replaces it. That's why this behavior. Here's an easy solution - do not define extra terminal for parameter, just modify the regular identifier by using AddPrefix method and specifying '@' as a valid prefix to the name. After parsing, the token has Details property which is an instance of CompoundTokenDetails class, which has Prefix property  - that's how you can determine if it is parameter or not. \r<br />\nAlternatively, following the same road as before, you define parameter as IdentifierTerminal, but instead of specifying '@' in constructor you set the property AllFirstChars to this single symbol - then it will work, and you will have a separate terminal for parameters, might be easier to analyze the tree nodes.\r<br />\nroman<br />\n",
+    "PostedDate": "2013-10-15T20:12:26.37-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

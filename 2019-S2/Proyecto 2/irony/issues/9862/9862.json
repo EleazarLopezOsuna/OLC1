@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "It would be cool if Irony could be installed using Nuget package manager.",
+    "LastUpdatedDate": "2013-12-18T13:42:56.057-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2011-07-17T00:34:59.167-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Nuget package for Irony",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 33,
+    "Id": 9862
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Apparently, there is someone who took care of publishing such a package https://www.nuget.org/packages/Irony",
+      "PostedDate": "2013-10-12T01:51:23.777-07:00",
+      "Id": 118229
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "650263",
+    "ThreadId": "267217",
+    "Html": "<p>Hi, Roman!</p>\n<p>I've committed custom grammar hints to my fork. Conflict resolution now basically works as described <a title=\"Conflict resolution\" href=\"http://irony.codeplex.com/wikipage?title=Contrib_ConflictResolution\"> here</a>.</p>\n<p>Below is a GrammarExplorer screenshot (the sample is parsed using your ConflictResolutionTestGrammar):</p>\n<p><img class=\"quimby_search_image\" title=\"Irony GrammarExplorer with sample ambiguous grammar\" src=\"http://sharp-shooter.ru/misc/irony-grammar-explorer-conflict-resolution.png\" alt=\"\" /></p>\n<p>Grammar hints look a tiny bit different from those you've suggested.</p>\n<p>Here is an example:</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: #008000;\">// conflict resolution hints added to NonTerminals</span>\nfieldModifierList.ReduceIf(<span style=\"color: #a31515;\">\";\"</span>).ComesBefore(<span style=\"color: #a31515;\">\"(\"</span>, <span style=\"color: #a31515;\">\"{\"</span>);\npropModifierList.ReduceIf(<span style=\"color: #a31515;\">\"{\"</span>).ComesBefore(<span style=\"color: #a31515;\">\";\"</span>, <span style=\"color: #a31515;\">\"(\"</span>);\n\n<span style=\"color: green;\">// inline hint</span>\nfieldModifier.Rule = ToTerm(<span style=\"color: #a31515;\">\"public\"</span>) + ReduceIf(<span style=\"color: #a31515;\">\";\"</span>).ComesBefore(<span style=\"color: #a31515;\">\"{\"</span>) | <span style=\"color: #a31515;\">\"readonly\"</span>;\n\n<span style=\"color: green;\">// hints should work with terminals as well</span>\nfieldModifierList.ReduceIf(Semicolon).ComesBefore(Parenthesis, Brace);</pre>\n</div>\n<p>Hope this way hints look a bit more readable than with space-delimited list of symbols.</p>\n<p>I've added unit tests for hint-based conflict resolver. Everything was tested on VS2010 and VS2008.</p>\n<p>P.S. I didn't even start to think about the second part of the task (i.e., automatic advices, etc).<br /> I'm not sure I'll have enough time to figure it out in the nearby future.</p>",
+    "PostedDate": "2011-07-31T11:18:43.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "650421",
+    "ThreadId": "267217",
+    "Html": "<p>Great!</p>\r\n<p>Merged, pushed out to depot with my changes - new Interpreter.</p>\r\n<p>thanks!</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-08-01T01:28:32.93-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "650585",
+    "ThreadId": "267217",
+    "Html": "<p>Thanks, Roman!</p>\r\n<p>&gt;&nbsp;NOW 5 TIMES FASTER!</p>\r\n<p>This is amazing! :)</p>\r\n<p>Can't wait to check out how Refal behaves with a brand-new interpreter engine.</p>\r\n<p>You've done really sophisticated optimizations regarding local variables.<br />I'd like to point out couple of things, though. The following lock statement:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">void</span> Resize(<span style=\"color: blue;\">int</span> newSize) {\r\n  <span style=\"color: blue;\">lock</span> (<span style=\"color: blue;\">this</span>) {\r\n    <span style=\"color: blue;\">if</span> (Values.Length &gt;= newSize) <span style=\"color: blue;\">return</span>; \r\n    <span style=\"color: blue;\">object</span>[] tmp = Interlocked.Exchange(<span style=\"color: blue;\">ref</span> Values, <span style=\"color: blue;\">null</span>);\r\n    Array.Resize(<span style=\"color: blue;\">ref</span> tmp, newSize);\r\n    Interlocked.Exchange(<span style=\"color: blue;\">ref</span> Values, tmp);\r\n  }\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>behaves exactly the same as this declarative specification:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[MethodImpl(MethodImplOptions.Synchronized)]\r\n<span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">void</span> Resize(<span style=\"color: blue;\">int</span> newSize) {\r\n  <span style=\"color: blue;\">if</span> (Values.Length &gt;= newSize) <span style=\"color: blue;\">return</span>; \r\n  <span style=\"color: blue;\">object</span>[] tmp = Interlocked.Exchange(<span style=\"color: blue;\">ref</span> Values, <span style=\"color: blue;\">null</span>);\r\n  Array.Resize(<span style=\"color: blue;\">ref</span> tmp, newSize);\r\n  Interlocked.Exchange(<span style=\"color: blue;\">ref</span> Values, tmp);\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Locking 'this' instance, however, is not recommended, at least for public classes,<br />as the object can also be locked from outside of your code producing unnecessary collisions.<br />I'm sure you are aware of this fact, I've seen private LockObject declarations in AST node classes.</p>\r\n<p>Also, lock statement is itself not very efficient: it relies on relatively heavy Monitor class.<br />.NET 3.5 and above provides cool lightweight lock primitives such as ReaderWriterLockSlim,<br />which allows, for instance, to lock the object for read and write operations separately.<br />On the other hand, you use locks so rarely, that lock optimization wouldn't probably make a noticeable difference.</p>\r\n<p>I'm very excited about the new interpreter engine!<br />Could you please provide some info on when do you expect it to become production-ready?&nbsp;</p>\r\n<p>Regards, yallie.</p>",
+    "PostedDate": "2011-08-01T08:23:17.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "650662",
+    "ThreadId": "267217",
+    "Html": "<p>thanks for the tip! Yes, locks are on \"rare\" paths in interpreter, so we won't expect any impact from changes like this. On the other hand, I prefer to follow the recommended practice if it does not make a difference for the code in any other aspect. So I'll change this to use declarative style.</p>\r\n<p>Slim lock - one of my other disappointments :( I rushed to try it when I found out about it, but... same stuff - it maybe helps with high contention on data, but lock acquisition/release cost is high and the same as old-style lock. So this class wont' help in Interpreter.</p>\r\n<p>Making Interpreter production-ready. I hope to round it up in a few weeks. You're right, for now it's just a skeleton, with missing pieces in many places. Here's what on my do-first list:</p>\r\n<p>1. The Binding functionality (LanguageRuntime_Binding.cs) should be completed and extended to support all scenarios. &nbsp;</p>\r\n<p>2. Importing .NET classes/functions into interpreter - for ex, to make Math class's functions directly available in expression evaluator</p>\r\n<p>3. Implement MemberAccess AST node, which implements access to properties/methods of an object like obj.DoStuff(). This is important for scenarios when external object is provided from \"outside\" and put into Globals (it might be a .NET object or data row), and script computes a value using columns in a row.&nbsp;</p>\r\n<p>4. I plan to move ExpressionEvaluator to the main Irony assembly to make it available \"out-of-the-box\" - I realized there are many applications that need a simple expression evaluator with good external integration facilities and extensibility.</p>\r\n<p>I'm rushing to finish all these initial items - expect more soon. Don't start fixing Refal yet, please, there might be changes in interpreter core code. Just investigate and be prepared</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-08-01T11:02:02.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "650829",
+    "ThreadId": "267217",
+    "Html": "<p>Yallie:</p>\r\n<p>Looking good.&nbsp; I hope to test some of this later this week.&nbsp; This should fix some of my issues and it will clean up one my grammars where I had to work around conflicts. Thank you.</p>\r\n<p>Slim lock: I was similarly dissapointed because they dont scale up.&nbsp; I also hit memory and processor performance issues due, amongst other things, to a hidden array of integers in the background .....</p>\r\n<p>The declarative style is also equivalent to&nbsp;\"lock( this )\" so I am not sure if you gain anything at all by doing that?&nbsp; I understood that recommended practice was to not lock a publicly available object? (\"this\" is public by definition, so the declarative style is also public?).</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-08-01T15:57:01.013-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "652733",
+    "ThreadId": "267217",
+    "Html": "<p>Hi Roman!</p>\r\n<p>&gt;Slim lock - one of my other disappointments :(<br />&gt;...lock acquisition/release cost is high and the same as old-style lock.&nbsp;</p>\r\n<p>Didn't know that. Should have benchmarked it myself before posting.</p>\r\n<p>&gt;Don't start fixing Refal yet, please, there might be changes in interpreter core code.</p>\r\n<p>Sure, no problem. Seems like it's not yet possible, so I'll better wait for the next code update.</p>\r\n<p>&gt;Just investigate and be prepared</p>\r\n<p>Ok :)</p>",
+    "PostedDate": "2011-08-04T15:58:29.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "652736",
+    "ThreadId": "267217",
+    "Html": "<p>&gt;Looking good. &nbsp;I hope to test some of this later this week.</p>\r\n<p>Thanks Will! It would be great :)</p>\r\n<p>&gt;Slim lock: I was similarly dissapointed because they dont scale up.</p>\r\n<p>That's sad, I didn't know that.</p>\r\n<p>&gt;The declarative style is also equivalent to \"lock( this )\"<br />&gt;so I am not sure if you gain anything at all by doing that? &nbsp;</p>\r\n<p>You're right, it's no better than lock (this).</p>\r\n<p>Perhaps it only makes a difference for code analysis tools:&nbsp;it's a lot easier <br />to analyze method attributes than to disassemble&nbsp;IL code and follow execution paths.</p>\r\n<p>&gt;I understood that recommended practice was to not lock a publicly available object?<br />&gt;(\"this\" is public by definition, so the declarative style is also public?).</p>\r\n<p>Yes, declarative lock is also public, so I usually avoid both methods.<br />Locking a private object is always preferable.</p>\r\n<p>Regards, yallie.</p>",
+    "PostedDate": "2011-08-04T15:59:48.637-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

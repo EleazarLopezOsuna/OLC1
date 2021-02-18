@@ -1,0 +1,1518 @@
+/*--------- 1ra Area: Codigo de Usuario ---------*/
+
+//--------> Paquetes e importaciones
+package Analizadores.UFE;
+import java_cup.runtime.Symbol;
+import Estructuras.*;
+import Nodos.NodoSintactico;
+import Modelos.*;
+
+//--------> Codigo para el parser, variables, metodos
+parser code
+{:
+    public Arbol variables = new Arbol();
+    public Cola TodosLosErrores = new Cola();
+    public NodoSintactico padre;
+    public int contador = 1;
+    //Metodo al que se llama automaticamente ante algun error sintactico
+    public void syntax_error(Symbol s){
+        System.out.print("ERROR SINTACTICO ");
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        System.out.print(lexema + " fila: " + fila + " columna: " + columna + "\n");
+        Errores error = new Errores(lexema,fila,columna,"Token " + lexema + " No esperado", "Sintactico");
+        TodosLosErrores.insertar(error);
+    }
+
+    //Metodo al que se llama en el momento en el que ya no es posible una recuperacion de errores
+    public void unrecovered_syntax_error(Symbol s){
+
+    }
+:}
+
+//--------> Codigo para las acciones gramaticales
+action code
+{:
+    
+:}
+
+/*--------- 2da Area: Declaraciones ---------*/
+
+//--------> Declaracion de terminales
+terminal multiplicacion, division, resta, suma, potencia, igual, igualigual, not;
+terminal diferente, menorQue, mayorQue, menorIgual, mayorIgual;
+terminal logicoAND, logicoOR, logicoXOR, parentesisA, parentesisC;
+terminal llaveA, llaveC, corcheteA, corcheteC, puntoComa, coma, var, component;
+terminal id, posicionX, posicionY, height, width, color, border, className;
+terminal render, retorno, panel, textt, textField, button, list, ftext, fitem;
+terminal ftextField, fbutton, fdefecto, fspinner, element, items, defecto, min;
+terminal spinner, max, image, fuente, importar, from, si, sino, repetir;
+terminal imprimir, mientras, hexadecimal, onClick;
+terminal String identificador, cadena, caracter, entero, doble, booleano, texto;
+
+//--------> Declaracion de no terminales
+non terminal INICIO;
+non terminal NodoSintactico DECLARACION, ASIGNACION, IDENT, SI, SINO, E;
+non terminal NodoSintactico FUNCIONES, DATO, LISTAEXP, INSTRUCCIONES, OPCIONES;
+non terminal NodoSintactico IMPRIMIR, MIENTRAS, REPETIR;
+non terminal NodoSintactico COMPONENTE, RETORNO, COMPONENTES, OPCOMPONENTES, PANEL;
+non terminal NodoSintactico TEXT, TEXTFIELD, BUTTON, LIST, SPINNER, IMAGE;
+non terminal NodoSintactico ATRIBUTOS, ATRIBUTO, ARITM, COLOR, IDTEXT;
+non terminal NodoSintactico ATRIBUTOSB, ATRIBUTOB, ATRIBUTO_SP;
+non terminal NodoSintactico OPCIONESLISTA, ELEMENTS, DEFAULT, ITEM, ITEMS, ATRIBUTOS_SP;
+non terminal NodoSintactico ATRIBUTOS_IM, ATRIBUTO_IM, IMPORTAR, EXTERNO, RENDER;
+non terminal NodoSintactico OPCIONESCOMPONENTE;
+
+
+//----> precedencia de menor a mayor
+precedence left logicoOR;
+precedence left logicoAND;
+precedence left logicoXOR;
+precedence left igualigual, diferente, mayorQue, menorIgual, menorQue, mayorIgual;
+precedence right not;
+precedence left suma, resta;
+precedence left multiplicacion, division;
+precedence left potencia;
+precedence left parentesisA;
+
+start with INICIO;
+
+/*--------- 3ra Area: Reglas Semanticas ---------*/
+
+INICIO ::= INSTRUCCIONES:inicio
+{:
+    NodoSintactico tmp = new NodoSintactico("INICIO", inicioleft, inicioright);
+    tmp.setNumNodo(contador++);
+    tmp.addHijo(inicio);
+    padre = tmp;
+:}
+    ;
+INSTRUCCIONES ::= INSTRUCCIONES:a OPCIONES:b
+{:
+    a.addHijo(b);
+    RESULT = a;
+:}
+    | OPCIONES:a
+{:
+    NodoSintactico tmp = new NodoSintactico("OPCIONES", aleft, aright);
+    tmp.setNumNodo(contador++);
+    tmp.addHijo(a);
+    RESULT = tmp;
+:}
+    ;
+OPCIONES ::= DECLARACION:a
+{:
+    RESULT = a;
+:}
+    | E:a
+{:
+    NodoSintactico tmp = new NodoSintactico("E", aleft, aright);
+    tmp.setNumNodo(contador++);
+    tmp.addHijo(a);
+    RESULT = tmp;
+:}
+    | FUNCIONES:a
+{:
+    NodoSintactico tmp = new NodoSintactico("FUNCION", aleft, aright);
+    tmp.setNumNodo(contador++);
+    tmp.addHijo(a);
+    RESULT = tmp;
+:}
+    | COMPONENTE:a
+{:
+    RESULT = a;
+:}
+    | IMPORTAR:a
+{:
+    RESULT = a;
+:}
+    | EXTERNO:a
+{:
+    RESULT = a;
+:}
+    | RENDER:a
+{:
+    RESULT = a;
+:}
+    | RETORNO:a
+{:
+    RESULT = a;
+:}
+    ;
+DECLARACION ::= var ASIGNACION:a puntoComa
+{:
+    RESULT = a;
+:}
+    | identificador:a igual E:b puntoComa
+{:
+    NodoSintactico identificador = new NodoSintactico("ID", aleft, aright);
+    identificador.setValor(a);
+    identificador.setNumNodo(contador++);
+
+    NodoSintactico tmp = new NodoSintactico("REASIGNACION", aleft, aright);
+    tmp.addHijo(identificador);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+    
+    RESULT = tmp;
+:}
+    | identificador:a corcheteA E:b corcheteC igual E:c puntoComa
+{:
+    NodoSintactico identificador = new NodoSintactico("ID", aleft, aright);
+    identificador.setValor(a);
+    identificador.addHijo(b);
+    identificador.setNumNodo(contador++);
+
+    NodoSintactico tmp = new NodoSintactico("REASIGNACION", aleft, aright);
+    tmp.addHijo(identificador);
+    tmp.addHijo(c);
+    tmp.setNumNodo(contador++);
+    
+    RESULT = tmp;
+:}
+    ;
+ASIGNACION ::= ASIGNACION:a coma IDENT:b
+{:
+    NodoSintactico tmp = new NodoSintactico("ASIGNACIONES", bleft, bright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | IDENT:a
+{:
+    RESULT = a;
+:}
+    ;
+IDENT ::= identificador:a igual E:b
+{:
+    NodoSintactico identificador = new NodoSintactico("ID", aleft, aright);
+    identificador.setValor(a);
+    identificador.setNumNodo(contador++);
+
+    NodoSintactico tmp = new NodoSintactico("SDA", bleft, bright);
+    tmp.addHijo(identificador);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | identificador:a igual llaveA LISTAEXP:b llaveC
+{:
+    NodoSintactico identificador = new NodoSintactico("ID", aleft, aright);
+    identificador.setValor(a);
+    identificador.setNumNodo(contador++);
+
+    NodoSintactico tmp = new NodoSintactico("ADA", aleft, aright);
+    tmp.addHijo(identificador);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | identificador:a corcheteA E:b corcheteC igual E:c
+{:
+    NodoSintactico identificador = new NodoSintactico("ID", aleft, aright);
+    identificador.setValor(a);
+    identificador.setNumNodo(contador++);
+
+    NodoSintactico tmp = new NodoSintactico("ADA", aleft, aright);
+    tmp.addHijo(identificador);
+    tmp.addHijo(b);
+    tmp.addHijo(c);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | identificador:a corcheteA E:b corcheteC
+{:
+    NodoSintactico identificador = new NodoSintactico("ID", aleft, aright);
+    identificador.setValor(a);
+    identificador.setNumNodo(contador++);
+
+    NodoSintactico tmp = new NodoSintactico("AD", aleft, aright);
+    tmp.addHijo(identificador);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | identificador:a
+{:
+    NodoSintactico identificador = new NodoSintactico("ID", aleft, aright);
+    identificador.setValor(a);
+    identificador.setNumNodo(contador++);
+
+    NodoSintactico tmp = new NodoSintactico("SD", aleft, aright);
+    tmp.addHijo(identificador);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    ;
+E ::= E:a suma:c E:b
+{:
+    NodoSintactico tmp = new NodoSintactico("+", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | E:a resta:c E:b
+{:
+    NodoSintactico tmp = new NodoSintactico("-", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | E:a division:c E:b
+{:
+    NodoSintactico tmp = new NodoSintactico("/", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | E:a potencia:c E:b
+{:
+    NodoSintactico tmp = new NodoSintactico("pow", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | E:a multiplicacion:c E:b
+{:
+    NodoSintactico tmp = new NodoSintactico("*", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | resta:c E:a
+{:
+    NodoSintactico tmp = new NodoSintactico("NEGATIVO", cleft, cright);
+    tmp.addHijo(a);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | parentesisA E:a parentesisC
+{:
+    RESULT = a;
+:}
+    | not:c E:a
+{:
+    NodoSintactico tmp = new NodoSintactico("!", cleft, cright);
+    tmp.addHijo(a);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | E:a diferente:c E:b
+{:
+    NodoSintactico tmp = new NodoSintactico("!=", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | E:a igualigual:c E:b
+{:
+    NodoSintactico tmp = new NodoSintactico("==", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | E:a menorQue:c E:b
+{:
+    NodoSintactico tmp = new NodoSintactico("<", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | E:a mayorQue:c E:b
+{:
+    NodoSintactico tmp = new NodoSintactico(">", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | E:a menorIgual:c E:b
+{:
+    NodoSintactico tmp = new NodoSintactico("<=", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | E:a mayorIgual:c E:b
+{:
+    NodoSintactico tmp = new NodoSintactico(">=", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | E:a logicoAND:c E:b
+{:
+    NodoSintactico tmp = new NodoSintactico("&&", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | E:a logicoOR:c E:b
+{:
+    NodoSintactico tmp = new NodoSintactico("||", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | E:a logicoXOR:c E:b
+{:
+    NodoSintactico tmp = new NodoSintactico("^", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | DATO:a
+{:
+    RESULT = a;
+:}
+    ;
+LISTAEXP ::= LISTAEXP:a coma E:b
+{:
+    a.addHijo(b);
+    RESULT = a;
+:}
+    | E:a
+{:
+    NodoSintactico entero = new NodoSintactico("DATARR", aleft, aright);
+    entero.setNumNodo(contador++);
+    entero.addHijo(a);
+    RESULT = entero;
+:}
+    ;
+DATO ::= entero:a
+{:
+    NodoSintactico entero = new NodoSintactico("ENTERO", aleft, aright);
+    int numero = Integer.parseInt(a);
+    entero.setValor(numero);
+    entero.setNumNodo(contador++);
+
+    RESULT = entero;
+:}
+    | doble:a
+{:
+    NodoSintactico doble = new NodoSintactico("DOBLE", aleft, aright);
+    double numero = Double.valueOf(a);
+    doble.setValor(numero);
+    doble.setNumNodo(contador++);
+
+    RESULT = doble;
+:}
+    | cadena:a
+{:
+    NodoSintactico cadena = new NodoSintactico("CADENA", aleft, aright);
+    a = a.replace("\"","");
+    cadena.setValor(a);
+    cadena.setNumNodo(contador++);
+
+    RESULT = cadena;
+:}
+    | caracter:a
+{:
+    NodoSintactico caracter = new NodoSintactico("CARACTER", aleft, aright);
+    char carac = a.charAt(1);
+    caracter.setValor(carac);
+    caracter.setNumNodo(contador++);
+
+    RESULT = caracter;
+:}
+    | booleano:a
+{:
+    NodoSintactico booleano = new NodoSintactico("BOOLEANO", aleft, aright);
+    boolean valor = true;
+    a = a.toLowerCase();
+    if(a.equals("false")){
+        valor = false;
+    }
+    booleano.setValor(valor);
+    booleano.setNumNodo(contador++);
+
+    RESULT = booleano;
+:}
+    | identificador:a
+{:
+    NodoSintactico identificador = new NodoSintactico("ID", aleft, aright);
+    identificador.setValor(a);
+    identificador.setNumNodo(contador++);
+
+    RESULT = identificador;
+:}
+    | identificador:a corcheteA E:b corcheteC
+{:
+    NodoSintactico identificador = new NodoSintactico("ID", aleft, aright);
+    identificador.setValor(a);
+    identificador.addHijo(b);
+    identificador.setNumNodo(contador++);
+
+    RESULT = identificador;
+:}
+    ;
+FUNCIONES ::= SI:a
+{:
+    RESULT = a;
+:}
+    | IMPRIMIR:a
+{:
+    RESULT = a;
+:}
+    | MIENTRAS:a
+{:
+    RESULT = a;
+:}
+    | REPETIR:a
+{:
+    RESULT = a;
+:}
+    ;
+SI ::= si:b parentesisA E:a parentesisC llaveA llaveC
+{:
+    NodoSintactico tmp = new NodoSintactico("SI", bleft, bright);
+    tmp.addHijo(a);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | si:c parentesisA E:a parentesisC llaveA llaveC SINO:b
+{:
+    NodoSintactico tmp = new NodoSintactico("SI-SINO", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | si parentesisA E:a parentesisC llaveA INSTRUCCIONES:b llaveC
+{:
+    NodoSintactico tmp = new NodoSintactico("SI", aleft, aright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | si parentesisA E:a parentesisC llaveA INSTRUCCIONES:b llaveC SINO:c
+{:
+    NodoSintactico tmp = new NodoSintactico("SI-SINO", aleft, aright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.addHijo(c);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    ;
+
+SINO ::= sino SI:a
+{:
+    NodoSintactico tmp = new NodoSintactico("SINO-SI", aleft, aright);
+    tmp.addHijo(a);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | sino:a llaveA llaveC
+{:
+    NodoSintactico tmp = new NodoSintactico("SINO", aleft, aright);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | sino llaveA INSTRUCCIONES:a llaveC
+{:
+    NodoSintactico tmp = new NodoSintactico("SINO", aleft, aright);
+    tmp.addHijo(a);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    ;
+
+IMPRIMIR ::= imprimir:a parentesisA E:b parentesisC puntoComa
+{:
+    NodoSintactico tmp = new NodoSintactico("IMPRIMIR", aleft, aright);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    ;
+
+MIENTRAS ::= mientras:a parentesisA E:b parentesisC llaveA llaveC
+{:
+    NodoSintactico tmp = new NodoSintactico("MIENTRAS", aleft, aright);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | mientras:a parentesisA E:b parentesisC llaveA INSTRUCCIONES:c llaveC
+{:
+    NodoSintactico tmp = new NodoSintactico("MIENTRAS", aleft, aright);
+    tmp.addHijo(b);
+    tmp.addHijo(c);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    ;
+
+REPETIR ::= repetir:a parentesisA E:b parentesisC llaveA llaveC
+{:
+    NodoSintactico tmp = new NodoSintactico("REPETIR", aleft, aright);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | repetir:a parentesisA E:b parentesisC llaveA INSTRUCCIONES:c llaveC
+{:
+    NodoSintactico tmp = new NodoSintactico("REPETIR", aleft, aright);
+    tmp.addHijo(b);
+    tmp.addHijo(c);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    ;
+
+COMPONENTE ::= component identificador:a parentesisA parentesisC llaveA RETORNO:b llaveC
+{:
+    NodoSintactico nombre = new NodoSintactico("NOMBRE_COMPONENTE", aleft, aright);
+    nombre.setValor(a);
+    nombre.setNumNodo(contador++);
+
+    NodoSintactico tmp = new NodoSintactico("COMPONENTE", aleft, aright);
+    tmp.setNumNodo(contador++);
+    tmp.addHijo(nombre);
+    tmp.addHijo(b);
+    
+    RESULT = tmp;
+:}
+    | component identificador:a parentesisA parentesisC llaveA OPCIONESCOMPONENTE:c RETORNO:b llaveC
+{:
+    NodoSintactico nombre = new NodoSintactico("NOMBRE_COMPONENTE", aleft, aright);
+    nombre.setValor(a);
+    nombre.setNumNodo(contador++);
+
+    NodoSintactico tmp = new NodoSintactico("COMPONENTE", aleft, aright);
+    tmp.setNumNodo(contador++);
+    tmp.addHijo(nombre);
+    tmp.addHijo(c);
+    tmp.addHijo(b);
+    
+    RESULT = tmp;
+:}
+    | component identificador:a parentesisA parentesisC llaveA OPCIONESCOMPONENTE:c llaveC
+{:
+    NodoSintactico nombre = new NodoSintactico("NOMBRE_COMPONENTE", aleft, aright);
+    nombre.setValor(a);
+    nombre.setNumNodo(contador++);
+
+    NodoSintactico tmp = new NodoSintactico("COMPONENTE", aleft, aright);
+    tmp.setNumNodo(contador++);
+    tmp.addHijo(nombre);
+    tmp.addHijo(c);
+    
+    RESULT = tmp;
+:}
+    ;
+
+OPCIONESCOMPONENTE ::= OPCIONESCOMPONENTE:a DECLARACION:b
+{:
+    a.addHijo(b);
+
+    RESULT = a;
+:}
+    | OPCIONESCOMPONENTE:a FUNCIONES:b
+{:
+    a.addHijo(b);
+    
+    RESULT = a;
+:}
+    | DECLARACION:a
+{:
+    NodoSintactico tmp = new NodoSintactico("INSTRUCCIONES", aleft, aright);
+    tmp.setNumNodo(contador++);
+    tmp.addHijo(a);
+
+    RESULT = tmp;
+:}
+    | FUNCIONES:a
+{:
+    NodoSintactico tmp = new NodoSintactico("INSTRUCCIONES", aleft, aright);
+    tmp.setNumNodo(contador++);
+    tmp.addHijo(a);
+
+    RESULT = tmp;
+:}
+    ;
+
+RETORNO ::= retorno:a parentesisA COMPONENTES:b parentesisC puntoComa
+{:
+    NodoSintactico tmp = new NodoSintactico("RETORNO", aleft, aright);
+    tmp.setNumNodo(contador++);
+    tmp.addHijo(b);
+    
+    RESULT = tmp;
+:}
+    | retorno:a parentesisA parentesisC puntoComa
+{:
+    NodoSintactico tmp = new NodoSintactico("RETORNO", aleft, aright);
+    tmp.setNumNodo(contador++);
+    
+    RESULT = tmp;
+:}
+    ;
+
+COMPONENTES ::= COMPONENTES:a OPCOMPONENTES:b
+{:
+    a.addHijo(b);
+    RESULT = a;
+:}
+    | OPCOMPONENTES:a
+{:
+    NodoSintactico tmp = new NodoSintactico("ELEMENTOS", aleft, aright);
+    tmp.setNumNodo(contador++);
+    tmp.addHijo(a);
+    
+    RESULT = tmp;
+:}
+    ;
+
+OPCOMPONENTES ::= PANEL:a
+{:
+    RESULT = a;
+:}
+    | TEXT:a
+{:
+    RESULT = a;
+:}
+    | TEXTFIELD:a
+{:
+    RESULT = a;
+:}
+    | BUTTON:a
+{:
+    RESULT = a;
+:}
+    | LIST:a
+{:
+    RESULT = a;
+:}
+    | SPINNER:a
+{:
+    RESULT = a;
+:}
+    | IMAGE:a
+{:
+    RESULT = a;
+:}
+    | EXTERNO:a
+{:
+    RESULT = a;
+:}
+    ;
+
+EXTERNO ::= menorQue division identificador:a mayorQue
+{:
+    NodoSintactico externo = new NodoSintactico("EXTERNO", aleft, aright);
+    externo.setNumNodo(contador++);
+
+    NodoSintactico identificador = new NodoSintactico("ID", aleft, aright);
+    identificador.setValor(a);
+    identificador.setNumNodo(contador++);
+    
+    externo.addHijo(identificador);
+    
+    RESULT = externo;
+:}
+    ;
+
+IMAGE ::= menorQue image:a ATRIBUTOS_IM:b mayorQue
+{:
+    NodoSintactico imagen = new NodoSintactico("IMAGEN", aleft, aright);
+    imagen.setNumNodo(contador++);
+
+    imagen.addHijo(b);
+
+    RESULT = imagen;
+:}
+    | menorQue image:a fuente:b igual ARITM:c mayorQue
+{:
+    NodoSintactico imagen = new NodoSintactico("IMAGEN", aleft, aright);
+    imagen.setNumNodo(contador++);
+
+    NodoSintactico fuente = new NodoSintactico("AT_FUENTE", bleft, bright);
+    fuente.setNumNodo(contador++);
+
+    NodoSintactico aritm = new NodoSintactico("ARITM", bleft, bright);
+    aritm.addHijo(c);
+    aritm.setNumNodo(contador++);
+
+    fuente.addHijo(aritm);
+
+    imagen.addHijo(fuente);
+
+    RESULT = imagen;
+:}
+    ;
+
+SPINNER ::= menorQue spinner:a ATRIBUTOS_SP:b mayorQue ARITM:c menorQue fspinner mayorQue
+{:
+    NodoSintactico spinner = new NodoSintactico("SPINNER", aleft, aright);
+    spinner.setNumNodo(contador++);
+
+    NodoSintactico aritm = new NodoSintactico("ARITM", cleft, cright);
+    aritm.setNumNodo(contador++);
+    aritm.addHijo(c);
+
+    spinner.addHijo(b);
+    spinner.addHijo(c);
+
+    RESULT = spinner;
+:}
+    | menorQue spinner:a mayorQue ARITM:b menorQue fspinner mayorQue
+{:
+    NodoSintactico spinner = new NodoSintactico("SPINNER", aleft, aright);
+    spinner.setNumNodo(contador++);
+
+    NodoSintactico aritm = new NodoSintactico("ARITM", bleft, bright);
+    aritm.setNumNodo(contador++);
+    aritm.addHijo(b);
+
+    spinner.addHijo(b);
+
+    RESULT = spinner;
+:}
+    ;
+
+LIST ::= menorQue list:a ATRIBUTOS:b mayorQue OPCIONESLISTA:c menorQue division list mayorQue
+{:
+    NodoSintactico items = new NodoSintactico("LISTA", aleft, aright);
+    items.addHijo(b);
+    items.addHijo(c);
+    items.setNumNodo(contador++);
+
+    RESULT = items;
+:}
+    | menorQue list:a mayorQue OPCIONESLISTA:b menorQue division list mayorQue
+{:
+    NodoSintactico items = new NodoSintactico("LISTA", aleft, aright);
+    items.addHijo(b);
+    items.setNumNodo(contador++);
+
+    RESULT = items;
+:}
+    ;
+
+OPCIONESLISTA ::= ELEMENTS:a DEFAULT:b
+{:
+    NodoSintactico items = new NodoSintactico("OPCIONESLISTA", aleft, aright);
+    items.addHijo(a);
+    items.addHijo(b);
+    items.setNumNodo(contador++);
+
+    RESULT = items;
+:}
+    | ELEMENTS:a
+{:
+    NodoSintactico items = new NodoSintactico("OPCIONESLISTA", aleft, aright);
+    items.addHijo(a);
+    items.setNumNodo(contador++);
+
+    RESULT = items;
+:}
+    ;
+
+ELEMENTS ::= menorQue element:a mayorQue ITEMS:b menorQue division element mayorQue
+{:
+    NodoSintactico items = new NodoSintactico("ELEMENTOS", aleft, aright);
+    items.addHijo(b);
+    items.setNumNodo(contador++);
+
+    RESULT = items;
+:}
+    ;
+
+DEFAULT ::= menorQue defecto:a mayorQue ARITM:b menorQue fdefecto mayorQue
+{:
+    NodoSintactico numero = new NodoSintactico("ARITM", bleft, bright);
+    numero.addHijo(b);
+    numero.setNumNodo(contador++);
+
+    NodoSintactico defecto = new NodoSintactico("DEFECTO", aleft, aright);
+    defecto.addHijo(numero);
+    defecto.setNumNodo(contador++);
+
+    RESULT = defecto;
+:}
+    ;
+
+ITEMS ::= ITEMS:a ITEM:b
+{:
+    a.addHijo(b);
+    
+    RESULT = a;
+:}
+    | ITEM:a
+{:
+    NodoSintactico nuevo = new NodoSintactico("ITEMS", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(a);
+
+    RESULT = nuevo;
+:}
+    ;
+
+ITEM ::= menorQue items:b mayorQue IDTEXT:c menorQue fitem mayorQue
+{:
+    RESULT = c;
+:}
+    ;
+
+BUTTON ::= menorQue button:a ATRIBUTOSB:b mayorQue IDTEXT:c menorQue fbutton mayorQue
+{:
+    NodoSintactico button = new NodoSintactico("BUTTON", aleft, aright);
+    button.addHijo(b);
+    button.addHijo(c);
+    button.setNumNodo(contador++);
+    
+    RESULT = button;
+:}
+    | menorQue button:a onClick igual ARITM:b mayorQue IDTEXT:c menorQue fbutton mayorQue
+{:
+    NodoSintactico aritm = new NodoSintactico("ARITM", aleft, aright);
+    aritm.addHijo(b);
+    aritm.setNumNodo(contador++);
+    
+    NodoSintactico atributos = new NodoSintactico("ATRIBUTOS", aleft, aright);
+    atributos.addHijo(aritm);
+    atributos.setNumNodo(contador++);
+
+    NodoSintactico button = new NodoSintactico("BUTTON", aleft, aright);
+    button.addHijo(atributos);
+    button.addHijo(c);
+    button.setNumNodo(contador++);
+    
+    RESULT = button;
+:}
+    ;
+
+TEXTFIELD ::= menorQue textField:a ATRIBUTOS:b mayorQue menorQue ftextField mayorQue
+{:
+    NodoSintactico nuevo = new NodoSintactico("TEXTFIELD", aleft, aright);
+    nuevo.addHijo(b);
+    nuevo.setNumNodo(contador++);
+
+    RESULT = nuevo;
+:}
+    | menorQue textField:a ATRIBUTOS:b mayorQue IDTEXT:c menorQue ftextField mayorQue
+{:
+    NodoSintactico nuevo = new NodoSintactico("TEXTFIELD", aleft, aright);
+    nuevo.addHijo(b);
+    nuevo.addHijo(c);
+    nuevo.setNumNodo(contador++);
+
+    RESULT = nuevo;
+:}
+    | menorQue textField:a mayorQue menorQue ftextField mayorQue
+{:
+    NodoSintactico nuevo = new NodoSintactico("TEXTFIELD", aleft, aright);
+    nuevo.setNumNodo(contador++);
+
+    RESULT = nuevo;
+:}
+    | menorQue textField:a mayorQue IDTEXT:b menorQue ftextField mayorQue
+{:
+    NodoSintactico nuevo = new NodoSintactico("TEXTFIELD", aleft, aright);
+    nuevo.addHijo(b);
+    nuevo.setNumNodo(contador++);
+
+    RESULT = nuevo;
+:}
+    ;
+
+TEXT ::= menorQue textt:a ATRIBUTOS:b mayorQue menorQue ftext mayorQue
+{:
+    NodoSintactico nuevo = new NodoSintactico("TEXT", aleft, aright);
+    nuevo.addHijo(b);
+    nuevo.setNumNodo(contador++);
+
+    RESULT = nuevo;
+:}
+    | menorQue textt:a ATRIBUTOS:b mayorQue IDTEXT:c menorQue ftext mayorQue
+{:
+    NodoSintactico nuevo = new NodoSintactico("TEXT", aleft, aright);
+    nuevo.addHijo(b);
+    nuevo.addHijo(c);
+    nuevo.setNumNodo(contador++);
+
+    RESULT = nuevo;
+:}
+    | menorQue textt:a mayorQue menorQue ftext mayorQue
+{:
+    NodoSintactico nuevo = new NodoSintactico("TEXT", aleft, aright);
+    nuevo.setNumNodo(contador++);
+
+    RESULT = nuevo;
+:}
+    | menorQue textt:a mayorQue IDTEXT:b menorQue ftext mayorQue
+{:
+    NodoSintactico nuevo = new NodoSintactico("TEXT", aleft, aright);
+    nuevo.addHijo(b);
+    nuevo.setNumNodo(contador++);
+
+    RESULT = nuevo;
+:}
+    ;
+
+IDTEXT ::= texto:a
+{:
+    NodoSintactico texto = new NodoSintactico("TEXTO", aleft, aright);
+    a = a.replace("\"","''");
+    a = a.replace("\t","");
+    if(a.startsWith("\n")){
+        a = a.replaceFirst("\n", "");
+    }
+    if(a.endsWith("\n")){
+        a = a.replaceFirst("(?s)(.*)" + "\n", "$1" + "");
+    }
+    texto.setValor(a);
+    texto.setNumNodo(contador++);
+    
+    RESULT = texto;
+:}
+    | llaveA E:a llaveC
+{:
+    NodoSintactico tmp = new NodoSintactico("IDENTI", aleft, aright);
+    tmp.setNumNodo(contador++);
+
+    tmp.addHijo(a);
+
+    RESULT = tmp;
+:}
+    | cadena:a
+{:
+    NodoSintactico texto = new NodoSintactico("TEXTO", aleft, aright);
+    a = a.replace("\"","");
+    a = a.replace("\t","");
+    if(a.startsWith("\n")){
+        a = a.replaceFirst("\n", "");
+    }
+    if(a.endsWith("\n")){
+        a = a.replaceFirst("(?s)(.*)" + "\n", "$1" + "");
+    }
+    texto.setValor(a);
+    texto.setNumNodo(contador++);
+    
+    RESULT = texto;
+:}
+    ;
+
+PANEL ::= menorQue panel ATRIBUTOS:a mayorQue COMPONENTES:b menorQue division panel mayorQue
+{:
+    NodoSintactico nuevo = new NodoSintactico("PANEL", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(a);
+    nuevo.addHijo(b);
+
+    RESULT = nuevo;
+:}
+    | menorQue panel mayorQue COMPONENTES:a menorQue division panel mayorQue
+{:
+    NodoSintactico nuevo = new NodoSintactico("PANEL", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(a);
+
+    RESULT = nuevo;
+:}
+    | menorQue panel ATRIBUTOS:a mayorQue menorQue division panel mayorQue
+{:
+    NodoSintactico nuevo = new NodoSintactico("PANEL", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(a);
+
+    RESULT = nuevo;
+:}
+    | menorQue panel:a mayorQue menorQue division panel mayorQue
+{:
+    NodoSintactico nuevo = new NodoSintactico("PANEL", aleft, aright);
+    nuevo.setNumNodo(contador++);
+
+    RESULT = nuevo;
+:}
+    ;
+
+ATRIBUTOS ::= ATRIBUTOS:a ATRIBUTO:b
+{:
+    a.addHijo(b);
+    RESULT = a;
+:}
+    | ATRIBUTO:a
+{:
+    NodoSintactico nuevo = new NodoSintactico("ATRIBUTOS", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(a);
+
+    RESULT = nuevo;
+:}
+    ;
+
+ATRIBUTO ::= id:a igual identificador:b
+{:
+    NodoSintactico identificador = new NodoSintactico("ID", aleft, aright);
+    identificador.setValor(b);
+    identificador.setNumNodo(contador++);
+
+    NodoSintactico nuevo = new NodoSintactico("AT_ID", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(identificador);
+
+    RESULT = nuevo;
+:}
+    | posicionY:a igual ARITM:b
+{:
+    NodoSintactico aritm = new NodoSintactico("ARITM", aleft, aright);
+    aritm.addHijo(b);
+    aritm.setNumNodo(contador++);
+
+    NodoSintactico nuevo = new NodoSintactico("AT_Y", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(aritm);
+
+    RESULT = nuevo;
+:}
+    | posicionX:a igual ARITM:b
+{:
+    NodoSintactico aritm = new NodoSintactico("ARITM", aleft, aright);
+    aritm.addHijo(b);
+    aritm.setNumNodo(contador++);
+
+    NodoSintactico nuevo = new NodoSintactico("AT_X", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(aritm);
+
+    RESULT = nuevo;
+:}
+    | height:a igual ARITM:b
+{:
+    NodoSintactico aritm = new NodoSintactico("ARITM", aleft, aright);
+    aritm.addHijo(b);
+    aritm.setNumNodo(contador++);
+
+    NodoSintactico nuevo = new NodoSintactico("AT_HEIGHT", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(aritm);
+
+    RESULT = nuevo;
+:}
+    | width:a igual ARITM:b
+{:
+    NodoSintactico aritm = new NodoSintactico("ARITM", aleft, aright);
+    aritm.addHijo(b);
+    aritm.setNumNodo(contador++);
+
+    NodoSintactico nuevo = new NodoSintactico("AT_WIDTH", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(aritm);
+
+    RESULT = nuevo;
+:}
+    | color igual COLOR:a
+{:
+    NodoSintactico nuevo = new NodoSintactico("AT_COLOR", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(a);
+
+    RESULT = nuevo;
+:}
+    | border:a igual ARITM:b
+{:
+    NodoSintactico aritm = new NodoSintactico("ARITM", aleft, aright);
+    aritm.addHijo(b);
+    aritm.setNumNodo(contador++);
+
+    NodoSintactico nuevo = new NodoSintactico("AT_BORDER", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(aritm);
+
+    RESULT = nuevo;
+:}
+    | className:a igual cadena:b
+{:
+    b = b.replace("\"", "");
+    NodoSintactico nombre = new NodoSintactico("NOMBRE_CLASE", aleft, aright);
+    nombre.setValor(b);
+    nombre.setNumNodo(contador++);
+
+    NodoSintactico nuevo = new NodoSintactico("AT_CLASSNAME", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(nombre);
+
+    RESULT = nuevo;
+:}
+    ;
+
+ATRIBUTOSB ::= ATRIBUTOSB:a ATRIBUTOB:b
+{:
+    a.addHijo(b);
+    RESULT = a;
+:}
+    | ATRIBUTOB:a
+{:
+    NodoSintactico nuevo = new NodoSintactico("ATRIBUTOS", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(a);
+
+    RESULT = nuevo;
+:}
+    ;
+
+ATRIBUTOB ::= ATRIBUTO:a
+{:
+    RESULT = a;
+:}
+    | onClick:a igual ARITM:b
+{:
+    NodoSintactico aritm = new NodoSintactico("ARITM", aleft, aright);
+    aritm.addHijo(b);
+    aritm.setNumNodo(contador++);
+
+    NodoSintactico nuevo = new NodoSintactico("AT_ONCLICK", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(aritm);
+
+    RESULT = nuevo;
+:}
+    ;
+
+COLOR ::= cadena:a
+{:
+    a = a.replace("\"","");
+    NodoSintactico color = new NodoSintactico("COLOR", aleft, aright);
+    color.setValor(a);
+    color.setNumNodo(contador++);
+
+    RESULT = color;
+:}
+    | hexadecimal:a
+{:
+    NodoSintactico color = new NodoSintactico("COLOR", aleft, aright);
+    color.setValor(a);
+    color.setNumNodo(contador++);
+
+    RESULT = color;
+:}
+    | identificador:a
+{:
+    NodoSintactico identificador = new NodoSintactico("ID", aleft, aright);
+    identificador.setValor(a);
+    identificador.setNumNodo(contador++);
+
+    RESULT = identificador;
+:}
+    ;
+
+ATRIBUTOS_SP ::= ATRIBUTOS_SP:a ATRIBUTO_SP:b
+{:
+    a.addHijo(b);
+    RESULT = a;
+:}
+    | ATRIBUTO_SP:a
+{:
+    NodoSintactico nuevo = new NodoSintactico("ATRIBUTOS", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(a);
+
+    RESULT = nuevo;
+:}
+    ;
+
+ATRIBUTO_SP ::= ATRIBUTO:a
+{:
+    RESULT = a;
+:} 
+    | min:a igual ARITM:b
+{:
+    NodoSintactico min = new NodoSintactico("AT_MIN", aleft, aright);
+    min.setNumNodo(contador++);
+    
+    NodoSintactico aritm = new NodoSintactico("ARITM", bleft, bright);
+    aritm.addHijo(b);
+    aritm.setNumNodo(contador++);
+
+    min.addHijo(aritm);
+
+    RESULT = min;
+:}
+    | max:a igual ARITM:b
+{:
+    NodoSintactico max = new NodoSintactico("AT_MAX", aleft, aright);
+    max.setNumNodo(contador++);
+    
+    NodoSintactico aritm = new NodoSintactico("ARITM", bleft, bright);
+    aritm.addHijo(b);
+    aritm.setNumNodo(contador++);
+
+    max.addHijo(aritm);
+
+    RESULT = max;
+:}
+    ;
+
+ARITM ::= ARITM:a suma:c ARITM:b
+{:
+    NodoSintactico tmp = new NodoSintactico("+", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | ARITM:a resta:c ARITM:b
+{:
+    NodoSintactico tmp = new NodoSintactico("-", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | ARITM:a division:c ARITM:b
+{:
+    NodoSintactico tmp = new NodoSintactico("/", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | ARITM:a potencia:c ARITM:b
+{:
+    NodoSintactico tmp = new NodoSintactico("pow", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | ARITM:a multiplicacion:c ARITM:b
+{:
+    NodoSintactico tmp = new NodoSintactico("*", cleft, cright);
+    tmp.addHijo(a);
+    tmp.addHijo(b);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | resta:c ARITM:a
+{:
+    NodoSintactico tmp = new NodoSintactico("NEGATIVO", cleft, cright);
+    tmp.addHijo(a);
+    tmp.setNumNodo(contador++);
+
+    RESULT = tmp;
+:}
+    | parentesisA ARITM:a parentesisC
+{:
+    RESULT = a;
+:}
+    | identificador:a
+{:
+    NodoSintactico identificador = new NodoSintactico("ID", aleft, aright);
+    identificador.setValor(a);
+    identificador.setNumNodo(contador++);
+
+    RESULT = identificador;
+:}
+    | identificador:a corcheteA E:b corcheteC
+{:
+    NodoSintactico identificador = new NodoSintactico("ID", aleft, aright);
+    identificador.setValor(a);
+    identificador.addHijo(b);
+    identificador.setNumNodo(contador++);
+
+    RESULT = identificador;
+:}
+    | entero:a
+{:
+    NodoSintactico entero = new NodoSintactico("ENTERO", aleft, aright);
+    int numero = Integer.parseInt(a);
+    entero.setValor(numero);
+    entero.setNumNodo(contador++);
+
+    RESULT = entero;
+:}
+    | doble:a
+{:
+    NodoSintactico doble = new NodoSintactico("DOBLE", aleft, aright);
+    double numero = Double.valueOf(a);
+    doble.setValor(numero);
+    doble.setNumNodo(contador++);
+
+    RESULT = doble;
+:}
+    | cadena:a
+{:
+    NodoSintactico cadena = new NodoSintactico("CADENA", aleft, aright);
+    a = a.replace("\"","");
+    cadena.setValor(a);
+    cadena.setNumNodo(contador++);
+
+    RESULT = cadena;
+:}
+    | caracter:a
+{:
+    NodoSintactico caracter = new NodoSintactico("CARACTER", aleft, aright);
+    char carac = a.charAt(1);
+    caracter.setValor(carac);
+    caracter.setNumNodo(contador++);
+
+    RESULT = caracter;
+:}
+    | booleano:a
+{:
+    NodoSintactico booleano = new NodoSintactico("BOOLEANO", aleft, aright);
+    boolean valor = true;
+    a = a.toLowerCase();
+    if(a.equals("false")){
+        valor = false;
+    }
+    booleano.setValor(valor);
+    booleano.setNumNodo(contador++);
+
+    RESULT = booleano;
+:}
+    | llaveA ARITM:b llaveC
+{:
+    NodoSintactico aritm = new NodoSintactico("ARITM", bleft, bright);
+    aritm.addHijo(b);
+    aritm.setNumNodo(contador++);
+
+    RESULT = aritm;
+:}
+    ;
+
+ATRIBUTOS_IM ::= ATRIBUTOS_IM:a ATRIBUTO_IM:b
+{:
+    a.addHijo(b);
+    RESULT = a;
+:}
+    | ATRIBUTO_IM:a
+{:
+    NodoSintactico nuevo = new NodoSintactico("ATRIBUTOS", aleft, aright);
+    nuevo.setNumNodo(contador++);
+    nuevo.addHijo(a);
+
+    RESULT = nuevo;
+:}
+    ;
+
+ATRIBUTO_IM ::= ATRIBUTO:a
+{:
+    RESULT = a;
+:} 
+    | fuente:a igual ARITM:b
+{:
+    NodoSintactico fuente = new NodoSintactico("AT_FUENTE", aleft, aright);
+    fuente.setNumNodo(contador++);
+
+    NodoSintactico aritm = new NodoSintactico("ARITM", bleft, bright);
+    aritm.addHijo(b);
+    aritm.setNumNodo(contador++);
+
+    fuente.addHijo(aritm);
+
+    RESULT = fuente;
+:}
+    ;
+
+IMPORTAR ::= importar:a cadena:b puntoComa
+{:
+    NodoSintactico importar = new NodoSintactico("IMPORT_CSS", aleft, aright);
+    importar.setNumNodo(contador++);
+
+    b = b.replace("\"","");
+    NodoSintactico ruta = new NodoSintactico("CADENA", bleft, bright);
+    ruta.setValor(b);
+    ruta.setNumNodo(contador++);
+
+    importar.addHijo(ruta);
+
+    RESULT = importar;
+:}
+    | importar:a identificador:b from ARITM:c puntoComa
+{:
+    NodoSintactico importar = new NodoSintactico("IMPORT_COMPONENTE", aleft, aright);
+    importar.setNumNodo(contador++);
+
+    NodoSintactico ruta = new NodoSintactico("ARITM", cleft, cright);
+    ruta.addHijo(c);
+    ruta.setNumNodo(contador++);
+
+    NodoSintactico identificador = new NodoSintactico("ID", bleft, bright);
+    identificador.setValor(b);
+    identificador.setNumNodo(contador++);
+
+    importar.addHijo(identificador);
+    importar.addHijo(ruta);
+
+    RESULT = importar;
+:}
+    ;
+
+RENDER ::= render:a parentesisA menorQue division identificador:b mayorQue coma identificador:c parentesisC puntoComa
+{:
+    NodoSintactico render = new NodoSintactico("RENDER", aleft, aright);
+    render.setNumNodo(contador++);
+
+    NodoSintactico identificador = new NodoSintactico("ID", bleft, bright);
+    identificador.setValor(b);
+    identificador.setNumNodo(contador++);
+
+    NodoSintactico identificador2 = new NodoSintactico("ID", cleft, cright);
+    identificador2.setValor(c);
+    identificador2.setNumNodo(contador++);
+
+    render.addHijo(identificador);
+    render.addHijo(identificador2);
+
+    RESULT = render;
+:}
+    ;

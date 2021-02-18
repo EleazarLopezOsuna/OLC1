@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "834819",
+    "ThreadId": "355371",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I have some code:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> identifier = <span style=\"color:blue\">new</span> IdentifierTerminal(<span style=\"color:#a31515\">&quot;identifier&quot;</span>);\r\n\r\n<span style=\"color:blue\">var</span> File = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;file&quot;</span>, <span style=\"color:blue\">typeof</span>(IDNode));\r\n<span style=\"color:blue\">var</span> Field = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;field&quot;</span>, <span style=\"color:blue\">typeof</span>(IDNode));\r\n\r\nColumn.Rule = File &#43; caret &#43; Field | Field;\r\nFile.Rule = identifier;\r\nField.Rule = identifier;\r\n</pre>\r\n</div>\r\n<p>When I try to parse something like this <strong>somefile^somefield</strong> everything works good.</p>\r\n<p>When I try to parse something like this<strong> somefile^</strong> I get the expected error&nbsp;</p>\r\n<table>\r\n<tbody>\r\n<tr>\r\n<td><strong>Syntax error, expected: <span style=\"color:#0000ff\">identifier</span></strong></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p>What I want, is for this error to say:&nbsp;</p>\r\n<table>\r\n<tbody>\r\n<tr>\r\n<td><strong>Syntax error, expected: <span style=\"color:#ff0000\">field</span></strong></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p>is this possible?</p>\r\n",
+    "PostedDate": "2012-05-10T14:00:16.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "834915",
+    "ThreadId": "355371",
+    "Html": "<p>Use Grammar.AddTermsReportGroup method, read xml comments there</p>",
+    "PostedDate": "2012-05-10T21:01:49.843-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

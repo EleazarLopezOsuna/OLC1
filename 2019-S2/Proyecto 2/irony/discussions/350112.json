@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "815763",
+    "ThreadId": "350112",
+    "Html": "\r\n<p>I would like to add terminalsLookup to be able to handle identifiers from other languages,&nbsp;</p>\r\n<p>do I add a list of letters for every language into the dictionary? if so, where should this be done at?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks!</p>\r\n",
+    "PostedDate": "2012-03-26T12:42:46.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "815768",
+    "ThreadId": "350112",
+    "Html": "<p>Look at c# sample and TerminalFactory.CreateCSharpIdentifier - c# allows letters in languages other than english</p>",
+    "PostedDate": "2012-03-26T12:46:46.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "815771",
+    "ThreadId": "350112",
+    "Html": "<p>Thanks!</p>",
+    "PostedDate": "2012-03-26T12:47:51.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

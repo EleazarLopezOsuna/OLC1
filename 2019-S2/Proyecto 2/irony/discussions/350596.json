@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "817521",
+    "ThreadId": "350596",
+    "Html": "\r\n<p>I have a simple grammar for a simple stack based dsl I am working on.</p>\r\n<p>Basically, most commands are a single character: so I have a statement rule that looks like:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>statement.Rule = ifStatement | <span style=\"color:#a31515\">&quot;p&quot;</span> | <span style=\"color:#a31515\">&quot;d&quot;</span>| <span style=\"color:#a31515\">&quot;&#43;&quot;</span> | <span style=\"color:#a31515\">&quot;-&quot;</span> | <span style=\"color:#a31515\">&quot;/&quot;</span> | <span style=\"color:#a31515\">&quot;%&quot;</span> | <span style=\"color:#a31515\">&quot;&gt;&quot;</span> | <span style=\"color:#a31515\">&quot;o&quot;</span> | <span style=\"color:#a31515\">&quot;r&quot;</span> | <span style=\"color:#a31515\">&quot;!&quot;</span>;\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>This generally works pretty well for me except where I have adjacent symbols in my program that are letters.</p>\r\n<p></p>\r\n<pre>p&#43;d-r</pre>\r\nwill work just fine, but if I try something like\r\n<pre> pd&#43;prd</pre>\r\nI get the error: 'invalid character p'. I assume this is because the parser is looking at the initial 'pd' as a single token and it is not mathing any rule, or something like that. The problem goes away if I insert spaces between adjacent letters, but that\r\n is not something I want to require.\r\n<p></p>\r\n<p>Is there a way to override this behavior so that the parser will consider each letter individually, and not as a whole word? This is not a problem with the non-letter symbols.&nbsp;</p>\r\n",
+    "PostedDate": "2012-03-29T20:59:22.87-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "817527",
+    "ThreadId": "350596",
+    "Html": "<p>Well, I found the&nbsp;AllowAlphaAfterKeyword flag on the KeyTerm class, and that seems to have solved my problem. I end up having to create a few different terminals instead of using automatic string terms, but that is ok I suppose.</p>",
+    "PostedDate": "2012-03-29T21:09:39.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "817530",
+    "ThreadId": "350596",
+    "Html": "<p>right, this flag is just for cases like this</p>",
+    "PostedDate": "2012-03-29T21:19:20.64-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "480729",
+    "ThreadId": "223638",
+    "Html": "<p>Hi, first thanks for this LI Kit.</p>\r\n<p>I'm making my first steps writing the grammar for my little special language. I've two digits hex parameter&nbsp; and was not able to parse them if the parm had a leading character.</p>\r\n<p>I added the following to 'NumberLIteral.cs' to the function&nbsp; 'public override IList&lt;string&gt; GetFirsts()' to solve problem</p>\r\n<p>if (IsSet(NumberOptions.Hex))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result.AddRange(new string[] { &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot; });</p>\r\n<p>I'm not a real programmer, so please correct me if I'm wrong.</p>",
+    "PostedDate": "2010-08-15T11:28:11.643-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "481045",
+    "ThreadId": "223638",
+    "Html": "If you have hex-only number, then just set a flag NumberOptions.Hex:\r\n\r\nvar num = new NumberLiteral(&quot;num&quot;, NumberOptions.Hex);\r\n\r\nI think that should work",
+    "PostedDate": "2010-08-16T09:55:59.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "481805",
+    "ThreadId": "223638",
+    "Html": "<p>Thanks for the fast response. That's what I did and it works, but only for 1 digit hex numbers or 2 digits with a leading number (like 1A). If the number is like AA it fails until I use the code change described above.</p>",
+    "PostedDate": "2010-08-18T04:55:33.953-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

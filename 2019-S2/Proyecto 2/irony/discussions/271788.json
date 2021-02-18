@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "668670",
+    "ThreadId": "271788",
+    "Html": "\r\n<p>Hi All,&nbsp;</p>\r\n<p>Is it possible to convert expression like WHERE clause in SQL or entire expression in&nbsp;FullTextSearchQueryConverter grammar to DNF?&nbsp;</p>\r\n<p>I.e. where f=a AND (f1 like '%tion' OR f2 != 55) &nbsp;OR f3 is not null</p>\r\n<p>convert to&nbsp;</p>\r\n<p>where f=a AND f1 like '%tion' OR f=a AND&nbsp;f2 != 55 &nbsp;OR f3 is not null</p>\r\n<p>Probably it is possible somehow to do using AST during the parsing stage? AND and OR have different priorities.</p>\r\n<p>Thnx.</p>\r\n",
+    "PostedDate": "2011-09-07T08:57:38.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "668848",
+    "ThreadId": "271788",
+    "Html": "<p>DNF I guess is disjunctive normal form? yes, it's possible and I don't think it's difficult. You don't even need AST I guess, you can do it directly with ParseTree - just iterate/visit nodes and generate a new tree or text. Similar to search grammar conversion, walking the tree.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-09-07T17:02:04.487-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

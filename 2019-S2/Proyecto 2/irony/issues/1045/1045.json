@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T11:46:29.443-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "I included this comment in one of the discussion replies so you may have it already.  If a non-terminal is declared but not given a rule it will fail in CreateProductions() because the rule is not.  Adding a check that nt.Rule != null before allData.AddRange() seems to work.",
+    "LastUpdatedDate": "2010-03-26T11:46:29.443-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2008-02-02T08:53:34.53-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Exception in CreateProductions",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 1045
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Fixed in 7937",
+      "PostedDate": "2008-02-14T00:32:54.663-08:00",
+      "Id": 29070
+    }
+  ]
+}

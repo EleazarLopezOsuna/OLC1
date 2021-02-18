@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "1075510",
+    "ThreadId": "452083",
+    "Html": "Hi there,\r<br />\n<br />\nI would like to use Irony to parse and evaluate boolean expression. Since the ExpressionEvaluatorGrammar from the samples is pretty much able to cover all my requirements, I'd like to re-use it.\r<br />\n<br />\nThe only thing I'd like to change for a start is to introduce new operators &quot;AND&quot; and &quot;OR&quot; to replace the operators &quot;&amp;&amp;&quot; and &quot;||&quot;. \r<br />\n<br />\nHow would this be done?<br />\n",
+    "PostedDate": "2013-08-01T04:11:55.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1075950",
+    "ThreadId": "452083",
+    "Html": "Hi there,<br />\n<br />\nI think I've got a solution now. <br />\n<br />\nFirst of all, I created a new Grammar and derived it from ExpressionEvaluatorGrammer. This way I am able to re-use the ExpressionEvaluator given in the samples. Further, I had to adjust the Grammar itself. I started with the ExpressionEvaluatorGrammer and removed those terminals, non-terminals, rules and operators that I do not need, and replaced the &quot;&amp;&amp;&quot; and &quot;||&quot; operators with the operators &quot;AND&quot; and &quot;OR&quot; respectively. And voila! That seems to do the job! Thankfully, the operators &quot;AND&quot; and &quot;OR&quot; are already supported, so I did not have to adjust anything more.<br />\n<br />\nLast thing, that I wanted to adjust was to allow identifiers that start with a number. I did not manage to solve this problem yet. However, I can workaround this pretty well.<br />\n<br />\nAny comments on my approach would be appreciated. Especially, if I'm doing something fundamentally wrong... <br />\n",
+    "PostedDate": "2013-08-02T04:18:17.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1076081",
+    "ThreadId": "452083",
+    "Html": "looks ok. Except why inherit from expr ev grammar? you rebuild grammar rules from scartch as far as I understand, so you could inherit from interpreter grammar directly.<br />\n",
+    "PostedDate": "2013-08-02T09:26:10.163-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1077693",
+    "ThreadId": "452083",
+    "Html": "Hi rivantsov! \r<br />\nThank you for your comment! \r<br />\n<br />\nThe reason why I inherited from ExpressionEvaluatorGrammer is, because thus I can re-use the ExpressionEvaluator. The ExpressionEvaluator does only take an ExpressionEvaluatorGrammer as Grammar. \r<br />\n<br />\nMight there be another evaluation framework in Irony.Net, thus I do not have to inherit from ExpressionEvaluatorGrammer?<br />\n",
+    "PostedDate": "2013-08-07T05:16:59.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1078031",
+    "ThreadId": "452083",
+    "Html": "you can use evaluator/interpreter engine if you use interpreter AST nodes, just like ExpressionEvaluatorGrammar does. If you are inheriting from ExprEvGrammar, you still have to redefine all terms/nonterms and set some new root - no nodes in base constructor are available to you. So you can just copy ExprEvGrammar to a new file, rename it, and modify some operators to your liking\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-08-07T18:42:32.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1078089",
+    "ThreadId": "452083",
+    "Html": "Hi Roman,\r<br />\n<br />\nthanks for your advice. I've now implemented it exactly that way. Seems to work just fine! :)<br />\n",
+    "PostedDate": "2013-08-07T23:54:00.027-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1078812",
+    "ThreadId": "452083",
+    "Html": "Hi Roman,\r<br />\n<br />\nI've encountered another problem. I use the IdentifierTerminal to identify variables in my boolean expressions. I'm abled to parse expressions like &quot;A AND B&quot; now where the values of the identifiers &quot;A&quot; and &quot;B&quot; are usually set in the ScriptApps.Globals dictionary.\r<br />\n<br />\nThis works just fine. However, I also need to parse expression like &quot;2220 AND 2221&quot;, i.e. I need an IdentifierTerminal that can also start with a number. Is there an easy way to achieve such a behaviour? I also have to be able to assign these identifiers boolean values (true, false) in the ScriptApps.Globals.\r<br />\n<br />\nAs for now, I really don't know how to solve this problem. Is is possible to create a user defined terminal that works that way? Or should I use RegexBasedTerminal or StringLiterals. Which option would you recommend? Or is there still another (better) way?<br />\n",
+    "PostedDate": "2013-08-09T10:46:31.173-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1079164",
+    "ThreadId": "452083",
+    "Html": "that's a strange language you have there. Do you still have 'normal' numbers? If not, you can try to add digits as StartChars to your identifier terminal definition, then I guess everything, including ints will be parsed as identifiers. More refined control is available through ValidateToken event of a Terminal - you can inspect the token right after it is scanned, and validate/change or even replace it with a different token. So you can catch Number token, and replace it with Identifier token. <br />\nFinally, there is OutputTerminal property of a terminal. It allows to replace the output terminal in scanned token - you can set 'numberTerm.OutputTerminal = identTerminal;', and then all 'numbers' would produce identifier terminals<br />\nDid not test this all, just out of my head, try these, there might some extra tweaks you have to make<br />\nRoman<br />\n",
+    "PostedDate": "2013-08-10T22:31:25.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1079196",
+    "ThreadId": "452083",
+    "Html": "Hi Roman,\r<br />\n<br />\nI do not have any normal numbers, only boolean values (&quot;true&quot;, &quot;false&quot;) and identifiers. Thus, adding digits to the AllStartChars property of the IdentifierTerminal already did the trick. Thanks a lot for your advice... I should have seen this earlier. :/<br />\n",
+    "PostedDate": "2013-08-11T02:52:12.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

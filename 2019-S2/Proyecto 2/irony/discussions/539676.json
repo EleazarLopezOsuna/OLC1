@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1225054",
+    "ThreadId": "539676",
+    "Html": "I'm making a simple SQL parser which outputs a subset of the parsed SQL. When reading the value of each terminal in the parse tree, how do it get a string of the whitespace surrounding this particular terminal? As in if I have follow SQL statement:<br />\n<pre><code>SELECT * FROM MyTable</code></pre>\n\nHow do I for the &quot;SELECT&quot; terminal get the single space following it?\r<br />\n<br />\nRegards,\r<br />\nThomas<br />\n",
+    "PostedDate": "2014-03-20T17:21:57.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1225096",
+    "ThreadId": "539676",
+    "Html": "just compare location of tokens and their lengths, so you'll know the number of whitespace chars between. Each token has Location and Length property ( or Token.Text.Length)<br />\n",
+    "PostedDate": "2014-03-20T22:11:32.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1225146",
+    "ThreadId": "539676",
+    "Html": "\r\n<p dir=\"ltr\">That's indeed a possibility. But I'd like the original whitespace string - with the subtraction method, I will not know if the whitespace consists of spaces, tabs, newlines or a good ol' mix.</p>\r\n<p dir=\"ltr\">Doesn't Irony keep this information?</p>\r\n<div></div>\r\n",
+    "PostedDate": "2014-03-21T02:16:00.38-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1225573",
+    "ThreadId": "539676",
+    "Html": "You have the original text and you have all tokens.. you can simply get substring between SELECT end and next token<br />\n",
+    "PostedDate": "2014-03-22T12:41:59.343-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

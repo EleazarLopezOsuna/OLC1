@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "206715",
+    "ThreadId": "60981",
+    "Html": "<p>Hello I am new to all this. I saw samples for simple expression evaluators and they worked fine. I need to extend that to be able to do the following:</p>\r\n<p>input: <em>max(45,54) for 3 5+6 min(2,3) for </em>2</p>\r\n<p>output: <em>54 54 54 11 2 2</em></p>\r\n<p>where the keyword for is to repeat the number on left by number on right times.</p>\r\n<p>even simpler input<em> &quot;2+3 4+5&quot; </em>to output<em> &quot;5 9&quot;</em></p>\r\n<p>What would the grammar be like for something like this.</p>\r\n<p>thanks.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-06-29T11:50:14.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "206833",
+    "ThreadId": "60981",
+    "Html": "<p>Well, hard to&nbsp;describe it without actually writing a grammar, but here's an action plan</p>\r\n<p>You need to implement &quot;for&quot; operator:</p>\r\n<p>forExpr.Rule = Expr + &quot;for&quot; + Number;</p>\r\n<p>You also need to define an&nbsp;&quot;sequence expression&quot; - when several expressions are delimited by space:</p>\r\n<p>seqExpr.Rule = MakePlusRule(seqExpr, Symbol(&quot; &quot;), Expr);</p>\r\n<p>Test the grammar in parsing - once it parses correctly your samples, you need to implement &quot;execution&quot; part.</p>\r\n<p>You need to define custom AST nodes for both non-terminals (forExpr and seqExpr), and implement Execute method in them accordingly.</p>\r\n<p>So forExprNode.Execute should return string composed of n copies of the first arg; seqExprNode.Execute should concatenate all child expressions with space in between and return the resulting string.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-06-29T18:22:49.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

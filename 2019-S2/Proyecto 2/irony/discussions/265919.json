@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "645094",
+    "ThreadId": "265919",
+    "Html": "\r\n<p>Hi Roman,</p>\r\n<p>While trying to work out why I am not seeing a performance difference, I have found the following that could help things along.</p>\r\n<p>If we look at the following code in Parser.cs</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>   <span style=\"color:blue\">public</span> ParseTree Parse(<span style=\"color:blue\">string</span> sourceText, <span style=\"color:blue\">string</span> fileName) {\r\n      <span style=\"color:blue\">if</span> (Context.Status != ParserStatus.AcceptedPartial)\r\n        Reset(); \r\n      Context.SourceStream.SetText(sourceText, 0, Context.Status == ParserStatus.AcceptedPartial);\r\n      Context.CurrentParseTree = <span style=\"color:blue\">new</span> ParseTree(sourceText, fileName);\r\n      Context.Status = ParserStatus.Parsing;\r\n      <span style=\"color:blue\">int</span> start = Environment.TickCount;\r\n      CoreParser.Parse();\r\n      Context.CurrentParseTree.ParseTime = Environment.TickCount - start;\r\n      UpdateParseTreeStatus(); \r\n      <span style=\"color:blue\">return</span> Context.CurrentParseTree;\r\n    }\r\n</pre>\r\n</div>\r\n<p>and we replace Environment.TickCount with a stopwatch then we get a far higher accuracy and more timing consistent result.</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>    <span style=\"color:blue\">public</span> ParseTree Parse(<span style=\"color:blue\">string</span> sourceText, <span style=\"color:blue\">string</span> fileName) {\r\n      <span style=\"color:blue\">if</span> (Context.Status != ParserStatus.AcceptedPartial)\r\n        Reset(); \r\n      Context.SourceStream.SetText(sourceText, 0, Context.Status == ParserStatus.AcceptedPartial);\r\n      Context.CurrentParseTree = <span style=\"color:blue\">new</span> ParseTree(sourceText, fileName);\r\n      Context.Status = ParserStatus.Parsing;\r\n      System.Diagnostics.Stopwatch stopwatch = <span style=\"color:blue\">new</span> System.Diagnostics.Stopwatch();\r\n    \r\n      stopwatch.Start();\r\n      CoreParser.Parse();\r\n      stopwatch.Stop();\r\n      Context.CurrentParseTree.ParseTime = stopwatch.ElapsedMilliseconds;\r\n      UpdateParseTreeStatus(); \r\n      <span style=\"color:blue\">return</span> Context.CurrentParseTree;\r\n    }\r\n\r\nI also changed the ParseTime to long to avoid the cast.</pre>\r\n<pre>It doesnt make the code run any faster but at least the measured parse time is displayed more consistently!</pre>\r\n</div>\r\n",
+    "PostedDate": "2011-07-20T10:42:36.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645101",
+    "ThreadId": "265919",
+    "Html": "<p>good catch, let's change that</p>\r\n<p>thanks</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-07-20T10:52:12.007-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

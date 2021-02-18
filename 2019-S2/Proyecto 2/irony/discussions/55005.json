@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "185704",
+    "ThreadId": "55005",
+    "Html": "Here my grammar:<div><div>            var distance = new NumberLiteral(&quot;distance&quot;, NumberFlags.AllowSign);</div><div>            var name = new IdentifierTerminal(&quot;name&quot;);</div><div><br></div><div>            var Tree = new NonTerminal(&quot;Tree&quot;);</div><div>            var SubTree = new NonTerminal(&quot;SubTree&quot;);</div><div>            var Leaf = new NonTerminal(&quot;Leaf&quot;);</div><div>            var Internal = new NonTerminal(&quot;Internal&quot;);</div><div>            var BranchList = new NonTerminal(&quot;BranchList&quot;);</div><div>            var Branch = new NonTerminal(&quot;Branch&quot;);</div><div>            var Length = new NonTerminal(&quot;Length&quot;);</div><div>            var Name = new NonTerminal(&quot;Name&quot;);</div><div><br></div><div>            Tree.Rule = SubTree + &quot;;&quot;;</div><div>            SubTree.Rule = Leaf | Internal;</div><div>            Leaf.Rule = Empty | name;</div><div>            Internal.Rule = &quot;(&quot; + BranchList + &quot;)&quot; + Name;</div><div>            BranchList.Rule = Branch | Branch + &quot;,&quot; + BranchList;</div><div>            Branch.Rule = SubTree + Length;</div><div>            Length.Rule = Empty | &quot;:&quot; + distance;</div><div>            Name.Rule = Empty | name;</div><div><br></div><div>            this.Root = Tree;       // Set grammar root</div><div>            RegisterPunctuation(&quot;(&quot;, &quot;)&quot;);</div><div><br></div><div>The <em>name</em> terminal just allows starting with characters followed by characters, numbers and &quot;_&quot;. I would like to accept also starting with numbers and the usage of blanks, &quot;-&quot; or other symbols in the <em>name </em>terminal. Currently (A:0.1,B:0.2,(C:0.3,D:0.4):0.5); would be parsed but not (1A:0.1,B-Y:0.2,(C:0.3,D:0.4):0.5);</div><div><br></div><div>How can I define this?</div></div>",
+    "PostedDate": "2009-04-30T13:58:06.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "185771",
+    "ThreadId": "55005",
+    "Html": "Well, the question is easy but the answer is not. There is a simple answer, but it wouldn't quite work - yet. <br>\r\nSo the simple answer - modify IdentifierTerminal to accept extra first chars and extra internal chars, there are properties for this, and even constructor overload with extra parameters for values of these properties. Then the Id terminal would perfectly accept digits at first position. However, that would break scanning. The problem is that now two terminals (distance and name) would allow digits as first character. The scanner (currently) selects the terminal(s) to scan the input based on current char in the input - it selects terminals that declare this char as one of its &quot;first&quot; chars. So in your case, both distance and name terminals would fit; then scanner would apply Priority value set on terminals and pick one with higher priority. The problem is that in your grammar it can be either of two, depending on situation, and it cannot be set through static priority value. So if priorities are the same, the scanner would try the terminals one-by-one, and return the first that produces the token - in fact, random in your case. <br>\r\nThis is bad news. Good news, in your grammar an extra feature would help, but it's not there yet, not even in new &quot;preview&quot; drop. I'm talking about Scanner-Parser link/advice facility. When in doubt, the scanner may ask parser - which terminals you expect in current state? and parser may filter out the list of terminals for matching. The base code is there already, each ParserState has property &quot;ExpectedTerms&quot; that is created exactly for this. <br>\r\nIn case of your grammar, it looks like numbers (distance) can appear only in certain positions, after colon, so parser would be able to solve the problem based on current state. But as I said, it is not there yet, not completed. <br>\r\nSo which version of Irony are you using currently? - old release version or latest code drop? If the latest, then I can try to speed up and put this feature on top of the list and implement it in a day or two... sorry, currently terribly busy, day and night...<br>\r\nwill that work?<br>\r\n<br>\r\n",
+    "PostedDate": "2009-04-30T20:53:54.937-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "185800",
+    "ThreadId": "55005",
+    "Html": "It's there, your grammar is in samples: ScannerTestGrammar; allows identifiers like &quot;1A&quot;; you can add &quot;-&quot; yourself; with whitespaces - that's really not so simple<br>\r\nRoman\r\n",
+    "PostedDate": "2009-05-01T00:03:31.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "185927",
+    "ThreadId": "55005",
+    "Html": "Hi Roman,<div><br></div><div>thank you so much for your answer! I use the release version but recompiled against the Silverlight runtime. I will try your new version once I get the whole pipeline in my project working. As an workaround I modified <em>name</em> to be a StringLiteral. I recognized that the software that outputs my target format keeps a quotation for <em>name</em> if I use it in the input string. Of course the string quotation is not specified in the original grammar and since this is standard known as Newick format <span style=\"white-space:normal;font-family:'times new roman';font-size:16px\"> -  I would prefer a clean standard conform solution as you suggested. </span></div><div><br></div><div>Jan</div>",
+    "PostedDate": "2009-05-01T09:21:17.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "185931",
+    "ThreadId": "55005",
+    "Html": "You're welcome and good luck, let me know if you have any problems. I've added your grammar to samples as Newick grammar. It is also a test case for this Scanner-Parser link functionality. <br>\r\nRoman\r\n",
+    "PostedDate": "2009-05-01T09:34:25.143-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

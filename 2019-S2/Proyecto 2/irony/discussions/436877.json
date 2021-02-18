@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1016360",
+    "ThreadId": "436877",
+    "Html": "I am new to irony and using it in my M.Sc thesis to write a grammar for OCL+EMOF and HUTN\r<br />\nSince here is many combination the duplicaci is ovious but the nonterminal   maintain a hierarchy like object oriented inheritance.For implementing i have got many reduce-reduce  conflict .I can eliminate that if i can shift forward.\r<br />\n<br />\nAny body please help me on doing that.Browsing on the discussion I get  ReduceHere ,ReduceIf, ShiftIf   but I could not use these.Roman Ivantsov and others lease give me an example on using these.   <br />\n",
+    "PostedDate": "2013-03-16T10:56:17.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1016508",
+    "ThreadId": "436877",
+    "Html": "well, if you're new to Irony, my guess is that you're new to parsing and LALR parsing. Pay your dues, learn how it works, algorithm-wise, first. Read wikipedia articles, there are lots of introductory guides on the web about this. For printed books my recommendation is Parsing Techinuques, 2nd ed - find it on amazon. \r<br />\nYou 'got many conflicts' - something tells me that your grammar is not well composed, you have to refactor it to remove 'duplicate' paths in parsing - that's long before you turn to ReduceHere, ReduceIf and other hints. Irony grammar definitions look simple, but you HAVE to know the theory to use these facilities. \r<br />\nGood luck\r<br />\nroman<br />\n",
+    "PostedDate": "2013-03-16T22:04:33.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1019049",
+    "ThreadId": "436877",
+    "Html": "At the start I have 25 error and it reduced to 1.The error is<br />\n\r<br />\n &quot;Shift-reduce conflict.State S65. lookaheads [:] selected shift as preferred action.&quot; \r<br />\n<br />\nthe state is \r<br />\n<br />\nState S65 (Inadequate)\r<br />\n  Shift-reduce conflicts on inputs: :\r<br />\n  Shift items:<br />\n<pre><code>classContextSignature -&gt; context Identifier ·: type </code></pre>\n\nReduce items:<br />\n<pre><code>fullType -&gt; Identifier · [:: : inv invariant def Identifier]</code></pre>\n\nTransitions: :-&gt;S97\r<br />\n<br />\nThe fullType nonterminal is \r<br />\n<br />\nfullType.Rule= MakePlusRule(fullType , scopeIn,identifier);\r<br />\n<br />\nand the scopeIn is &quot;::&quot;\r<br />\n<br />\nI have a token &quot;:&quot; and in other case I have solved it by using PreferShiftHere() but\r<br />\n<br />\nfullType.Rule= MakePlusRule(fullType,PreferShiftHere()+scopeIn,identifier);\r<br />\n<br />\ndoes not work here.\r<br />\n<br />\nPlease anybody help me.<br />\n",
+    "PostedDate": "2013-03-21T10:28:56.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1019650",
+    "ThreadId": "436877",
+    "Html": "It's hard to say from these few rules you provide, the conflict comes for OTHER rules that result in conflicting parsing routes. Please post the entire grammar if it's possible. \r<br />\nOne note about use of hints (PreferShiftHere(), ShiftIf() etc) - do not use them just to make the conflict go away, this only hides the problem, but it will reappear when you start actual parsing, and then fixing it would be much more difficult. Make sure you understand what conflict means, and try to fix it by rearranging the grammar. It is only if you are confident that the conflict is in the ambiguity of the language (like 'dangling else' problem), and there's a clear rule about correct way of parsing (like 'always treat else as belonging to the nearest if') - then express this rule through the hint. \r<br />\nRoman<br />\n",
+    "PostedDate": "2013-03-22T09:34:46.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

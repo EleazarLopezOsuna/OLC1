@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1435925",
+    "ThreadId": "641912",
+    "Html": "Hello. I have recently become interested in developing a .net language of my own for a few reasons.\r<br />\n<br />\n1)  I would like my own syntax for ascetic reasons.\r<br />\n2) It would make my source initially incompatabile with people who dont have direct access to the lang bindings.\r<br />\n3) Me and a few friends find things about the 2 existing top .net langs(C#/VB.net) to be pleasant but want something in between.\r<br />\n<br />\nI have personally looked through google as well as I can and trust me, Google is NOT my friend it suggests everything BUT what im looking for. I havent found any information well enough on specificly what this is aside to test syntax and people have mentioned in blogs that this is useful for developing a compiler for custom languages So I'd like to ask is this software specificly used for creating a compiler or testing logic or what? If it should be used for creating compilers or even just a simple language parser/wrapper, is the functionality there to basicly &quot;inherit&quot; a language and make modifications from there or would I have to basicly define EVERYTHING from scratch of functionality I want to exist? \r<br />\n<br />\nThanks for your time. Also sorry if this has been asked before and/or answered somewhere else, I struggle to find things when I do searches it seems itll just take 1 abstract word and find anything thats most irrelevant to what im looking for anytime I try to do research, and even trying to scan for anything specific to give me clues on here seems to give me things unreleted to answering my query.<br />\n",
+    "PostedDate": "2015-07-24T20:34:24.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1435933",
+    "ThreadId": "641912",
+    "Html": "Making a completely new general-purpose language is not an easy task, don't expect it to succeed.<br />\nIf you expect to use it for anything serious you're pretty much doomed to fail.<br />\n<br />\nI am not trying to be demeaning, but your posts reads a bit like &quot;I don't like any of the cars currently available, how do I build my own car?&quot;.<br />\n<br />\nThat said it can be a fun and/or great learning experience. Irony isn't really a tool you'd want for this though, although you could do it it lacks a quite bit of the power/components you'd want to have to do this. I'd recommend you take a look at a full language development suite, I've personally used <a href=\"http://metaborg.org/spoofax/\" rel=\"nofollow\">Spoofax</a>. Here's the accompanying <a href=\"https://github.com/TUDelft-IN4303/assignments\" rel=\"nofollow\">&quot;tutorial&quot;</a> (which takes about a 100 hours to implement a subset of Java which compiles to JVM bytecode). You'll also want to have a good compiler construction book, <a href=\"http://www.amazon.com/Compilers-Principles-Techniques-Tools-2nd/dp/0321486811\" rel=\"nofollow\">the dragon book</a> is the canonical example.<br />\n",
+    "PostedDate": "2015-07-25T00:09:04.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1435941",
+    "ThreadId": "641912",
+    "Html": "Well thanks to your suggestion I decided to look at what i was searching for differently, and I accidently stumbled across an Open Source C# compiler released by microsoft, and I understand it will take patience but I can modify that to the syntax I prefered :D I meen its not even complex changes I desired just some changing of the symbols and like a few keywords (make it more newb friendly for my buddies who are still learning to code in the first place). Thank you for your time but I think I may have that success yet, if fate permits it xD.<br />\n",
+    "PostedDate": "2015-07-25T01:42:27.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1436187",
+    "ThreadId": "641912",
+    "Html": "A while back I wrote about my experience writing a full compiler using Irony:\r<br />\n<br />\n<a href=\"http://honestillusion.com/blog/2013/09/12/Shakespeare-compiler-for-NET/\" rel=\"nofollow\">http://honestillusion.com/blog/2013/09/12/Shakespeare-compiler-for-NET/</a>\r<br />\n<br />\n(The compiler could generate a console EXE which I could step through using the VS debugger)<br />\n",
+    "PostedDate": "2015-07-27T12:56:35.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1436468",
+    "ThreadId": "641912",
+    "Html": "Well, as already said, writing a complete, general-purpose language is a huge work that will require a lot of time and effort.\r<br />\n<br />\nHowever, Irony can greatly help you for this, and if you want to target the .NET runtime (that is, your compiler will generate IL), it gets even easier. I have done something similar writing a&quot;scripting&quot; language which is a subset of C#. Here is how I worked:<br />\n<ul>\n<li>\nUse Irony to parse the source code and generate an AST  (since my &quot;scripting language&quot; is close to C#, I used the C# grammar that is provided as a sample in Irony as a start for my grammar, but if you want to define your own syntax/grammar from scratch, you can do it).<br />\n</li>\n<li>\nOnce you have your AST, you can traverse it (checking for source code errors that cannot be seen by Irony parser on the way) and build another kind of syntax tree, this one based on the .NET Framework &quot;System.Linq.Expression&quot; namespace . This namespace contains a Framework that can generate IL from a syntax tree, or directly generate a functor/lambda expression corresponding to the tree. Using this facilities, you basically can have the back-end of your compiler targeting .NET IL for (almost) free.<br />\n</li>\n</ul>\nHope this helps.<br />\n",
+    "PostedDate": "2015-07-29T02:12:27.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

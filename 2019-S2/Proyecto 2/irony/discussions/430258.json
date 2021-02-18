@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "989562",
+    "ThreadId": "430258",
+    "Html": "\r\n<p>Hi</p>\r\n<p>Is it doable to parse a piece of html/xml with irony (and if so does anyone have a starter on how to define it)?</p>\r\n<p>I want to parse some xml/html'ish files created by Microsoft's HtmlHelp Workshop (the keywork index for example) and they are a mix between html and xml and not that well formed that I can read/parse them well them with xml or html parsers.</p>\r\n<p>regards<br>\r\nwvd_vegt</p>\r\n",
+    "PostedDate": "2013-01-21T01:01:09.833-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "989848",
+    "ThreadId": "430258",
+    "Html": "\r\n<p>hi</p>\r\n<p>there's no direct sample in Irony, and I'm not aware of any from other devs. Your closest start point is probably Json grammar - it is also a 'data format' grammar, so you can look at it and then come up with XML/HTML. I'm thinking about providing support\r\n for XML/HTML, mainly because XML is embedded in some languages like Scala (and new VB) - but this is in the future</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2013-01-21T09:26:19.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

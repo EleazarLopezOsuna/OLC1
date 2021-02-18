@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1069007",
+    "ThreadId": "450186",
+    "Html": "Was looking at the CSharpGrammar from the sample. It uses the delimiters property at the end<br />\n<pre><code>this.Delimiters = &quot;{}[](),:;+-*/%&amp;|^!~&lt;&gt;=&quot;;</code></pre>\n\nWhen i tried to use the same in my Grammar adding &quot;\\&quot; it did not work. I then looked at the Grammar base class and it does not look to be using the property. It has a function &quot;IsWhitespaceOrDelimiter&quot; that is possible to override, but it does not use the Delimiter property.\r<br />\n<br />\nShould the Delimiter property be removed or is it a bug in the IsWhitespaceOrDelimiter?<br />\n",
+    "PostedDate": "2013-07-16T06:47:21.74-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1069662",
+    "ThreadId": "450186",
+    "Html": "yep, you're right, it is obsolete now, marked it as obsolete, will remove in the future\r<br />\nthanks<br />\n",
+    "PostedDate": "2013-07-17T11:24:26.073-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

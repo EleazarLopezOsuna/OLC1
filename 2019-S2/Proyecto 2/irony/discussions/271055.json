@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "665926",
+    "ThreadId": "271055",
+    "Html": "\r\n<p>I have been trying to use&nbsp;AddTermsReportGroup but the behavior is not what I expected. I expected that in the case of an error if any of the terminals provided was in that group, it would substitute them for the group alias. However, what I end up with\r\n is all the groups added displaying in all error messages. Looking at the code, it seems like there is no check to see if the group overlaps with the list of required terms it only does so for the Operator group. Is that the intended behavior?</p>\r\n",
+    "PostedDate": "2011-08-31T12:02:33.08-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "666112",
+    "ThreadId": "271055",
+    "Html": "<p>Don't quite understand - there is a processing for all groups, look at ComputeGroupedExpectedSetForState in CoreParser_Errorhandling.cs. The logic there seems ok to me. Trace your case through this method, and try to see why you get what you get. Maybe it's something else? - or maybe there's some bug in this method.&nbsp;</p>",
+    "PostedDate": "2011-08-31T23:18:42.337-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "666605",
+    "ThreadId": "271055",
+    "Html": "That was the code I looked at.<br>\r\n<br>\r\nforeach(var group in grammar.TermReportGroups)<br>\r\nif(group.GroupType == TermReportGroupType.Normal ||<br>\r\ngroup.GroupType == TermReportGroupType.Operator &&<br>\r\nterms.Overlaps(group.Terminals)) {<br>\r\nresult.Add(group.Alias);<br>\r\nterms.ExceptWith(group.Terminals);<br>\r\n}<br>\r\n<br>\r\nEssentially, for an operator it overlaps the group with the expected<br>\r\nterminals but it does not do the same for &quot;Normal&quot; groups. Which seems<br>\r\nto cause all the normal groups to always report no matter which<br>\r\nterminals are expected.<br>\r\n<br>\r\nOn Wed, Aug 31, 2011 at 11:18 PM, rivantsov &lt;notifications@codeplex.com&gt; wrote:<br>\r\n&gt; From: rivantsov<br>\r\n&gt;<br>\r\n&gt; Don't quite understand - there is a processing for all groups, look at<br>\r\n&gt; ComputeGroupedExpectedSetForState in CoreParser_Errorhandling.cs. The logic<br>\r\n&gt; there seems ok to me. Trace your case through this method, and try to see<br>\r\n&gt; why you get what you get. Maybe it's something else? - or maybe there's some<br>\r\n&gt; bug in this method.<br>\r\n&gt;<br>\r\n&gt; Read the full discussion online.<br>\r\n&gt;<br>\r\n&gt; To add a post to this discussion, reply to this email<br>\r\n&gt; ([email removed])<br>\r\n&gt;<br>\r\n&gt; To start a new discussion for this project, email<br>\r\n&gt; [email removed]<br>\r\n&gt;<br>\r\n&gt; You are receiving this email because you subscribed to this discussion on<br>\r\n&gt; CodePlex. You can unsubscribe on CodePlex.com.<br>\r\n&gt;<br>\r\n&gt; Please note: Images and attachments will be removed from emails. Any posts<br>\r\n&gt; to this discussion will also be available online at CodePlex.com<br>\r\n<br>\r\n<br>\r\n<br>\r\n-- <br>\r\n_________________________________________________<br>\r\nSebastien St-Laurent (http://blogs.msdn.com/sebby1234)<br>\r\nOwner of Paradoxal Press (http://www.ParadoxalPress.com)<br>\r\nAuthor of &quot;Shaders for Game Programmers and Artists&quot;<br>\r\nAuthor of &quot;The COMPLETE Effect and HLSL Guide&quot;<br>\r\n_________________________________________________",
+    "PostedDate": "2011-09-01T20:21:14.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "666694",
+    "ThreadId": "271055",
+    "Html": "<p>I think you're right, parenthesis are missing around || expression:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>        <span style=\"color: blue;\">if</span>((<span style=\"color: blue;\">group</span>.GroupType == TermReportGroupType.Normal || <span style=\"color: blue;\">group</span>.GroupType == TermReportGroupType.Operator) &amp;&amp; \r\n             terms.Overlaps(<span style=\"color: blue;\">group</span>.Terminals)) { ...\r\n\r\n</pre>\r\n</div>\r\n</p>\r\n<p>&nbsp;thanks for finding this, will fix it in the next drop</p>\r\n<p>&nbsp;</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-09-01T22:48:28.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "666695",
+    "ThreadId": "271055",
+    "Html": "No problem. Made that change locally myself and seemed to have solved<br>\r\nthe issue.<br>\r\n<br>\r\nThanks for looking into it.<br>\r\n<br>\r\nOn Thu, Sep 1, 2011 at 10:48 PM, rivantsov &lt;notifications@codeplex.com&gt; wrote:<br>\r\n&gt; From: rivantsov<br>\r\n&gt;<br>\r\n&gt; I think you're right, parenthesis are missing around || expression:<br>\r\n&gt;<br>\r\n&gt; if((group.GroupType == TermReportGroupType.Normal || group<br>\r\n&gt; .GroupType == TermReportGroupType.Operator) &&<br>\r\n&gt; terms.Overlaps(group.Terminals)) { ...<br>\r\n&gt;<br>\r\n&gt; &nbsp;thanks for finding this, will fix it in the next drop<br>\r\n&gt;<br>\r\n&gt;<br>\r\n&gt;<br>\r\n&gt; Roman<br>\r\n&gt;<br>\r\n&gt; Read the full discussion online.<br>\r\n&gt;<br>\r\n&gt; To add a post to this discussion, reply to this email<br>\r\n&gt; ([email removed])<br>\r\n&gt;<br>\r\n&gt; To start a new discussion for this project, email<br>\r\n&gt; [email removed]<br>\r\n&gt;<br>\r\n&gt; You are receiving this email because you subscribed to this discussion on<br>\r\n&gt; CodePlex. You can unsubscribe on CodePlex.com.<br>\r\n&gt;<br>\r\n&gt; Please note: Images and attachments will be removed from emails. Any posts<br>\r\n&gt; to this discussion will also be available online at CodePlex.com<br>\r\n<br>\r\n<br>\r\n<br>\r\n-- <br>\r\n_________________________________________________<br>\r\nSebastien St-Laurent (http://blogs.msdn.com/sebby1234)<br>\r\nOwner of Paradoxal Press (http://www.ParadoxalPress.com)<br>\r\nAuthor of &quot;Shaders for Game Programmers and Artists&quot;<br>\r\nAuthor of &quot;The COMPLETE Effect and HLSL Guide&quot;<br>\r\n_________________________________________________",
+    "PostedDate": "2011-09-01T22:49:44.36-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

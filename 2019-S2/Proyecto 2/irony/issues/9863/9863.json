@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "by design",
+    "ClosedDate": "2011-09-02T11:49:20.437-07:00",
+    "CommentCount": 3,
+    "Custom": null,
+    "Description": "This is very small issue here. Seems that Q() method returns a BnfExpression, which is creating unwanted \"Unnamed\" nodes when combining .Q() in a rule.\r\n\r\nShouldn't this method returns NonTerminal directly?\r\n    public NonTerminal Q()\r\n    {\r\n      if (_q != null)\r\n        return _q; \r\n      _q = new NonTerminal(this.Name + \"?\");\r\n      _q.Rule = this | Grammar.CurrentGrammar.Empty;\r\n      return _q; \r\n    }",
+    "LastUpdatedDate": "2011-09-02T11:49:20.437-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2011-08-23T15:18:53.76-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "NonTerminal.Q() returns BnfExpression instead of NonTerminal",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9863
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "that's by design, and I believe it is better to return expression. A typical situation - when we assign to Rule property:\ncomma_opt.Rule = comma.Q(); \nIf Q returned non-terminal, we'd have an extra, useless non-terminal stuffed between comma and comma_opt.",
+      "PostedDate": "2011-08-30T20:42:44.803-07:00",
+      "Id": 43588
+    },
+    {
+      "Message": "I see, but It seems that's exactly the case when you have a rule like this:\nmyrule.Rule = prefix + comma.Q(); \nThen comma.Q() is going generate also a useless non-terminal. \nUsually I don't generate optional rules like \"comma_opt.Rule = comma.Q();\"  because It adds an extra rule and prefer to inline comma.Q() directly.\n\nThat's not a huge issue, I can leave with it by adding an extension method with a different letter.",
+      "PostedDate": "2011-08-30T23:30:47.333-07:00",
+      "Id": 43592
+    },
+    {
+      "Message": "Yeah, that's not a big issue. The Q operator is not critically important functionality, just a handy shortcut for otherwise a little longer but obvious expression. So let's not sweat it too much\nthanks for the input!",
+      "PostedDate": "2011-09-01T10:20:48.633-07:00",
+      "Id": 43727
+    }
+  ]
+}

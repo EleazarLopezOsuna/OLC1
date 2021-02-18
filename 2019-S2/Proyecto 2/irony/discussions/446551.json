@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1054812",
+    "ThreadId": "446551",
+    "Html": "I have managed to parse and run a text using SearchGrammar.<br />\nthe following string <br />\n<pre><code>   Black Cat &quot;White Horse&quot; -dog</code></pre>\n\nwas parsed into <br />\n<pre><code>  ((( FORMSOF (INFLECTIONAL, Black)  AND  FORMSOF (INFLECTIONAL, Cat) ) AND &quot;White     Horse&quot;) AND NOT  FORMSOF (INFLECTIONAL, dog) )\n</code></pre>\n\nCan I use the result with the  freetext predicate?<br />\nSince the freetext predicate generates <a href=\"http://msdn.microsoft.com/en-us/library/ms176078.aspx\" rel=\"nofollow\">Link</a> inflections, is there still a need?<br />\n(If it is only for usage with contains predicate I will loose other freetext featuers like  the expansions or replacements)<br />\n",
+    "PostedDate": "2013-06-10T05:11:20.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1054955",
+    "ThreadId": "446551",
+    "Html": "Well, you got it parsed, converted, and it's now a question of proper use of the resulting query in  SQL Server - so try it, and dig into MSDN if it does not work. I'm not an expert on FTS.\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-06-10T09:41:02.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

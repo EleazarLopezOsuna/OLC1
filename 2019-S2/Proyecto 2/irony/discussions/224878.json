@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "484953",
+    "ThreadId": "224878",
+    "Html": "<p>Hello all,</p>\r\n<p>I have run into a slight problem.&nbsp; I have build a grammar that allows for the following two types of statements (simplified):</p>\r\n<p>OptionalBracketSection.Rule = (&quot;[&quot; + Expression + &quot;]&quot;) | Empty;<br>TypeStatement.Rule = TypeKeyword + Identifier + OptionalSquareBracketSection;</p>\r\n<p>and<br><br>LoopStatement.Rule = &quot;[&quot; + Expression + &quot;]&quot; + Identifier + &quot;(&quot; + Identifier + &quot;)&quot;;</p>\r\n<p>&nbsp;</p>\r\n<p>Now...the problem is this.&nbsp; If have the following:</p>\r\n<p>Type blah</p>\r\n<p>[5] ( Test )</p>\r\n<p>&nbsp;</p>\r\n<p>The grammar treats it as 'Type blah[5]' and chokes on the '( Test )' - instead of using 'Empty' in the OptionalBracketSection rule.&nbsp; I didn't get any shift-reduce conflicts which scares me (how many more such mess-ups have I made that I don't know about?).</p>\r\n<p>Is there a way to fix this?&nbsp; These statements are wrapped in in a StatementList that uses MakeStarRule, but when I tried to set the delimiter in that to '\\n' it didn't seem to fix the problem - surely if I set '\\n' as the delimiter it should force the end of a statement when it encounters one?</p>\r\n<p>Many thanks!</p>\r\n<p>&nbsp;</p>\r\n<p>edit: Tried adding + NewLine to the end of TypeStatement.Rule, but this causes everything else to keel over.</p>",
+    "PostedDate": "2010-08-25T22:46:35.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "484972",
+    "ThreadId": "224878",
+    "Html": "<p>[sorry double post]</p>",
+    "PostedDate": "2010-08-25T23:35:51.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "485260",
+    "ThreadId": "224878",
+    "Html": "<p>So, did this help - using NewLine as a statement separator instead of &quot;\\n&quot;?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-26T09:01:04.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "485445",
+    "ThreadId": "224878",
+    "Html": "<p>No, it didn't.&nbsp; If caused newlines to stop working in other rules as before (as whitespace).</p>\r\n<p>I also get a problem with the fact that Expression can be</p>\r\n<p>(Identifier + &quot;[&quot; + Expression + &quot;]&quot;) | Identifier</p>\r\n<p>&nbsp;</p>\r\n<p>Which causes [test[test]] ( Test ) to work incorrectly, as the parser matches the inner [test] part to a LoopStatement.</p>\r\n<p>I might end up having to change the language a bit and make LoopStatement the only thing that uses square brackets - which is an option.&nbsp; I really don't know enough about parser theory to know if the grammar should be able to 'roll back' its parsing stack indefinitely if it can't find a suitable token, in order to find something else that matches.</p>\r\n<p>I assume this is not the case?</p>\r\n<p>Thanks!</p>\r\n<p>szevvy</p>",
+    "PostedDate": "2010-08-26T17:34:28.59-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "485732",
+    "ThreadId": "224878",
+    "Html": "<p>You probably do not need to change the language but reorganize the grammar. Pay attention to Grammar Errors page - it tells you about conflicts in your grammar - cases when parser has several ways of interpreting the input. No, parser cannot &quot;backtrack&quot;. I may introduce it in the future, but for now it is not there.&nbsp;</p>\r\n<p>On the other hand, adjusting the language (if it is under your control) might be a good idea. to make syntax less ambiguous for users and for the parser. Majority of existing languages are&nbsp;unambiguous enough to be parsed by LR-based parsers.</p>\r\n<p>Roman&nbsp;</p>",
+    "PostedDate": "2010-08-27T09:15:52.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "485934",
+    "ThreadId": "224878",
+    "Html": "<p>Yeah, I think I'll adjust the language. &nbsp;There were no grammars, unfortunately - perhaps the fact that there were no errors from a syntax that is ambigous is something that needs to be logged as a bug? &nbsp;I'm happy to try to put together a small sample that exhibits this behaviour and put in an issue.</p>\r\n<p>Thanks!</p>",
+    "PostedDate": "2010-08-28T00:35:10.413-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "486095",
+    "ThreadId": "224878",
+    "Html": "<p>There's&nbsp;definitely&nbsp;something screwy going on; for the text</p>\r\n<p>if name &lt;&gt; &quot;*col.m52&quot; then<br>(<br>&nbsp;&nbsp; &nbsp;interlaced: 4<br>)<br><br><br></p>\r\n<p>and the rules<br><br>&nbsp;</p>\r\n<p>JumpIfFalse.Rule = Empty;<br>JumpHere.Rule = Empty;<br>IfStatement.Rule = ToTerm(&quot;if&quot;) + BoolExpression + JumpIfFalse + &quot;then&quot; + &quot;(&quot; + InnerStatements + &quot;)&quot; + (JumpHere | ElseSection);<br>ElseSection.Rule = ToTerm(&quot;else&quot;) + ((&quot;(&quot; + InnerStatements + &quot;)&quot;) | IfStatement);&nbsp;<br><br>The 'JumpHere' node is never processed. &nbsp;There is no way it can match the 'else'...</p>",
+    "PostedDate": "2010-08-29T04:36:20.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "490226",
+    "ThreadId": "224878",
+    "Html": "<p>Sorry for the delay in response, was on vacation for a week.&nbsp;</p>\r\n<p>I don't quite understand how your grammar supposed to work. Please make it more clear - what does it mean &quot;never processed&quot;?</p>\r\n<p>If parser construction does not give any errors, then try to Trace the parser (run with Parser Trace checkbox checked), and try to follow the shift-reduce steps and see why it fails.&nbsp;</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-09-07T09:41:17.117-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "490990",
+    "ThreadId": "224878",
+    "Html": "<p>Tracked the issue down, and it was answered in the other post - I didn't have a default node type set up and AST nodes weren't being created.&nbsp; Many thanks!</p>",
+    "PostedDate": "2010-09-08T17:51:04.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

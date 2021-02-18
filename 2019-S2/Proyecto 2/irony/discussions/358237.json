@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "844377",
+    "ThreadId": "358237",
+    "Html": "\r\n<p>I wrote my first grammar using Irony.</p>\r\n<p>Irony, IMHO, is a pretty tool and I liked a lot using it. Congratulations, Roman, for this extraordinary piece of software..</p>\r\n<p>I hope that my question has a easy answer: how can I create a traverseable AST from the Parser Tree?&nbsp;</p>\r\n<p>I've instantiated an AstBuilder, like I've seen on some codes, but I cannot found an AST. Maybe I'm looking at the wrong place...</p>\r\n<p>I'm using 2012_03_15 version, downloaded directly from CodePlex.</p>\r\n<p>TIA,</p>\r\n<p>Nilo</p>\r\n",
+    "PostedDate": "2012-06-04T06:28:25.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "845317",
+    "ThreadId": "358237",
+    "Html": "<p>With AstBuilder and following standard way of doing things (like in expr evaluator), AST root node is in parser tree root node, in AstNode field</p>",
+    "PostedDate": "2012-06-05T20:04:23.317-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "531919",
+    "ThreadId": "237341",
+    "Html": "\r\n<p>Hey guys,</p>\r\n<p>I am trying to compile Irony with windows&nbsp;Phone&nbsp;7, and actually I was really happy when it compiled with no issues. But the problem now is when I run the application I get a MissingManifestResourceException! I am not sure what casued this exception.\r\n Did anybody face this problem before?</p>\r\n<p>Thank you,</p>\r\n",
+    "PostedDate": "2010-12-06T11:54:44.507-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

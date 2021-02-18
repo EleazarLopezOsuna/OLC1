@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "252504",
+    "ThreadId": "73839",
+    "Html": "<p>Hi i want to create in text macros languge using irony. Like:</p>\r\n<pre>Some text $macros$ text lalala. \r\n$another macros$ etc.</pre>\r\n<p>So i have written</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">var</span> sql = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;sql&quot;</span>);\r\n            \r\nMakeStarRule(sql,  Empty|<span style=\"color:Blue\">new</span> FreeTextLiteral(<span style=\"color:#A31515\">&quot;text&quot;</span>, <span style=\"color:#A31515\">&quot;$&quot;</span>) +<span style=\"color:#A31515\">&quot;$&quot;</span>+ macros + <span style=\"color:#A31515\">&quot;$&quot;</span>);\r\n\r\nRoot = sql;u</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>Saying &quot;1,1|Syntax error, expected: text,&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-02T10:43:53.89-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252614",
+    "ThreadId": "73839",
+    "Html": "<p>Hi</p>\r\n<p>I didn't quite understand what and how you try to do, but in general, Macro capabilities are not supported by Irony - yet, I hope to add it in the future. I doubt you can mock it using non-terminals. At least you would need a special custom terminal plus some supporting code in the core parser and scanner - which does not exist&nbsp; yet.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-11-02T16:48:01.733-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252668",
+    "ThreadId": "73839",
+    "Html": "<p>Hi</p>\r\n<p>Thanks for the explanation.</p>\r\n<p>Pavel</p>\r\n<p>PS. Great project!</p>",
+    "PostedDate": "2009-11-02T23:12:28.173-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

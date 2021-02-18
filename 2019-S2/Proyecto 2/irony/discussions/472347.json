@@ -1,0 +1,98 @@
+[
+  {
+    "Id": "1133284",
+    "ThreadId": "472347",
+    "Html": "im using an Actipro textbox with Irony integration sample setup.  I have a simple SQL type grrammer.  But when parsing i seem to be randomly getting an IndexOutofRange exception from this function in SourceStream.cs  It seems to be when certain text is in the text box, or if im deleting text form the text box.  Actually this might be part of actipros code and not even Irony related.  Anyway great project its very useful. Hoping maybe someone has seen this issue before.\r<br />\nthanks.<br />\n<pre><code>  private void SetNewPosition(int newPosition) {\n      if (newPosition &lt; Position)\n        throw new Exception(Resources.ErrCannotMoveBackInSource); \n      int p = Position; \n      int col = Location.Column;\n      int line = Location.Line; \n      while(p &lt;  newPosition) {\n        var curr = _chars[p];     &lt;----------------ERROR occurring here\n        switch (curr) {\n          case '\\n': line++; col = 0; break;\n          case '\\r': break; \n          case '\\t': col = (col / _tabWidth + 1) * _tabWidth;     break;\n          default: col++; break; \n        } //switch\n        p++;\n      }\n      Location = new SourceLocation(p, line, col); \n    }</code></pre>\n\n",
+    "PostedDate": "2013-12-09T12:34:36.157-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1133835",
+    "ThreadId": "472347",
+    "Html": "I actually have a feeling its a problem with my grammar:<br />\n(I am very new to this so there are potentially many issues)<br />\n<br />\nthe following string produces the error: <br />\n[a].[b] = &quot;<br />\n<pre><code>  // Terminals (Lexing)\n            NumberLiteral number = new NumberLiteral(&quot;number&quot;);\n            StringLiteral STRING = new StringLiteral(&quot;STRING&quot;, &quot;\\&quot;&quot;, StringOptions.IsTemplate);\n\n            //Let's allow big integers (with unlimited number of digits):\n            number.DefaultIntTypes = new TypeCode[] { TypeCode.Int32, TypeCode.Int64, NumberLiteral.TypeCodeBigInt };\n            IdentifierTerminal Name = new IdentifierTerminal(&quot;Name&quot;);\n            //var Name = TerminalFactory.CreateSqlExtIdentifier(this, &quot;id_simple&quot;);\n            CommentTerminal comment = new CommentTerminal(&quot;comment&quot;, &quot;//&quot;, &quot;\\n&quot;, &quot;\\r&quot;);\n            //comment must be added to NonGrammarTerminals list; it is not used directly in grammar rules,\n            // so we add it to this list to let Scanner know that it is also a valid terminal. \n            NonGrammarTerminals.Add(comment);\n            comment = new CommentTerminal(&quot;multilineComment&quot;, &quot;/*&quot;, &quot;*/&quot;);\n            NonGrammarTerminals.Add(comment);\n\n            ConstantTerminal CONSTANT = new ConstantTerminal(&quot;CONSTANT&quot;);\n            CONSTANT.Add(&quot;NULL&quot;, null);\n\n\n            // Non-Terminals (Parsing)\n            NonTerminal query = new NonTerminal(&quot;Query&quot;);\n            NonTerminal tableExpression = new NonTerminal(&quot;TableExpression&quot;);\n            NonTerminal tableExpressions = new NonTerminal(&quot;TableExpressions&quot;);\n            NonTerminal table = new NonTerminal(&quot;Table&quot;);\n            NonTerminal column = new NonTerminal(&quot;Column&quot;);\n            NonTerminal tableOperator = new NonTerminal(&quot;TableOperator&quot;);\n            NonTerminal value = new NonTerminal(&quot;Value&quot;);\n            NonTerminal logicOp = new NonTerminal(&quot;LogicOp&quot;);\n            NonTerminal parameter = new NonTerminal(&quot;Parameter&quot;);\n            NonTerminal list = new NonTerminal(&quot;List&quot;);\n            NonTerminal enclosure = new NonTerminal(&quot;Enclosure&quot;);\n            NonTerminal closure = new NonTerminal(&quot;Closure&quot;);\n            NonTerminal logicExpression = new NonTerminal(&quot;logicExpression&quot;);\n            NonTerminal queryExpression = new NonTerminal(&quot;queryExpression&quot;);\n            NonTerminal betweenStmt = new NonTerminal(&quot;BetweenStmt&quot;);\n            NonTerminal expList = new NonTerminal(&quot;ExpList&quot;);\n\n            //keywords\n            KeyTerm AND = ToTerm(&quot;AND&quot;);\n            KeyTerm OR = ToTerm(&quot;OR&quot;);\n            KeyTerm IN = ToTerm(&quot;IN&quot;);\n            KeyTerm BETWEEN = ToTerm(&quot;BETWEEN&quot;);\n            KeyTerm LIKE = ToTerm(&quot;LIKE&quot;);\n            KeyTerm NOT = ToTerm(&quot;NOT&quot;);\n            KeyTerm dot = ToTerm(&quot;.&quot;, &quot;dot&quot;);\n            KeyTerm comma = ToTerm(&quot;,&quot;, &quot;comma&quot;);\n            KeyTerm LeftSquareBrace = ToTerm(&quot;[&quot;, &quot;LeftSquareBrace&quot;);\n            KeyTerm RightSquareBrace = ToTerm(&quot;]&quot;, &quot;RightSquareBrace&quot;);\n            KeyTerm LeftCurlyBrace = ToTerm(&quot;{&quot;, &quot;LeftSCurlyBrace&quot;);\n            KeyTerm RightCurlyBrace = ToTerm(&quot;}&quot;, &quot;RightCurlyBrace&quot;);\n            KeyTerm LeftQuote = ToTerm(&quot;\\&quot;&quot;, &quot;LeftQuote&quot;);\n            KeyTerm RightQuote = ToTerm(&quot;\\&quot;&quot;, &quot;RightQuote&quot;);\n\n\n            MarkPunctuation(&quot;,&quot;, &quot;(&quot;, &quot;)&quot;, &quot;[&quot;, &quot;]&quot;, &quot;.&quot;, &quot;\\&quot;&quot;, &quot;{&quot;, &quot;}&quot;);\n\n            logicExpression.Rule = tableExpression + logicOp + tableExpression | logicOp + tableExpression + logicOp | tableExpression + logicOp | logicOp + tableExpression | tableExpression;\n            queryExpression.Rule = logicExpression | &quot;(&quot; + logicExpression + &quot;)&quot;;\n            tableExpression.Rule = table + dot + column + tableOperator + value;\n            tableExpression.ErrorRule = SyntaxError + &quot;;&quot;;\n            betweenStmt.Rule = BETWEEN + value + &quot;AND&quot;;\n            tableOperator.Rule = ToTerm(&quot;=&quot;) | &quot;&gt;&quot; | &quot;&lt;&quot; | &quot;&lt;&gt;&quot; | &quot;&gt;=&quot; | &quot;&lt;=&quot; | &quot;LIKE&quot; | &quot;IN&quot; | &quot;NOT LIKE&quot; | &quot;IS&quot; | &quot;IS NOT&quot; | betweenStmt;\n            value.Rule = number | parameter | STRING | CONSTANT | expList;\n            enclosure.Rule = ToTerm(&quot;(&quot;) | Empty;\n            closure.Rule = ToTerm(&quot;)&quot;) | Empty;\n            parameter.Rule = LeftQuote + &quot;{&quot; + Name + &quot;}&quot; + &quot;\\&quot;&quot; | &quot;{&quot; + Name + &quot;}&quot; | &quot;#&quot; + &quot;{&quot; + Name + &quot;}&quot; + &quot;#&quot;;\n            logicOp.Rule = AND | OR;\n            expList.Rule = &quot;(&quot; + list + &quot;)&quot;;\n            list.Rule = MakePlusRule(list, comma, value);\n            table.Rule = LeftSquareBrace + Name + RightSquareBrace;\n            table.ErrorRule = SyntaxError + &quot;;&quot;;\n            column.Rule = LeftSquareBrace + Name + RightSquareBrace;\n            column.ErrorRule = SyntaxError + &quot;;&quot;;\n            query.Rule = MakePlusRule(query, queryExpression);\n\n            Root = query;</code></pre>\n\nthe following string produces the error:<br />\n<br />\n[a].[b] = &quot;<br />\n",
+    "PostedDate": "2013-12-10T12:12:52.74-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1134695",
+    "ThreadId": "472347",
+    "Html": "did you run this thru Grammar Explorer?! it shows 1 error and 3 shift/reduce conflicts\r<br />\nFirst clean up this, then try to parse<br />\n",
+    "PostedDate": "2013-12-11T15:46:24.17-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1134722",
+    "ThreadId": "472347",
+    "Html": "I see some issues:\r<br />\nremove IsTemplate parameter from string terminal constructor\r<br />\nDeclare precedence using RegisterOperators, smth like:<br />\n<pre><code>        RegisterOperators(90, AND);\n        RegisterOperators(80, OR);\n        RegisterOperators(70, &quot;=&quot;, &quot;&gt;&quot;, &quot;&lt;&quot;, &quot;&lt;&gt;&quot;, &quot;&gt;=&quot;, &quot;&lt;=&quot;, &quot;IN&quot;, &quot;LIKE&quot;, &quot;NOT LIKE&quot;, &quot;IS&quot;, &quot;IS NOT&quot;, &quot;BETWEEN&quot;);\n</code></pre>\n\nAnd remaining conflict I think comes from this really strange definition:<br />\n<pre><code>        logicExpression.Rule = tableExpression + logicOp + tableExpression | logicOp + tableExpression + logicOp | tableExpression + logicOp | logicOp + tableExpression | tableExpression;\n</code></pre>\n\nLogicOp is 'AND' or 'OR'\r<br />\nDoes this make sense?! \r<br />\n' OR SomeTable' - does this alone form a valid expression?<br />\n",
+    "PostedDate": "2013-12-11T16:14:22.32-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1135035",
+    "ThreadId": "472347",
+    "Html": "ahh thank you very much, I am very new to this.\r<br />\n<br />\nand yes good point on the logicexpression, I knew that needed work.\r<br />\n<br />\nThanks for your help.<br />\n",
+    "PostedDate": "2013-12-12T06:46:39.377-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1135079",
+    "ThreadId": "472347",
+    "Html": "OK, I found grammar explorer (very helpful tool!) and used it to fix my reduce/reduce errors.  But i am still getting the same IndexOutOfRange error as described above in the same place on the same string:\r<br />\n[a].[b] = &quot;\r<br />\n<br />\nthe error is also reproducible in grammar explorer.  here is the updated grammar:<br />\n<pre><code>[Language(&quot;QueryLanguage&quot;, &quot;1.0&quot;, &quot;A Query Language based on JET where clauses&quot;)]\n    public class QueryGrammar : Grammar\n    {\n\n        /// &lt;summary&gt;\n        /// Initializes a new instance of the &lt;see cref=&quot;QueryGrammar&quot;/&gt; class.\n        /// &lt;/summary&gt;\n        public QueryGrammar()\n            : base(false)\n        { // true means case sensitive\n            GrammarComments = @&quot;A Query Language based on JET where clauses. Case-insensitive.&quot;;\n\n            // Terminals (Lexing)\n            NumberLiteral number = new NumberLiteral(&quot;number&quot;);\n            StringLiteral STRING = new StringLiteral(&quot;STRING&quot;, &quot;\\&quot;&quot;);\n\n            //Let's allow big integers (with unlimited number of digits):\n            number.DefaultIntTypes = new TypeCode[] { TypeCode.Int32, TypeCode.Int64, NumberLiteral.TypeCodeBigInt };\n            IdentifierTerminal Name = new IdentifierTerminal(&quot;Name&quot;);\n            //var Name = TerminalFactory.CreateSqlExtIdentifier(this, &quot;id_simple&quot;);\n            CommentTerminal comment = new CommentTerminal(&quot;comment&quot;, &quot;//&quot;, &quot;\\n&quot;, &quot;\\r&quot;);\n            //comment must be added to NonGrammarTerminals list; it is not used directly in grammar rules,\n            // so we add it to this list to let Scanner know that it is also a valid terminal. \n            NonGrammarTerminals.Add(comment);\n            comment = new CommentTerminal(&quot;multilineComment&quot;, &quot;/*&quot;, &quot;*/&quot;);\n            NonGrammarTerminals.Add(comment);\n\n            ConstantTerminal CONSTANT = new ConstantTerminal(&quot;CONSTANT&quot;);\n            CONSTANT.Add(&quot;NULL&quot;, null);\n\n\n            // Non-Terminals (Parsing)\n            NonTerminal query = new NonTerminal(&quot;Query&quot;);\n            NonTerminal tableExpression = new NonTerminal(&quot;TableExpression&quot;);\n            NonTerminal tableExpressions = new NonTerminal(&quot;TableExpressions&quot;);\n            NonTerminal table = new NonTerminal(&quot;Table&quot;);\n            NonTerminal column = new NonTerminal(&quot;Column&quot;);\n            NonTerminal tableOperator = new NonTerminal(&quot;TableOperator&quot;);\n            NonTerminal value = new NonTerminal(&quot;Value&quot;);\n            NonTerminal logicOp = new NonTerminal(&quot;LogicOp&quot;);\n            NonTerminal parameter = new NonTerminal(&quot;Parameter&quot;);\n            NonTerminal list = new NonTerminal(&quot;List&quot;);\n            NonTerminal enclosure = new NonTerminal(&quot;Enclosure&quot;);\n            NonTerminal closure = new NonTerminal(&quot;Closure&quot;);\n            NonTerminal logicExpression = new NonTerminal(&quot;logicExpression&quot;);\n            NonTerminal queryExpression = new NonTerminal(&quot;queryExpression&quot;);\n            NonTerminal betweenStmt = new NonTerminal(&quot;BetweenStmt&quot;);\n            NonTerminal expList = new NonTerminal(&quot;ExpList&quot;);\n\n            //keywords\n            KeyTerm AND = ToTerm(&quot;AND&quot;);\n            KeyTerm OR = ToTerm(&quot;OR&quot;);\n            KeyTerm IN = ToTerm(&quot;IN&quot;);\n            KeyTerm BETWEEN = ToTerm(&quot;BETWEEN&quot;);\n            KeyTerm LIKE = ToTerm(&quot;LIKE&quot;);\n            KeyTerm NOT = ToTerm(&quot;NOT&quot;);\n            KeyTerm dot = ToTerm(&quot;.&quot;, &quot;dot&quot;);\n            KeyTerm comma = ToTerm(&quot;,&quot;, &quot;comma&quot;);\n            KeyTerm LeftSquareBrace = ToTerm(&quot;[&quot;, &quot;LeftSquareBrace&quot;);\n            KeyTerm RightSquareBrace = ToTerm(&quot;]&quot;, &quot;RightSquareBrace&quot;);\n            KeyTerm LeftCurlyBrace = ToTerm(&quot;{&quot;, &quot;LeftSCurlyBrace&quot;);\n            KeyTerm RightCurlyBrace = ToTerm(&quot;}&quot;, &quot;RightCurlyBrace&quot;);\n            KeyTerm LeftQuote = ToTerm(&quot;\\&quot;&quot;, &quot;LeftQuote&quot;);\n            KeyTerm RightQuote = ToTerm(&quot;\\&quot;&quot;, &quot;RightQuote&quot;);\n            \n            //set precedence of operators.\n            RegisterOperators(90, AND);\n            RegisterOperators(80, OR);\n            RegisterOperators(70, &quot;=&quot;, &quot;&gt;&quot;, &quot;&lt;&quot;, &quot;&lt;&gt;&quot;, &quot;&gt;=&quot;, &quot;&lt;=&quot;, &quot;IN&quot;, &quot;LIKE&quot;, &quot;NOT LIKE&quot;, &quot;IS&quot;, &quot;IS NOT&quot;, &quot;BETWEEN&quot;);\n\n            MarkPunctuation(&quot;,&quot;, &quot;(&quot;, &quot;)&quot;, &quot;[&quot;, &quot;]&quot;, &quot;.&quot;, &quot;\\&quot;&quot;, &quot;{&quot;, &quot;}&quot;);\n\n            logicExpression.Rule = tableExpression + logicOp + tableExpression | &quot;(&quot; + logicExpression + &quot;)&quot;;\n            //queryExpression.Rule = MakePlusRule(queryExpression,logicOp,logicExpression);\n            tableExpression.Rule = table + dot + column + tableOperator + value;\n            tableExpression.ErrorRule = SyntaxError + &quot;;&quot;;\n            betweenStmt.Rule = BETWEEN + value + &quot;AND&quot;;\n            tableOperator.Rule = ToTerm(&quot;=&quot;) | &quot;&gt;&quot; | &quot;&lt;&quot; | &quot;&lt;&gt;&quot; | &quot;&gt;=&quot; | &quot;&lt;=&quot; | &quot;LIKE&quot; | &quot;IN&quot; | &quot;NOT LIKE&quot; | &quot;IS&quot; | &quot;IS NOT&quot; | betweenStmt;\n            value.Rule = number | parameter | STRING | CONSTANT | expList;\n            enclosure.Rule = ToTerm(&quot;(&quot;) | Empty;\n            closure.Rule = ToTerm(&quot;)&quot;) | Empty;\n            parameter.Rule = LeftQuote + &quot;{&quot; + Name + &quot;}&quot; + &quot;\\&quot;&quot; | &quot;{&quot; + Name + &quot;}&quot; | &quot;#&quot; + &quot;{&quot; + Name + &quot;}&quot; + &quot;#&quot;;\n            logicOp.Rule = AND | OR;\n            expList.Rule = &quot;(&quot; + list + &quot;)&quot;;\n            list.Rule = MakePlusRule(list, comma, value);\n            table.Rule = LeftSquareBrace + Name + RightSquareBrace;\n            table.ErrorRule = SyntaxError + &quot;;&quot;;\n            column.Rule = LeftSquareBrace + Name + RightSquareBrace;\n            column.ErrorRule = SyntaxError + &quot;;&quot;;\n            query.Rule = MakePlusRule(query, logicOp, logicExpression);\n\n            Root = query;\n        }\n    }</code></pre>\n\nI'm sure I'm just missing something obvious.\r<br />\nThanks again for your help, your project is very powerful, and useful!<br />\n",
+    "PostedDate": "2013-12-12T07:53:45.06-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1135174",
+    "ThreadId": "472347",
+    "Html": "it's a bug, surprisingly nobody reported it before. I'm fixing it<br />\n",
+    "PostedDate": "2013-12-12T10:17:02.69-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1135177",
+    "ThreadId": "472347",
+    "Html": "temp fix for you. Find file SourceStream.cs and modify SetNewPosition method as follows:<br />\n<pre><code>private void SetNewPosition(int newPosition) {\n  if (newPosition &lt; Position)\n    throw new Exception(Resources.ErrCannotMoveBackInSource); \n  int p = Position; \n  int col = Location.Column;\n  int line = Location.Line; \n  while(p &lt;  newPosition) {\n    if (p &gt;= _textLength)     //!!!!! add this\n      break;                       // and this\n    var curr = _chars[p];\n    switch (curr) {\n      case '\\n': line++; col = 0; break;\n      case '\\r': break; \n      case '\\t': col = (col / _tabWidth + 1) * _tabWidth;     break;\n      default: col++; break; \n    } //switch\n    p++;\n  }\n  Location = new SourceLocation(p, line, col); \n}</code></pre>\n\n",
+    "PostedDate": "2013-12-12T10:22:23.893-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1135183",
+    "ThreadId": "472347",
+    "Html": "Thank you very much, glad I could help ;)<br />\n<br />\nUnfortunately, I'm now getting an IndexOutOfRangeException thrown in scanner.cs on line 88:<br />\n<pre><code> private void NextToken() {\n      //1. Check if there are buffered tokens\n      if(Context.BufferedTokens.Count &gt; 0) {\n        Context.CurrentToken = Context.BufferedTokens.Pop();\n        return; \n      }\n      //2. Skip whitespace.\n      _grammar.SkipWhitespace(Context.Source);\n      //3. That's the token start, calc location (line and column)\n      Context.Source.Position = Context.Source.PreviewPosition; &lt;---Error occurs here\n      //4. Check for EOF\n      if (Context.Source.EOF()) {\n        Context.CurrentToken = new Token(_grammar.Eof, Context.Source.Location, string.Empty, _grammar.Eof.Name);;\n        return; \n      }\n      //5. Actually scan the source text and construct a new token\n      ScanToken(); \n    }//method</code></pre>\n\nI will debug it and see if I can pinpoint the problem.<br />\n",
+    "PostedDate": "2013-12-12T10:36:38.25-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1135194",
+    "ThreadId": "472347",
+    "Html": "not happening to me. Try the latest version I just uploaded. What input are you using (source sample)?<br />\n",
+    "PostedDate": "2013-12-12T10:51:06.507-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1135204",
+    "ThreadId": "472347",
+    "Html": "Ahh, thank you very much!  yes the problem is gone.\r<br />\n<br />\nGreat work!<br />\n",
+    "PostedDate": "2013-12-12T11:03:07.807-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1305471",
+    "ThreadId": "472347",
+    "Html": "Can anyone provide sample for Query Language?<br />\n[Language(&quot;QueryLanguage&quot;, &quot;1.0&quot;, &quot;A Query Language based on JET where clauses&quot;)]<br />\nAnd didn't find anything concrete about JET where clauses, it's about microsoft access sql? Tried different sql queries with square braces, without them but always got compile error.<br />\n",
+    "PostedDate": "2014-09-17T00:33:33.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

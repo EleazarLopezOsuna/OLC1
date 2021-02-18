@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1497487",
+    "ThreadId": "663471",
+    "Html": "So, is this project dead or is there any chance of continued support? Like adding support for .NET Standard/Core, updating NuGets.<br />\n",
+    "PostedDate": "2017-07-24T04:36:08.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1497965",
+    "ThreadId": "663471",
+    "Html": "I have tried to contact the owner of the repo.\r<br />\n<br />\nSince no reply have made a fork in GitHub and will start pushing to get the owner to take control.\r<br />\n<br />\n<a href=\"https://github.com/Nico-VanHaaster/Irony.Net\" rel=\"nofollow\">https://github.com/Nico-VanHaaster/Irony.Net</a><br />\n",
+    "PostedDate": "2017-09-07T15:26:16.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1498085",
+    "ThreadId": "663471",
+    "Html": "There is already an actively maintained fork on github - <a href=\"https://github.com/daxnet/irony\" rel=\"nofollow\">https://github.com/daxnet/irony</a><br />\n",
+    "PostedDate": "2017-09-21T07:14:02.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1225583",
+    "ThreadId": "539842",
+    "Html": "I need XML highlighting for one of my projects. Problem is that recovering from errors by skipping to the end of the line (used in irony samples) is not very usable for XML. So i modified irony a little to support recovering from errors by injecting tokens. I think it can be useful for others, and maybe used as baseline for implementing some official support.<br />\n<br />\nFirst of all link to the modified version of <a href=\"https://onedrive.live.com/download?resid=42AA45927D8F1CF3!9572&amp;authkey=!ALqoHiOsrz1wdkQ&amp;ithint=file%2c.7z\" rel=\"nofollow\">Irony package</a>. <br />\nmodified files are:<br />\n<ul>\n<li>Grammar.cs -  new virtual method TryInjectRecoveryTokens called from ErrorRecoveryParserAction</li>\n<li>ErrorRecoveryParserAction.cs - modified Execute to call TryInjectRecoveryTokens on grammar</li>\n<li>ParserStack.cs - modified Pop(int) &amp; PopUntil(int) to actually return popped items (required for propagating injected status of ParseTreeNodes</li>\n<li>ReduceParserActions.cs - added the propagation of injected flag to the result of this action</li>\n<li>ParseTree.cs - Added IsInjected flag to the ParseTreeNode and HasInjections() method to the ParseTree</li>\n<li>Parser.cs - changed access modifier of GetNextAction to public</li>\n<li>ParsingContext.cs - changed access modifier of ParserStack, CurrentParserState, CurrentParserInput to public</li>\n<li>SourceStream. - Added support to SetNewPosition to index smaller than actual position. (addition optimization could be done)</li>\n<li>Token.cs - added IsInjected TokenFlag and IsInjected() method</li>\n<li>\nfm.GrammerExplorer.cs - added green text color to Parse Tree nodes which contains injected tokens.<br />\n</li>\n</ul>\nThe grammar with injection handling code <a href=\"https://onedrive.live.com/download?resid=42AA45927D8F1CF3!9592&amp;authkey=!AK6y2hA33cBQekU&amp;ithint=file%2c.cs\" rel=\"nofollow\">link</a><br />\n<br />\nThe grammar returns only linear list of tags and content. (I am handling the xml structure separately)<br />\n",
+    "PostedDate": "2014-03-22T14:24:50.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1226102",
+    "ThreadId": "539842",
+    "Html": "thanks, will look at this. I'm working (unfortunately really sloooowly) on new version, and token injection is one of new things I plan to add. \r<br />\nRoman<br />\n",
+    "PostedDate": "2014-03-24T10:25:31.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1226139",
+    "ThreadId": "539842",
+    "Html": "The main problem i see in my implementation is rescanning the last token returned from scanner after the injection. There should be better way than returning to start of the line of the last token and simply recalculating the columns and tabs. Probably something like caching positions of last X tokens inside the scanner and method to rollback one or more tokens. Or maybe just not moving Position to PreviewPosition before the error is handled, but i don't know the internals of the preview mechanism enough to do it.<br />\n<br />\nI don't think it's possible to add something like ErrorRule to do the injections. Because the injection is adding terminal tokens between the ParseStack.Top and CurrentToken and there are two possible situations: <br />\n<ol>\n<li>Something is missing to complete current NonTerminal -&gt; i have to inject some tokens and rescan current token. And this can actually depend on more than one item on ParserStack.</li>\n<li>\nCurrent token is obstruction for parser so i have to inject something before it to make it reducible to nonterminal.<br />\n</li>\n</ol>\nAnd i have few additional questions <br />\n<ul>\n<li>Is there something like MakeQuestionmarkRule() ? i don't like the &quot;| Empty&quot; i am currently using.</li>\n<li>\nIs there a way to identify term with plus in Name differently than comparing its Name? Because if i change the Name Parameter of Attribute to something else than &quot;Attribute&quot; my code would stop working..<br />\n</li>\n</ul>\n",
+    "PostedDate": "2014-03-24T11:52:23.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

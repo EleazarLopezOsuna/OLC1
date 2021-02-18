@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "200187",
+    "ThreadId": "59130",
+    "Html": "<p>I have re-used the Highlighter Text Box that has been used in the Grammar Explorer in a project that I am working on.&nbsp; I have been considering trying to implement the ICSharpCode.TextEditor that SharpDevelop uses.&nbsp; It has some advanced features like highlighting and code folding.</p>\r\n<p>Has any one tried this or have thoughts on the best way to go about this.&nbsp; There seems to be a pretty good tutorial on implmenting the ICSharpCode.TextEditor on code project at:</p>\r\n<p><a href=\"http://www.codeproject.com/KB/edit/TextEditorControl.aspx\">http://www.codeproject.com/KB/edit/TextEditorControl.aspx</a></p>\r\n<p>I have the released version of Irony implemented currently and haven't tried to upgrade to the newest Source Drop.</p>",
+    "PostedDate": "2009-06-10T14:49:09.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "203203",
+    "ThreadId": "59130",
+    "Html": "<p>Hi</p>\r\n<p>Looks like there's nobody around who tried this before. There were some early attempts, by&nbsp;Soren, here's a thread on SharpDevelop website:</p>\r\n<p><a href=\"http://community.sharpdevelop.net/forums/p/7672/21671.aspx\">http://community.sharpdevelop.net/forums/p/7672/21671.aspx</a></p>\r\n<p>Good luck with your effort anyway. I would strongly recommend using Irony version from Source code page for this - it should work much better for this</p>\r\n<p>Let me know if you need any help, or extra Irony tweaks to put into Irony core</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-06-18T20:38:46.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "203493",
+    "ThreadId": "59130",
+    "Html": "<p>Thanks for the link.&nbsp; I had basically created a XML doc the control expects for highlighting.&nbsp; Once I have it working the way I think it should I was going to query bits of Irony to emit the XML on the fly and then refresh the hightlighter.&nbsp; I'll take a look at the newest Irony Code and see if I can convert my code to use the new stuff.&nbsp; I am new to Parsers/Lexers, so it was probably a minor miracle I got the older version working.&nbsp; Time for some refactoring I suppose.</p>",
+    "PostedDate": "2009-06-19T12:46:38.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

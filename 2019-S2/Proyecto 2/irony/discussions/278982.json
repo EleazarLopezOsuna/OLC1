@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "696414",
+    "ThreadId": "278982",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>is there somewhere an example what should I do to generate an AST from SQL?</p>\r\n",
+    "PostedDate": "2011-11-10T05:46:02.007-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "696542",
+    "ThreadId": "278982",
+    "Html": "<p>Do you mean - how to add generating AST to SQL grammar sample?&nbsp;</p>\r\n<p>Look at expression evaluator grammar - you need to specify AST node types on non-terminals, just follow the pattern.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-11-10T09:06:04.997-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "696588",
+    "ThreadId": "278982",
+    "Html": "<p>Thank you for the answer</p>",
+    "PostedDate": "2011-11-10T10:56:58.87-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

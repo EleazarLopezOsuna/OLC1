@@ -1,0 +1,21 @@
+System.InvalidOperationException: Der Stapel ist leer.
+   bei System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource)
+   bei System.Collections.Generic.Stack`1.Peek()
+   bei Irony.Compiler.CodeOutlineFilter.<BeginFiltering>d__3.MoveNext() in C:\Users\martin\visualC++\peg_for_csharp\Source_onCodePlex\Irony\Compiler\TokenFilters\CodeOutlineFilter.cs:Zeile 77.
+   bei Irony.Compiler.Parser.ReadToken() in C:\Users\martin\visualC++\peg_for_csharp\Source_onCodePlex\Irony\Compiler\Parser\Parser.cs:Zeile 90.
+   bei Irony.Compiler.Parser.NextToken() in C:\Users\martin\visualC++\peg_for_csharp\Source_onCodePlex\Irony\Compiler\Parser\Parser.cs:Zeile 110.
+   bei Irony.Compiler.Parser.ExecuteShiftAction(ActionRecord action) in C:\Users\martin\visualC++\peg_for_csharp\Source_onCodePlex\Irony\Compiler\Parser\Parser.cs:Zeile 326.
+   bei Irony.Compiler.Parser.Parse(CompilerContext context, IEnumerable`1 tokenStream) in C:\Users\martin\visualC++\peg_for_csharp\Source_onCodePlex\Irony\Compiler\Parser\Parser.cs:Zeile 169.
+   bei Irony.Compiler.LanguageCompiler.Parse(CompilerContext context, SourceFile source) in C:\Users\martin\visualC++\peg_for_csharp\Source_onCodePlex\Irony\Compiler\LanguageCompiler.cs:Zeile 76.
+   bei Irony.Compiler.LanguageCompiler.Parse(String source) in C:\Users\martin\visualC++\peg_for_csharp\Source_onCodePlex\Irony\Compiler\LanguageCompiler.cs:Zeile 63.
+   bei Irony.GrammarExplorer.fmGrammarExplorer.btnParse_Click(Object sender, EventArgs e) in C:\Users\martin\visualC++\peg_for_csharp\Source_onCodePlex\Irony.GrammarExplorer\fmGrammarExplorer.cs:Zeile 67.
+   bei System.Windows.Forms.Control.OnClick(EventArgs e)
+   bei System.Windows.Forms.Button.OnClick(EventArgs e)
+   bei System.Windows.Forms.Button.OnMouseUp(MouseEventArgs mevent)
+   bei System.Windows.Forms.Control.WmMouseUp(Message& m, MouseButtons button, Int32 clicks)
+   bei System.Windows.Forms.Control.WndProc(Message& m)
+   bei System.Windows.Forms.ButtonBase.WndProc(Message& m)
+   bei System.Windows.Forms.Button.WndProc(Message& m)
+   bei System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message& m)
+   bei System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message& m)
+   bei System.Windows.Forms.NativeWindow.Callback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)

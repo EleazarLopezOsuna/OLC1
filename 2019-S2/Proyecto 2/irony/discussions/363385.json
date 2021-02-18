@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "861285",
+    "ThreadId": "363385",
+    "Html": "\r\n<p>I'm using the Search grammar from the&nbsp;.sqlservercentral link. I found that when the user uses binary operators at the&nbsp;beginning&nbsp;of the search string the grammar brakes. Also when a parentheses/bracket is not closed or when a special character\r\n is included in the string. How can I handle all this cases?</p>\r\n<p>e.g.:</p>\r\n<ul>\r\n<li>nasal -aesthetic --&gt; OK </li><li>-nasal aesthetic&nbsp;--&gt; brakes (Syntax error, expected: OrExpression AndExpression PrimaryExpression ThesaurusExpression ThesaurusOperator ExactExpression ExactOperator ParenthesizedExpression ProximityExpression OrExpression')\r\n</li><li>nasal (hello -&gt; brakes (Unexpected end of file.) </li><li>nasal \\hello -&gt; brakes (Invalid character: '\\') </li><li>nasal /hello -&gt; brakes (Invalid character: '/') </li><li>nasal &quot;hello -&gt; brakes (Mal-formed string literal - cannot find termination symbol)\r\n</li></ul>\r\n<p>I'm using the version of irony that is compiled with .net 3.5. Can't move to the last version.</p>\r\n<p>Please help!!!</p>\r\n",
+    "PostedDate": "2012-07-12T07:50:10.167-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "861612",
+    "ThreadId": "363385",
+    "Html": "<p>as for \"-\" at the beginning, this is intentional - SQL server does not support FTS queries that start with \"NOT\", so the grammar is built in such a way that initial \"-\" is detected as error. This is by original design by Michael.&nbsp;</p>\r\n<p>When parenth or bracket is not closed - it is syntax error, Irony parser gives you an error - what else you'd expect it to do? You can try to handle error by adding the missing character at the end and parsing it again - one way to handle this automatically</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-07-12T09:47:53.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "862280",
+    "ThreadId": "363385",
+    "Html": "<p>Thanks for your reply. Very helpful. As for the parentheses and&nbsp;brackets... I wonder how can I escape them and take them as a part of the string to look up.</p>\r\n<p>How can I escape a special character and Irony will support it?</p>",
+    "PostedDate": "2012-07-12T14:16:32-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "865186",
+    "ThreadId": "363385",
+    "Html": "<p>Anything on this?.. please...</p>",
+    "PostedDate": "2012-07-13T12:00:18.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "865204",
+    "ThreadId": "363385",
+    "Html": "<p>About parenth and brackets - that would be not trivial, as \"(\" are \")\" are special characters used in grammar expressions for grouping operators. Are you sure you need this? What about enclosing them in quotes, like</p>\r\n<p>&nbsp; hello \"(\" &nbsp;</p>\r\n<p>You have to come up with rules for escaping inside identifiers, like \"\\(\" - simplest case.</p>\r\n<p>Next, I looked at IdentifierTerminal (that is used by SearchGrammar for regular words) and looks like it does not support this kind of escapes out of the box. So I suggest creating Custom terminal (inherited from Identifier), and overriding ReadBody method, and adding check for escaped parenthesis (just likeReadUnicodeEscapes call in the original method).&nbsp;</p>",
+    "PostedDate": "2012-07-13T12:12:50.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "877633",
+    "ThreadId": "363385",
+    "Html": "\r\n<p>Thanks for the suggestion. I think you are right, I don't think I need the parentheses, I will probably strip them out of the query string. I will come back if I have new questions/cases.</p>\r\n",
+    "PostedDate": "2012-07-19T13:15:41.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

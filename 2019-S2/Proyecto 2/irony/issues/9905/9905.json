@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": null,
+    "Description": "why for DefaultAstNodeCreator is created? in which condition does this method called in ASTBuilder class file of Irony?\r\n\r\nI am facing issue in .netcore",
+    "LastUpdatedDate": "2017-06-19T00:09:11.87-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2017-06-14T04:36:45.243-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "why for DefaultAstNodeCreator is created? in which condition does this method called in ASTBuilder class file of Irony?",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9905
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "It is a fast method to create AstNode from astNodeConfig.NodeType. \nNormally you would specify AstNodeType for NonTErminals. The parser would then create instances of this type. One (slow) way is to use Activator.CreateObject() - this uses Reflection. To speed up process AstBuilder creates a compiled method - using ILEmit. Also it allows grammar author to provide custom method that will be creating nodes (so no 'default' IL-generated method).  \nI understand the Reflection.Emit is not available in base .NET standard, it is platfrom specific. So just remove DefaultNodeCreator and go with Activator instead when creating nodes from node type. \n",
+      "PostedDate": "2017-06-16T10:36:54.117-07:00",
+      "Id": 208580
+    },
+    {
+      "Message": "Thank you Ivan..I am using .netcore 2  preview now .Could you please let me know how to replace that defaultAstNodeCreator to Activator.CreateObject in AstBuilder?",
+      "PostedDate": "2017-06-19T00:09:11.87-07:00",
+      "Id": 208589
+    }
+  ]
+}

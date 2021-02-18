@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1066072",
+    "ThreadId": "449433",
+    "Html": "I want to make some semantic analysis on AST nodes like symbols table verification and type checking.<br />\nHow can i do it  ?\r<br />\nIdeally this step should be included at the end of the parsing process to produce additional error messages.<br />\n",
+    "PostedDate": "2013-07-09T05:19:24.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1066254",
+    "ThreadId": "449433",
+    "Html": "Hello Malain,\r<br />\n<br />\nWhen your AST is constructed, you can apply tree-walking algorithms to do semantic checks. For the task you described, single pass of a DFS-visitor should suffice.<br />\n",
+    "PostedDate": "2013-07-09T11:55:39.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1089563",
+    "ThreadId": "449433",
+    "Html": "Thanks Eugene,\r<br />\n<br />\nI have implemented a SemanticAnalysisVisitor called in BuildAst because i can use the parseTree.ParserMessages to generate messages.\r<br />\nThat works fine.<br />\n",
+    "PostedDate": "2013-09-07T07:37:54.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

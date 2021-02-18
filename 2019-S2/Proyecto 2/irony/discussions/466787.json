@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1119663",
+    "ThreadId": "466787",
+    "Html": "I'm trying to parse an existing c# code base, because I want to automatically instrument it with extra code.\r<br />\n<br />\nThe issue that I'm running into is that it gives a syntax error on code that compiles against .Net or Unity Mono.\r<br />\n<br />\nThis simple code gives syntax error expected: namespace\r<br />\n<br />\nusing System;\r<br />\n<br />\nclass TestClass\r<br />\n{\r<br />\n}\r<br />\n<br />\nIf I look at the example c# grammar I find this bit:\r<br />\n<br />\nnamespace_declarations_opt.Rule = MakeStarRule(namespace_declarations_opt, null, namespace_declaration);\r<br />\n<br />\nIt looks like the namespace is indeed optional, as it should be, so I'm wondering why I'm getting the syntax error message.\r<br />\n<br />\nHow do I modify the grammar to make this parse correctly?\r<br />\n<br />\nAny help would be appreciated.\r<br />\n<br />\nGrtz,\r<br />\n<br />\nFloris<br />\n",
+    "PostedDate": "2013-11-07T03:38:32.147-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1119740",
+    "ThreadId": "466787",
+    "Html": "I did some further checking and it looks like the problem lies somewhere in the grammar for using clauses.<br />\n",
+    "PostedDate": "2013-11-07T06:27:54.297-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1119791",
+    "ThreadId": "466787",
+    "Html": "Changed the grammar to fix the problem. I initially misunderstood the above grammar rule to mean the namespace declaration itself was optional. It meant the entire thing including the namespace body was optional.\r<br />\n<br />\nChanged\r<br />\n<br />\nnamespace_declarations_opt.Rule = MakeStarRule(namespace_declarations_opt, null, namespace_declaration_opt);\r<br />\n<br />\ninto\r<br />\n<br />\nnamespace_declaration_opt.Rule = namespace_declaration | no_namespace_declaration;\r<br />\nno_namespace_declaration.Rule = namespace_member_declarations;\r<br />\nnamespace_declarations_opt.Rule = MakeStarRule(namespace_declarations_opt, null, namespace_declaration_opt);<br />\n",
+    "PostedDate": "2013-11-07T07:36:17.363-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1120489",
+    "ThreadId": "466787",
+    "Html": "Never mind.<br />\n",
+    "PostedDate": "2013-11-08T07:24:06.487-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

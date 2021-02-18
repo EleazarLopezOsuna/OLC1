@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "943438",
+    "ThreadId": "403654",
+    "Html": "\r\n<p>Is it possible to do this so I don't need to check after parsing? &nbsp;I want to be able to make sure that they don't say&nbsp;true = false &nbsp;or &nbsp;int this = 10. &nbsp;I would like to do it in parsing, so that if I add new Terminals I don't need\r\n to worry about adding them anywhere else. &nbsp;The alternative that I am using is checking if a hash table contains it and putting all the keywords or constants are in it. &nbsp;The reason I don't like this is that I am adding new ones frequently and I forget\r\n to add them to the hash table.</p>\r\n",
+    "PostedDate": "2012-11-18T00:17:08.543-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "943670",
+    "ThreadId": "403654",
+    "Html": "\r\n<p>mark them as Reserved words, using MarkReservedWords method.</p>\r\n",
+    "PostedDate": "2012-11-18T15:23:09.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

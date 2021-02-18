@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "898936",
+    "ThreadId": "391419",
+    "Html": "\r\n<p>I have this tree output which contains an unexpected &quot;Unnamed0&quot; node. The unwanted node shows when the optional node (named Metric) following it is used:</p>\r\n<pre>Program\r\n  Row\r\n    Action\r\n      pressure (Keyword)\r\n      50 (Action.Value)\r\n      % (Key symbol)\r\n    Telemetry\r\n      velocity (Keyword)\r\n      &gt;= (Key symbol)\r\n      50 (Telemetry.Value)\r\n  Row\r\n    Action\r\n      velocity (Keyword)\r\n      40.2 (Action.Value)\r\n    Telemetry\r\n      distance (Keyword)\r\n      &gt;= (Key symbol)\r\n      Unnamed0\r\n        50 (Telemetry.Value)\r\n      m (Keyword)\r\n</pre>\r\n<p>Here is some of my code for creating the rules. In this code (I believe) it's the NumberLiteral that doesn't work correctly:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> BnfExpression CreateTerminal(IEnumerable&lt;TelemetryDefinitionModel&gt; telemetryDefinitions, <span style=\"color:blue\">bool</span> isAction = <span style=\"color:blue\">false</span>)\r\n{\r\n\t<span style=\"color:blue\">var</span> um = ServiceRegistry.Get&lt;UnitsManager&gt;();\r\n\tBnfExpression combined = <span style=\"color:blue\">null</span>;\r\n\t<span style=\"color:blue\">var</span> actionOp = ToTerm(<span style=\"color:#a31515\">&quot;at&quot;</span>);\r\n\t<span style=\"color:blue\">var</span> prefix = isAction ? <span style=\"color:#a31515\">&quot;Action&quot;</span> : <span style=\"color:#a31515\">&quot;Telemetry&quot;</span>;\r\n\t<span style=\"color:blue\">var</span> smallOp = <span style=\"color:blue\">new</span> NonTerminal(prefix &#43; <span style=\"color:#a31515\">&quot;.Operator&quot;</span>);\r\n\tsmallOp.Rule = ToTerm(<span style=\"color:#a31515\">&quot;==&quot;</span>) | <span style=\"color:#a31515\">&quot;!=&quot;</span>;\r\n\t<span style=\"color:blue\">var</span> bigOp = <span style=\"color:blue\">new</span> NonTerminal(prefix &#43; <span style=\"color:#a31515\">&quot;.Operator&quot;</span>); \r\n\tbigOp.Rule = smallOp | <span style=\"color:#a31515\">&quot;&lt;&quot;</span> | <span style=\"color:#a31515\">&quot;&lt;=&quot;</span> | <span style=\"color:#a31515\">&quot;&gt;&quot;</span> | <span style=\"color:#a31515\">&quot;&gt;=&quot;</span>;\r\n\tMarkTransient(smallOp, bigOp);\r\n\t<span style=\"color:blue\">foreach</span> (<span style=\"color:blue\">var</span> definition <span style=\"color:blue\">in</span> telemetryDefinitions)\r\n\t{\r\n\t\tNonTerminal metricOp = <span style=\"color:blue\">null</span>;\r\n\t\t<span style=\"color:blue\">if</span>(definition.Metric != PhysicalType.Unitless &amp;&amp; um != <span style=\"color:blue\">null</span>)\r\n\t\t{\r\n\t\t\tmetricOp = <span style=\"color:blue\">new</span> NonTerminal(prefix &#43; <span style=\"color:#a31515\">&quot;.Metric&quot;</span>);\r\n\t\t\t<span style=\"color:blue\">var</span> pt = um.GetCurrentUnit(definition.Metric);\r\n\t\t\tmetricOp.Rule = ToTerm(pt.Abbreviations.First());\r\n\t\t\t<span style=\"color:blue\">foreach</span>(<span style=\"color:blue\">var</span> a <span style=\"color:blue\">in</span> pt.Abbreviations.Skip(1))\r\n\t\t\t\tmetricOp.Rule |= ToTerm(a);\r\n\t\t\tMarkTransient(metricOp);\r\n\t\t}\r\n\r\n\t\t<span style=\"color:blue\">var</span> t = <span style=\"color:blue\">new</span> NonTerminal(prefix);\r\n\t\t<span style=\"color:blue\">var</span> action = ToTerm(<span style=\"color:#a31515\">&quot;[&quot;</span>) &#43; definition.Name &#43; ToTerm(<span style=\"color:#a31515\">&quot;]&quot;</span>);\r\n\t\t<span style=\"color:blue\">if</span>(definition.Type == TelemetryType.String)\r\n\t\t{\r\n\t\t\t<span style=\"color:blue\">var</span> op = isAction ? actionOp : (BnfTerm)smallOp;\r\n\t\t\t<span style=\"color:blue\">var</span> tail = <span style=\"color:blue\">new</span> StringLiteral(prefix &#43; <span style=\"color:#a31515\">&quot;.Value&quot;</span>, <span style=\"color:#a31515\">&quot;\\&quot;&quot;</span>, StringOptions.AllowsDoubledQuote);\r\n\t\t\tt.Rule = action &#43; op &#43; tail;\r\n\t\t}\r\n\t\t<span style=\"color:blue\">else</span> <span style=\"color:blue\">if</span>(definition.Type == TelemetryType.Real)\r\n\t\t{\r\n\t\t\t<span style=\"color:blue\">var</span> op = isAction ? actionOp : (BnfTerm)bigOp;\r\n\t\t\t<span style=\"color:blue\">var</span> tail = <span style=\"color:blue\">new</span> NumberLiteral(prefix &#43; <span style=\"color:#a31515\">&quot;.Value&quot;</span>, NumberOptions.AllowStartEndDot);\r\n\t\t\tt.Rule = action &#43; op &#43; tail;\r\n\t\t}\r\n\t\t<span style=\"color:blue\">else</span> <span style=\"color:blue\">throw</span> <span style=\"color:blue\">new</span> NotImplementedException(<span style=\"color:#a31515\">&quot;definition.Type is out of range&quot;</span>);\r\n\r\n\t\t<span style=\"color:blue\">if</span> (metricOp != <span style=\"color:blue\">null</span>)\r\n\t\t{\r\n\t\t\t<span style=\"color:blue\">var</span> optionalMetric = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;OptionalMetric&quot;</span>);\r\n\t\t\toptionalMetric.Rule = metricOp | Empty;\r\n\t\t\tt.Rule &#43;= optionalMetric;\r\n\t\t\tMarkTransient(optionalMetric);\r\n\t\t}\r\n\r\n\t\t<span style=\"color:blue\">if</span> (combined == <span style=\"color:blue\">null</span>) combined = t;\r\n\t\t<span style=\"color:blue\">else</span> combined |= t;\r\n\t}\r\n\t<span style=\"color:blue\">return</span> combined;\r\n}\r\n\r\n</pre>\r\n<p>Any help would be appreciated.</p>\r\n</div>\r\n",
+    "PostedDate": "2012-08-13T15:43:09.627-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "898972",
+    "ThreadId": "391419",
+    "Html": "\r\n<p>I suspect it's coming from this operator:</p>\r\n<p>&nbsp;t.Rule &#43;= optionalMetric;</p>\r\n<p>I don't see anywhere else it might be created. It is an &quot;automatic&quot; non-terminal Irony generates from expressions.</p>\r\n<p>Set a breakpoint, inspect the Rule value after this assignment</p>\r\n<p>If you want to &quot;append&quot; an element to the rule, you'd have to go inside it - it is an OR list of &quot;&#43;&quot; lists; so you have to get the last&nbsp;(the only?) OR list, and append the element to it.&nbsp;Roman</p>\r\n",
+    "PostedDate": "2012-08-13T19:08:43.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "898976",
+    "ThreadId": "391419",
+    "Html": "<p>ah, found one more place where it can be:</p>\r\n<pre>metricOp.Rule |= ToTerm(a);</pre>\r\n<pre><br /></pre>",
+    "PostedDate": "2012-08-13T19:33:36.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899157",
+    "ThreadId": "391419",
+    "Html": "<p>So you're saying that \"t.Rule = a + b + c\" is not the same as \"t.Rule = a + b; t.Rule += c\" ? That seems strange. Surely the \"+\" operator is&nbsp;evaluated&nbsp;from left to right. I guess you're implying that these things are adjusted inside the getter/setter for t.Rule?</p>\r\n<p>I removed the \"|= ToTerm(a)\". That made no difference in behavior. I also rearranged the code so that optionalMetric is created at the top. It's then appended inside the \"if/else if\" statement as part of t.Rule. Unfortunately, that made no improvement either.</p>",
+    "PostedDate": "2012-08-14T08:40:23.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899175",
+    "ThreadId": "391419",
+    "Html": "\r\n<p>I tracked down the problem. Alas, I actually cut out the line of code that had the problem when I posted the code above. I had a third &quot;else if&quot;:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">else</span> <span style=\"color:blue\">if</span> (definition.Type == TelemetryType.Integer)\n{\n\t<span style=\"color:blue\">var</span> op = isAction ? actionOp : (BnfTerm)bigOp;\n\tBnfExpression tail = <span style=\"color:blue\">new</span> NumberLiteral(prefix &#43; <span style=\"color:#a31515\">&quot;.Value2&quot;</span>, NumberOptions.IntOnly);\n\t<span style=\"color:blue\">if</span> (definition.Enumerations != <span style=\"color:blue\">null</span> &amp;&amp; definition.Enumerations.Length &gt; 0)\n\t{\n\t    tail = definition.Enumerations.Aggregate(tail, (current, e) =&gt; current | ToTerm(e));\n\t}\n\tt.Rule = action &#43; op &#43; tail &#43; optionalMetric;\n}</pre>\r\n</div>\r\n<p>Unfortunately, the problem occurs in the use of the &quot;BnfExpression&quot; type. If I change that to &quot;var&quot; like I had in my other two cases (and ditch the inner &quot;if&quot;) the problem goes away. That seems very strange. Of course I can't change it to var because then\r\n I can't use it in the Aggregate. I suppose I will build my aggregate separately. It would be nice if the pipe operator supported null on either side.</p>\r\n",
+    "PostedDate": "2012-08-14T09:00:39.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899186",
+    "ThreadId": "391419",
+    "Html": "\r\n<p>It works when constructed like this:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">else</span> <span style=\"color:blue\">if</span> (definition.Type == TelemetryType.Integer)\n{\n\t<span style=\"color:blue\">var</span> op = isAction ? actionOp : (BnfTerm)bigOp;\n\t<span style=\"color:blue\">var</span> tailRule = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;Tail&quot;</span>);\n\tMarkTransient(tailRule);\n\ttailRule.Rule = <span style=\"color:blue\">new</span> NumberLiteral(prefix &#43; <span style=\"color:#a31515\">&quot;.Value&quot;</span>, NumberOptions.IntOnly);\n\t<span style=\"color:blue\">if</span> (definition.Enumerations != <span style=\"color:blue\">null</span> &amp;&amp; definition.Enumerations.Length &gt; 0)\n\t{\n\t\ttailRule.Rule = definition.Enumerations.Aggregate(tailRule.Rule, (current, e) =&gt; current | ToTerm(e));\n\t}\n\tt.Rule = action &#43; op &#43; tailRule &#43; optionalMetric;\n}\n\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-08-14T09:06:23.673-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899299",
+    "ThreadId": "391419",
+    "Html": "<blockquote style=\"border: solid .1em #ccc; font-style: italic; margin: .25em 1em 0 1em; padding: 0 .25em 0 .25em;\"><strong>brantheman wrote:</strong><br />\r\n<p>So you're saying that \"t.Rule = a + b + c\" is not the same as \"t.Rule = a + b; t.Rule += c\" ? That seems strange.</p>\r\n</blockquote>\r\n<p>Yes, it has different behaviour. As workaround I used several overloading for rule construction function for 2-3-4 parameters, but later I had changed visibility of BnfExpression.Data field and worked directly with it.</p>\r\n<p>Thanks for MarkTransient idea.</p>",
+    "PostedDate": "2012-08-14T13:41:06.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1329513",
+    "ThreadId": "574264",
+    "Html": "I cant find Irony.Samples.dll in the (root)\\Irony.Samples\\bin\\debug folder. the folder is empty. where can I find it?<br />\n",
+    "PostedDate": "2014-12-07T05:13:39.44-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1329911",
+    "ThreadId": "574264",
+    "Html": "did you try to build solution?! are you familiar with Visual Studio at all and how stuff works (build/run process)?<br />\n",
+    "PostedDate": "2014-12-08T13:19:58.18-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

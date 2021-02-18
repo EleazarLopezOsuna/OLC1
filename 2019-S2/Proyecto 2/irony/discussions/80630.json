@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "276492",
+    "ThreadId": "80630",
+    "Html": "<p>Hi Rivantsov,</p>\r\n<p>Quick question... Giving this grammar:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>    [Language(<span style=\"color:#A31515\">&quot;testbed&quot;</span>)]\r\n    <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span> TestBed: Grammar {\r\n\r\n        <span style=\"color:Blue\">public</span> TestBed( ) {\r\n            <span style=\"color:Blue\">var</span> identifier1 = <span style=\"color:Blue\">new</span> IdentifierTerminal( <span style=\"color:#A31515\">&quot;identifier1&quot;</span> );\r\n            <span style=\"color:Blue\">var</span> identifier2 = <span style=\"color:Blue\">new</span> IdentifierTerminal( <span style=\"color:#A31515\">&quot;identifier2&quot;</span> );\r\n\r\n            <span style=\"color:Blue\">var</span> rule1 = <span style=\"color:Blue\">new</span> NonTerminal( <span style=\"color:#A31515\">&quot;rule1&quot;</span> );\r\n            <span style=\"color:Blue\">var</span> rule2 = <span style=\"color:Blue\">new</span> NonTerminal( <span style=\"color:#A31515\">&quot;rule2&quot;</span> );\r\n            <span style=\"color:Blue\">var</span> ruletest = <span style=\"color:Blue\">new</span> NonTerminal( <span style=\"color:#A31515\">&quot;ruletest&quot;</span> );\r\n\r\n            rule1.Rule = <span style=\"color:#A31515\">&quot;model&quot;</span> + identifier1;\r\n            rule2.Rule = <span style=\"color:#A31515\">&quot;property&quot;</span> + identifier2;\r\n            ruletest.Rule = <span style=\"color:#A31515\">&quot;resource&quot;</span> + identifier1;\r\n\r\n            <span style=\"color:Blue\">var</span> rules = <span style=\"color:Blue\">new</span> NonTerminal( <span style=\"color:#A31515\">&quot;rules&quot;</span> );\r\n            rules.Rule = rule1 | rule2 | ruletest;\r\n\r\n            <span style=\"color:Blue\">var</span> rulelist = <span style=\"color:Blue\">new</span> NonTerminal( <span style=\"color:#A31515\">&quot;rulelist&quot;</span> );\r\n            rulelist.Rule = MakePlusRule( rulelist, rules );\r\n\r\n            <span style=\"color:Blue\">this</span>.Root = rulelist;\r\n\r\n        }\r\n\r\n    }\r\n\r\n</pre>\r\n</div>\r\n<p>This target program parses without error:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>model thismodel\r\nproperty thisproperty\r\nresource thisproperty\r\n\r\n</pre>\r\n</div>\r\n<p>The identifier after resource can only be &quot;thismodel&quot;, but it gets parsed without error.</p>\r\n<p>Should the parser catch this situation? or is beyond the scope of Irony?</p>\r\n<p>Jorge</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-12T18:08:05.43-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "276507",
+    "ThreadId": "80630",
+    "Html": "<p>why exactly you expect the last line to fail?! &quot;thismodel&quot; and &quot;thisproperty&quot; are both valid identifiers for both of your IdentifierTerminals.&nbsp;</p>\r\n<p>Look at parse tree and you'r probably see for the last line:&nbsp;&quot;identifier1&quot; node (term) with text value &quot;thisproperty&quot;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-12T19:16:39.947-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "276525",
+    "ThreadId": "80630",
+    "Html": "I will assume that the question was not hypothetical, so I'll answer  <br>the why.<br>In the grammar I have defined that after model goes an identifier. I  <br>also defined that after property goes an identifier. But i did it in  <br>two separate variables. My hope was to communicate that they have to  <br>be different identifiers, that they cannot be the same. Further more,  <br>after resource only one of the identifiers is valid, but not the  <br>other, because i used the second variable.<br>So for example, in c# once i put an identifier after the word int, it  <br>is an error to put the same identifier after the word string in the  <br>same context.<br>Now, I have a step after that will check for logical errors; I was  <br>just wondering if this particular check can be done by Irony; or if I  <br>am totally off topic, and this check is beyond the realm of the  <br>parser, and it should be done by the consumer of the AST.<br>Base on your answer, I guess it should be done after parsing.<br>Or maybe there is a way to write the grammar to force this kind of  <br>check, if this is the case, would you please point me in the right  <br>direction?<br><br>Jorge",
+    "PostedDate": "2010-01-12T20:09:58.977-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "276530",
+    "ThreadId": "80630",
+    "Html": "<p>yes, this kind of analysis is not in parser domain. First, x or y are indistinguishable for parser, they are the same term, &quot;identifier&quot;. It is the semantic analysis step that actually looks into their content and recognizes them as different identifiers.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-12T20:38:04.16-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

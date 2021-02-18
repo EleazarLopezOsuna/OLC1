@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1096946",
+    "ThreadId": "458554",
+    "Html": "Hi,\r<br />\n<br />\nI am trying to create Irony  grammar to parse HTML text. Following is the code, I am using inside grammar class. <br />\n<pre><code>public class HTMLGrammar : Irony.Parsing.Grammar\n{\n        public HTMLGrammar()\n        {\n            KeyTerm leftAnguralBracket = new KeyTerm(&quot;&lt;&quot;,&quot;LeftAngularBarakcet&quot;);\n            KeyTerm rightAnguralBracket = new KeyTerm(&quot;&gt;&quot;, &quot;RightAngularBarakcet&quot;);\n            KeyTerm forwardSlash = new KeyTerm(&quot;/&quot;, &quot;ForwardSlash&quot;);\n            NonTerminal element = new NonTerminal(&quot;Element&quot;);\n            NonTerminal emptyElementTag = new NonTerminal(&quot;EmptyElementTag&quot;);\n            NonTerminal startTag = new NonTerminal(&quot;StartTag&quot;);\n            NonTerminal content = new NonTerminal(&quot;Content&quot;);\n            NonTerminal endTag = new NonTerminal(&quot;EndTag&quot;);\n            RegexBasedTerminal name = new RegexBasedTerminal(&quot;Name&quot;, &quot;\\\\w+&quot;);\n\n            element.Rule = emptyElementTag | startTag + content + endTag;\n            emptyElementTag.Rule = leftAnguralBracket + name + forwardSlash + rightAnguralBracket;\n            startTag.Rule = leftAnguralBracket + name + rightAnguralBracket;\n            endTag.Rule = leftAnguralBracket + forwardSlash + name + rightAnguralBracket;\n            content.Rule = MakeListRule(content, element, element);\n            this.Root = element;\n        }\n}</code></pre>\n\nWhen I use the above grammar class to parse the sample HTML text, it fails to identify the first end tag.\r<br />\n<br />\nSample text :  &lt;html&gt;&lt;html&gt;&lt;/html&gt;&lt;/html&gt;\r<br />\n<br />\nIrony successfully identifies first 8 tokens till forward slash of first end tag and failed to identify the name token inside end tag. It gives an error &quot;Syntax Error, Expected : Name&quot; which is actually their in the given html text. \r<br />\n<br />\nNot sure what changes required in grammar to successfully the text successfully.\r<br />\n<br />\n<br />\nAny help is appreciated.\r<br />\n<br />\nThanks\r<br />\nArun Malik<br />\n",
+    "PostedDate": "2013-09-20T06:50:45.617-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1097005",
+    "ThreadId": "458554",
+    "Html": "are you trying it in Grammar Explorer? if yes - are there any grammar errors/conflicts? If no, do it first<br />\n",
+    "PostedDate": "2013-09-20T08:42:12.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1097074",
+    "ThreadId": "458554",
+    "Html": "Hi,\r<br />\n<br />\nI have tried in Grammar Explorer as well. Following is the parser trace from Grammar Explorer. I cannot make out the required changes in grammar class from parse trace.\r<br />\n<br />\n<img src=\"http://i41.tinypic.com/2iapgna.png\" alt=\"Image\" />\r<br />\n<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2013-09-20T09:52:46.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1097076",
+    "ThreadId": "458554",
+    "Html": "<ol>\n<li>does grammar expl show any errors on grammar errors page?</li>\n<li>It seems the '&lt;/' combination should be declared as one terminal, this likely solve your problem; also it would be more consistent with HTML standard, so that '&lt;/' cannot contain any spaces inside</li>\n</ol>\n",
+    "PostedDate": "2013-09-20T09:58:10.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1097115",
+    "ThreadId": "458554",
+    "Html": "<ol>\n<li>There are no Grammar Errors.</li>\n<li>\nEven after combining '&lt;/' as one terminal, parsing is not happening. Following is the updated Grammar Class.<br />\n</li>\n</ol>\nGrammar Explorer Parse Trace :<br />\n<br />\n<img src=\"http://i43.tinypic.com/2aikozm.png\" alt=\"Image\" /><br />\n<br />\nUpdated Grammar Class :<br />\n<pre><code>public class HTMLGrammar : Irony.Parsing.Grammar\n    {\n        public HTMLGrammar()\n        {\n            KeyTerm leftAnguralBracket = new KeyTerm(&quot;&lt;&quot;,&quot;LeftAngularBarakcet&quot;);\n            KeyTerm rightAnguralBracket = new KeyTerm(&quot;&gt;&quot;, &quot;RightAngularBarakcet&quot;);\n            KeyTerm leftAngularBracketEndTag = new KeyTerm(&quot;&lt;/&quot;, &quot;LeftAngularBracketEndTag&quot;);\n            KeyTerm rightAngularBracketEndTag = new KeyTerm(&quot;/&gt;&quot;, &quot;RightAngularBracketEndTag&quot;);\n\n\n            NonTerminal element = new NonTerminal(&quot;Element&quot;);\n            NonTerminal emptyElementTag = new NonTerminal(&quot;EmptyElementTag&quot;);\n            NonTerminal startTag = new NonTerminal(&quot;StartTag&quot;);\n            NonTerminal content = new NonTerminal(&quot;Content&quot;);\n            NonTerminal endTag = new NonTerminal(&quot;EndTag&quot;);\n            RegexBasedTerminal name = new RegexBasedTerminal(&quot;Name&quot;, &quot;\\\\w+&quot;);\n\n            element.Rule = emptyElementTag | startTag + content + endTag;\n            emptyElementTag.Rule = leftAnguralBracket + name  + rightAngularBracketEndTag;\n            startTag.Rule = leftAnguralBracket + name + rightAnguralBracket;\n            endTag.Rule = leftAngularBracketEndTag + name + rightAnguralBracket;\n            content.Rule = MakeListRule(content, element, element);\n\n            this.Root = element;\n        }\n    }\n3. Grammar Explorer is defining following parsing states from the Grammar.\n</code></pre>\n\nState S0<br />\n  Shift items:<br />\n<pre><code>Element' -&gt; ·Element EOF \nElement -&gt; ·EmptyElementTag \nEmptyElementTag -&gt; ·LeftAngularBarakcet Name RightAngularBracketEndTag \nElement -&gt; ·StartTag Content EndTag \nStartTag -&gt; ·LeftAngularBarakcet Name RightAngularBarakcet </code></pre>\n\nTransitions: Element-&gt;S1, EmptyElementTag-&gt;S2, LeftAngularBarakcet-&gt;S3, StartTag-&gt;S4<br />\n<br />\nState S1<br />\n  Shift items:<br />\n<pre><code>Element' -&gt; Element ·EOF </code></pre>\n\nTransitions: <br />\n<br />\nState S2<br />\n  Reduce items:<br />\n<pre><code>Element -&gt; EmptyElementTag ·</code></pre>\n\nTransitions: <br />\n<br />\nState S3<br />\n  Shift items:<br />\n<pre><code>EmptyElementTag -&gt; LeftAngularBarakcet ·Name RightAngularBracketEndTag \nStartTag -&gt; LeftAngularBarakcet ·Name RightAngularBarakcet </code></pre>\n\nTransitions: Name-&gt;S6<br />\n<br />\nState S4<br />\n  Shift items:<br />\n<pre><code>Element -&gt; StartTag ·Content EndTag \nContent -&gt; ·Content Element Element \nContent -&gt; ·Element \nElement -&gt; ·EmptyElementTag \nEmptyElementTag -&gt; ·LeftAngularBarakcet Name RightAngularBracketEndTag \nElement -&gt; ·StartTag Content EndTag \nStartTag -&gt; ·LeftAngularBarakcet Name RightAngularBarakcet </code></pre>\n\nTransitions: Content-&gt;S7, Element-&gt;S8, EmptyElementTag-&gt;S2, LeftAngularBarakcet-&gt;S3, StartTag-&gt;S4<br />\n<br />\nState S5<br />\n  Reduce items:<br />\n<pre><code>Element' -&gt; Element EOF ·</code></pre>\n\nTransitions: <br />\n<br />\nState S6<br />\n  Shift items:<br />\n<pre><code>EmptyElementTag -&gt; LeftAngularBarakcet Name ·RightAngularBracketEndTag \nStartTag -&gt; LeftAngularBarakcet Name ·RightAngularBarakcet </code></pre>\n\nTransitions: RightAngularBracketEndTag-&gt;S9, RightAngularBarakcet-&gt;S10<br />\n<br />\nState S7<br />\n  Shift items:<br />\n<pre><code>Element -&gt; StartTag Content ·EndTag \nEndTag -&gt; ·LeftAngularBracketEndTag Name RightAngularBarakcet \nContent -&gt; Content ·Element Element \nElement -&gt; ·EmptyElementTag \nEmptyElementTag -&gt; ·LeftAngularBarakcet Name RightAngularBracketEndTag \nElement -&gt; ·StartTag Content EndTag \nStartTag -&gt; ·LeftAngularBarakcet Name RightAngularBarakcet </code></pre>\n\nTransitions: EndTag-&gt;S11, LeftAngularBracketEndTag-&gt;S12, Element-&gt;S13, EmptyElementTag-&gt;S2, LeftAngularBarakcet-&gt;S3, StartTag-&gt;S4<br />\n<br />\nState S8<br />\n  Reduce items:<br />\n<pre><code>Content -&gt; Element ·</code></pre>\n\nTransitions: <br />\n<br />\nState S9<br />\n  Reduce items:<br />\n<pre><code>EmptyElementTag -&gt; LeftAngularBarakcet Name RightAngularBracketEndTag ·</code></pre>\n\nTransitions: <br />\n<br />\nState S10<br />\n  Reduce items:<br />\n<pre><code>StartTag -&gt; LeftAngularBarakcet Name RightAngularBarakcet ·</code></pre>\n\nTransitions: <br />\n<br />\nState S11<br />\n  Reduce items:<br />\n<pre><code>Element -&gt; StartTag Content EndTag ·</code></pre>\n\nTransitions: <br />\n<br />\nState S12<br />\n  Shift items:<br />\n<pre><code>EndTag -&gt; LeftAngularBracketEndTag ·Name RightAngularBarakcet </code></pre>\n\nTransitions: Name-&gt;S14<br />\n<br />\nState S13<br />\n  Shift items:<br />\n<pre><code>Content -&gt; Content Element ·Element \nElement -&gt; ·EmptyElementTag \nEmptyElementTag -&gt; ·LeftAngularBarakcet Name RightAngularBracketEndTag \nElement -&gt; ·StartTag Content EndTag \nStartTag -&gt; ·LeftAngularBarakcet Name RightAngularBarakcet </code></pre>\n\nTransitions: Element-&gt;S15, EmptyElementTag-&gt;S2, LeftAngularBarakcet-&gt;S3, StartTag-&gt;S4<br />\n<br />\nState S14<br />\n  Shift items:<br />\n<pre><code>EndTag -&gt; LeftAngularBracketEndTag Name ·RightAngularBarakcet </code></pre>\n\nTransitions: RightAngularBarakcet-&gt;S16<br />\n<br />\nState S15<br />\n  Reduce items:<br />\n<pre><code>Content -&gt; Content Element Element ·</code></pre>\n\nTransitions: <br />\n<br />\nState S16<br />\n  Reduce items:<br />\n<pre><code>EndTag -&gt; LeftAngularBracketEndTag Name RightAngularBarakcet ·</code></pre>\n\nTransitions:<br />\n<pre><code></code></pre>\n\nThanks<br />\n",
+    "PostedDate": "2013-09-20T10:37:01.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1097154",
+    "ThreadId": "458554",
+    "Html": "Change content rule to \r<br />\n<br />\n content.Rule = MakeStarRule(content, element);<br />\n",
+    "PostedDate": "2013-09-20T11:59:34.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

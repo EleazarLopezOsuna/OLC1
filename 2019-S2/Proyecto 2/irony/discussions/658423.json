@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1485106",
+    "ThreadId": "658423",
+    "Html": "I'm a bit confused at the moment about which license this project is using.\r<br />\n<br />\nHere in Codeplex, the License tab to my above right shows the project is licensed under the MIT License since 2011, with updates to the copyright year in 2010, 2009, etc. as the project continued.\r<br />\n<br />\nHowever, in the source code, it shows a funky LICENSE file with a nonexistent year way into the future &quot;20012&quot; and doesn't say that it is the MIT LICENSE (though the wording appears to be the same).\r<br />\n<br />\nI just wanted to make sure it is the MIT LICENSE because I'd like to look into porting the library into another language (or at least attempting to do, I'm not an expert in this sort of stuff :-).\r<br />\n<br />\nSo I just wanted to make sure that trying to do that wouldn't cause any issues licensing-wise.\r<br />\n<br />\nThanks for any responses I might receive!<br />\n",
+    "PostedDate": "2016-10-02T09:46:16.6-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1485196",
+    "ThreadId": "658423",
+    "Html": "it's MIT, no catch, year is just a typo<br />\n",
+    "PostedDate": "2016-10-03T14:35:47.08-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1485201",
+    "ThreadId": "658423",
+    "Html": "Thank you for the update/clarification, just wanted to make sure :-).<br />\n",
+    "PostedDate": "2016-10-03T15:15:30.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

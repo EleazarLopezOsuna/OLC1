@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1436607",
+    "ThreadId": "642146",
+    "Html": "Hello, I need to distinguish between some other Ids and T-SQL variables. No matter what I do, by modifying the SQL example, I can't make it work. It confuses local and global variables, and when I get these right, it thinks 3 is a local variable.<br />\n<br />\nHow could it be modified the SQL grammar example in order to detect local variables (prefixed by @), global ones (prefixed by @@) and other things, like numbers (for example 3)? Note that is allowed to have local variables as <a href=\"mailto:@3.\n\nThank\" rel=\"nofollow\">@3.\n\nThank</a> you.<br />\n",
+    "PostedDate": "2015-07-30T02:20:45.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1436798",
+    "ThreadId": "642146",
+    "Html": "You can do the following. Declare one IdentifierTerminal named genericNameTerm and add @ to first-char list; make it high priority. This is the one that will be actually scanning the input. \r<br />\nDeclare 3 more 'specialized' terminals, each for one of subtypes: nameTerm, localVarTerm and globalVarTerm. Leave priority as is (default). Hook to genericNameTerm.ValidateToken event. In the event handler analyze the identifier string, and replace the Terminal property of the token with the appropriate specialized terminal. Use specialized terminals in grammar rules, but add genericNameTerm to NonGrammarTerminals list. \r<br />\nMy guess is this should work.<br />\n",
+    "PostedDate": "2015-07-31T14:34:11.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1437339",
+    "ThreadId": "642146",
+    "Html": "Do you have some example of ValidateToken event?<br />\nAnd what do you mean by &quot;subtype&quot;? Is there a relation between the subtypes and the genericNameTerm in terms of method call or property assignment?<br />\nI try to get directly identifiers like &quot;id&quot; or variables like &quot;@id&quot; or &quot;<a href=\"mailto:@@servername&quot;.\nAdditionally,\" rel=\"nofollow\">@@servername\".\nAdditionally,</a> I will have to do the same for temporary tables, prefixed by &quot;#&quot; or &quot;##&quot;.<br />\n",
+    "PostedDate": "2015-08-05T03:26:39.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1437682",
+    "ThreadId": "642146",
+    "Html": "IMHO, being just a newbie, I think the prefixes should be also strings, not characters only. In this case, if I want to limit the characters of the prefix to '@', which is 'UnicodeCategory.OtherPunctuation',  AKA 'Po', the second '@' will throw an error due to excluding 'UnicodeCategory.OtherPunctuation' from the identifier's body.<br />\n",
+    "PostedDate": "2015-08-07T02:19:31.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1437698",
+    "ThreadId": "642146",
+    "Html": "I have declared an IdentifierTerminal named genericNameTerm and have added '@' to first-char list. Adding it to NonGrammarTerminals list blows into the error 'A terminal id_var_global has empty prefix.' because IdentifierTerminal defines GetFirsts() as:<br />\n<pre><code>public override IList&lt;string&gt; GetFirsts() {\n      // new scanner: identifier has no prefixes\n      return null; \n/*\n      var list = new StringList();\n      list.AddRange(Prefixes);\n      foreach (char ch in _allFirstCharsSet)\n        list.Add(ch.ToString());\n      if ((Options &amp; IdOptions.CanStartWithEscape) != 0)\n        list.Add(this.EscapeChar.ToString());\n      return list;\n */\n    }</code></pre>\n\n",
+    "PostedDate": "2015-08-07T04:42:12.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

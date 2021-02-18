@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "270736",
+    "ThreadId": "79070",
+    "Html": "<p>Hello!</p>\r\n<p>I updated Irony sources from SVN and realized that this flag is gone. Why it's not supported anymore?</p>",
+    "PostedDate": "2009-12-25T13:59:02.67-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270760",
+    "ThreadId": "79070",
+    "Html": "<p>I think this flag and associated operation of automatically finding transient non-terminals is not as useful as it seemed at the beginning. I think it is better if grammar writer specifies transient non-terminals explicitly, and I hope it's not a bit deal for you - just add MarkTransient statement.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-12-25T19:05:31.457-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270790",
+    "ThreadId": "79070",
+    "Html": "<p>Of course, it's no big deal :)</p>\r\n<p>But I think autodetection feature is pretty handy at early development stages, when grammar is changed very often. It's an easy way to automatically simplify the parse-tree having no need to maintain list of transient non-terminals by hand.</p>\r\n<p>The only drawback is the case when your code expects some exact structure of the parse-tree (i.e. when you transform parse-tree into an AST). So I'd check autodetection off once the grammar is finished.</p>",
+    "PostedDate": "2009-12-26T02:43:28.347-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "926001",
+    "ThreadId": "399175",
+    "Html": "\r\n<p>Roman,</p>\r\n<p>I have made a first pass at abstracting the bare esentials of Irony.Interpreter.Ast.AstNode into an abstract class that uses only definitions of Irony.Ast and Irony.Parsing, plus two new objects:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">interface</span> IScriptThread{\r\n   Irony.Ast.AstNode CurrentNode { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }\r\n   <span style=\"color:blue\">void</span> ThrowScriptError(<span style=\"color:blue\">string</span> error, BnfTerm sender);\r\n}\r\n<span style=\"color:blue\">public</span> <span style=\"color:blue\">interface</span> IScopeInfo{ }\r\n\r\n\r\nThis has allowed me to completely remove all references to Irony.Interpreter<br>from my music parser, with no ill effects. Do you possibly have time to <br>review this for general inclusion?</pre>\r\n<pre>Pieter</pre>\r\n</div>\r\n",
+    "PostedDate": "2012-10-12T13:53:15.097-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "926072",
+    "ThreadId": "399175",
+    "Html": "<p>I think incorporating this would be an (albeit small) step forward on your code clean-up project. The new base clase, <em><strong>Irony.Ast.AbstractAstNode</strong></em> incorporates about 70 or 75% of the original, and implements just the two interfaces <em><strong>IAstNodeInit </strong></em>and <em><strong>IBrowsableAstNode</strong></em>. This now provides a suitable base for the AST structure of my music parser, both stand-alone and within GrammarExplorer, without any references to namespace&nbsp;<em>Irony.Interpreter.</em></p>\r\n<p>Pieter</p>\r\n<p><span style=\"font-family: Consolas; color: #2b91af; font-size: xx-small;\"><span style=\"font-family: Consolas; color: #2b91af; font-size: xx-small;\"><span style=\"font-family: Consolas; color: #2b91af; font-size: xx-small;\">&nbsp;</span></span></span></p>",
+    "PostedDate": "2012-10-12T20:58:56.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "926871",
+    "ThreadId": "399175",
+    "Html": "<p>Hi Roman,</p>\r\n<p>Hmmm! More complex than I initially realized. Althought my proposal above nicely supports the music parser's needs, it does not come close to supporting the Irony.Interpreter implementation.</p>\r\n<p>I have made a couple&nbsp;of passes at attempting to adapt this into Irony.Interpreter, but they all quickly collapse under their own weight. Part of the problem is that I do not recognize the desingnpattern you are using with the implementation of Evaluate and DoSetValue in AstNode.cs. Can you possibly point me at a reference for this? Thanks very much.</p>\r\n<p>Pieter</p>",
+    "PostedDate": "2012-10-15T11:13:01.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "926873",
+    "ThreadId": "399175",
+    "Html": "<p>Hi</p>\r\n<p>sorry for being silent for so long, had been busy and away. Will get to this tonight, and will look at other threads.&nbsp;</p>\r\n<p>Roman</p>\r\n<p>PS - really appreciate your help to other folks on some simple issues - thank you!</p>",
+    "PostedDate": "2012-10-15T11:20:00.843-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "926895",
+    "ThreadId": "399175",
+    "Html": "<p>My pleasure.&nbsp;&nbsp;I look forward to your comments.</p>\r\n<p>Pieter</p>",
+    "PostedDate": "2012-10-15T12:06:45.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927533",
+    "ThreadId": "399175",
+    "Html": "<p>I don't quite see what the problem here. Irony assembly declares two generic interfaces for AST nodes to be 'viewable' in Grammar explorer. And Irony.Interperter provides an implementation of AstNode for interpreter/scripting language implementation. You were able to invent your own AST tree/classes for your specific purpose - which assures that the idea works well. And the idea is - very small, compact basic interface for communicating with grammar Explorer and using default AST instantiation, plus an example/reference/starting point implementation for interpreter. Either use provided AST node or build your own - which you did. Why invent more?!&nbsp;</p>",
+    "PostedDate": "2012-10-16T09:39:46.32-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927549",
+    "ThreadId": "399175",
+    "Html": "\r\n<p>My thinking was that an implementation of a basic AST-tree-walker would be very useful in Irony; and I am the type who always strives for perfection.</p>\r\n<p>The inspiration came from encountering near constant run-time exceptions from the moment&nbsp;<em><strong>LanguageFlags.CreateAst</strong></em> was set until the AST tree was perfect. Not an issue for me any longer, as I have built such an Ast-tree-walker\r\n in a private extension of Irony.Ast, but surely others have encountered this also once they wander away from\r\n<strong><em>Programming</em></strong> language grammars.</p>\r\n<p>However, perhaps it is my understanding of the design that is imperfect, rather than the code, as I am still low on the learning curve for Irony.Interpreter. Let me think on it again.</p>\r\n",
+    "PostedDate": "2012-10-16T10:01:35.96-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

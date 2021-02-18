@@ -1,0 +1,28 @@
+
+/*int x, int y, int width, int height */
+
+var tituloMenu = "Menú de ventas";
+var nombreEmpresa = "Distribuidora " + "Compiladores 1";
+var frase = "!Somos todo en electricidad!";
+
+import "./src/Datos/datos.css";
+
+
+component panelDatos()
+{
+     return 
+     (
+     	<Panel id= titulo x = 0 y = 100  width = 980 height = 90 classname="panel principal">
+               <text x = 37 y = 14 width = 119 height = 27 classname="text todo">Código cliente</text>
+               <text x = 430 y = 50 width = 119 height = 27 classname="text todo">Dirección</text>
+               <text x = 430 y = 10 width = 65 height = 29 classname="text todo">NIT</text>
+               <text x = 37 y = 48 width = 119 height = 27 classname="text todo">Nombre del cliente</text>
+               <textfield x =500 y = 50 width = 270 height = 29 className = "text todo">5a. Avenida 5-25 Zona 10, Guatemala, Guatemala</textfield>
+               <textfield x =500 y = 10 width = 270 height = 29 className = "text todo">12112224-3</textfield>
+               <textfield x =160 y = 15 width = 224 height = 24 className = "text todo">CLIENTEGT2019</textfield>
+               <textfield x =160 y = 48 width = 224 height = 27 className = "text todo">Oscar Matías del Cid</textfield>
+          </panel>    
+     );
+}
+
+Render(</panelDatos>, cuerpo1);

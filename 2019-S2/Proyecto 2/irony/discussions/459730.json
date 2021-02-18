@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1100992",
+    "ThreadId": "459730",
+    "Html": "I defined a grammar and I am trying to generate the AST Tree. I am using the JSBasic article from Codeproject / Github the irony dll in the esaple includes the Irony.Compiler namespace which contains, among others, the AstNode class.\r<br />\n<br />\nI think I need to add a typeof(ClassInheritedFromAstNode) to the non-terminals in the grammar but the latest download does not generate the Irony.Compiler namespace.\r<br />\n<br />\nHow should I go about thefining the AstNodes for the non-terminal elements?\r<br />\n<br />\nThanks for any help <br />\n",
+    "PostedDate": "2013-09-30T10:56:09.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1100994",
+    "ThreadId": "459730",
+    "Html": "the version from article you're using seems outdated. Use latest version from this site, and adjust the grammar for it. Use Irony samples as a help/guidance.<br />\n",
+    "PostedDate": "2013-09-30T11:01:50.167-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1239892",
+    "ThreadId": "459730",
+    "Html": "If you're using NuGet, make sure you also get the &quot;Irony.Interpreter&quot; package, as that contains the AstNode type that your ClassInheritedFromAstNode derives from. I didn't find any examples of AstNode derived types in the samples.<br />\n",
+    "PostedDate": "2014-04-30T09:26:22.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

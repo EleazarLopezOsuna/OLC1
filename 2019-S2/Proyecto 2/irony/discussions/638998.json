@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1428195",
+    "ThreadId": "638998",
+    "Html": "Hello\r<br />\n<br />\nI try to understand AST creation algorithm in Irony.\r<br />\n<br />\nHow I understood If I mark no terminal symbol as &quot;Transient&quot;, ASTbuilder should skip this node, but process child nodes. \r<br />\n<br />\nBut if I call Grammar.MakeTransient() - I mark term with IsTransient and NoAstNode flags. It break AST creation, because in AstBuilder.BuildAst(ParseTreeNode parseNode) I see line\r<br />\n<strong>if (term.Flags.IsSet(TermFlags.NoAstNode) || parseNode.AstNode != null) return;</strong>\r<br />\n<br />\nHow I can create AST from Syntax Tree with skip some internal syntax nodes?<br />\n",
+    "PostedDate": "2015-06-01T03:19:00.6-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1428863",
+    "ThreadId": "638998",
+    "Html": "If you mark NonTerminal as transient, the Parse node itself would disappear from parse tree (concrete syntax tree), so AST node builder would never see it.  And transient non-terminal never appears in the tree. It is used for definition of the grammar, but is considered useless extra in actual tree, so it is automatically eliminated by parser. \r<br />\nDoes this answer your question? I don't quite understand your question, especially what's the problem with this 'if' statement for you\r<br />\nRoman<br />\n",
+    "PostedDate": "2015-06-04T15:25:11.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

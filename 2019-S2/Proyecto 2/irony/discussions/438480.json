@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1023052",
+    "ThreadId": "438480",
+    "Html": "<a href=\"http://vita.codeplex.com\" rel=\"nofollow\">http://vita.codeplex.com</a>\r<br />\n<br />\nVITA is my other open-source project, hosted here on CodePlex. It is a full-featured ORM with full LINQ support. If you're tired of EF crap - try VITA!\r<br />\n<br />\nNow with<br />\n<ol>\n<li>Entity Cache - full-blown cache solution, with full LINQ support. Dynamic LINQ queries are automatically redirected and executed against cached tables, in memory</li>\n<li>Compiled Queries Cache - all automatic and transparent</li>\n<li>Built-in Role-based Authorization framework, supporting row-level authorization</li>\n<li>Database-first approach - entity generator tool produces the entire solution from the existing database</li>\n<li>\nOptimistic concurrency - automatic support for RowVersion/Timestamp columns<br />\n</li>\n</ol>\nIf you're digging databases - this might be the right thing for you!\r<br />\nHave fun\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-03-29T15:05:43.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1417543",
+    "ThreadId": "632698",
+    "Html": "I have a simple grammar that parses expression strings, such as: &quot;x &lt; 2 and y &gt;= 3&quot;. I have a limited set of &quot;variables&quot; (x, y, etc) so I have them defined as NonTerminal; but if I add X and Y, then x and y won't be parsed correctly. Is there a simple way to set a flag somewhere to make the parses case insensitive or do I have to ToLower everything before passing it to Irony?\r<br />\n<br />\nThanks in advance,\r<br />\nFlorinator<br />\n",
+    "PostedDate": "2015-04-24T12:54:13.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1417544",
+    "ThreadId": "632698",
+    "Html": "caseSEnsitive is a parameter to a constructor of Grammar class<br />\n",
+    "PostedDate": "2015-04-24T12:58:14.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2015-04-24T13:54:49.697-07:00"
+  },
+  {
+    "Id": "1417552",
+    "ThreadId": "632698",
+    "Html": "Ah, wonderful, I missed that, thank you very much!<br />\n",
+    "PostedDate": "2015-04-24T13:54:45.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

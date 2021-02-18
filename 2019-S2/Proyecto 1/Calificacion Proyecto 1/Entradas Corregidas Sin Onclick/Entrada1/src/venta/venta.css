@@ -1,0 +1,50 @@
+panel /*Estilo general para los paneles.*/
+{
+     border: true;
+     border-color: yellow;
+     border-width: 3;
+}
+.principal /*Sub estilo 2*/
+{
+     background: rgb(255, 255, 102);
+     border-width: 3;
+     width: 980;
+     height: 510;     
+}
+.Detalle
+{
+     background: rgb(255, 255, 255);
+     border-width: 1;
+     width: 980;
+     height: 380;      
+}
+
+.Final
+{
+     background: rgb(255, 255, 255);
+     border-width: 1;
+     width: 980;
+     height: 60;      
+}
+
+text
+{
+     font : 'Ubuntu Mono';
+     align : left;     
+}
+.Titulo
+{
+     font : 'Cambria';
+     font-size : 24;     
+}
+.Todo
+{
+     font : 'Ubuntu Mono';
+     font-size : 12;  
+}
+.Botones
+{
+     font: 'Comic Sans MS';
+     font-size : 11;
+}
+

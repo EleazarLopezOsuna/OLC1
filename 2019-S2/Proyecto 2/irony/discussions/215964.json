@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "455225",
+    "ThreadId": "215964",
+    "Html": "Hi,<br>\r\n<br>\r\nI'm new to Irony, I love it, but there is one thing I can't figure out. This is probably a newbie question, but I can't find any help in the forums.<br>\r\n<br>\r\nWhat I'd like to do is something similar to Google search. For example if I search for &quot;operator&quot; on this forum I would type:<br>\r\n&quot;site:irony.codeplex.com operator&quot;<br>\r\n<br>\r\nI could also use google to search for a web address (stupid I know :)) but I could type something like<br>\r\n&quot;http://www.google.com&quot;<br>\r\n<br>\r\nWhat I want is to for all &quot;site:...&quot; to be Site nodes and everything else, even if it has a colon, to end up in Title nodes. I can't figure out how to give higher precedence to non terminal.<br>\r\n<br>\r\nHere is my code so far:<br>\r\n<br>\r\n            var Term = new IdentifierTerminal(&quot;term&quot;, &quot;:/.&quot;, &quot;&quot;);<br>\r\n            var Phrase = new StringLiteral(&quot;Phrase&quot;, &quot;\\&quot;&quot;);<br>\r\n            var ImpliedAnd = new ImpliedSymbolTerminal(&quot;ImpliedAnd&quot;);<br>\r\n<br>\r\n            var Sentence = new NonTerminal(&quot;Sentence&quot;);<br>\r\n            var BinarySentence = new NonTerminal(&quot;BinarySentence&quot;, typeof(BinaryNode));<br>\r\n            var Expression = new NonTerminal(&quot;Expression&quot;);<br>\r\n            var PrimaryExpression = new NonTerminal(&quot;PrimaryExpression&quot;);<br>\r\n            var BinaryExpression = new NonTerminal(&quot;BinaryExpression&quot;, typeof(BinaryNode));<br>\r\n            var ParenthesizedExpression = new NonTerminal(&quot;ParenthesizedExpression&quot;);<br>\r\n            var Title = new NonTerminal(&quot;Title&quot;, typeof(TitleNode));<br>\r\n            var BinaryOp = new NonTerminal(&quot;BinaryOp&quot;);<br>\r\n            var Site = new NonTerminal(&quot;Site&quot;, typeof(SiteNode));<br>\r\n            Root = Sentence;<br>\r\n<br>\r\n            Sentence.Rule = Expression;<br>\r\n            Expression.Rule = PrimaryExpression | BinaryExpression;<br>\r\n            BinaryExpression.Rule = Expression + BinaryOp + Expression;<br>\r\n            BinaryOp.Rule = ImpliedAnd | &quot;and&quot; | &quot;or&quot;;<br>\r\n<br>\r\n            PrimaryExpression.Rule = Site | ParenthesizedExpression | Title;<br>\r\n            Site.Rule = ToTerm(&quot;site:&quot;) + Term | ToTerm(&quot;site:&quot;) + Phrase;<br>\r\n            ParenthesizedExpression.Rule = &quot;(&quot; + Expression + &quot;)&quot;;<br>\r\n            Title.Rule = Term;<br>\r\n<br>\r\n            RegisterOperators(10, &quot;or&quot;);<br>\r\n            RegisterOperators(20, &quot;and&quot;);<br>\r\n            RegisterOperators(20, ImpliedAnd);<br>\r\n<br>\r\n            MarkPunctuation(new string[] { &quot;(&quot;, &quot;)&quot;});<br>\r\n            MarkTransient(new[] { PrimaryExpression, Expression, ParenthesizedExpression, BinaryOp, Sentence});<br>\r\n<br>\r\n            MarkReservedWords(&quot;site:&quot;);<br>\r\n            LanguageFlags = LanguageFlags.CreateAst;<br>\r\n<br>\r\nIf I use this code only Title nodes are created, even if I parse &quot;site:www.google.com&quot;, probably because I allow colon in IdentifierTerminal for Title. <br>\r\n<br>\r\nHow can I exclude &quot;site:&quot; from  IdentifierTerminal for Title. <br>\r\nIs there any other way to do this? Do I need to create Custom terminal? What is MarkReservedWords used for (could it help me in this case)?<br>",
+    "PostedDate": "2010-06-14T07:47:38.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "455379",
+    "ThreadId": "215964",
+    "Html": "<p>You definitely have ambiguous grammar, and Irony selects one route by default, and this route is not what you want. As first guess, try setting priority of &quot;site:&quot; higher, like&nbsp;</p>\r\n<p>var site = ToTerm(&quot;site:&quot;); //put this in declarations and use it in rules</p>\r\n<p>site.Priority = 100; //should be higher than identifier's priority</p>\r\n<p>&nbsp;</p>\r\n<p>I don't think you need to register &quot;site&quot; as reserved word with MarkReservedWords. Other thing - with MarkTransient, you can provide the list directly, with creating array with new[]</p>\r\n<p>Let me know if it helps</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-14T14:01:36.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "455576",
+    "ThreadId": "215964",
+    "Html": "Hi,<br>\r\n<br>\r\nSetting priority didn't help, Title Node always takes over. My code is now<br>\r\n<br>\r\n            var Term = new IdentifierTerminal(&quot;term&quot;, &quot;:/.&quot;, &quot;&quot;);<br>\r\n            var Phrase = new StringLiteral(&quot;Phrase&quot;, &quot;\\&quot;&quot;);<br>\r\n            var ImpliedAnd = new ImpliedSymbolTerminal(&quot;ImpliedAnd&quot;);<br>\r\n<br>\r\n            var Sentence = new NonTerminal(&quot;Sentence&quot;);<br>\r\n            var BinarySentence = new NonTerminal(&quot;BinarySentence&quot;, typeof(BinaryNode));<br>\r\n            var Expression = new NonTerminal(&quot;Expression&quot;);<br>\r\n            var PrimaryExpression = new NonTerminal(&quot;PrimaryExpression&quot;);<br>\r\n            var BinaryExpression = new NonTerminal(&quot;BinaryExpression&quot;, typeof(BinaryNode));<br>\r\n            var ParenthesizedExpression = new NonTerminal(&quot;ParenthesizedExpression&quot;);<br>\r\n            var Title = new NonTerminal(&quot;Title&quot;, typeof(TitleNode));<br>\r\n            var BinaryOp = new NonTerminal(&quot;BinaryOp&quot;);<br>\r\n            var Site = new NonTerminal(&quot;Site&quot;, typeof(SiteNode));<br>\r\n            var SiteTerm = ToTerm(&quot;site:&quot;);<br>\r\n            SiteTerm.Priority = 100;<br>\r\n            Root = Sentence;<br>\r\n<br>\r\n            Sentence.Rule = Expression;<br>\r\n            Expression.Rule = PrimaryExpression | BinaryExpression;<br>\r\n            BinaryExpression.Rule = Expression + BinaryOp + Expression;<br>\r\n            BinaryOp.Rule = ImpliedAnd | &quot;and&quot; | &quot;or&quot;;<br>\r\n<br>\r\n            PrimaryExpression.Rule = Site | ParenthesizedExpression | Title;<br>\r\n            Site.Rule = SiteTerm + Term | SiteTerm + Phrase;<br>\r\n            ParenthesizedExpression.Rule = &quot;(&quot; + Expression + &quot;)&quot;;<br>\r\n            Title.Rule = Term;<br>\r\n<br>\r\n            RegisterOperators(10, &quot;or&quot;);<br>\r\n            RegisterOperators(20, &quot;and&quot;);<br>\r\n            RegisterOperators(20, ImpliedAnd);<br>\r\n<br>\r\n            MarkPunctuation(new string[] { &quot;(&quot;, &quot;)&quot; });<br>\r\n            MarkTransient(PrimaryExpression, Expression, ParenthesizedExpression, BinaryOp, Sentence);<br>\r\n<br>\r\n            LanguageFlags = LanguageFlags.CreateAst;<br>\r\n<br>\r\n<br>\r\nI thought maybe I could change priority to Site, <br>\r\n<br>\r\n            var Site = new NonTerminal(&quot;Site&quot;, typeof(SiteNode));<br>\r\n<br>\r\nbut I could only find Precedence property. And it didn't help either. What else can I do? <br>\r\n\r\n",
+    "PostedDate": "2010-06-15T03:50:57.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "455841",
+    "ThreadId": "215964",
+    "Html": "<p>I'll look and try your grammar tonight</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-06-15T14:45:32.167-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "455954",
+    "ThreadId": "215964",
+    "Html": "<p>OK, got it. Just two things:</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>SiteTerm.AllowAlphaAfterKeyword = <span style=\"color:blue\">true</span>;       \r\n\r\nTerm.Priority = Terminal.LowestPriority;\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Completely forgot about this AllowAlpha... flag, it was a while ago. This was the main problem. With your original grammar it works ok if there's a space after &quot;site:&quot;, but if there's no space, then the default rule is that keyword cannot be followed by smth immediately- which makes sense most of the time. Setting this flag overrides this.</p>\r\n<p>The other line is setting lowest priority on normal identifier (not higher priority on KeyTerm, you don't need to do it). It appears there's some inconsistency in scanner constructor, it automatically assigns keywords priorities, overwriting dev's values in grammar. I will change it to overwrite them only if it was not assigned explicitly</p>\r\n<p>Let me know how it works for you</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-15T21:44:51.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "456018",
+    "ThreadId": "215964",
+    "Html": "Works like a charm, thank you very much. <br>\r\n I would never figure out to use AllowAlphaAfterKeyword, I always assumed the problem was with priority. <br>\r\nThanks again.",
+    "PostedDate": "2010-06-16T01:16:26.937-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

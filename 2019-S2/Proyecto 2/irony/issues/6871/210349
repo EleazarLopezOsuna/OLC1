@@ -1,0 +1,39 @@
+Index: Irony.Tests/FreeTextLiteralTests.cs
+===================================================================
+--- Irony.Tests/FreeTextLiteralTests.cs	(revision 42052)
++++ Irony.Tests/FreeTextLiteralTests.cs	(working copy)
+@@ -30,5 +30,16 @@
+       Assert.AreEqual(_token.Value.ToString(), @"abc\de,)fg", "Failed to scan a string");
+     }
+ 
++    [TestMethod]
++    public void TestFreeTextLiteral_Text_should_be_set_when_bumping_to_eof()
++    {
++        var term = new FreeTextLiteral("FreeText", FreeTextOptions.AllowEof, ",", ")");
++
++        SetTerminal(term);
++        TryMatch("abc");
++        Assert.IsNotNull(_token, "Failed to produce a token on valid string.");
++        Assert.AreEqual(term, _token.Terminal, "Failed to scan a string - invalid Terminal in the returned token.");
++        Assert.AreEqual(_token.Text, "abc", "Failed to set the text on a string");
++    }
+   }//class
+ }//namespace
+Index: Irony/Parsing/Terminals/FreeTextLiteral.cs
+===================================================================
+--- Irony/Parsing/Terminals/FreeTextLiteral.cs	(revision 42052)
++++ Irony/Parsing/Terminals/FreeTextLiteral.cs	(working copy)
+@@ -63,7 +63,12 @@
+         var newPos = source.Text.IndexOfAny(_stopChars, source.PreviewPosition);
+         if(newPos == -1) {
+           if(IsSet(FreeTextOptions.AllowEof))
+-            return source.CreateToken(this.OutputTerminal, source.Text.Substring(source.PreviewPosition));
++          {
++              newPos = source.Text.Length;
++              tokenText += source.Text.Substring(source.PreviewPosition, newPos - source.PreviewPosition);
++              source.PreviewPosition = newPos;
++              return source.CreateToken(this.OutputTerminal, tokenText);
++          }
+           else
+             return null;
+         }

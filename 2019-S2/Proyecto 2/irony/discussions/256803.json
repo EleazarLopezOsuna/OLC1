@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "609203",
+    "ThreadId": "256803",
+    "Html": "\r\n<p>I'm trying to create my first Irony grammar and am running into parsing errors. I want to parse the following string: &quot;&lt;region&gt;a=b c=d&quot;, where a and c are &quot;opcodes&quot; and b and d are &quot;values&quot;. However my parser falls over with an unexpected EOF. From\r\n the parse tree it gets everything right up until c which it interprets as a value instead of an opcode.</p>\r\n<pre style=\"font-family:Consolas; font-size:13; color:black; background:white\"><span style=\"color:blue\">var</span>&nbsp;region&nbsp;=&nbsp;<span style=\"color:blue\">new</span>&nbsp;<span style=\"color:#2b91af\">NonTerminal</span>(<span style=\"color:#a31515\">&quot;region&quot;</span>);\r\n<span style=\"color:blue\">var</span>&nbsp;setting&nbsp;=&nbsp;<span style=\"color:blue\">new</span>&nbsp;<span style=\"color:#2b91af\">NonTerminal</span>(<span style=\"color:#a31515\">&quot;setting&quot;</span>);\r\n<span style=\"color:blue\">var</span>&nbsp;opcode&nbsp;=&nbsp;<span style=\"color:blue\">new</span>&nbsp;<span style=\"color:#2b91af\">IdentifierTerminal</span>(<span style=\"color:#a31515\">&quot;opcode&quot;</span>);\r\n<span style=\"color:blue\">var</span>&nbsp;value&nbsp;=&nbsp;<span style=\"color:blue\">new</span>&nbsp;<span style=\"color:#2b91af\">IdentifierTerminal</span>(<span style=\"color:#a31515\">&quot;value&quot;</span>);\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; \r\n<span style=\"color:blue\">this</span>.Root&nbsp;=&nbsp;region;\r\n  \r\n<span style=\"color:green\">//&nbsp;&lt;region&gt;&nbsp;::=&nbsp;&quot;&lt;region&gt;&quot;&nbsp;&lt;setting&gt;&#43;</span>\r\nregion.Rule&nbsp;=&nbsp;<span style=\"color:#a31515\">&quot;&lt;region&gt;&quot;</span>&nbsp;&#43;&nbsp;MakePlusRule(region,&nbsp;setting);\r\n \r\n<span style=\"color:green\">//&nbsp;&lt;setting&gt;&nbsp;::=&nbsp;&lt;opcode&gt;&nbsp;&quot;=&quot;&nbsp;&lt;value&gt;</span>\r\nsetting.Rule&nbsp;=&nbsp;opcode&nbsp;&#43;&nbsp;<span style=\"color:#a31515\">&quot;=&quot;</span>&nbsp;&#43;&nbsp;value;<br><br></pre>\r\n<p>The parser then interprets my test string as:</p>\r\n<p>&lt;region&gt; (Key symbol)<br>\r\na (opcode)<br>\r\n= (Key symbol)<br>\r\nb (value)<br>\r\n<strong>c (value) &lt;-- problem here, should be opcode</strong><br>\r\nUnexpected end of file.</p>\r\n<p>I'm sorry if this is a really basic newbie question, but any pointers in the right direction would be a great help.</p>\r\n<p>thanks</p>\r\n<p>Mark</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-05-08T09:48:20.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609204",
+    "ThreadId": "256803",
+    "Html": "<p>You use MakePlusRule incorrectly - the non-terminal on the left should be the same as the first argument. You should create new nonterminal settingList:</p>\r\n<p>settingList.Rule = MakePlusRule(settingList, setting);&nbsp;</p>\r\n<p>region.Rule = \"&lt;region&gt;\" + settingList;</p>",
+    "PostedDate": "2011-05-08T09:51:32.413-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609215",
+    "ThreadId": "256803",
+    "Html": "<p>Thankyou for the quick response. It works perfectly. I suspect I am going to have to ask a few more questions before I am finished with this grammar, but I'll do my best to solve them myself without pestering you too much.</p>\r\n<p>Mark</p>",
+    "PostedDate": "2011-05-08T10:34:29.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609218",
+    "ThreadId": "256803",
+    "Html": "<p>OK, two more questions on terminals if you have time.</p>\r\n<p>First, I am using IdentifierTerminal for value when really value is more like a string literal but without any start and end delimiters. e.g. valid values might be 1.0, C#4 etc. Is there an appropriate built-in terminal type I can use?</p>\r\n<p>Second, and this is where I fear things may get a bit complicated. This language actually allows spaces in values so for example:</p>\r\n<p>name=John Smith age=50 birthplace=New York height=6'2\"</p>\r\n<p>would ideally parse to:</p>\r\n<p>opcode: \"name\"<br />value: \"John Smith\"<br />opcode: \"age\"<br />value: \"50\"<br />opcode: \"birthplace\"<br />value=\"New York\"</p>\r\n<p>etc</p>\r\n<p>To achieve this do I have to define my \"value\" as a non-terminal allowing component pieces, or is there a terminal that can cope with spaces in non-delimited string literals and work out where to stop?</p>\r\n<p>thanks again for your time &amp; this excellent library</p>\r\n<p>Mark</p>",
+    "PostedDate": "2011-05-08T10:54:52.303-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609227",
+    "ThreadId": "256803",
+    "Html": "<p>I have to say that this looks hard.&nbsp; I am not an expert, but I find the string hard to read as a human, nevermind constructing the grammar for a parser to read it!&nbsp; My eyes have to go backwards and forwards to work it out, so I imagine that a piece of computer code will have to do the same as well.</p>\r\n<p>I assume the rules would be that opcodes never have spaces in them? (otherwise it realy would be totally ambigous).&nbsp; I would therefore imagine that the opcodes are identified as having an \"=\" immediately afterwards, otherwise keep reading it as the previous value.&nbsp; I have to say that I cant see a way of doing this in Irony (but then again I am not the expert!) because my experience has been that Irony needs make a decision as it reads it, not make a decision about the previous part when it reads the next part.&nbsp; I say that based on my own&nbsp;experince of many hours getting rid of the conflicts in my own grammars.&nbsp; So about the only way I can see how to do it is if you can guarantee that there is never whitespace characters between the opcode and the \"=\" and you define the opcode as a non-terminal that must end in the character \"=\" (somehow). Then Irony might stand a chance of knowing it is reading an opcode as it is reading it.</p>\r\n<p>Alternatively, assuming that this is just a snippit of a bigger file to parse, then I would be tempted to simply let Irony detect the \"&lt;region&gt;\" and capture all the test that follows as a single string and split it up&nbsp;with a dedicated piece of custom code post-parsing.&nbsp; I suppose this depends on&nbsp;whether or not&nbsp;you need the Opcode and value pairs to be ready split up in the parse tree?&nbsp; Or do you simply need the parse tree to know it has read a region with an undefined number of opcode and value pairs in it?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-08T11:39:11.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609228",
+    "ThreadId": "256803",
+    "Html": "<p>@wmh, yes the opcodes never have spaces in them, and yes it is far from the best thought out file format. I suspected that this might be a hard problem. I don't think I can guarantee there won't be whitespace between the opcode and the \"=\" (and yes I know that there would be a definite ambiguity if a space were to appear after an \"=\"). I have been reading some documentation and was wondering if I could do something creative with \"Token Filters\" and somehow read ahead in the scanner stage allowing me to push string delimiters back in the right places before it got to the parser stage. However, there is only one sample of a token filter and it looks complex.</p>\r\n<p>I could write my own state machine based parser for this language (I already have one half-written). I just came looking at tools like Irony to see if I could find a more elegant solution.</p>\r\n<p>Mark</p>",
+    "PostedDate": "2011-05-08T11:47:58.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609244",
+    "ThreadId": "256803",
+    "Html": "<p>\"Token Filters\": cant comment personally.&nbsp; But then Irony definitely does seem to reward creativity and p<span style=\"color: black; font-size: 10pt;\">erseverance</span>.&nbsp; Let us know how you get on.</p>\r\n<p>Good luck,</p>\r\n<p>Will.</p>",
+    "PostedDate": "2011-05-08T13:34:24.363-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609313",
+    "ThreadId": "256803",
+    "Html": "<p>I would agree with wmh in that this kind of stuff is better be done by a simpler, non-Irony code. You can just read settingList element as one string. Then do a split of the string on space, with space ignored (string.Split does this easily. After this a simple loop over splitted words would find all \"=\" symbols, and set symbol before as keys and the rest as values.</p>\r\n<p>Roman&nbsp;</p>",
+    "PostedDate": "2011-05-08T19:54:51.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609799",
+    "ThreadId": "256803",
+    "Html": "<p>OK thanks for the help</p>\r\n<p>Mark</p>",
+    "PostedDate": "2011-05-09T14:40:38.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

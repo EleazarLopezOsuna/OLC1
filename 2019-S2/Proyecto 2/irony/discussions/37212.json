@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "123493",
+    "ThreadId": "37212",
+    "Html": "Hi,<br>\r\nThere is description of Google like Full-Text query.<br>\r\n<br>\r\n<a href=\"http://www.sqlservercentral.com/articles/Full-Text+Search+(2008)/64248/\">http://www.sqlservercentral.com/articles/Full-Text+Search+(2008)/64248/</a><br>\r\n<br>\r\nBut&nbsp;one thing&nbsp; is not good:<br>\r\n<br>\r\nI tested code and found one problem.<br>\r\nIf I entered phrase: <br>\r\n<br>\r\n<i>president -aluminium</i><br>\r\n<br>\r\nit wokrs fine.<br>\r\n<br>\r\nIf phrase is:<br>\r\n<i>-aluminium president</i><br>\r\n<br>\r\nit generates syntax error, phrase cannot start from negation. I checked goole it understand correctly this kind of phrases.<br>\r\n<br>\r\nNaturally query should not depend on order, i.e. A OR B == B OR A<br>\r\nIs it possible to&nbsp;describe this type of equivalence using Irony?<br>\r\n<br>\r\nRegards,<br>\r\nOleg.<br>\r\n",
+    "PostedDate": "2008-10-07T08:35:32.363-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "123504",
+    "ThreadId": "37212",
+    "Html": "<p>Hi</p>\r\n<p>Michael (the author) consulted me when preparing the article, and this problem surfaced at the time. The reason is the limitation of SQL server query syntax - it does not allow NOT in front of the query. Here is an extract from&nbsp; his email:</p>\r\n<p><em>...the&nbsp;issue is the - at the beginning of a phrase.&nbsp; Like this:<br>\r\n-&quot;Fish and chips&quot;<br>\r\nConverts to:<br>\r\nNOT “Fish and chips”<br>\r\nWhich is an illegal construct in SQL Server.&nbsp;&nbsp;&nbsp; <br>\r\n<br>\r\n</em>In the end, he had to disallow leading minus in input grammar. This is one of the differences with Google syntax, he probably forgot to mention it in his article. You should contact the author directly I think, or post question with the article<br>\r\nRoman</p>\r\n",
+    "PostedDate": "2008-10-07T08:53:36.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "123529",
+    "ThreadId": "37212",
+    "Html": "Ok, thank you very much.<br>\r\n<br>\r\nRegards,<br>\r\nOleg.\r\n",
+    "PostedDate": "2008-10-07T10:20:46.21-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

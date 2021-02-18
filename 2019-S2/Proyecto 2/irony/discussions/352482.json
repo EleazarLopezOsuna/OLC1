@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "824564",
+    "ThreadId": "352482",
+    "Html": "<p>Hello,</p>\n<p>I want to be able to parse this :</p>\n<p>? toto</p>\n<p>&nbsp; &nbsp; - titi</p>\n<p>This is the code i have currently :</p>\n<pre style=\"font-family: Consolas; font-size: 13; color: black; background: white;\">IdentifierTerminal&nbsp;IDENTIFIER&nbsp;=&nbsp;new&nbsp;IdentifierTerminal(\"IDENTIFIER\");\nvar&nbsp;TEMPLATE&nbsp;=&nbsp;new&nbsp;FreeTextLiteral(\"TEMPLATE\",&nbsp;FreeTextOptions.AllowEof,&nbsp;\"\\n\",&nbsp;\"\\r\\n\");\nvar&nbsp;PATTERNS&nbsp;=&nbsp;new&nbsp;NonTerminal(\"PATTERNS\");\nvar&nbsp;PATTERN&nbsp;=&nbsp;new&nbsp;NonTerminal(\"PATTERN\");\nPATTERNS.Rule&nbsp;=&nbsp;MakeStarRule(PATTERNS,&nbsp;PATTERN);\nPATTERN.Rule&nbsp;=&nbsp;ToTerm(\"?\")&nbsp;+&nbsp;IDENTIFIER&nbsp;+&nbsp;NewLine&nbsp;+&nbsp;ToTerm(\"&nbsp;&nbsp;&nbsp;&nbsp;-\")&nbsp;|&nbsp;\"\\t\"&nbsp;+&nbsp;TEMPLATE;</pre>\n<p>&nbsp;But whitespaces are not analyzed, and tabulations are transformed into 4 whitespaces.<br />Is there a way to have a keyterm that havbe whitespaces in it?<br />Thanks</p>\n<p>&nbsp;</p>\n<p>EDIT : I'm trying with space but i'd prefer to work with tabs \"\\t\"</p>",
+    "PostedDate": "2012-04-16T13:40:34.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "825257",
+    "ThreadId": "352482",
+    "Html": "<p>that's really non-standard task for Irony, and alike parser - to mess with structures with no constant delimiters like spaces. You see, each time you write grammar rule like \"a + b\", parser assumes that there maybe 1 or more delimiters between a and b tokens.&nbsp;</p>\r\n<p>It might work after all, but you have to probably override Grammar.SkipWhitespace method - and see the effects.</p>",
+    "PostedDate": "2012-04-17T22:52:49.887-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "825282",
+    "ThreadId": "352482",
+    "Html": "<p>Now i have overrided the SkipWhiteSpaces and never eat them.</p>\r\n<p>All is going well, but i've got one more problem.</p>\r\n<p>My language can have multiple empty lines, how can i build a rule with empty lines (can be just a newline or a new line full of spaces)</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2012-04-18T00:15:25.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "826067",
+    "ThreadId": "352482",
+    "Html": "<p>Well, try adding NewLinePlus terminal to your rules</p>",
+    "PostedDate": "2012-04-19T09:52:17.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "826161",
+    "ThreadId": "352482",
+    "Html": "<p>Thanks for the reply</p>\n<p>It did the tricks using NewLinePlus and this rule :</p>\n<pre style=\"font-family: Consolas; font-size: 13; color: black; background: white;\"><span style=\"color: blue;\">var</span>&nbsp;_spacePlus&nbsp;=&nbsp;<span style=\"color: blue;\">new</span>&nbsp;<span style=\"color: #2b91af;\">NonTerminal</span>(<span style=\"color: #a31515;\">\"empty_line\"</span>); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n<span style=\"color: blue;\">var</span>&nbsp;space&nbsp;=&nbsp;ToTerm(<span style=\"color: #a31515;\">\"&nbsp;\"</span>);\n_spacePlus.Rule = space | _spacePlus + PreferShiftHere() + space;</pre>\n<p>&nbsp;The problem is now i've got lots of empty_line statements in the parse tree. How can i define that i don't want this statement in the parse tree</p>\n<p>Thanks</p>",
+    "PostedDate": "2012-04-19T12:56:01.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "826165",
+    "ThreadId": "352482",
+    "Html": "<p>use MarkTransient method</p>",
+    "PostedDate": "2012-04-19T12:58:33.637-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

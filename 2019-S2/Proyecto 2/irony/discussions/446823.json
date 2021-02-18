@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1055899",
+    "ThreadId": "446823",
+    "Html": "I am completely new to Irony. I need to implement integral calculus facility in my interpreter.I am using ExpressionEvaluatorGrammar and want to change it to support integral calculus by using following function :-\r<br />\n<br />\nIntegrate(points[x,y])\r<br />\n<br />\nThis function will accept a list of cordinate points and calculate the integral.\r<br />\n<br />\nHow will I register this custom function to ExpressionEvaluatorGrammar  ? Please suggest steps.<br />\n",
+    "PostedDate": "2013-06-12T08:32:11.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1055933",
+    "ThreadId": "446823",
+    "Html": "Look at expression evaluator itself - it imports all static functions from System.Math class. There's an arithm demo that shows some expression that uses functions from this class.\r<br />\nYou can do the same - define static method Integrate somewhere and 'import' it into global namespace.<br />\n",
+    "PostedDate": "2013-06-12T09:20:54.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1055945",
+    "ThreadId": "446823",
+    "Html": "\r\n<div dir=\"ltr\">Thank You.Will try it. </div>\r\n",
+    "PostedDate": "2013-06-12T09:36:27.057-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

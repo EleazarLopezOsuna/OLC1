@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": null,
+    "Description": "As root node is statement list.I am reading the first child node like \" this._parseTree.Root.FirstChild.AstNode\"  , First child is assigning without any issue. But when it comes to ASTNODE of it in \"Parsetreenode\" .It throws back as null.Can you help me on this? How to use it?",
+    "LastUpdatedDate": "2017-06-19T23:16:54.597-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2017-06-19T00:19:35.78-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "There is a issue in assigning ASTNODE for Firstchildnode in Parsetreenode of Irony.",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9907
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "hard to say from this info. 'throws back as null' - meaning AstNode prop value is null? Check AstNodeConfig for your Root non-terminal in grammar, make sure it has some AstNodeType there",
+      "PostedDate": "2017-06-19T10:21:17.017-07:00",
+      "Id": 208597
+    },
+    {
+      "Message": "Okay I will check AstNodeConfig",
+      "PostedDate": "2017-06-19T23:16:54.597-07:00",
+      "Id": 208601
+    }
+  ]
+}

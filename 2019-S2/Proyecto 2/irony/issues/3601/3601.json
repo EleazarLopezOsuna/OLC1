@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T11:43:18.04-07:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "If a StringLiteral starts exactly before EOF (just a quote followed by EOF), parsing causes an NullReferenceException in both VS line mode and normal mode.\nReproducing test cases and probable fix attached in the patch.",
+    "LastUpdatedDate": "2010-03-26T11:43:18.04-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-01-11T11:35:43.043-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "StringLiteral crashes when started just before EOF",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 3601
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "oopps... sorry, accidentally deleted patch file - can you please reattach it again?\r\nwill investigate this anyway and fix in the next code drop\r\nthanks!",
+      "PostedDate": "2009-01-12T09:28:10.257-08:00",
+      "Id": 29109
+    },
+    {
+      "Message": "There it is (it is a pity codeplex does not notify about issue comments).",
+      "PostedDate": "2009-01-13T00:42:18.867-08:00",
+      "Id": 29110
+    },
+    {
+      "Message": "Applied the patch, the issue is fixed",
+      "PostedDate": "2009-04-26T19:06:39.05-07:00",
+      "Id": 29111
+    }
+  ]
+}

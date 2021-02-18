@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1103565",
+    "ThreadId": "461137",
+    "Html": "I need to create a control flow graph from my AST which Irony generates. Can I do it if I override <code>DoEvaluate</code> method of <code>AstNode</code>? Is it like the <code>DoEvaluate</code> is executed only when the code runs? Or can I invoke the evaluation without running the code? Or is there any other method which the <code>AstNode</code> provides to execute a particular action when it encounters a particular type of node?<br />\n",
+    "PostedDate": "2013-10-04T03:44:52.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1103900",
+    "ThreadId": "461137",
+    "Html": "yes, AST nodes in Irony.Interpreter are mainly directed at execution/interpretation. For code analysis (that's what you're doing it seems to me), you should probably \r<br />\n1: create your own AST nodes to hold extra analysis info \r<br />\n2: create analyzers - iterators/visitors to generate the analysis information<br />\n",
+    "PostedDate": "2013-10-04T22:24:33.33-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

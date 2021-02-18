@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "215353",
+    "ThreadId": "63338",
+    "Html": "<div style=\"color:Black;background-color:White\">\r\n<pre>I'm having trouble making my grammar parse a whitespace-delimited list of numbers and identifiers.  For example:<br><span style=\"color:Blue\"><br>public</span> <span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> TestGrammar : Grammar\r\n</span>{\r\n\t<span style=\"color:Blue\">public</span> TestGrammar()\r\n\t{\r\n\t\t<span style=\"color:Blue\">var</span> number = <span style=\"color:Blue\">new</span> NumberLiteral(<span style=\"color:#A31515\">&quot;number&quot;</span>);\r\n\t\t<span style=\"color:Blue\">var</span> identifier = <span style=\"color:Blue\">new</span> IdentifierTerminal(<span style=\"color:#A31515\">&quot;identifier&quot;</span>);\r\n\t\t\r\n\t\t<span style=\"color:Blue\">var</span> numOrId = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;numOrId&quot;</span>);\r\n\t\tnumOrId.Rule = MakePlusRule(numOrId, <span style=\"color:Blue\">null</span>, number | identifier);\r\n\t\t\r\n\t\t<span style=\"color:Blue\">this</span>.Root = numOrId;\r\n\t}\r\n}\r\n</pre>\r\n</div>\r\n<p>For some reason, this grammar accepts &quot;5a&quot; as valid.&nbsp; How can I make whitespace required between the number and identifier?</p>\r\n<p>Thanks for your help.</p>",
+    "PostedDate": "2009-07-23T08:49:36.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "215402",
+    "ThreadId": "63338",
+    "Html": "<p>That's a tough one, surprisingly. Essentially, all the components are doing its job properly: NumberLiteral stops scanning when it sees the letter that follows the number and returns number token to scanner. The scanner continues, picks up Identifier literal, which also returns a valid token, and everybody is happy. Except, from common sense prospective, that should be rejected. The proper way to fix it is to add extra check to number literal to report error if&nbsp;the number is followed by a letter. We've run into this before, and planned to add some functionality to support this rejection, just still didn't get to this yet. I will try to add this in the next code drop, I'm doing several scanner/terminals enhancements currently, right in this area. Until then - I hope you can live with that for now...</p>\r\n<p>Just to make it clear, it will happen in latest code drops in Sources page, not in old &quot;released&quot; version in downloads. I hope you're using this version.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-07-23T10:46:02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "215406",
+    "ThreadId": "63338",
+    "Html": "<p>Can you give me any advice on how to &quot;add an extra check to number literal to report error if&nbsp;the number is followed by a letter&quot;?&nbsp; I'm a beginner at Irony.</p>\r\n<p>In my full grammar, there are certain letters which are acceptable numeric suffixes.&nbsp; For example, &quot;5deg&quot; represents 5 degrees.&nbsp; I suppose the non-alpha character check would have to happen after it scanned past&nbsp; the suffix?</p>\r\n<p>Thanks again for your help.</p>",
+    "PostedDate": "2009-07-23T10:50:25.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "215415",
+    "ThreadId": "63338",
+    "Html": "<p>Are you adding these valid suffixes explicitly to number literal? you should do it.</p>\r\n<p>As for workaround, you can change or inherit the number literal and add validation at the end (when it produces token). If the following char is a letter, return null instead of token.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-23T11:04:33.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "215420",
+    "ThreadId": "63338",
+    "Html": "<p>I'm using AddSuffixCodes() to add my suffixes.&nbsp; I got it working.&nbsp; Here's the code I used in case anyone else needs this:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> CustomNumberLiteral : NumberLiteral\r\n</span>{\r\n\t<span style=\"color:Blue\">public</span> CustomNumberLiteral(<span style=\"color:Blue\">string</span> name) : <span style=\"color:Blue\">base</span>(name)\r\n\t{\r\n\t}\r\n\t\r\n\t<span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">override</span> Token CreateToken(CompilerContext context, ISourceStream source, CompoundTokenDetails details)\r\n\t{\r\n\t\tToken token = <span style=\"color:Blue\">base</span>.CreateToken(context, source, details);\r\n\t\t\r\n\t\t<span style=\"color:Blue\">return</span> <span style=\"color:Blue\">char</span>.IsLetter(source.CurrentChar) ? <span style=\"color:Blue\">null</span> : token;\r\n\t}\r\n}\r\n</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2009-07-23T11:09:56.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "215422",
+    "ThreadId": "63338",
+    "Html": "<p>Yea, that looks right. Congrats - you're no longer newbie in Irony anymore!</p>",
+    "PostedDate": "2009-07-23T11:13:48.233-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "222495",
+    "ThreadId": "63338",
+    "Html": "<p>In latest drop, there's an extra flag in NumberLiteral that allows detecting this situation automatically and reports an error</p>",
+    "PostedDate": "2009-08-12T06:27:36.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "137581",
+    "ThreadId": "41460",
+    "Html": "first, very nice product!<br>\r\n<br>\r\nOnly for clarification:<br>\r\n<br>\r\nIrony.net will parse and create a AST for my new language.<br>\r\nThan I can use this AST and transform  it to DLR.AST.<br>\r\n<br>\r\nThan DLR will write than my byte code.<br>\r\n<br>\r\nIs that correct?<br>\r\n<br>\r\nWill this work?<br>\r\n<br>\r\nregards<br>\r\nWolfram\r\n",
+    "PostedDate": "2008-12-04T01:57:09.713-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137625",
+    "ThreadId": "41460",
+    "Html": "yep, that will work. There was another project with this plan - google &quot;IronLua&quot;.<br>\r\ngood luck. \r\n",
+    "PostedDate": "2008-12-04T05:02:26.563-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-02-25T21:18:43.053-08:00",
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "Hi Roman,\r\n\r\nMaybe I am doing something less than perfectly, but when creating an Ast tree I encountered null values in the BindingRequest.FromModule that caused an unhandled exception and failed Ast build\r\n\r\nTo reproduce\r\n    1) Create a language inheriting Grammar\r\n    2) Set the LanguageFlags = LanguageFlags.CreateAst; in the Grammar\r\n    3) Override BuildAst in the custom grammar with\r\n\r\n    public override void BuildAst(LanguageData language, ParseTree parseTree)\r\n    {\r\n        if (!LanguageFlags.IsSet(LanguageFlags.CreateAst))\r\n            return;\r\n\r\n        var astContext = new InterpreterAstContext(language);\r\n        var astBuilder = new AstBuilder(astContext);\r\n        astBuilder.BuildAst(parseTree);\r\n    }\r\n\r\n    \r\nTo fix \r\n\r\nI added a condition to Interpreter/LanguageRuntime/LanguageRuntime_Binding.cs that request.FromModule was not null, then the AstTree was created correctly\r\n\r\n      //3. Check external module imports\r\n      if (request.FromModule != null)\r\n      {\r\n          foreach (var imp in request.FromModule.Imports)\r\n          {\r\n              var result = imp.Bind(request);\r\n              if (result != null)\r\n                  return result;\r\n          }\r\n      }\r\n\r\n",
+    "LastUpdatedDate": "2013-02-25T21:18:43.053-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2012-06-13T23:52:51.917-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Bug in Irony.Interpreter.LanguageRuntime",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9873
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "sorry for not getting it soon. It seems like the this fix would not fit the general idea - that each request must come from a certain module, so FromModule is never null. The variable referencing a value cannot just fly in the air, it should be located in some module. So investigate why are you getting FromModule value null.\n",
+      "PostedDate": "2013-02-25T21:04:14.237-08:00",
+      "Id": 91524
+    }
+  ]
+}

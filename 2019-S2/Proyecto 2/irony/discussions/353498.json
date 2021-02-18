@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "828285",
+    "ThreadId": "353498",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>Has anyone worked on using Irony together with the new System.Linq.Expressions classes? It seems this contains all the stuff necessary for the run-time interpretation of an arbitrary complex statement., and I wonder how to use it from an Irony AST...</p>\r\n<p>As I see it, there are several approaches:</p>\r\n<p>- Have the AST directly use the the Expression classes for it's various nodes... I am not sure about the feasability of this since the Expression class has it's own tree representation (with a Visitor pattern and all), and I do not see how to make it worrk\r\n with Irony' AST construction</p>\r\n<p>- Have some code that traverse the AST node and generate a corresponding Expression for execution. This step would allow things like loop transformation to match the LoopExpression semantic, etc...</p>\r\n<p>- Other ideas?</p>\r\n<p>&nbsp;</p>\r\n<p>I cannot help but compare this Expressions framework with the Irony built-in interpreter... Any advice/comparison between the two? Thanks.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-04-25T03:02:01.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "828710",
+    "ThreadId": "353498",
+    "Html": "<p>&gt;Have the AST directly use the the Expression classes for it's various nodes</p>\r\n<p>I think it's impossible for two reasons:</p>\r\n<ol>\r\n<li>all constructors are private, so Activator.CreateInstance() is unable to create AST nodes</li>\r\n<li>expression instances are immutable: you cannot change anything after they are created.</li>\r\n</ol>\r\n<p>So you'll have to use the second approach.<br />Roll your own AST visitor if you need to build a LINQ expression.</p>\r\n<p>&gt;Any advice/comparison between the two?</p>\r\n<p>I think that they serve different purposes :)</p>\r\n<p>Irony AST nodes&nbsp;are&nbsp;linked to the source code. <br />You can find the exact position of every node in the source (try clicking the &laquo;Locate&raquo; button in GrammarExplorer).<br />Irony AST nodes are interpretable: you can evaluate your AST node by node.</p>\r\n<p>LINQ expressions don't have any information about their origin.<br />They cannot be interpreted (at least, out-of-the-box), but they can be compiled into MSIL.</p>",
+    "PostedDate": "2012-04-25T17:07:30.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

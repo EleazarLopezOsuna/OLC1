@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "673750",
+    "ThreadId": "273101",
+    "Html": "\r\n<p>Hi Roman,</p>\r\n<p>by replace all-call to <strong>EnumType.HasFlag (flag)</strong> with <strong>(EnumType &amp; flag) != 0</strong>,&nbsp;&nbsp;performance improve 100-400%</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>reduceProduction.LValue.Flags.HasFlag(TermFlags.IsTransient)\r\n</pre>\r\n</div>\r\n<p>vs</p>\r\n<pre>((reduceProduction.LValue.Flags &amp; TermFlags.IsListContainer) != 0)</pre>\r\n<p>C#:&nbsp; input: 60K lines, 200K tokens, release-mode</p>\r\n<p style=\"padding-left:30px\">with hasFlag: 3233ms<br>\r\nwithout hasFlag: 1472ms</p>\r\n<p>ExpressionEvaluatorGrammar: input: 190k tokens, release-mode</p>\r\n<p style=\"padding-left:30px\">with hasFlag: 1802ms<br>\r\nwithout hasFlag: 384ms</p>\r\n<p>hope it help :]</p>\r\n",
+    "PostedDate": "2011-09-19T10:02:14.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "673756",
+    "ThreadId": "273101",
+    "Html": "<p>hmmm... that's interesting observation. I thought HasFlag is \"native\" implementation, and is equivalent to \"&amp;\", but it looks like it's not...</p>\r\n<p>thanks for the tip!</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-09-19T10:16:56.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "676628",
+    "ThreadId": "273101",
+    "Html": "<p>I found the same improvement, Irony is&nbsp;3 times faster with my custom grammar, average with HasFlag : 4.5ms, after replacing all occurences of HasFlag with a bitwise operation&nbsp;: 1.45ms. It takes 2 minutes to fix it.</p>\n<p>BTW, thanks a lot, Irony is awesome, it's such a pleasure to work with it !</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-09-26T03:50:00.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "676758",
+    "ThreadId": "273101",
+    "Html": "<p>yea, I already measured it, just the operation itself - HasFlag is about 500 times slower than bitwise operation. Fixed it, will be in the next code drop</p>\r\n<p>thanks!</p>",
+    "PostedDate": "2011-09-26T09:24:24.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

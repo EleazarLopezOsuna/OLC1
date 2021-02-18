@@ -1,0 +1,19 @@
+[
+  {
+    "Id": "0",
+    "Name": "BETA release",
+    "DevelopmentStatus": "Beta",
+    "Description": "BETA release. \nContains core Irony assembly, Grammar Explorer and several sample grammars/parsers for c#, Java, Scheme, GWBasic, JSON, SQL, Refal, parser and interpreter for arithmetic expressions. Support for command line execution. Silverlight-compatible version included. \n\nDec 12, 2013 —  Download file updated.\nBug fixes, minor improvements",
+    "ReleasedDatge": "0001-01-01T00:00:00",
+    "ModifiedDate": "2013-12-12T10:47:11.417-08:00",
+    "Files": [
+      {
+        "Id": "1c4f928e-fa11-4513-8418-b9ec8b1a679b",
+        "FileName": "Irony_2013_12_12.zip",
+        "Url": "./0/1c4f928e-fa11-4513-8418-b9ec8b1a679b",
+        "Type": "Source Code",
+        "UploadDate": "2013-12-12T10:47:10.963-08:00"
+      }
+    ]
+  }
+]

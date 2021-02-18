@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1119969",
+    "ThreadId": "466895",
+    "Html": "Hi,<br />\n<br />\nI am looking for help about text containing multilevel of braces.<br />\nFor example with this text :<br />\n<code>{{abc|{cde|fgh}} bb|cc}</code><br />\nI want to obtain<br />\n<code>{abc bb|cde bb|fgh bb|cc}</code><br />\n<br />\nand with this<br />\n<code>pp {vv {ff|ii|nn|aa} | {ee|hh|rr} } xx {{abc|{cde|fgh} bb|cc}</code><br />\nthe results is<br />\n<code>pp {vv ff|vv ii|vv nn|vv aa | ee|hh|rr} xx {abc bb|cde bb|fgh bb|cc}</code><br />\n<br />\nThe idea is to put the text with several levels of braces only one level of braces. <br />\nTo achieve this I think a non-regular expression grammar parser  in order to parse the text to a sequence of tokens. <br />\n<br />\nIs that possible with Irony ?<br />\nRem: I dont't know BNF.<br />\n<br />\nAny help is appreciated. <br />\n<br />\nThanks .<br />\n",
+    "PostedDate": "2013-11-07T11:25:59.2-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1120829",
+    "ThreadId": "466895",
+    "Html": "what you have at hand, as far as I understand, is conversion of text expression applying arithm distribution rule like ' (a + b) * c = ac + bc'\r<br />\nThat naturally splits into 2 steps:<br />\n<ol>\n<li>Parsing the input text and producing parse tree or AST tree; and if you don't know BNF - too bad, you can't use Irony without this stuff.</li>\n<li>Walking the tree and converting it while applying distribution rule</li>\n<li>- if you need text, generating text back from the converted tree\r<br />\nRoman</li>\n</ol>\n",
+    "PostedDate": "2013-11-09T09:30:33.653-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

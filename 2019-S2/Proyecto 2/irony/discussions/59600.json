@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "201787",
+    "ThreadId": "59600",
+    "Html": "<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>Hello,</p>\r\n<p>&nbsp;</p>\r\n<p>I&rsquo;m new to Irony and I&rsquo;m trying to use it to interpret a PLC program. For now, I&rsquo;m only interested in the XML three of the PLC program.&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>I&rsquo;m using the Irony version from the Download page (November 5 2008) and I have some difficulties with the Custom Terminal.&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>In the header of a PLC program, we can assign a title to the program using this syntax:</p>\r\n<p>&nbsp;</p>\r\n<p>TITLE = MAIN CALL OF THE PROCESS</p>\r\n<p>&nbsp;</p>\r\n<p>This is my implementation of a Custom Terminal to retrieve the title&rsquo;s string (everyting on the line after the '='):</p>\r\n<p>&nbsp;</p>\r\n<p>// Get the string up to the EOL</p>\r\n<p>static Token TitleMatchHandler(Terminal terminal, CompilerContext context, ISourceStream source)</p>\r\n<p>{</p>\r\n<p><span> </span>Token result = null;</p>\r\n<p><span> </span>int newPosition = source.Text.IndexOf(&quot;\\r&quot;, source.Position);</p>\r\n<p><span> </span>if (newPosition &gt;= source.Position)</p>\r\n<p><span> </span>{</p>\r\n<p><span> </span>source.Position = newPosition;</p>\r\n<p><span> </span>Token tkn = Token.Create(terminal, context, source.TokenStart, source.GetLexeme());</p>\r\n<p><span> </span>result = tkn;</p>\r\n<p><span> </span>}</p>\r\n<p><span> </span>return result;</p>\r\n<p>}</p>\r\n<p>&nbsp;</p>\r\n<p>Here, how I&rsquo;m using the Custom Terminal:</p>\r\n<p>CustomTerminal titleTerminal = new CustomTerminal(&quot;titleTerminal&quot;, TitleMatchHandler, null);</p>\r\n<p>NonTerminal title = new NonTerminal(&quot;title&quot;);</p>\r\n<p>title.Rule = Symbol(&quot;TITLE&quot;) + &quot;=&quot; + titleTerminal;</p>\r\n<p>&nbsp;</p>\r\n<p>My problem, the Custom Terminal is never called and I have a parser error.</p>\r\n<p>Is my function for the non terminal well implemented?</p>\r\n<p>&nbsp;</p>\r\n<p>Thank You</p>\r\n<p>&nbsp;</p>\r\n<p>Fran&ccedil;ois</p>\r\n<div></div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-06-15T15:38:09.06-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "201804",
+    "ThreadId": "59600",
+    "Html": "<p>First of all I would change the terminal definition to include the &quot;=&quot; char, and to add this char as a third parameter (prefixes). Check if the handler is actually called in this case.&nbsp;Inside the handler, exclude the beginning char from result string. If the handler is still not called then try to set the Priority property on terminal to something like 10.</p>\r\n<p>Now the behavior would depend on whether you use&nbsp;&quot;=&quot; anywhere else, for assignment statement for ex.&nbsp;&nbsp;The problem is that now everywhere the scanner will try to parse the &quot;=&quot; char as the beginning of Title terminal.&nbsp;The scanner&nbsp;needs assistance from the parser to resolve the conflict. The latest version in Source page handles this much better - in case of conflict like this the Scanner asks parser what are the appropriate terminals to expect in the current position. So try latest version, it might work better. Still you would need to specify &quot;=&quot; as a starting symbol of your title.</p>\r\n<p>Let me know if it works.</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-06-15T16:52:08.917-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "202380",
+    "ThreadId": "59600",
+    "Html": "<p>&nbsp;</p>\r\n<p><span lang=EN-CA>Hello Roman,</span></p>\r\n<p><span lang=EN-CA>With the version of November 2008, if I include the &quot;=&quot; char in my rule and add in the prefix of the handler, the handler is called and it works fine. However if I remove the first character from the result string using the following code:</span></p>\r\n<p><span lang=EN-CA>Token tkn = Token.Create(terminal, context, source.TokenStart, source.GetLexeme().TrimStart(' ', '\\t', '=')</span></p>\r\n<p><span lang=EN-CA>the parser failed when analyzing the next token.</span></p>\r\n<p>&nbsp;</p>\r\n<p><span lang=EN-CA>With the new version of Irony (25364) everything seems to work fine using this handler:</span></p>\r\n<p><span lang=EN-CA>private static Token TitleMatchHandler(Terminal terminal, CompilerContext context, ISourceStream source)&nbsp;{<br>&nbsp;&nbsp;Token result = null;<br>&nbsp;&nbsp;char[] endOfLineChars = {'\\r', '\\n'};<br>&nbsp;&nbsp;int newPosition = source.Text.IndexOfAny(endOfLineChars, source.Position);<br>&nbsp;&nbsp;if (newPosition &gt;= source.Position)&nbsp;{<br>&nbsp;&nbsp; &nbsp;source.Position = newPosition;<br>&nbsp;&nbsp; &nbsp;string title = source.GetLexeme();<br>&nbsp;&nbsp; &nbsp;var tkn = new Token(terminal, source.TokenStart, title, title.TrimStart(' ', '\\t', '='));<br>&nbsp;&nbsp; &nbsp;result = tkn;<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;return result;<br>}</span></p>\r\n<p>&nbsp;</p>\r\n<p><span lang=EN-CA>Thank you for your help,</span></p>\r\n<p><span lang=EN-CA>Fran&ccedil;ois J.</span></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-06-17T02:27:03.89-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "202877",
+    "ThreadId": "59600",
+    "Html": "<p>Hello,</p>\r\n<p>I have a question concerning the <em>IdentifierTerminal</em>:</p>\r\n<p>How is it possible to use some 'special characters' like a dot (.) or the German umlauts (&auml;, &ouml;, &uuml;) within an <em>IdentifierTerminal</em>? (e.g. &quot;konto.verm&ouml;gen&quot;)<br>The string which is used for parsing is UTF-8 encoded.</p>\r\n<p>Thanks for your help,<br>- Tobias</p>",
+    "PostedDate": "2009-06-18T05:19:12.89-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "202975",
+    "ThreadId": "59600",
+    "Html": "<p>You should provide these extra characters as constructor parameters - there are separate lists of extra chars for first char and all chars that are allowed in identifier. In addition, you may want to add the entire german alphabet, in case if similar letters like &quot;a&quot; or &quot;o&quot;&nbsp;in german charset are actually different chars (different char code) from their english counterparts, which I guess is your case</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-06-18T08:20:19.953-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

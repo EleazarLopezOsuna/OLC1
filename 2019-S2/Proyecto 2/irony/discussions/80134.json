@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "274612",
+    "ThreadId": "80134",
+    "Html": "<p>Sorry if this has been covered before, but I'm new to Irony. I am trying to write a grammar for a domain-specific language that has two forms for method calls. The first is&nbsp;&quot;call M(x,y,z)&quot; where M is the method name and x,y, and z are the arguments to the method. Methods may have an arbitrary number of return values (instead of just one), so for binding the return values there is the second form: &quot;call a,b := M(x,y,z)&quot; (if M has two return values, of course I am not trying to capture that in the grammar). For LL parsers with backtracking, I would write the rule as:</p>\r\n<p>callStmt.Rule = &quot;call&quot; (identifierList + &quot;:=&quot; | Empty) + methodCall;</p>\r\n<p>(Where the production for the nonterminal <em>methodCall</em> recognizes strings like &quot;M(x,y,z)&quot;.)</p>\r\n<p>But with the LALR parser Irony produces, since both nonterminals <em>identifierList </em>and <em>methodCall </em>can begin with an identifier, I get parse errors for &quot;call M(x,y,z)&quot; because it grabs &quot;M&quot; as an <em>identifier</em> and then wants to see either a &quot;,&quot; (the separator for the nonterminal <em>identifierList</em>) or the &quot;:=&quot; token.</p>\r\n<p>What is the way to do this in Irony?</p>\r\n<p>Thanks!</p>\r\n<p>Mike</p>",
+    "PostedDate": "2010-01-07T21:07:10.55-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "274634",
+    "ThreadId": "80134",
+    "Html": "<p>The first question to ask is &quot;does Irony report any grammar conflicts?&quot; - if yes, then we have to work on conflicts, without parsing texts</p>\r\n<p>Otherwise, if no grammar conflicts, then something should be wrong with the grammar. Can you please post the entier grammar if possible, or reduced version with function calls only. something runnable, to load into grammar explorer and give it a try</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-01-07T22:42:41.84-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "274994",
+    "ThreadId": "80134",
+    "Html": "<p>Okay, thanks. It turns out I seem to have downloaded an old version of Irony. I need to reinstall it so I can get the grammar explorer working. I need it to work in VS2010 and to produce a language service for VS2010. Is there an update to Ben Morrison's example that works for VS2010? If not, will it work to download the Irony sources and just update the solution and project files to VS2010? Sorry if these questions are ill-formed: I'm still unsure on how Irony works.</p>",
+    "PostedDate": "2010-01-08T15:14:00.997-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "275007",
+    "ThreadId": "80134",
+    "Html": "<p>Not only no update for VS 2010, but I'm afraid the Ben's code wouldn't work with current version of Irony. You'd have to tweak it a lot, I'm quite sure. Sorry for inconvenience, it is still in my plans to introduce VS integration support directly in Irony, but so far could not get to it - was busy with other &quot;core&quot; functionality. My best regards to Herman - we spoke at LangNet, he probably remembers me. I'm watching CCI progress, but I decided to put off code generation for now and concentrate on simple intepreter for the first release. Good luck, and let me know if you need any help!</p>",
+    "PostedDate": "2010-01-08T15:52:06.21-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "276891",
+    "ThreadId": "80134",
+    "Html": "<p>Well, I'm making Ben's code work in VS2010, but of course it is still just a wrapper on the old MPF/VSIP interfaces, so no big deal there. Herman says hello too.</p>\r\n<p>I'm still working on the grammar I&nbsp;need, but in the meantime, I think I can reproduce the problem I asked about at the beginning of this thread. I took the ScriptDotNetGrammar.cs that comes in the Irony_All.sln and added the following:</p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\"><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\"><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\">NonTerminal</span></span></span><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\"> vList = </span></span><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\">new</span></span></span><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\"> </span></span><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\"><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\"><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\">NonTerminal</span></span></span><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\">(</span></span><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\"><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\"><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\">&quot;vList&quot;</span></span></span><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\">);<br></span></span><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\">vList.Rule = MakePlusRule(vList, comma, v);</span></span></p>\r\n<p><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\">I then modified the rule for Statement to add this alternative:</span></span></p>\r\n<p><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\">&lt;font face=&quot;Consolas&quot; size=&quot;2&quot;&gt;&lt;font face=&quot;Consolas&quot; size=&quot;2&quot;&gt;\r\n<p>|</p>\r\n&lt;/font&gt;&lt;/font&gt;</span>&lt;font face=&quot;Consolas&quot; size=&quot;2&quot;&gt;\r\n<p>&nbsp;</p>\r\n&lt;/font&gt;</span></p>\r\n<p><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\"><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\"><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\">&quot;call&quot;</span></span></span><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\"> + (vList + </span></span><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\"><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\"><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\">&quot;:=&quot;</span></span></span><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\"> | Empty) + Expr + semicolon</span></span></p>\r\n<p>Now when I load the grammar into the Irony Grammar Explorer, I get a shift-reduce conflict:</p>\r\n<table border=0>\r\n<tbody>\r\n<tr>\r\n<td>Shift-reduce conflict. State S39, lookaheads [Identifier]. Selected shift as preferred action.</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p>My understanding of LALR(1) parsing is that it would be able to make the decision of whether to take the Empty alternative in the &quot;call&quot; sequence if it sees a comma or &quot;:=&quot; as the next symbol in the input after having a &quot;v&quot; on top of the stack. I am surprised to see a conflict reported.</p>\r\n<p>Any help would be great,</p>\r\n<p>Mike</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-13T14:59:23.333-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "276903",
+    "ThreadId": "80134",
+    "Html": "<p>The main suspect here is this subexpression in parenthesis - I&nbsp;advise against using constructs like this in general. Irony transforms the rules automatically to &quot;normal&quot; form, so it replaces this sub-expression with new NonTerminal. And I suspect this non-terminal brings the trouble - now parser has extra one decision to make (whether non-terminal is empty or not).</p>\r\n<p>Try the following -&nbsp;change the rule into two &quot;plus&quot; sequences without this parenthesized expression inside:</p>\r\n<p><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\"><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\"><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\">&quot;call&quot;</span></span></span><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\"> + vList + </span></span><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\"><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\"><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\">&quot;:=&quot; </span></span></span><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\">+ Expr + semicolon | <span style=\"font-family:Consolas;color:#a31515;font-size:x-small\"><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\"><span style=\"font-family:Consolas;color:#a31515;font-size:x-small\">&quot;call&quot;</span></span></span><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\"> +&nbsp;</span></span><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\">Expr + semicolon;</span></span></span></span></p>\r\n<p>Usually this helps in situations like this.</p>",
+    "PostedDate": "2010-01-13T15:49:04.213-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "276906",
+    "ThreadId": "80134",
+    "Html": "<p>Thanks! Yes, that fixes the problem. I have to admit that I am completely at a loss to understand the difference: it seems you have to figure out which alternative to take in the solution you provide and that decision is exactly the same as the decision as to whether that new nonterminal should allow the epsilon transition.</p>\r\n<p>I also have a question about identity transforms. I think I've seen postings on the discussion list that indicate problems with writing &quot;X.Rule = Y;&quot;. Is that still a problem? If so, does one fix it by writing &quot;X.Rule = Y.Rule;&quot;? (And if so, then one must make sure Y.Rule is initialized before this statement in the grammar's ctor.)</p>",
+    "PostedDate": "2010-01-13T16:17:39.407-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277229",
+    "ThreadId": "80134",
+    "Html": "<p>Yes, two grammars are equivalent if we compare language(s) they generate, but they are not the same for the parser. It is easy to see with example. As I said, the expression in parenthesis is transofrmed into new nullable non-terminal (let's call it NT0)&nbsp;by Irony when it converts all productions to the normal form. So the actual productions are:</p>\r\n<p style=\"padding-left:30px\"><strong>callStmt.Rule = &quot;call&quot; + NT0 + Expr + semicolon;</strong></p>\r\n<p style=\"padding-left:30px\"><strong>NT0.Rule = Empty | vlist + &quot;:=&quot;;</strong></p>\r\n<p>Now&nbsp;the&nbsp;parser reads the line:</p>\r\n<p style=\"padding-left:30px\"><strong>call x ....</strong></p>\r\n<p>-&nbsp;stops right after &quot;call&quot; and looks at &quot;x&quot; (as preview token), it has to make a decision: the &quot;x&quot; it sees - is it part of NT0 or is it part of Expr after NT0? In the first case it has to make shift to parse the NT0; in the second case it should create NT0 from empty production. It cannot decide based on the preview token - so the conflict. But if you switch to alternative, without NT0, then there's no such decision point, and everything is OK. As you see, this extra nullable non-terminal is the source of trouble.</p>\r\n<p>As for identity transforms - no, it is no longer a problem. It had been fixed long ago.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-14T10:09:50.32-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

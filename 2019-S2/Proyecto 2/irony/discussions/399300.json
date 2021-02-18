@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "926396",
+    "ThreadId": "399300",
+    "Html": "\r\n<p>Hi, I'm using Irony to create a C# parser, and create <a href=\"http://msdn.microsoft.com/en-US/roslyn\">\r\nRoslyn</a> syntax tree from the parse tree.<br>\r\n<a href=\"https://roslyncsderivedlan.codeplex.com/SourceControl/changeset/view/19935#385592\">Here</a> is the grammar I wrote. If you run it in GrammarExplorer, GrammarExplorer will be dead.<br>\r\nIn line 1123:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre>expression.Choice(non_assignment_expression, assignment_expression);\r\n<span style=\"color:green\">//expression.Choice(primary_expression);</span>\r\n</pre>\r\n</div>\r\n<p>If you comment first line and uncomment second line, LanguageData will be constructed, and GrammarExplorer will show some conflicts.</p>\r\n<p>Any help?Thanks!!!&nbsp;</p>\r\n",
+    "PostedDate": "2012-10-14T10:19:13.52-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "926580",
+    "ThreadId": "399300",
+    "Html": "<p>The disadvantage of writing a single constructor approaching&nbsp;1500 lines long is that only the author will ever appreciate the beauty of such a colossus; or even bother to attempting to read it.</p>\r\n<p>If you can't break the solution into well-organized pieces less than 100 lines long, then you don't understand the problem yet.</p>",
+    "PostedDate": "2012-10-15T01:39:35.143-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927093",
+    "ThreadId": "399300",
+    "Html": "<p>Hi <a class=\"UserProfileLink\" href=\"http://www.codeplex.com/site/users/view/pgeerkens\">pgeerkens</a>, the grammar I wrote is perfectly clear :)</p>\r\n<p>I think it's Irony's bug...</p>",
+    "PostedDate": "2012-10-15T20:30:49.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927548",
+    "ThreadId": "399300",
+    "Html": "\r\n<p>man, just downloaded your full project sources, tried to compile, stuff is missing... after some fixes and workarounds, finally got to launch grammar explorer - and it fails to load the grammar. DID YOU EVER load it into Grammar Explorer?! it gives an error\r\n on load, but this is another issue. The thing is, before you completely test the grammar in explorer - don't even think about using it for parsing</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2012-10-16T10:01:31.507-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927800",
+    "ThreadId": "399300",
+    "Html": "\r\n<p>Hi Roman, please try these steps:</p>\r\n<p>1. Launch Visual Studio 2012, new Console Application project<br>\r\n2. add <a href=\"https://roslyncsderivedlan.codeplex.com/SourceControl/changeset/view/19935#385592\">\r\nCSGrammar.cs</a> to project<br>\r\n3. Manage NuGet Packages, search &quot;Roslyn&quot;, install &quot;Roslyn.Compilers.CSharp&quot;<br>\r\n4. Add reference to Irony project or dll<br>\r\n5. Modify Program.cs:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre><span style=\"color:blue\">using</span> System;\r\n<span style=\"color:blue\">using</span> Irony.Parsing;\r\n<span style=\"color:blue\">namespace</span> ConsoleApplication1\r\n{\r\n    <span style=\"color:blue\">class</span> Program\r\n    {\r\n        <span style=\"color:blue\">static</span> <span style=\"color:blue\">void</span> Main(<span style=\"color:blue\">string</span>[] args)\r\n        {\r\n            <span style=\"color:blue\">var</span> languageData = <span style=\"color:blue\">new</span> LanguageData(<span style=\"color:blue\">new</span> CSGrammar());<span style=\"color:green\">//DEAD in LanguageData ctor!!!</span>\r\n        }\r\n    }\r\n}\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>6. open CSGrammar.cs, goto line 1123:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre>expression.Choice(non_assignment_expression, assignment_expression);\r\n<span style=\"color:green\">//expression.Choice(primary_expression);</span>\r\n\r\n</pre>\r\n</div>\r\n<p><br>\r\ncomment line 1123 and uncomment line 1124, run again, OK.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-10-16T20:53:37.587-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927808",
+    "ThreadId": "399300",
+    "Html": "<p>sorry man, but have no time for debugging such monsters. Can only give you an advice - load grammar in Grammar explorer! It does not matter what happens with this trouble line - it might be just the last straw that breaks the camel's back. Load it, look at errors, conflicts, state map etc. Pretty damn sure there are a lot of conflicts. Work with them, cleanup the grammar. I would suggest initially trim the grammar, use some simpler version, and gradually add stuff while removing conflicts. For the troubled line - enable it and step into parser data builder, see if it drops into infinite loop somewhere. &nbsp;</p>\r\n<p>One question - what's the purpose of this? Roslyn IS a parser for c#, so why do another one?!</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-10-16T21:48:40.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "928082",
+    "ThreadId": "399300",
+    "Html": "\r\n<p>Good question :)</p>\r\n<p>Because I want to extend C# syntax and semantics,&nbsp;&nbsp;<a href=\"http://www.microsoft.com/en-us/download/details.aspx?id=21024\">Axum</a> is a good case study. Roslyn is all about C#/VB, but&nbsp;nothing else, I have to create a C# parser.</p>\r\n<p>Inventing a new language based on C#, or, integrating DSL with C#, very&nbsp;cool, aha?</p>\r\n<p>(TypeScript is a new language based on JavaScript)</p>\r\n<p>Thanks! Roman and Pieter.</p>\r\n",
+    "PostedDate": "2012-10-17T08:21:35.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "928136",
+    "ThreadId": "399300",
+    "Html": "<p>in that case, are you sure you need to reproduce the exact tree that Roslyn's parser does? I mean, can you live with lists with delimiters filtered out?</p>",
+    "PostedDate": "2012-10-17T09:33:44.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "928795",
+    "ThreadId": "399300",
+    "Html": "<p>Punctuations in roslyn is not really important :) ,&nbsp;delimiters is a small problem. The biggest challenge right now is implementing a almost complete and correct C# parser.</p>",
+    "PostedDate": "2012-10-18T08:21:10.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

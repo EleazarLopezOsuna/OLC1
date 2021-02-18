@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1110717",
+    "ThreadId": "463196",
+    "Html": "Hi,\r<br />\ni start with working on a grammer Extension for ExpressionEvaluatorGrammar that can handle Aggreagtes (sum,avg....) and other (Today(), DateAdd(2) ) Functions and Need much help.\r<br />\n<br />\nwhat i have \r<br />\nvar MyFunctionSection = new NonTerminal(&quot;FunctionCall&quot;,typeof(FunctionNode));\r<br />\n<br />\nMyFunctionSection.Rule = &quot;sum&quot; + PreferShiftHere() + &quot;(&quot; + ArgList + &quot;)&quot;;\r<br />\n<br />\nis there any advice to go further.\r<br />\nIs there any idea about a generic AstNode for theses functions.\r<br />\n<br />\nThanks in advance\r<br />\nPeter<br />\n",
+    "PostedDate": "2013-10-22T11:36:11.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1110720",
+    "ThreadId": "463196",
+    "Html": "Look at expression evaluator and a sample where it imports functions from System.Math and System.Environment classes. You just can do the same - create your own static class with extensions and 'import' them into evaluator.<br />\n",
+    "PostedDate": "2013-10-22T11:47:20.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1110754",
+    "ThreadId": "463196",
+    "Html": "Hi,\r<br />\nthanks for the very quick answer.\r<br />\n<br />\nI will be back if i have some more problems.\r<br />\nThanks<br />\n",
+    "PostedDate": "2013-10-22T12:44:30.163-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

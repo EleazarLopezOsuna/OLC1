@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "513945",
+    "ThreadId": "232649",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I've implemented some boolean operators (for using in if clauses, etc.). Therefor i've extended the LanguageRuntime class. For the elementary types this works fine. But now I'm trying to check values for NULL (the 'real' C# null) in a condition and i have\r\n no idea how to realize this. Can you give me a hint?</p>\r\n<p>Thanks</p>\r\n<p>Lukas</p>\r\n",
+    "PostedDate": "2010-10-28T06:06:37.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

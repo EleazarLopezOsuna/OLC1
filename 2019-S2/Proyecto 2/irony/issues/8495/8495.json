@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Fixed",
+    "ClosedDate": "2010-11-30T12:58:30.9-08:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "If you use SetOutputTerminal to handle something like quoted identifiers (as in the SQL example), and are using EmitLineStartToken to handle line-sensitive grammars, there's a problem if a line starts with a quoted identifier.  The code in Scanner.cs will not generate a LineStartTerminal before the quoted identifier since the actual terminal is marked as a non-grammar terminal and the processing in MatchNonGrammarTerminals() doesn't handle it.  \n\nThe workaround is to not call SetOutputTerminal and handle the quoted identifiers as a separate terminal.  I also added some code to MatchNonGrammarTerminals()  to emit a LineStartTerminal if the OutputTerminal of the non-grammar terminal is actually a grammar terminal:\n\n    private bool MatchNonGrammarTerminals() {\n      TerminalList terms;\n      if(!Data.NonGrammarTerminalsLookup.TryGetValue(Context.Source.PreviewChar, out terms)) \n        return false;\n      foreach(var term in terms) {\n        Context.SourceStream.ResetPreviewPosition();\n        Context.CurrentToken = term.TryMatch(Context, Context.Source);\n        if (Context.CurrentToken != null) \n          term.InvokeValidateToken(Context);      \n        if(Context.CurrentToken != null) {\n          if (!Context.Language.Grammar.NonGrammarTerminals.Contains(Context.CurrentToken.Terminal)) {\n            if (_grammar.FlagIsSet(LanguageFlags.EmitLineStartToken)) {\n              if (Context.Source.Location.Line > Context.PreviousLineStart.Line) {\n                Context.SourceStream.ResetPreviewPosition();\n                Context.CurrentToken = Context.Source.CreateToken(_grammar.LineStartTerminal);\n                Context.PreviousLineStart = Context.Source.Location;\n              }\n            }\n          }\n          return true;\n        }\n      }\n      Context.SourceStream.ResetPreviewPosition();\n      return false; \n    }\n\nThe downside with this is that the terminal is getting processed twice.  But that probably can't be helped.",
+    "LastUpdatedDate": "2010-11-30T12:58:30.9-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2010-05-26T06:52:42.937-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Problems using SetOutputTerminal and LanguageFlags.EmitLineStartToken",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8495
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Seems like a valid point, will have a look at it. Thanks for the catch!",
+      "PostedDate": "2010-05-27T09:14:26.263-07:00",
+      "Id": 29166
+    },
+    {
+      "Message": "that should be fixed in latest drop. sorry it took so long",
+      "PostedDate": "2010-11-30T11:16:10.16-08:00",
+      "Id": 29167
+    }
+  ]
+}

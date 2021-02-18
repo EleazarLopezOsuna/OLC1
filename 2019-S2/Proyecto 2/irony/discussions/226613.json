@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "491245",
+    "ThreadId": "226613",
+    "Html": "<p>Hi,&nbsp;</p>\r\n<p>I am newbie to Irony. I am looking to build a grammar for parsing log files produced by a log server. Following is a sample file:</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:#00ff00\">Logger started\r\nLogclient connected</span>\r\n15:10:17:684,[t:0x708] : SETUP trigger received \r\n15:10:17:684,[t:0x708] : transition \r\n15:10:17:734,[t:0x708] :  \r\n \r\n encoded data AP///////wAebaLDAQEBARsSAQOARid4Ctmwo1dJnCURSUshCAABAUVAYUABAYGAAQHRwAEBAjqAGHE4LU\r\n15:10:17:734,[t:0x708] : \r\n Len 259 Decoded data. \r\n15:10:17:734,[t:0x708] : 00ffffffffffff001e6da2c3010101011b120103804627780ad9b0a357499c2511494b21080001\r\n<span style=\"color:#00ff00\">Logclient disconnected</span>\r\n15:10:17:734,[t:0x708] : transition2\r\n15:10:17:736,[t:0x708] : transition3\r\n15:10:17:936,[t:0x708] : transition4\r\n15:10:17:936,[t:0x708] : SETUP \r\n<span style=\"color:#00ff00\">Logger stopped</span>\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Every log line could be a log statement from one of the log clients or a msg from the log server. Log client messages are prefixed with a time stamp, while the log server messages are not.&nbsp;</p>\r\n<p>In the above sample, green lines are log server messages, rest are from different log clients that are connected to this server.&nbsp;</p>\r\n<p>I am not sure how to extract the message from the log client in to its own LogLine NonTerminal, while cleanly separating the LogServer message in to its own NonTerminal. Since LogClient messages can be multiline, I need to capture all the content till the start of next LogClientMsg (prefixed with a timestamp) or till one of the LogServerMessages is encountered (LogServerMessages is a fixed set -- it is not arbitrary content. So I thought of making this in to a Terminal).&nbsp;</p>\r\n<p>Would appreciate any help in forming the grammar for the above format. Thanks.&nbsp;</p>",
+    "PostedDate": "2010-09-09T06:48:55.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "493856",
+    "ThreadId": "226613",
+    "Html": "<p>Hey kannanmr,</p>\r\n<p>Please provide some examples of what you currently have; I'm sure someone in the community here will be happy to help if you give a starting point.</p>\r\n<p>-MindCore</p>",
+    "PostedDate": "2010-09-15T07:41:42.81-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

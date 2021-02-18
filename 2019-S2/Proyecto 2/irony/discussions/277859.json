@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "691999",
+    "ThreadId": "277859",
+    "Html": "\r\n<p>Hi.&nbsp;</p>\r\n<p>Is there any concern against using Irony to create/alter the file on the specified format?</p>\r\n<p>Our system is using a lot of various config files, and it would be nice for the .NET toolchain to have the format specified in just one place. For the whole CRUD on details within the parse tree.</p>\r\n<p>Is the code that I would use for new'ing up the &quot;parse tree&quot; anywhere near as fluent as the code for grammar specification? Property initializers? Collection initializers?</p>\r\n",
+    "PostedDate": "2011-11-01T01:57:14.21-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "692271",
+    "ThreadId": "277859",
+    "Html": "<p>Sorry, don't understand at all what do you mean. Can you please be more specific, maybe provide an example, end-to-end scenario with \"formatted config\" snippets?</p>\r\n<p>thx</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-11-01T11:02:48.033-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "692284",
+    "ThreadId": "277859",
+    "Html": "<p>Certainly.</p>\r\n<p>Could you show an example on how you would, for example, create a JSON object from code that would be possible to output to file/stream using the JSON specification in Irony?</p>",
+    "PostedDate": "2011-11-01T11:35:35.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "692825",
+    "ThreadId": "277859",
+    "Html": "<p>there's some misunderstanding I guess. Irony's sample grammar for JSon allows you to PARSE json files - to convert from text stream into parse tree that you see on the right in grammar explorer. It does not provide you with reverse operation - from object to Json.&nbsp;</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-11-02T09:29:26.87-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "692933",
+    "ThreadId": "277859",
+    "Html": "<p>Ok. Thank you.</p>\r\n<p>Of course, it would be cool if you could use the same Irony file format specification regardless of wether you intented to</p>\r\n<ul>\r\n<li>read, </li>\r\n<li>create </li>\r\n<li>read-&gt;update-&gt;write.</li>\r\n</ul>\r\n<p>ORM to any format, if you will.</p>\r\n<p>Thank you again. The&nbsp;code for specifying format&nbsp;is nice and crisp.</p>",
+    "PostedDate": "2011-11-02T12:51:12.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

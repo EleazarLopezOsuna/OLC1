@@ -1,0 +1,358 @@
+[
+  {
+    "Id": 993,
+    "Title": "Bug in scanner.cs"
+  },
+  {
+    "Id": 995,
+    "Title": "How to return the Terminal in CustomTerminal delegate?"
+  },
+  {
+    "Id": 1045,
+    "Title": "Exception in CreateProductions"
+  },
+  {
+    "Id": 1678,
+    "Title": "[NumberLiteral] Issue with CurrentCulture using '.' as decimal separator"
+  },
+  {
+    "Id": 2145,
+    "Title": "System.InvalidOperationException (Stack empty) on illegal python input"
+  },
+  {
+    "Id": 2194,
+    "Title": "\"\\\\\" parsed as \"\\\""
+  },
+  {
+    "Id": 2558,
+    "Title": "Bugs in RegExBasedTerminal"
+  },
+  {
+    "Id": 2561,
+    "Title": "Scanner does not handle fallback terminals correctly"
+  },
+  {
+    "Id": 3193,
+    "Title": "operator precedence"
+  },
+  {
+    "Id": 3485,
+    "Title": "Use open source testing tool"
+  },
+  {
+    "Id": 3529,
+    "Title": "Operator precedence does not seem to work correctly for case-insensitive grammars"
+  },
+  {
+    "Id": 3600,
+    "Title": "Signed NumberLiteral crashes on '-' and '+' operators"
+  },
+  {
+    "Id": 3601,
+    "Title": "StringLiteral crashes when started just before EOF"
+  },
+  {
+    "Id": 3856,
+    "Title": "Sample CSharpGrammar incorrectly implements the compilation-unit element"
+  },
+  {
+    "Id": 3857,
+    "Title": "Should make Grammar.MakeStarRule and Grammar.MakePlusRule static members."
+  },
+  {
+    "Id": 4263,
+    "Title": "Array definition bug in sample C# grammar"
+  },
+  {
+    "Id": 4268,
+    "Title": "A few changes I did on my own"
+  },
+  {
+    "Id": 4304,
+    "Title": "Code in PREVIEW 001"
+  },
+  {
+    "Id": 4421,
+    "Title": "AstNodeCreator is called too early on some plus/star NonTerminals"
+  },
+  {
+    "Id": 4451,
+    "Title": "LanguageFlags.CreateAst causes crash on terminals"
+  },
+  {
+    "Id": 4477,
+    "Title": "Possible null reference in Scanner.Parse"
+  },
+  {
+    "Id": 4901,
+    "Title": "Unary operator evaluation"
+  },
+  {
+    "Id": 5174,
+    "Title": "Assembly generation failed -- Referenced assembly 'Irony' does not have a strong name"
+  },
+  {
+    "Id": 5709,
+    "Title": "Grammar.CurrentGrammar can lead to nasty bugs with more than a single grammar derived object"
+  },
+  {
+    "Id": 5874,
+    "Title": "Shadow Copy Assemblies when loading into explorer"
+  },
+  {
+    "Id": 6174,
+    "Title": "Polish charset"
+  },
+  {
+    "Id": 6291,
+    "Title": "Custom & FreeTextLiteral Terminals are not sorted by priority"
+  },
+  {
+    "Id": 6653,
+    "Title": "FreeTextLiteral doesn’t have a way to add EOF as a terminator"
+  },
+  {
+    "Id": 6673,
+    "Title": "Default download has codeplex TFS bindings"
+  },
+  {
+    "Id": 6836,
+    "Title": "ParsingContext.TabWidth ignored"
+  },
+  {
+    "Id": 6860,
+    "Title": "Or Operator Problems"
+  },
+  {
+    "Id": 6871,
+    "Title": "FreeTextLiteral: \"Text\" property is not set when bumping to EOF."
+  },
+  {
+    "Id": 6872,
+    "Title": "Scanner.MatchTerminals assumes Context.CurrentTerminals are in descending order, but they are NOT!"
+  },
+  {
+    "Id": 6954,
+    "Title": "Cannot compile the solution"
+  },
+  {
+    "Id": 6992,
+    "Title": "NumberLiteral bug"
+  },
+  {
+    "Id": 7018,
+    "Title": "\"Failed to create AstNode\" in IdentifierNode (null reference)"
+  },
+  {
+    "Id": 8376,
+    "Title": "NumberLiteral don't handle situation when the first char is hex"
+  },
+  {
+    "Id": 8495,
+    "Title": "Problems using SetOutputTerminal and LanguageFlags.EmitLineStartToken"
+  },
+  {
+    "Id": 8709,
+    "Title": "Memory Leak?"
+  },
+  {
+    "Id": 9231,
+    "Title": "Tab Parser States: Win32Exception"
+  },
+  {
+    "Id": 9860,
+    "Title": "Create Documentation using XML Comments"
+  },
+  {
+    "Id": 9861,
+    "Title": "Allow Grammar Explorer to reload an assembly on compilation"
+  },
+  {
+    "Id": 9862,
+    "Title": "Nuget package for Irony"
+  },
+  {
+    "Id": 9863,
+    "Title": "NonTerminal.Q() returns BnfExpression instead of NonTerminal"
+  },
+  {
+    "Id": 9864,
+    "Title": "irony_2011_09_13.zip doesn't build..."
+  },
+  {
+    "Id": 9865,
+    "Title": "GrammarExplorer ReflectionTypeLoadException"
+  },
+  {
+    "Id": 9866,
+    "Title": "operator precedence"
+  },
+  {
+    "Id": 9867,
+    "Title": "Assembly.LoadFrom is still required"
+  },
+  {
+    "Id": 9868,
+    "Title": "AstNodes are a struggle"
+  },
+  {
+    "Id": 9869,
+    "Title": "FastColoredTextBox in GrammarExplorer"
+  },
+  {
+    "Id": 9870,
+    "Title": "Need to rename zip file from Jan, 22, 2012"
+  },
+  {
+    "Id": 9871,
+    "Title": "ParsingContext.Culture should be used when retrieving error message"
+  },
+  {
+    "Id": 9872,
+    "Title": "SpecialFormNode.cs code broken (missing)"
+  },
+  {
+    "Id": 9873,
+    "Title": "Bug in Irony.Interpreter.LanguageRuntime"
+  },
+  {
+    "Id": 9874,
+    "Title": "NumberLiteral issue with octal prefix defined"
+  },
+  {
+    "Id": 9875,
+    "Title": "Exclude FirstChars and Suffixes from IsWhitespaceOrDelimiter"
+  },
+  {
+    "Id": 9876,
+    "Title": "Difficulty in support for autocompletion"
+  },
+  {
+    "Id": 9877,
+    "Title": "Scanner.Recover Causes IndexOutOfRange (with fix)"
+  },
+  {
+    "Id": 9878,
+    "Title": "NewLine issue "
+  },
+  {
+    "Id": 9879,
+    "Title": "SQL Sample grammar is incomplete; Table aliases are unsuppoorted"
+  },
+  {
+    "Id": 9880,
+    "Title": "Possible issue with Scope.GetParent()"
+  },
+  {
+    "Id": 9881,
+    "Title": "crash with rv null in ComputeProductionFlags"
+  },
+  {
+    "Id": 9882,
+    "Title": "C# grammar, statements with 'as' cause syntax errors"
+  },
+  {
+    "Id": 9883,
+    "Title": "Parser fails to find precedence value of children of non-transient nodes"
+  },
+  {
+    "Id": 9884,
+    "Title": "suggestion to add constructor on ToTerm that includes setting Flags"
+  },
+  {
+    "Id": 9885,
+    "Title": "out of memory error"
+  },
+  {
+    "Id": 9886,
+    "Title": "'Irony_2013_09_03' Missing files in 'NewScanner' directory"
+  },
+  {
+    "Id": 9887,
+    "Title": "Xml documentation for public methods /properties"
+  },
+  {
+    "Id": 9888,
+    "Title": "GrammarExplorer: Changing [Language()] attribute on the grammar on .dll does not update combo box on next load"
+  },
+  {
+    "Id": 9889,
+    "Title": "Linux: Build failure / Filesystem case sensitivity issue"
+  },
+  {
+    "Id": 9890,
+    "Title": "New version missing files under VS 2010"
+  },
+  {
+    "Id": 9891,
+    "Title": "Maybe I am missing something..."
+  },
+  {
+    "Id": 9892,
+    "Title": "GrammarExplorer Command Line Arguments Support"
+  },
+  {
+    "Id": 9893,
+    "Title": "index out of range in StringLiteral.cs"
+  },
+  {
+    "Id": 9894,
+    "Title": "How to resolve Reduce/Shift with extra look ahead"
+  },
+  {
+    "Id": 9895,
+    "Title": "Problem with IdentifierTerminal"
+  },
+  {
+    "Id": 9896,
+    "Title": "Parsing error for different version of dotnet"
+  },
+  {
+    "Id": 9897,
+    "Title": "Parser does not report invalid escape sequence (StringLiteral.cs)"
+  },
+  {
+    "Id": 9898,
+    "Title": "NullReferenceException due to errror in AstBuilder"
+  },
+  {
+    "Id": 9899,
+    "Title": "bug when setting CommentTerminal multiline flags?"
+  },
+  {
+    "Id": 9900,
+    "Title": "ebnf grammar that compiles to c# irony grammar"
+  },
+  {
+    "Id": 9901,
+    "Title": "Add \"Between\" in the SQL grammar Example 89"
+  },
+  {
+    "Id": 9902,
+    "Title": "Add \"Between\" in the SQL grammar Example 89"
+  },
+  {
+    "Id": 9903,
+    "Title": "Freetext literal"
+  },
+  {
+    "Id": 9904,
+    "Title": "Irony Question"
+  },
+  {
+    "Id": 9905,
+    "Title": "why for DefaultAstNodeCreator is created? in which condition does this method called in ASTBuilder class file of Irony?"
+  },
+  {
+    "Id": 9906,
+    "Title": "\"Boolean\" node type is not creating using defaultAstnodecreator ."
+  },
+  {
+    "Id": 9907,
+    "Title": "There is a issue in assigning ASTNODE for Firstchildnode in Parsetreenode of Irony."
+  },
+  {
+    "Id": 9908,
+    "Title": "What does this error \"Transient non-terminal must have zero or one non-punctuation child nodes; non-terminals: PAREN_EXPR ASSIGN_DATAREF_STMT setExpressionRecursiveStmt.\""
+  }
+]

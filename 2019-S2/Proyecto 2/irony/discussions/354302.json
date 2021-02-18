@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "831296",
+    "ThreadId": "354302",
+    "Html": "<p>Hello,</p>\n<p>I have a language that use indentation for code validation. Here is a sample :</p>\n<p>&nbsp;</p>\n<pre>? Identation lvl 0\r\n\t- Indentation lvl1\r\n\t- Indentation lvl1\r\n\t\t? Indentation lvl 2\r\n\t\t? Indentation lvl 2\r\n\t\t? Indentation lvl 2\r\n\t\t\t- Indentation lvl 3\r\n\t\t\t- Indentation lvl 3</pre>\n<p>&nbsp;</p>\n<p>Level of indentation does not have a fixed limit. I'm trying to use Indent as MiniPython do, but i don't understand how it works, and where to define indentation in my sample is based on tabulation or four spaces. Moreover, the language i want to parse must not eat whitespaces, so i override SkipWhiteSpaces.</p>\n<p>When i try something like that :</p>\n<div style=\"background-color: white; color: black;\">\n<pre><span style=\"color: blue;\">var</span> HEADERPATTERN = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"HEADERPATTERN\"</span>);\r\nHEADERPATTERN.Rule = <span style=\"color: #a31515;\">\"? \"</span> + HEADER + NewLine + Indent + Block + Dedent;\r\n</pre>\n</div>\n<p>Parsing fails on line&nbsp;2, waiting for \"Indent\" , so i don't&nbsp;understand how it works.</p>\n<p>Can someone explain me please?&nbsp;</p>\n<p>EDIT : this is my second post on this language, first is here talking about tabulations in terminals <a href=\"http://irony.codeplex.com/discussions/352482\">http://irony.codeplex.com/discussions/352482</a></p>",
+    "PostedDate": "2012-05-02T12:58:23.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "831300",
+    "ThreadId": "354302",
+    "Html": "<p>are you adding CodeOutlineToken filter to token filters (like MiniPython does)?</p>",
+    "PostedDate": "2012-05-02T13:06:06.183-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "831302",
+    "ThreadId": "354302",
+    "Html": "<p>Yes, Parsing error fails on end of first line waiting for Indent</p>",
+    "PostedDate": "2012-05-02T13:12:49.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "831304",
+    "ThreadId": "354302",
+    "Html": "<p>hard to say, try to debug into CodeOutlineFilter, see if it produces Indent token, and if not - try to see why</p>",
+    "PostedDate": "2012-05-02T13:15:19.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "831307",
+    "ThreadId": "354302",
+    "Html": "<p>Just in case, this is a realy basic implementation of the language</p>\n<div style=\"color: black; background-color: white;\">\n<pre>[Language(<span style=\"color: #a31515;\">\"LanguageIndentTest\"</span>)]\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> LanguageIndentTest : Grammar\n    {\n        <span style=\"color: blue;\">public</span> LanguageIndentTest()\n            : <span style=\"color: blue;\">base</span>(<span style=\"color: blue;\">true</span>)\n        {\n            <span style=\"color: blue;\">var</span> lineComment = <span style=\"color: blue;\">new</span> CommentTerminal(<span style=\"color: #a31515;\">\"line_comment\"</span>, <span style=\"color: #a31515;\">\"//\"</span>, <span style=\"color: #a31515;\">\"\\n\"</span>, <span style=\"color: #a31515;\">\"\\r\\n\"</span>);\n            <span style=\"color: blue;\">this</span>.NonGrammarTerminals.Add(lineComment);\n\n            IdentifierTerminal IDENTIFIER = <span style=\"color: blue;\">new</span> IdentifierTerminal(<span style=\"color: #a31515;\">\"IDENTIFIER\"</span>);\n\n            <span style=\"color: blue;\">var</span> HEADER = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"HEADER\"</span>);\n            HEADER.Rule = MakePlusRule(HEADER, ToTerm(<span style=\"color: #a31515;\">\" \"</span>), IDENTIFIER);\n\n            <span style=\"color: blue;\">var</span> Block = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"Block\"</span>);\n            Block.Rule = <span style=\"color: #a31515;\">\"- \"</span> + IDENTIFIER;\n\n            <span style=\"color: blue;\">var</span> HEADERPATTERN = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"HEADERPATTERN\"</span>);\n            HEADERPATTERN.Rule = <span style=\"color: #a31515;\">\"? \"</span> + HEADER + NewLine + Indent + Block + Dedent + NewLine + Eof;\n\n            <span style=\"color: blue;\">this</span>.Root = HEADERPATTERN;\n        }\n\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> CreateTokenFilters(LanguageData language, TokenFilterList filters)\n        {\n            <span style=\"color: blue;\">var</span> outlineFilter = <span style=\"color: blue;\">new</span> CodeOutlineFilter(language.GrammarData,\n              OutlineOptions.ProduceIndents | OutlineOptions.CheckBraces, ToTerm(<span style=\"color: #a31515;\">@\"\\\"</span>)); <span style=\"color: green;\">// \"\\\" is continuation symbol</span>\n            filters.Add(outlineFilter);\n        }\n\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> SkipWhitespace(ISourceStream source)\n        {\n            <span style=\"color: blue;\">return</span>;\n        }\n</pre>\n</div>",
+    "PostedDate": "2012-05-02T13:19:42.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "832276",
+    "ThreadId": "354302",
+    "Html": "<p>1. First, remove override of SkipWhitespace - you do need default space processing.</p>\r\n<p>2. Do not use space as a terminal (like in HEADER rule);&nbsp;HEADER is identifier list, so simply define it as&nbsp;</p>\r\n<p>&nbsp; HEADER.Rule = MakePlusRule(HEADER, IDENTIFIER);</p>\r\n<p>3. Add @\"\\\" to NonGrammarTerminals, as a message on Grammar Errors page tells you</p>\r\n<p>4. Do not use NewLine anywhere, use Eos terminal instead (look at MiniPython grammar)</p>\r\n<p>5. Finally, you grammar rules do not match your input sample at all. Look closely, you do not allow more than one line in a block; line starting with \"?\" is possible only at the beginning of the file, and so on. Once you've fixed 1-4, start fixing your grammar - look at parser trace and token list in Grammar Explorer, try to figure out what's missing</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-05-04T10:12:48.39-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "847469",
+    "ThreadId": "354302",
+    "Html": "<p>Hello,</p>\r\n<p>Thank you a lot for your advices, i've got now something that works. But i've got another question. I want to include specific error messages, because with this code</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[Language(<span style=\"color: #a31515;\">\"AthenaIndentTest\"</span>)]\r\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> AthenaIndentTest : Grammar\r\n    {\r\n        <span style=\"color: blue;\">public</span> AthenaIndentTest()\r\n            : <span style=\"color: blue;\">base</span>(<span style=\"color: blue;\">true</span>)\r\n        {\r\n\r\n            <span style=\"color: blue;\">var</span> lineComment = <span style=\"color: blue;\">new</span> CommentTerminal(<span style=\"color: #a31515;\">\"line_comment\"</span>, <span style=\"color: #a31515;\">\"//\"</span>, <span style=\"color: #a31515;\">\"\\n\"</span>, <span style=\"color: #a31515;\">\"\\r\\n\"</span>);\r\n            <span style=\"color: blue;\">this</span>.NonGrammarTerminals.Add(lineComment);\r\n            <span style=\"color: blue;\">this</span>.NonGrammarTerminals.Add(ToTerm(<span style=\"color: #a31515;\">@\"\\\"</span>));\r\n\r\n            IdentifierTerminal IDENTIFIER = <span style=\"color: blue;\">new</span> IdentifierTerminal(<span style=\"color: #a31515;\">\"IDENTIFIER\"</span>);\r\n            NonTerminal Stmt = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"Statement\"</span>);\r\n            NonTerminal StmtList = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"StmtList\"</span>);\r\n            NonTerminal TEMPLATE_LIST = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"TEMPLATE_LIST\"</span>);\r\n            NonTerminal TEMPLATE = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"TEMPLATE\"</span>);\r\n            NonTerminal PATTERN_LIST = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"PATTERN_LIST\"</span>);\r\n            NonTerminal PATTERN = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"PATTERN\"</span>);\r\n            NonTerminal SCENARIO = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"SCENARIO\"</span>);\r\n            NonTerminal SUB_SCENARIOS = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"SUB_SCENARIOS\"</span>);\r\n            NonTerminal SUB_SCENARIO = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"SUB_SCENARIO\"</span>);\r\n\r\n            StmtList.Rule = MakePlusRule(StmtList, Stmt);\r\n            Stmt.Rule = SCENARIO;\r\n            SCENARIO.Rule = PATTERN_LIST + Indent + TEMPLATE_LIST + ((Indent + SUB_SCENARIOS + Dedent) | Empty) + Dedent;\r\n            PATTERN_LIST.Rule = MakePlusRule(PATTERN_LIST, PATTERN);\r\n            PATTERN.Rule = ToTerm(<span style=\"color: #a31515;\">\"?\"</span>) + IDENTIFIER + Eos;\r\n            TEMPLATE_LIST.Rule = MakePlusRule(TEMPLATE_LIST, TEMPLATE);\r\n            TEMPLATE.Rule = ToTerm(<span style=\"color: #a31515;\">\"-\"</span>) + IDENTIFIER + Eos;\r\n            SUB_SCENARIOS.Rule = MakeStarRule(SUB_SCENARIOS, SUB_SCENARIO);\r\n            SUB_SCENARIO.Rule = PATTERN_LIST + Indent + TEMPLATE_LIST + Dedent;\r\n\r\n            <span style=\"color: blue;\">this</span>.Root = StmtList;\r\n        }\r\n\r\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> CreateTokenFilters(LanguageData language, TokenFilterList filters)\r\n        {\r\n            <span style=\"color: blue;\">var</span> outlineFilter = <span style=\"color: blue;\">new</span> CodeOutlineFilter(language.GrammarData,\r\n              OutlineOptions.ProduceIndents | OutlineOptions.CheckBraces, ToTerm(<span style=\"color: #a31515;\">@\"\\\"</span>)); <span style=\"color: green;\">// \"\\\" is continuation symbol</span>\r\n            filters.Add(outlineFilter);\r\n        }\r\n    }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>And this text to parse :</p>\r\n<p>&nbsp;</p>\r\n<pre>? AIFAIM\r\n    - tutu\r\n    - titi\r\n        ? PATTERN\r\n        ? PATTERN\r\n            - TEMPLATE\r\n            - TEMPLATE\r\n        ? PATTERN\r\n    \r\n    \r\n? AIFAIM\r\n    - tutu\r\n    - titi\r\n\r\n</pre>\r\n<p>&nbsp;</p>\r\n<p>I'm getting INDENT expected, and i would like to put an error like this : Missing template</p>\r\n<p>Any idea to do this ?</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2012-06-11T06:49:39.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "847544",
+    "ThreadId": "354302",
+    "Html": "<p>you can override Grammar.ConstructParserErrorMessage method, and provide your own \"interpretation\" of the error.</p>",
+    "PostedDate": "2012-06-11T09:14:57.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

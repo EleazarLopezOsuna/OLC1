@@ -1,0 +1,101 @@
+/*--------- 1ra Area: Codigo de Usuario ---------*/
+
+//--------> Paquetes e importaciones
+package Analizadores.HTML;
+import java_cup.runtime.Symbol;
+import Estructuras.Cola;
+import java.util.ArrayList;
+import Modelos.*;
+
+//--------> Codigo para el parser, variables, metodos
+parser code
+{:
+    public Cola TodosLosErrores = new Cola();
+    public ArrayList<Div> divs = new ArrayList<>();
+    public String noufe = "";
+    public String titulo = "";
+
+    //Metodo al que se llama automaticamente ante algun error sintactico
+    public void syntax_error(Symbol s){
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        System.out.println("ERROR SINTACTICO: " + lexema + " LINEA: " + fila + " COLUMNA: " + columna);
+        Errores error = new Errores(lexema,fila,columna,"Token " + lexema + " No esperado", "Sintactico");
+        TodosLosErrores.insertar(error);
+    }
+
+    //Metodo al que se llama en el momento en el que ya no es posible una recuperacion de errores
+    public void unrecovered_syntax_error(Symbol s){
+
+    }
+:}
+
+//--------> Codigo para las acciones gramaticales
+action code
+{:
+    
+:}
+
+/*--------- 2da Area: Declaraciones ---------*/
+
+//--------> Declaracion de terminales
+terminal inicioHtml, finHtml;
+terminal inicioBody, finBody;
+terminal inicioTitle, finTitle;
+terminal inicioHead, finHead;
+terminal inicioNoufe, finNoufe;
+terminal inicioDiv, finDiv;
+terminal id, cadena, cerrar, abrir, igual, texto;
+
+//--------> Declaracion de no terminales
+non terminal S, INICIO;
+non terminal CABEZA, TITULO, CUERPO;
+non terminal L_OPCIONES, OPCIONES, ERROR;
+non terminal L_SECCIONES, SECCION, SECCION2;
+non terminal OPC;
+
+start with S;
+
+/*--------- 3ra Area: Reglas Semanticas ---------*/
+
+S ::= INICIO
+        ;
+INICIO ::= abrir inicioHtml cerrar CABEZA CUERPO abrir finHtml cerrar
+        ;
+CABEZA ::= abrir inicioHead cerrar TITULO abrir finHead cerrar
+        ;
+TITULO ::= abrir inicioTitle cerrar texto:a abrir finTitle cerrar
+{:
+    titulo = (String) a;
+:}
+        ;
+CUERPO ::= abrir inicioBody cerrar L_OPCIONES abrir finBody cerrar
+        ;
+L_OPCIONES ::= L_OPCIONES OPCIONES
+        | OPCIONES
+        ;
+OPCIONES ::= ERROR
+        | SECCION
+        ;
+ERROR ::= abrir inicioNoufe cerrar texto:a abrir finNoufe cerrar
+{:
+    noufe = (String) a;
+:}
+        ;
+SECCION ::= abrir inicioDiv id igual cadena:a cerrar abrir finDiv cerrar
+{:
+    String nombre = (String) a;
+    nombre = nombre.replace("\"","");
+    divs.add(new Div(nombre));
+:}
+        | abrir inicioDiv id igual cadena:a cerrar L_SECCIONES abrir finDiv cerrar
+{:
+    String nombre = (String) a;
+    nombre = nombre.replace("\"","");
+    divs.add(new Div(nombre));
+:}
+        ;
+L_SECCIONES ::= L_SECCIONES SECCION
+        | SECCION
+        ;

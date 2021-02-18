@@ -1,0 +1,9 @@
+C:\Users\USER\Desktop\USAC - CYS\2020 - Primer Semestre\Compi 1\Proyecto 1\Proyecto1Compi12020\bin\Debug\Proyecto1Compi12020.exe.config
+C:\Users\USER\Desktop\USAC - CYS\2020 - Primer Semestre\Compi 1\Proyecto 1\Proyecto1Compi12020\bin\Debug\Proyecto1Compi12020.exe
+C:\Users\USER\Desktop\USAC - CYS\2020 - Primer Semestre\Compi 1\Proyecto 1\Proyecto1Compi12020\bin\Debug\Proyecto1Compi12020.pdb
+C:\Users\USER\Desktop\USAC - CYS\2020 - Primer Semestre\Compi 1\Proyecto 1\Proyecto1Compi12020\obj\Debug\Proyecto1Compi12020.csprojAssemblyReference.cache
+C:\Users\USER\Desktop\USAC - CYS\2020 - Primer Semestre\Compi 1\Proyecto 1\Proyecto1Compi12020\obj\Debug\Proyecto1Compi12020.Form1.resources
+C:\Users\USER\Desktop\USAC - CYS\2020 - Primer Semestre\Compi 1\Proyecto 1\Proyecto1Compi12020\obj\Debug\Proyecto1Compi12020.Properties.Resources.resources
+C:\Users\USER\Desktop\USAC - CYS\2020 - Primer Semestre\Compi 1\Proyecto 1\Proyecto1Compi12020\obj\Debug\Proyecto1Compi12020.csproj.GenerateResource.cache
+C:\Users\USER\Desktop\USAC - CYS\2020 - Primer Semestre\Compi 1\Proyecto 1\Proyecto1Compi12020\obj\Debug\Proyecto1Compi12020.exe
+C:\Users\USER\Desktop\USAC - CYS\2020 - Primer Semestre\Compi 1\Proyecto 1\Proyecto1Compi12020\obj\Debug\Proyecto1Compi12020.pdb

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1263810",
+    "ThreadId": "550979",
+    "Html": "I'm deriving from InterpretedLanguageGrammar. It's my understanding that each non-termninal needs its own type, in this case. So, I have a whole bunch of empty types.\r<br />\n<br />\nNow, for optional terminals (i.e. with the .Q() method), it looks like I also need a type. Is this correct? The code listing below fails when creating the AstNode for the &quot;unsigned?&quot; term.<br />\n<pre><code>  public class MyGrammar : InterpretedLanguageGrammar\n  {\n    public MyGrammar()\n      : base(true)\n    {\n      // 1. Terminals\n\n      .\n      .\n      .\n\n      // 2. Non-terminals\n      var basicType = new NonTerminal(&quot;BasicType&quot;, typeof(BasicTypeNode));\n\n      // 3. BNF rules\n      basicType.Rule = ToTerm(&quot;unsigned&quot;).Q() + &quot;char&quot; | &quot;short&quot; | &quot;long&quot;;</code></pre>\n\n",
+    "PostedDate": "2014-07-08T15:30:48.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1264097",
+    "ThreadId": "550979",
+    "Html": "First, do not use Q() - it was introduced initially but later deprecated, with the biggest reason - situation like yours, it brings a lot of confusion. Yes, you do need AST node for this or any optional term<br />\n",
+    "PostedDate": "2014-07-09T11:29:48.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1264160",
+    "ThreadId": "550979",
+    "Html": "OK. Thanks! So should I use the following paradigm instead of Q():<br />\n<pre><code>      KeyTerm comma = ToTerm(&quot;,&quot;, &quot;comma&quot;);\n      NonTerminal comma_opt = new NonTerminal(&quot;comma_opt&quot;, Empty | comma);</code></pre>\n\nRegarding required AST nodes, I just made a single empty class for all the terms that I don't want to deal with right now--that works.<br />\n",
+    "PostedDate": "2014-07-09T14:26:33.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1264240",
+    "ThreadId": "550979",
+    "Html": "yep, looks right<br />\n",
+    "PostedDate": "2014-07-09T22:42:46.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1288324",
+    "ThreadId": "550979",
+    "Html": "I know this thread has already been solved, but I wanted to share an alternative technique. The results are effectively the same, but without leaving all of the extra terms around. Here are some helper functions:<br />\n<pre><code>            NonTerminal Optional(string keyword)\n            {\n                return Optional(ToTerm(keyword, keyword));\n            }\n            NonTerminal Optional(BnfTerm term)\n            {\n                NonTerminal nt = new NonTerminal(&quot;Optional_&quot; + term.Name, typeof(MyOptionalASTNode));\n                nt.Rule\n                    = Empty \n                    | term;\n                nt.Flags |= TermFlags.IsTransient | TermFlags.NoAstNode;\n                return nt;\n            }</code></pre>\n\nThe rules can then be clearly written:<br />\n<pre><code>basicType.Rule = Optional(&quot;unsigned&quot;) + &quot;char&quot; | &quot;short&quot; | &quot;long&quot;;</code></pre>\n\n",
+    "PostedDate": "2014-08-08T23:17:10.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

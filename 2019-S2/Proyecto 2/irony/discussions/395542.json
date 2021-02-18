@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "912669",
+    "ThreadId": "395542",
+    "Html": "\r\n<p>I was able to compile with VS 2010 (leaving out some stuff). GrammarExplorer starts, but grammar dll loading fails.</p>\r\n<p>Is VS 2010 &quot;non express&quot; a requirement?</p>\r\n",
+    "PostedDate": "2012-09-14T06:41:52.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "912776",
+    "ThreadId": "395542",
+    "Html": "<p>it should work, although I didn't test it lately - I have full VS. Make sure everything is rebuilt correctly - your grammar dll and all dependencies. What is the error and when it shows?</p>",
+    "PostedDate": "2012-09-14T09:45:46.903-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "915666",
+    "ThreadId": "395542",
+    "Html": "\r\n<p>I encountered this also.&nbsp; The project and solution files &quot;know&quot; they were created in VS Shell instead of C# Express, and so cannot be opened in the C# Express editor.</p>\r\n<p>I worked around it by recreating the project and solution files manually, though most likely the same effect could be obtained by editting a tag in the files.</p>\r\n<p>First create the project files, and the folder hierarchy; then right-click each folder to add its files. This avoids the files being added to the project root instead of the folder.</p>\r\n<p>Everything works fine once that is done.</p>\r\n",
+    "PostedDate": "2012-09-21T05:45:10.303-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "919678",
+    "ThreadId": "395542",
+    "Html": "<p>I got it to work with SharpDevelop.</p>\r\n<p>Remove test projects and Language project.</p>\r\n<p>Setting the target cpu to 32bit, I can even debug....</p>",
+    "PostedDate": "2012-09-30T08:25:46.74-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "920960",
+    "ThreadId": "395542",
+    "Html": "<p>The new VS 2012 Express for Desktop includes many features that were missing in VC# 2010, like Solution Folders and VsTest projects. Upgrading to VS 2012 Express helped me tremendously.<br /><br />Irony.Silverlight is not supported in Express, so that project will not open.</p>",
+    "PostedDate": "2012-10-02T17:26:47.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

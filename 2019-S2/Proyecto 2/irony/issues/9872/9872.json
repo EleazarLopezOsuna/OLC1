@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2013-02-25T21:08:50.25-08:00",
+    "CommentCount": 2,
+    "Custom": null,
+    "Description": "Hi Roman,\r\n\r\nFirst a thank you for this great software.\r\n\r\nSecond, the class SpecialFormNode has broken (missing) c# code.  \r\n\r\nTo reproduce:\r\n  Browse Interpreter/Ast/Statements/SpecialFormNode.cs\r\n  Search for  \"context.Language.\"\r\n\r\nThe broken code can be seen in the snippet below, context.Language. ends abruptly\r\n\r\n    public override void Init(AstContext context, ParseTreeNode treeNode) {\r\n      base.Init(context, treeNode);\r\n      var nodes = treeNode.GetMappedChildNodes();\r\n      TargetRef = AddChild(\"Target\", nodes[0]);\r\n      TargetRef.UseType = NodeUseType.CallTarget;\r\n      _targetName = nodes[0].FindTokenAndGetText();\r\n      Arguments = AddChild(\"Args\", nodes[1]);\r\n      AsString = \"Call \" + _targetName;\r\n      context.Language.\r\n    }",
+    "LastUpdatedDate": "2013-02-25T21:08:50.25-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2012-06-13T23:36:40.223-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "SpecialFormNode.cs code broken (missing)",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9872
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "this node is not used - it is included in the project, but action is None (no compile). I guess I was planning to use this node, but it turned out it was not needed. I will remove it, thanks for pointing this out.",
+      "PostedDate": "2012-06-14T10:11:43.103-07:00",
+      "Id": 68001
+    },
+    {
+      "Message": "faulty file removed.",
+      "PostedDate": "2013-02-25T21:08:42.12-08:00",
+      "Id": 91526
+    }
+  ]
+}

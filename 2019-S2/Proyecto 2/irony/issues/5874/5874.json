@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Implementation would involve more than shadow copies - we need to load grammars and construct objects in a separate domain. ",
+    "ClosedDate": "2009-11-08T23:04:25.643-08:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "I liked using the Grammar Explorer during development but found myself constantly closing and re-opening it to be able to compile new assemblies.  the NUnit GUI runner uses shadow copies to avoid interfering with new builds and will automatically re-load new assemblies.  I think this is a great idea and most of the implementation can probably be borrowed from NUnit.",
+    "LastUpdatedDate": "2009-11-08T23:04:25.643-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-10-19T20:44:27.07-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Shadow Copy Assemblies when loading into explorer",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 5874
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Thanks for your suggestion. Yes, that would be nice to have GrExpl running all the time, rebuild the grammar assembly when needed and make it reload automatically. But... correct me if I'm wrong, but from what I know/remember about how NUnit does this (and any other app) is by loading tested assembly into a separate app domain and executing tests there. After the tests are run the domain is unloaded, shadow or any other copies on disk are unlocked and you can overwrite them. It is a limitation of .NET fwk that once assembly is loaded, it cannot be unloaded, ever - unless it is loaded into separate domain, and the entire domain is unloaded. So having shadow copy is not enough - once you loaded assembly from it, it is locked for writing, and you cannot overwrite it with newer version. \r\nAs for loading grammar into a separate domain - hmm.. maybe, but certain compilcations may arise, and performance may suffer for sure. It will require more careful analysis of what's involved. Wanna try it? I cannot get to it now, have a long to do list already. So far, it is inconvenience, annoyance at worst, but not that serious I hope... \r\nthanks again\r\nRoman",
+      "PostedDate": "2009-10-20T21:55:35.617-07:00",
+      "Id": 29137
+    }
+  ]
+}

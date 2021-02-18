@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "500943",
+    "ThreadId": "229277",
+    "Html": "<p><span style=\"font-size:10pt\">When my query has a Portuguese character appears a message error that says that those characters are not supported.</span></p>\r\n<p><span style=\"font-size:10pt\">I am using the following code to convert query:</span></p>\r\n<p><span style=\"font-size:10pt\">&nbsp;</span></p>\r\n<p style=\"padding-left:30px\"><span style=\"font-size:8pt;color:#2b91af\">AstNode</span><span style=\"font-size:8pt\"> root = _compiler.Parse(avs_query.ToLower());</span></p>\r\n<p style=\"padding-left:30px\"><span style=\"font-size:8pt;color:blue\">if</span><span style=\"font-size:8pt\"> (!CheckParseErrors()) <span style=\"color:blue\">return</span> <span style=\"color:#a31515\">&quot;&quot;</span>;</span></p>\r\n<p style=\"padding-left:30px\"><span style=\"font-size:8pt;color:blue\">return</span><span style=\"font-size:8pt\"> <span style=\"color:#2b91af\">SearchGrammar</span>.ConvertQuery(root, <span style=\"color:#2b91af\">SearchGrammar</span>.<span style=\"color:#2b91af\">TermType</span>.Inflectional);</span></p>\r\n<p><span style=\"font-size:8pt\">&nbsp;</span></p>\r\n<p><span style=\"font-size:10pt\">What I need to change to support Portuguese characters?</span></p>\r\n<p><span style=\"font-size:10pt\">Thanks &amp; Regards,</span></p>\r\n<p><span style=\"font-size:10pt\">Rui</span></p>",
+    "PostedDate": "2010-10-01T03:48:14.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "501712",
+    "ThreadId": "229277",
+    "Html": "<p>Looks like you're using Search grammar and Irony version from zip in M.Coles' article. It is very outdated</p>\r\n<p>Current download on this site contains newer version of SearchGrammar that supports non-English alphabets</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-03T11:21:15.06-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

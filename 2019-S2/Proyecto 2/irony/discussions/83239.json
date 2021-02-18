@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "286182",
+    "ThreadId": "83239",
+    "Html": "<p>I have created a grammar using Irony and implemented a language service using Ben Morrison's starter kit.&nbsp; Everything worked fine, but before extending it to include Intellisense, etc. I replaced the Irony.dll with the latest build and the language service failed to compile.&nbsp; I then modified the source to fix the compiler errors (changing the keyword code in the resolver class, etc.), but when I test the language in VS the parser no longer recognizes simple constructs such as string literals.</p>\r\n<p>I need some guidance on how to approach this.&nbsp; Do I have to construct the grammar completely, or are there certain elements that need to be changed.&nbsp; It is not obvious how the new changes affect the code I've already written, since everything compiles without error or warning.&nbsp; It would also be helpful to know the best strategy for doing things like declaring keywords, for example, since that strategy appears to be different in the latest builds.</p>",
+    "PostedDate": "2010-02-05T04:48:21.49-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "286620",
+    "ThreadId": "83239",
+    "Html": "<p>Sorry for troubles, Irony did change quite a bit since this article and code had been written</p>\r\n<p>All I can suggest is to look at this project:</p>\r\n<p><a href=\"http://vslua.codeplex.com/\">http://vslua.codeplex.com/</a><a href=\"http://vslua.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=38086\"></a></p>\r\n<p>It is language service for Lua and it tracks Irony current versions</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-02-06T09:42:27.083-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "286745",
+    "ThreadId": "83239",
+    "Html": "<p>I have been converting the grammer, and I have made some progress. At &nbsp;first i did not know about VsLlua, so i was doing it from scratch</p>\r\n<p>Perhaps the Lua grammar and AST nodes could be put under another umbrella. I was going to make a new Project for development of the Lua language service only.</p>\r\n<p>Nevertheless VsLua's grammer has some issues still I think with my modifications merged in,&nbsp;</p>\r\n<p>If anything It was stimulating to explore over this past weekend</p>\r\n<p>&nbsp;</p>\r\n<p>-Jon</p>",
+    "PostedDate": "2010-02-06T22:53:03.843-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

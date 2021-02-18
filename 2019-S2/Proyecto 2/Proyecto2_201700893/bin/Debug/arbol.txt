@@ -1,0 +1,8 @@
+digraph g { 
+NODO0_Juan->NODO1_Marta
+NODO0_Juan->NODO2_Sarai
+NODO1_Marta->NODO2_Jared
+NODO1_Marta->NODO3_Eleazar
+NODO2_Sarai->NODO3_Fredy
+NODO2_Sarai->NODO4_Wendy
+ } 

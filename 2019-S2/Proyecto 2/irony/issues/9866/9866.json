@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2012-01-31T14:07:14.937-08:00",
+    "CommentCount": 2,
+    "Custom": null,
+    "Description": "  Hi,\r\n  I am writing grammar based on mini-python example and got following failing test case. It fails both on mini-python and SampleExpressioEvaluator v1.0\r\n  \r\n  Try to run \r\n   4 - 9/3 * 3\r\n   in Grammar explorer for SampleExpressioEvaluator \r\n   result 3 but expected is -5\r\n  \r\n  ",
+    "LastUpdatedDate": "2012-01-31T14:07:14.937-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2012-01-29T23:47:47.707-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "operator precedence",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 9866
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Yes, this operator precedence bug is supposed to have been fixed but I also think that it is still failing as you describe. Maybe there is a problem with the code in the repository not matching what Roman has on his machine?",
+      "PostedDate": "2012-01-30T01:33:40.23-08:00",
+      "Id": 54973
+    },
+    {
+      "Message": "My bad, just checked on last version Irony_2012_01_22.zip and it works as expected",
+      "PostedDate": "2012-01-30T01:57:57.96-08:00",
+      "Id": 54974
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "not an issue (with Irony), just user's problem. Seems to be resolved",
+    "ClosedDate": "2013-02-05T23:27:18.19-08:00",
+    "CommentCount": 2,
+    "Custom": null,
+    "Description": "\r\nHi,\r\n\r\nActually, I need your help for an issue that is blocking me. The thing is that for the following grammar, you need to write the instruction in the same line. Otherwise, Irony will throw adn error saying {some element} is expected depending on where the return to line was requested. For instance, the following example will throw the error:\r\n\r\n```\r\nmove picture\r\nto the right\r\n```\r\n\r\n==> this will lead to the error: to is expected.\r\n\r\nWhen performing reseaches, I have dscovered that we can add the \"NewLine\" between each keyword or variable but this is not the best way I guess since we cannot predict all the places where we can add the NewLine.\r\n\r\nI would appreciate if you help me finding a better way to specify that a rule can be written in different lines.\r\n\r\nAn example of the grammar is written below:\r\n\r\n\r\n```\r\n[Language(\"DSLGrammar\", \"2.0\", \"DSL\")]\r\n    public class DSLGrammar : InterpretedLanguageGrammar\r\n    {\r\n        public DSLGrammar()\r\n            : base(true)\r\n        {\r\nCommentTerminal SingleLineComment = new CommentTerminal(\"SingleLineComment\", \"//\", \"\\r\", \"\\n\", \"\\u2085\", \"\\u2028\", \"\\u2029\");\r\n            CommentTerminal DelimitedComment = new CommentTerminal(\"DelimitedComment\", \"/*\", \"*/\");\r\n            NonGrammarTerminals.Add(SingleLineComment);\r\n            NonGrammarTerminals.Add(DelimitedComment);\r\n            //Temporarily, treat preprocessor instructions like comments\r\n            CommentTerminal ppInstruction = new CommentTerminal(\"ppInstruction\", \"#\", \"\\n\");\r\n            NonGrammarTerminals.Add(ppInstruction);\r\nProgram.Rule = ToTerm(\"move\") +  picture + ToTerm(\"to\") + ToTerm(\"the\") + ToTerm(\"right\")  ;\r\n}}\r\n```\r\n\r\n\r\n\r\nThank you in advance.\r\n\r\n",
+    "LastUpdatedDate": "2013-02-05T23:27:18.19-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2013-02-05T02:45:51.247-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "NewLine issue ",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9878
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Please create Discussion on this. Issues is for Irony's bugs/improvements, not for advice-seeking posts.\nthanks\nRoman",
+      "PostedDate": "2013-02-05T10:18:33.1-08:00",
+      "Id": 88292
+    },
+    {
+      "Message": "don't see what your problem is. just tried it, here's my version of the grammar:\n\n```\n[Language(\"DSLGrammar\", \"2.0\", \"DSL\")]\n  public class DSLGrammar : Grammar {\n    public DSLGrammar()      : base(true) {\n      CommentTerminal SingleLineComment = new CommentTerminal(\"SingleLineComment\", \"//\", \"\\r\", \"\\n\", \"\\u2085\", \"\\u2028\", \"\\u2029\");\n      CommentTerminal DelimitedComment = new CommentTerminal(\"DelimitedComment\", \"/*\", \"*/\");\n      NonGrammarTerminals.Add(SingleLineComment);\n      NonGrammarTerminals.Add(DelimitedComment);\n      //Temporarily, treat preprocessor instructions like comments\n      CommentTerminal ppInstruction = new CommentTerminal(\"ppInstruction\", \"#\", \"\\n\");\n      NonGrammarTerminals.Add(ppInstruction);\n      var program = new NonTerminal(\"Program\");\n      program.Rule = ToTerm(\"move\") + \"picture\" + \"to\" + \"the\" + \"right\";\n      this.Root = program;\n    }\n  }\n```\n(added missing pieces, just guessed; also, as you see, in program.Rule you dont need to put every string into ToTerm() - just the first one)\nLoaded into grammar explorer, tried this sampe:\n\nmove picture //this is comment\nto the right\n\n - parses successfully\n",
+      "PostedDate": "2013-02-05T22:46:24.533-08:00",
+      "Id": 88667
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+
+
+//sets
+CONJ: V -> a,e,i,o,u;
+CONJ: A -> a~z;
+CONJ: D -> 0~9;
+
+//regexp
+rex1 -> .+|{V}'_'
+rex2 -> .+{D}*.||'+''-'|'*''/'+{D}
+rex3 -> ........*' ''i''f'*' '+{A}*' '||'=''<''>'*' '+{D}
+
+%%
+%%
+
+exp1 -> ae_io; 
+//validacion exitosa del lexema
+rex1 -> uaei;
+rex1 -> abe;
+//validacion exitosa del lexema
+rex3 -> if juan <  2;
+rex3 -> if 2 > juan;
+
+rex2 -> 1-a;
+rex2 -> 012+1+4*3+2;
+rex2 -> 1+2*3+4*5*6/2;
+
+<!
+	Fin del archivo
+!>
+}
+
+

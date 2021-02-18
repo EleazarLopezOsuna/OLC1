@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "936015",
+    "ThreadId": "401753",
+    "Html": "\r\n<p>Hi, how I can to build the AST for my grammar? Where I can download any examples?</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2012-11-03T03:45:05.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "936171",
+    "ThreadId": "401753",
+    "Html": "<p>look and expression evaluator and miniPython</p>",
+    "PostedDate": "2012-11-03T14:35:35.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "936223",
+    "ThreadId": "401753",
+    "Html": "<p>Roman, thanks for your reply.&nbsp;</p>\r\n<p>For my first example all NonTerminal nodes I defined as typeof(NotSupportedNode). Also my grammar used RegexBasedTerminals.</p>\r\n<p>When I set&nbsp;LanguageFlags.CreateAst flag in my grammar I have a NullReferenceException after load grammar into Grammar Explorer.</p>\r\n<p>As I can see in pop-out window the NullReferenceException occurs in the \\Irony\\Ast\\AstBuilder.cs line 97, 86 and 38.</p>\r\n<p>Can you help me? Thanks</p>",
+    "PostedDate": "2012-11-03T20:56:10.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "936288",
+    "ThreadId": "401753",
+    "Html": "<p>The default AST nodes don't set up correctly without some work, so you will have to define a Node-Type for all NonTerminals that are not Transient.</p>\r\n<p>I may get my Music Parser uploaded today, in which case you can check it out for some ideas.</p>\r\n<p>Pieter</p>",
+    "PostedDate": "2012-11-04T05:06:06.623-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "937096",
+    "ThreadId": "401753",
+    "Html": "\r\n<p>Thanks Pieter</p>\r\n<p>To experiment, I created a mini-grammar and trying to build AST.</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>    [Language(<span style=\"color:#a31515\">&quot;Test Grammar&quot;</span>)]\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> TestGrammar : Grammar\n    {\n\n        <span style=\"color:blue\">public</span> TestGrammar()\n            : <span style=\"color:blue\">base</span>(<span style=\"color:blue\">false</span>)\n        {\n            <span style=\"color:blue\">this</span>.GrammarComments = <span style=\"color:#a31515\">@&quot;Test Grammar&quot;</span>;\n\n            <span style=\"color:blue\">var</span> Id = <span style=\"color:blue\">new</span> RegexBasedTerminal(<span style=\"color:#a31515\">&quot;Identifier&quot;</span>, <span style=\"color:#a31515\">@&quot;[a-zA-Z](_?[a-zA-Z0-9]?)*&quot;</span>);\n            <span style=\"color:blue\">var</span> IntNum = <span style=\"color:blue\">new</span> RegexBasedTerminal(<span style=\"color:#a31515\">&quot;IntNum&quot;</span>, <span style=\"color:#a31515\">@&quot;[0-9](_?[0-9])*&quot;</span>);\n            <span style=\"color:blue\">var</span> RealNum = <span style=\"color:blue\">new</span> RegexBasedTerminal(<span style=\"color:#a31515\">&quot;RealNum&quot;</span>, <span style=\"color:#a31515\">@&quot;[0-9](_?[0-9])*\\.[0-9](_?[0-9])*([Ee][\\&#43;-]?[0-9](_?[0-9])*)?&quot;</span>);\n\n            NonTerminal Numeric = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;Numeric&quot;</span>);\n            NonTerminal Variable = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;Variable&quot;</span>);\n            NonTerminal Expr = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;Expr&quot;</span>);\n            NonTerminal Operand = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;Operand&quot;</span>);\n            NonTerminal OpUnary = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;OpUnary&quot;</span>, <span style=\"color:blue\">typeof</span>(UnaryOperationNode));\n            NonTerminal OpMult = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;OpMult&quot;</span>);\n            NonTerminal OpAdd = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;OpAdd&quot;</span>);\n            NonTerminal Stmt = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;Stmt&quot;</span>, <span style=\"color:blue\">typeof</span>(AssignmentNode));\n            NonTerminal StmtList = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;StmtList&quot;</span>, <span style=\"color:blue\">typeof</span>(StatementListNode));\n\n            Numeric.Rule = IntNum\n                           | RealNum;\n            Variable.Rule = Id;\n            \n            Expr.Rule = OpAdd;\n            OpAdd.Rule = OpMult\n                         | OpAdd &#43; <span style=\"color:#a31515\">&quot;&#43;&quot;</span> &#43; OpMult\n                         | OpAdd &#43; <span style=\"color:#a31515\">&quot;-&quot;</span> &#43; OpMult;\n            OpMult.Rule = OpUnary\n                          | OpMult &#43; <span style=\"color:#a31515\">&quot;*&quot;</span> &#43; OpUnary\n                          | OpMult &#43; <span style=\"color:#a31515\">&quot;/&quot;</span> &#43; OpUnary;\n            OpUnary.Rule = Operand\n                           | <span style=\"color:#a31515\">&quot;&#43;&quot;</span> &#43; OpUnary\n                           | <span style=\"color:#a31515\">&quot;-&quot;</span> &#43; OpUnary;\n            Operand.Rule = <span style=\"color:#a31515\">&quot;(&quot;</span> &#43; Expr &#43; <span style=\"color:#a31515\">&quot;)&quot;</span>\n                           | Numeric\n                           | Variable;\n            \n            StmtList.Rule = Stmt &#43; <span style=\"color:#a31515\">&quot;;&quot;</span>\n                            | Stmt &#43; <span style=\"color:#a31515\">&quot;;&quot;</span> &#43; StmtList;\n            Stmt.Rule = Variable &#43; <span style=\"color:#a31515\">&quot;:=&quot;</span> &#43; Expr;\n\n            <span style=\"color:blue\">this</span>.Root = StmtList;\n            <span style=\"color:blue\">this</span>.LanguageFlags = LanguageFlags.CreateAst;\n        }\n    }\n</pre>\r\n</div>\r\n<p></p>\r\n<p><span style=\"font-size:10pt\">But AST doesn't build. I get several Null Exceptions.&nbsp;</span><span style=\"font-size:10pt\">What I doing wrong?</span></p>\r\n<p>Thanks</p>\r\n",
+    "PostedDate": "2012-11-05T23:53:55.683-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "937367",
+    "ThreadId": "401753",
+    "Html": "<p>man, your grammar (in regard to AST node construction) does not make any sense. Automatic AST construction is optional in Irony grammar, but when you use it, your grammar rules must be carefully aligned with what each AST node type expects as arguments (child nodes).</p>\r\n<p>Look at definition (Init method specifically) of each node you are going to use, then craft the corresponding grammar rule so that child elements (components in grammar rule) exactly match what the node expects. There's additional property AstConfig on the BnfTerm (Terminal or NonTerminal) that allows some rearrangement of nodes (PartsMap field) before they are used in construction of parent ASt node - use it for some flexibility. Otherwise, if your language semantics do not match Irony's AST node defaults, use node creator methods - delegate properties on non-terminals - to construct AST nodes.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-11-06T09:18:07.7-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "937521",
+    "ThreadId": "401753",
+    "Html": "<p>Also, I have finally uploaded an example to help with AST construction: <a href=\"https://pgirony.codeplex.com/\">https://pgirony.codeplex.com/</a></p>\r\n<p>Comments and suggestions welcome.</p>\r\n<p>Pieter</p>",
+    "PostedDate": "2012-11-06T13:25:12.513-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "937684",
+    "ThreadId": "401753",
+    "Html": "<p>Pieter, thanks for your detailed example. A lot of my questions are resolved.</p>\r\n<p>Roman, I don't understand your sarcasm :) For my first using of your Irony engine I followed the path of least resistance and tried to use already existed classes. Because Irony doesn't have any manual.</p>",
+    "PostedDate": "2012-11-06T22:13:56.59-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "938069",
+    "ThreadId": "401753",
+    "Html": "<p>kep4uk - my apologies if it sounded sarcastic, did not mean any, just tried to give direct instructions - do this and this, and maybe \"the tone\" in writing came out to be too informal.</p>",
+    "PostedDate": "2012-11-07T10:11:23.377-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "938591",
+    "ThreadId": "401753",
+    "Html": "<p>Hallo Pieter,</p>\r\n<p>some words please how to implement your extension.</p>\r\n<p>It is not a project ? Add Dlls to samples ? What samples ?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-11-08T08:02:10.26-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "938629",
+    "ThreadId": "401753",
+    "Html": "<p>The current Documentation tab follows below. If you have specific questions on that, we should move the dscussion over to here:<br /><a href=\"https://pgirony.codeplex.com/discussions\">https://pgirony.codeplex.com/discussions</a></p>\r\n<h1>Getting Started</h1>\r\n<ol>\r\n<li>Download <a href=\"https://pgirony.codeplex.com/wikipage?title=http%3a%2f%2firony.codeplex.com&amp;referringTitle=Documentation\">Irony</a> and <a href=\"https://pgirony.codeplex.com/wikipage?title=http%3a%2f%2fpgirony.codeplex.com&amp;referringTitle=Documentation\">PGIrony</a>;</li>\r\n<li>Add <em>Irony.dll</em> and <em>PGIrony.dll</em> to your project as references;</li>\r\n<li><a href=\"https://pgirony.codeplex.com/wikipage?title=Add%20Required%20Namespace%20References%20to%20Grammar%20File&amp;referringTitle=Documentation\">Add Required Namespace References to Grammar File</a>;</li>\r\n<li>Define <a href=\"https://pgirony.codeplex.com/wikipage?title=Subclass%20stubs%20for%20Grammar%20class%20and%20AST%20support%20classes&amp;referringTitle=Documentation\">Subclass stubs for Grammar class and AST support classes</a>;</li>\r\n<li><a href=\"https://pgirony.codeplex.com/wikipage?title=Define%20Terminals&amp;referringTitle=Documentation\">Define Terminals</a>;</li>\r\n<li><a href=\"https://pgirony.codeplex.com/wikipage?title=Define%20NonTerminals&amp;referringTitle=Documentation\">Define NonTerminals</a>;</li>\r\n<li><a href=\"https://pgirony.codeplex.com/wikipage?title=Define%20Rules&amp;referringTitle=Documentation\">Define Rules</a>;</li>\r\n<li><a href=\"https://pgirony.codeplex.com/wikipage?title=Define%20Subclass%20stubs%20for%20required%20AstNodes&amp;referringTitle=Documentation\">Define Subclass stubs for required AstNodes</a>; </li>\r\n<li>Compile and test <a href=\"https://pgirony.codeplex.com/wikipage?title=AstGrammarTest.dll%20in%20Irony.GrammarExplorer.&amp;referringTitle=Documentation\">AstGrammarTest.dll in Irony.GrammarExplorer.</a>;</li>\r\n<li>Expand your stubs for <strong>MyAstContext</strong> and subclasses of <strong>AstNode</strong> as required.</li>\r\n</ol>",
+    "PostedDate": "2012-11-08T08:57:01.937-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

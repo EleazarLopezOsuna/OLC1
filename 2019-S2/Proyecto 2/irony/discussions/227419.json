@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "494281",
+    "ThreadId": "227419",
+    "Html": "<p>Hi!</p>\r\n<p>I usually write code directly in Common Intermediate Language, and I was wondering how feasible it is to use the Irony libraries directly from CIL, to help with parsing a small DSL.</p>\r\n<p>I'd be glad for any tips you may have about the same!</p>\r\n<p>&nbsp;</p>\r\n<p>Regards,</p>\r\n<p>Rudi.</p>",
+    "PostedDate": "2010-09-16T00:14:51.667-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "494536",
+    "ThreadId": "227419",
+    "Html": "<p>Can't imagine how you do this, directly in CIL. But I bet defining grammar in CIL would be quite a pain. Why not just use c# to define grammar class plus static Parse method that creates parser and parses the file. Then calling this method from CIL would be easy</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-16T09:06:34.007-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "494548",
+    "ThreadId": "227419",
+    "Html": "<p>True - it sure sounds difficult.</p>\r\n<p>I guess your idea would be a hit - simply create a DLL, and use some CIL code to call it.</p>\r\n<p>Thanks :D</p>",
+    "PostedDate": "2010-09-16T09:24:13.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

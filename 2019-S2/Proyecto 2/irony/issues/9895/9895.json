@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "duplicate of \nhttps://irony.codeplex.com/discussions/555894",
+    "ClosedDate": "2014-08-03T10:55:19.98-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "hi,\r\ni want to parse a structure like this: \"Node time >= 1 Endnode\" where \"time >= 1\" is an expression with \"time\" as some user defined name of the variable  followed by \">=\" and a number...this expression can occur multiple times..i.e.: \"Node time >= 1 weight >= 5 x >= 0 Endnode\"\r\n\r\ni definded the grammar like this:\r\n```\r\n// Terminals\r\n            Terminal number = new NumberLiteral(\"number\");\r\n            IdentifierTerminal identifier = new IdentifierTerminal(\"Identifier\");\r\n            KeyTerm ENDNODE = ToTerm(\"Endnode;\");\r\n            KeyTerm NODE = ToTerm(\"Node\");\r\n\r\n            // Non-terminals\r\n            NonTerminal Node = new NonTerminal(\"Node\");\r\n            NonTerminal LTN = new NonTerminal(\"LTN\");\r\n            NonTerminal UGL = new NonTerminal(\"UGL\");\r\n\r\n            // BNF\r\n            Node.Rule = NODE + LTN + ENDNODE;\r\n            LTN.Rule = MakePlusRule(LTN, UGL);\r\n            UGL.Rule = identifier + ToTerm(\">=\") + number;\r\n\r\n            LanguageFlags = LanguageFlags.NewLineBeforeEOF;\r\n            this.Root = Node;\r\n```\r\nand the paring code:\r\n\r\n```\r\n LanguageData language = new LanguageData(new GrammarClass());\r\n\r\n            Parser parser = new Parser(language);\r\n\r\n            ParseTree parseTree = parser.Parse(\"Node time >= 13 x >= 12 Endnode;\");\r\n\r\n            ParseTreeNode root = parseTree.Root;\r\n```\r\nbut this isnt working...the root object is null.\r\n\r\nif i change the last rule\r\n```\r\n UGL.Rule = identifier + ToTerm(\">=\") + number;\r\n```\r\n to:\r\n```\r\n UGL.Rule = number+ ToTerm(\">=\") + number;\r\n```\r\n or:\r\n```\r\n UGL.Rule = ToTerm(\">=\") + number;\r\n```\r\n\r\nthe string \"Node time 1>= 13  1>= 12 Endnode;\" and \"Node >= 13 >= 12 Endnode;\" can be parsed correctly...only if i put the \"identifier\" at the beginning of the rule the root object is null...why is this? is there something wrong with the IdentifierTerminal?\r\n",
+    "LastUpdatedDate": "2014-08-03T10:55:19.98-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2014-08-02T07:41:51.103-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Problem with IdentifierTerminal",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9895
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

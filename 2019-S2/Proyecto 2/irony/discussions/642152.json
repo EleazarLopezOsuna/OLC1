@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1436633",
+    "ThreadId": "642152",
+    "Html": "I'm trying to implement a parser for Xaml Markup Extensions: <a href=\"https://msdn.microsoft.com/en-us/library/ee200269.aspx\" rel=\"nofollow\">https://msdn.microsoft.com/en-us/library/ee200269.aspx</a> which has a relatively simple syntax:<br />\n<pre><code> MarkupExtension = &quot;{&quot; TYPENAME 0*1Arguments &quot;}&quot;\n Arguments       = (NamedArgs / (PositionalArgs 0*1(&quot;,&quot; NamedArgs)) \n NamedArgs       = NamedArg*(&quot;,&quot; NamedArg)\n NamedArg        = MEMBERNAME &quot;=&quot; STRING\n PositionalArgs = NamedArg / (STRING 0*1( &quot;,&quot; PositionalArgs))\n</code></pre>\n\nMy Work in progress is at: <a href=\"https://gist.github.com/PolarbearDK/dbfc1fd8d0ffd7101651\" rel=\"nofollow\">https://gist.github.com/PolarbearDK/dbfc1fd8d0ffd7101651</a>\r<br />\n<br />\nIt's able to parse simple examples like:\r<br />\n{Foo}\r<br />\n{Foo Bar}\r<br />\n<br />\nBut not:\r<br />\n{Foo Bar=42}\r<br />\n<br />\nFrom the trace I can see Irony considering TYPENAME just about everywhere, but never considers NamedArg.\r<br />\n<br />\nCan anybody spot what I'm doing wrong?<br />\n",
+    "PostedDate": "2015-07-30T06:47:14.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1436639",
+    "ThreadId": "642152",
+    "Html": "I would first clean up your code/grammar before trying anything else<br />\n<ol>\n<li>Why are you defining custom terminals? I can't find a good reason for it.</li>\n<li>Try to use less implicit rules, they make things hard to process and debug</li>\n<li>It's better to use alternatives to the Q() method</li>\n</ol>\n",
+    "PostedDate": "2015-07-30T07:11:08.983-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1436641",
+    "ThreadId": "642152",
+    "Html": "I HAVE cleaned it up as much as I can. Please enlighten me.<br />\n<ol>\n<li>The custom terminals are created to handle the odd syntax that governs this particular &quot;language&quot;. See the Microsoft link for info.  Do you think this can be achieved with less effort? How?</li>\n<li>Huh?</li>\n<li>\nOK, I found that in an old article about Irony but it also mentioned Star and Plus methods and they don't exist anymore... What are the alternatives. &quot;| Empty&quot;?<br />\n</li>\n</ol>\n",
+    "PostedDate": "2015-07-30T07:23:34.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1436648",
+    "ThreadId": "642152",
+    "Html": "1.<br />\n<br />\nTypename doesn't seem to have any unusual rules, I think you can use IdentifierTerminal as long as you mark } as punctuaction.<br />\nMembername/string is indeed unusual.<br />\n<br />\nThe comment was more because you explicitly mention having trouble with tokens, thus I recommend first trying with standard tokens and only implementing the custom tokens once the production rules are correct.<br />\n<br />\n2:<br />\n<br />\nIn your parse tree you get things like &quot;Unnamed0&quot; if you use &quot;hidden rules&quot;. Basically if your rules contain brackets it could probably be done better. Also see 3.<br />\n<br />\n3:<br />\nEmpty is the direct translation of Q() and is more or less what Irony does internally, but you could also rewrite them slightly:<br />\n<pre><code>arguments.Rule = (namedArgs | (positionalArgs + (&quot;,&quot; + namedArgs).Q())).Q();\n\narguments.Rule = namedArgs\n               | namedArgs + positionalArgs\n               | namedArgs + positionalArgs + &quot;,&quot; + namedArgs\n               ;\n\npositionalArgs.Rule = namedArg | (@string + (&quot;,&quot; + positionalArgs).Q()).Q();\n\npositionalArgs.Rule = namedArg\n                    | @string\n                    | @string + &quot;,&quot; + positionalArgs;\n</code></pre>\n\nI find the second easier to read and debug, but this might just be a personal preference though.<br />\n",
+    "PostedDate": "2015-07-30T08:27:54.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1436747",
+    "ThreadId": "642152",
+    "Html": "Thanks, I finally figured out what the problem was.\r<br />\n<br />\nConsider a rule something like this: \r<br />\nargument       =  NamedArg | TEXT\r<br />\nNamedArg        = MEMBERNAME &quot;=&quot; TEXT\r<br />\n<br />\nWhat Irony seems to do is when deciding if something is a NamedArg or a TEXT, is to evaluate the FIRST terminal of each. Then it decides based on the number of characters consumed which should &quot;win&quot;. If the two tokens has equal length, then the LAST wins.\r<br />\nIt never includes &quot;=&quot; and TEXT of NamedArg in the decision.\r<br />\n<br />\nIn my case MEMBERNAME and STRING produces the exact same length (both terminates on &quot;=&quot;), so STRING always wins :(\r<br />\n<br />\nCould this be a bug in Irony?\r<br />\n<br />\nMy solution is to ignore STRING if it is terminated by &quot;=&quot;. \r<br />\nI have updated the sample and it now works as expected: <a href=\"https://gist.github.com/PolarbearDK/dbfc1fd8d0ffd7101651\" rel=\"nofollow\">https://gist.github.com/PolarbearDK/dbfc1fd8d0ffd7101651</a><br />\n",
+    "PostedDate": "2015-07-31T04:09:12.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

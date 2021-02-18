@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "673505",
+    "ThreadId": "273022",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>is it possible create culture independent grammar for parsing floating point numbers and datetime values?</p>\r\n<p>For example:</p>\r\n<p>English date '3/21/2011' has equivalent '21.3.2011' in german / czech language</p>\r\n<p>I would like allow users write those types with their native CultureUI settings.</p>\r\n<p>Thanks</p>\r\n<p>Martin D.</p>\r\n",
+    "PostedDate": "2011-09-19T00:20:57.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "673507",
+    "ThreadId": "273022",
+    "Html": "<p>If you want to define dates as quoted strings - with quotes or for ex like #09/19/2011#), then it should be simple. Define dates as QuotedValueLiteral, dataType = string; then handle ValidateToken event; this is the chance to set the value of the token, instead of string - convert value according to UI culture and put it into token.Value.</p>",
+    "PostedDate": "2011-09-19T00:26:19.007-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

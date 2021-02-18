@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "569145",
+    "ThreadId": "246783",
+    "Html": "<p>For the past few weeks, I've been considering options for making it easier for everybody to contribute and share code.&nbsp;</p>\n<p>After careful consideration, I decided to stay on Codeplex and switch to Mercurial source code control. The official request has been sent to Codeplex site administrators.&nbsp;</p>\n<p>We will now be able to fork, change, and merge changes, more easily than with TFS - in some near future. So if you are planning to get sources from repository, start getting VisualHg and TortoiseHg tools and get familiar with them. I'm in the process already.</p>\n<p>I have considered GitHub with Git as another option, but it seems like Mercurial is more Windows-friendly, has less learning curve, while feature-wise, in general, both systems are more-less on parity. Plus no need to move from Codeplex, which is a plus  also.&nbsp;</p>\n<p>This decision was in fact for 2 projects, the other one is a coming soon new project VITA - will be publishing it soon. I wanted to make sure I'll be able to continue with both projects, on a single source control system, in a familiar environment. &nbsp;&nbsp;</p>\n<p>I hope you folks meet this announcement as good news.&nbsp;</p>\n<p>Thanks all for your support and suggestions regarding project future.</p>\n<p>Roman</p>",
+    "PostedDate": "2011-02-19T23:13:39.807-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "569147",
+    "ThreadId": "246783",
+    "Html": "<p>(adding this to push this thread on top)</p>",
+    "PostedDate": "2011-02-19T23:16:18.19-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "569187",
+    "ThreadId": "246783",
+    "Html": "<p>That's great news&nbsp; it will make contributing to Irony a lot easier.</p>\r\n<p>&nbsp;</p>\r\n<p>Lately I've been using Irony and it's a great project. I have several questions and suggestions but I guess these should have their own thread.</p>",
+    "PostedDate": "2011-02-20T03:58:23.213-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "569745",
+    "ThreadId": "246783",
+    "Html": "<p>We're done, the sources are in Mercurial</p>\r\n<p>Big thanks to Codeplex team!</p>",
+    "PostedDate": "2011-02-21T11:03:40.16-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

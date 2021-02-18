@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1136760",
+    "ThreadId": "474284",
+    "Html": "I analysed if Irony would be able to solve me in implementing filter logic for a control. I experimented with the ExpressionEvaluatorGrammar and noted that it was not able to solve expressions of the type true==false. Giving me an error. I found this strange because &amp;&amp; and || operators do work without problem. <br />\nI broke the cause of the error down to some missing lines in <br />\n<pre><code>LanguageRuntime.InitBinaryOperatorImplementationsForMatchedTypes</code></pre>\n\nI just added the following lines in the appropriate sections and everything works fine now.<br />\n<pre><code>      AddBinary(op, typeof(bool), (x, y) =&gt; checked((bool)x == (bool)y), BoolResultConverter);\n      AddBinary(op, typeof(bool), (x, y) =&gt; checked((bool)x != (bool)y), BoolResultConverter);\n</code></pre>\n\nIs there a specific reason, why those lines where not part from the beginning?<br />\n<br />\nBest regards<br />\nMarwie<br />\n",
+    "PostedDate": "2013-12-16T09:05:16.137-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1136979",
+    "ThreadId": "474284",
+    "Html": "no reason, except &quot;simple overlook&quot;; glad you found how to fix it, will add it in next push\r<br />\nthanks\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-12-16T21:21:37.947-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

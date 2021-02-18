@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "933744",
+    "ThreadId": "401097",
+    "Html": "\r\n<p>Hello All,</p>\r\n<p>I am a newbie in both Irony and parsing.&nbsp;I need some help to find the right approach in a case. I created a Grammar for SQL select statements. Everything is working and I am quite impressed with the expressivenes of Irony (I love using C# to express\r\n my grammar). Now I would like to use Irony and replace dynamically some text.</p>\r\n<p>Lets say I parse &quot;SELECT A, B, C FROM TABLE1, TABLE2&quot;. I would like to replace the field A with a new text (say REAL_A). What is the best way for doing it? I want to identify the fields and only do this replacement for field names and not for tables.</p>\r\n<p>My grammar has got &quot;Identifier&quot; as a NonTerminal and this is used for field names and table names. Now I would like to intercept the parsing of identifiers that are used for field names and then transform the content using some internal rules.</p>\r\n<p>Is the Reduced event for the NonTerminals the right one? How could I see if the &quot;Identifier&quot; was in a field list or a table list? How could I replace the text with new one?</p>\r\n<p>Sorry for the many questions</p>\r\n<p>RaulRG</p>\r\n",
+    "PostedDate": "2012-10-29T04:51:37.91-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "934015",
+    "ThreadId": "401097",
+    "Html": "<p>Don't you just want to walk the ParseTree?</p>",
+    "PostedDate": "2012-10-29T17:34:11.073-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "934050",
+    "ThreadId": "401097",
+    "Html": "<p>Agree, you need a separate process, after parsing, working on parse tree and changing it appropriately. This is in fact semantic analysis. Then finally output the text from the tree. Hooking to Reduced event obviously won't make it - when you reduce field list in SELECT clause, the FROM clause is still ahead, so you don't know the table name yet.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-10-29T22:51:29.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "934088",
+    "ThreadId": "401097",
+    "Html": "<p>Thank you for your answers,</p>\r\n<p>if this is the way of course I can walk the ParseTree. In fact, I show the tree as you do in your GrammarExplorer. For me it was important to know if this is the way of doing it. I discovered the Reduced event and it looked as if I could use it for it. This could have been very elegant for solving the matter.</p>\r\n<p>@Roman: in my case I don't need to know the tables for replacing the field names. I've got a kind of mapping subsystem and I just need to get the names to map them to the real one.</p>",
+    "PostedDate": "2012-10-30T00:56:16.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "819177",
+    "ThreadId": "351005",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>this is a sample grammar:</p>\r\n<p>var Change = new NonTerminal(&quot;Change&quot;,typeof(ChangeNode));</p>\r\n<p>var blockForany = new NonTerminal(&quot;blockForany&quot;, typeof(BlockForanyNode));</p>\r\n<p>Change.Rule = ToTerm(&quot;change&quot;) &#43; &quot;the&quot; &#43; identifier &#43; &quot;of&quot; &#43; identifier &#43; identifier &#43; &quot;to&quot; &#43; identifier &#43; &quot;of&quot; &#43; identifier &#43; identifier &#43; BinOp&#43;Expr;</p>\r\n<p>blockForany.Rule = ToTerm(&quot;for&quot;) &#43; &quot;any&quot; &#43; identifier &#43; identifier &#43; NewLine &#43; &quot;do&quot; &#43; NewLine &#43; listStatement&#43;NewLine&#43;&quot;end&quot;;</p>\r\n<p>&nbsp;</p>\r\n<p>how to change the context in the &nbsp;methode DoEvaluate(ScriptThread thread) of class BlockForanyNode ?</p>\r\n",
+    "PostedDate": "2012-04-03T04:03:54.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "819910",
+    "ThreadId": "351005",
+    "Html": "<p>what do you mean - change the context?</p>",
+    "PostedDate": "2012-04-04T09:26:58.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "819920",
+    "ThreadId": "351005",
+    "Html": "<p>sorry, i mean to change the thread in the methode DoEvaluate(ScriptThread thread) of class BlockForAnyNode</p>",
+    "PostedDate": "2012-04-04T09:37:02.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "819923",
+    "ThreadId": "351005",
+    "Html": "<p>why you want to do that? ScriptThread is your current context of execution, with your call stack and entire environment (local and global variables). You just need to implement the functionality you need, do this \"for any\" stuff</p>",
+    "PostedDate": "2012-04-04T09:39:43.587-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "820263",
+    "ThreadId": "351005",
+    "Html": "<p>thank you</p>",
+    "PostedDate": "2012-04-05T01:43:59.753-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

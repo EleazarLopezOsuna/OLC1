@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "447725",
+    "ThreadId": "213938",
+    "Html": "<p>Hi guys,<br><br>I'm very exited with this project. I've used JavaCC and SableCC and this new way of defining Grammar is very interesting.</p>\r\n<p>I'm now trying to navigate through the Concrete Syntaxe Tree (parseTree). I just can't find any AcceptVisitor for the default generated tree. Creation of classes for every Non-Terminal in order to use the ASTNode feature is a bit harsh. Is there a way to simplify the process of visiting all the default generated CST ?<br><br>Thx</p>",
+    "PostedDate": "2010-05-26T09:15:40.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "448217",
+    "ThreadId": "213938",
+    "Html": "<p>The visitor pattern is just a traversal of the tree where it calls some method (e.g., &quot;visit&quot;) on each node.&nbsp; The visit method is the method that actually processes the node to do what you want.&nbsp; So why not use just a generic pre-order traversal of the tree and process each node as you please?&nbsp; (It's the same thing, just not necessarily the &quot;visitor pattern&quot;.)</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">static</span> IEnumerable&lt;ParseTreeNode&gt; PreOrder(<span style=\"color:blue\">this</span> ParseTreeNode root)\r\n{\r\n   <span style=\"color:blue\">var</span> stack = <span style=\"color:blue\">new</span> Stack&lt;ParseTreeNode&gt;();\r\n   stack.Push(root);\r\n\r\n   <span style=\"color:blue\">while</span> (stack.Count &gt; 0)\r\n   {\r\n      <span style=\"color:blue\">var</span> node = stack.Pop();\r\n      yield <span style=\"color:blue\">return</span> node;\r\n\r\n      <span style=\"color:blue\">var</span> children = node.ChildNodes;\r\n      <span style=\"color:green\">// Push children on in reverse order so that they will</span>\r\n      <span style=\"color:green\">// be evaluated left -&gt; right when popped.</span>\r\n      <span style=\"color:blue\">for</span> (<span style=\"color:blue\">int</span> i = children.Count - 1; i &gt;= 0; i--)\r\n      {\r\n         stack.Push(children[i]);\r\n      }\r\n   }\r\n}\r\n</pre>\r\n</div>\r\n<p>And then you could use this like:</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>ParseTree parseTree; <span style=\"color:green\">// Get your parse tree</span>\r\n\r\nParseTreeNode root = parseTree.Root;\r\n<span style=\"color:blue\">foreach</span>(<span style=\"color:blue\">var</span> node <span style=\"color:blue\">in</span> root.PreOrder())\r\n{\r\n  <span style=\"color:green\">// Process here -- probably &quot;switch&quot; based on token name</span>\r\n  <span style=\"color:green\">// or whatever you want.</span>\r\n}\r\n</pre>\r\n</div>\r\n<p>Brian</p>",
+    "PostedDate": "2010-05-27T08:29:17.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "448270",
+    "ThreadId": "213938",
+    "Html": "<p>Hi Brian,</p>\r\n<p>Thanks for the quick answer,</p>\r\n<p>your solution works but I realy wanted to use the Visitor Pattern :). In fact, I added an <strong>AcceptVisitor()</strong> Method to the ParseTreeNode class and created an interfance <strong>ICstVisitor</strong> to a new file in Parsing.Parser ICstVisitor.cs. Why not add thoses changes to the project, simple and friendly solution ? Unless there is a specific design...</p>\r\n<p>Here's the code:</p>\r\n<p><strong>ICstVisitor<br></strong></p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>    <span style=\"color:blue\">public</span> <span style=\"color:blue\">interface</span> ICstVisitor\r\n    {\r\n        <span style=\"color:blue\">void</span> BeginVisit(ParseTreeNode node);\r\n        <span style=\"color:blue\">void</span> EndVisit(ParseTreeNode node);\r\n    }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p><strong>AcceptVisitor() (In ParseTree.cs - ParseTreeNode class)</strong></p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><strong><div style=\"color:black;background-color:white\"><pre><strong>    <span style=\"color:green\">//Visite all the ParseTree nodes.</span>\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">virtual</span> <span style=\"color:blue\">void</span> AcceptVisitor(Irony.Parsing.ICstVisitor visitor)\r\n    {\r\n        visitor.BeginVisit(<span style=\"color:blue\">this</span>);\r\n        <span style=\"color:blue\">if</span> (ChildNodes.Count &gt; 0)\r\n            <span style=\"color:blue\">foreach</span> (ParseTreeNode node <span style=\"color:blue\">in</span> ChildNodes)\r\n                node.AcceptVisitor(visitor);\r\n        visitor.EndVisit(<span style=\"color:blue\">this</span>);\r\n    }<br><br></strong></pre>\r\n</div>\r\n</strong><strong>&nbsp;</strong><strong>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><strong>&nbsp;</strong></pre>\r\n</div>\r\n</strong><strong>&nbsp;</strong></pre>\r\n</div>\r\n<p><strong><br></strong></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-05-27T09:55:54.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "448349",
+    "ThreadId": "213938",
+    "Html": "<p>Why do you want to work with the parse tree when you really should be working with the abstract tree? &nbsp;It seems that with everything that's already built in to the compiler kit (e.g. processing of binary operations) that you're only left to take care of those things that are really specific to your language. &nbsp;I ask this somewhat out of ignorance. &nbsp;I'm to the point in my language where I think I'm about ready to create all my visitors, so I'd like some more understanding on this if anyone has the time.</p>\r\n<p>Thanks</p>\r\n<p>AJG</p>",
+    "PostedDate": "2010-05-27T12:58:53.73-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "448368",
+    "ThreadId": "213938",
+    "Html": "<p>Hi aaron,<br><br>for my projet I only needed to count a number of specific expression. I didn't want to create all the possible type of nodes and do the childnodes management. So, a simple visitor for the parseTree saved me a lot of time and testing. But if you are on a big project, then you realy should work with the AST and all the relational information between the nodes (like functionCall targets).</p>\r\n<p>Visitor for CST is still usefull for a language prototype. Well, it was usefull for me.<br><br>Dan.</p>",
+    "PostedDate": "2010-05-27T13:25:07.1-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "448695",
+    "ThreadId": "213938",
+    "Html": "<p>The AST is only really useful if you are wanting / needing to *EVALUATE* an expression. If you are just needing to do something based on the structure of the parsed tokens, then all you need is the parse tree.</p>\r\n<p>For example, tools like a code colorizer or intellisense need only the parse tree. The code colorizer only cares if a specific word was parsed as a comment, identifier (variable), constant, function call, etc. It doesn't care about actually executing the function call, or evaluating the value of the variable. It just wants to know what to color green, blue, cyan, etc. Likewise, intellisense just wants to keep a list of all of the keywords in your language along with identifiers, function names, etc. that the user has already created. Once again, it doesn't care about evaluating these statements; it just wants to be able to find specific token types.</p>\r\n<p>Personally, I am using about two dozen different AstNode classes since the entire purpose of including Irony in the project was to evaluate various expressions!</p>\r\n<p>Brian</p>\r\n<p>(Sorry about the &quot;blob-like&quot; paragraph. CodePlex seems to be going a little crazy this morning by removing the spacing...) -- FIXED!</p>",
+    "PostedDate": "2010-05-28T07:30:17.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

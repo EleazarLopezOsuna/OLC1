@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "447707",
+    "ThreadId": "213931",
+    "Html": "<p>Hello!  I have a grammar that doesn't work quite right.  I can understand what it must be doing, but I'd like to fix it without rearranging my grammar too much and I'm not sure how.</p>\r\n<p>The full grammar is large, so I'll include only the relevant part for now (in case this is an obvious issue), and include the rest of it later if needed.</p>\r\n<p>First, here is the relevant grammar:\r\n\r\n<pre>      Expression.Rule = Term | UnExpr | BinExpr;\r\n      Term.Rule = Id | StringLiteral | CharLiteral | NumLiteral | FunCall;\r\n      UnExpr.Rule = UnOp + Term;\r\n      UnOp.Rule = NOT | &quot;+&quot; | &quot;-&quot; | &quot;~&quot;;\r\n      BinExpr.Rule = Expression + binOp + Expression;\r\n      binOp.Rule = BinMathOp | BinCompOp | BinCondOp;\r\n      BinMathOp.Rule = ToTerm(&quot;+&quot;) | &quot;-&quot; | &quot;*&quot; | &quot;/&quot; | &quot;%&quot; | &quot;&&quot; | &quot;|&quot; | &quot;^&quot;;\r\n      BinCompOp.Rule = ToTerm(&quot;=&quot;) | &quot;&gt;&quot; | &quot;&lt;&quot; | &quot;&gt;=&quot; | &quot;&lt;=&quot; | &quot;&lt;&gt;&quot; | &quot;!=&quot; | &quot;!&lt;&quot; | &quot;!&gt;&quot;;\r\n      BinCondOp.Rule = ToTerm(&quot;AND&quot;) | &quot;OR&quot;;\r\n\r\n      FunCall.Rule = Id + &quot;(&quot; + ArgList + &quot;)&quot; | Id + &quot;(&quot; + ArgList + &quot;)&quot; + WhereClause;\r\n      WhereClause.Rule = ToTerm(&quot;WHERE&quot;) + Expression;\r\n      ArgList.Rule = MakeStarRule(ArgList, Comma, Expression);\r\n</pre>\r\n</p>\r\n<p>The interesting thing about this grammar is that it allows a &quot;where&quot; clause on a function, so you can do something like this:\r\n<pre>\r\n  sum(Task.Estimated_Hours) where Task.Completion_Date &lt; now()</pre>\r\n\r\nThis is SQL-like, but it isn't SQL.  We need to also be able to support something like this (for example):\r\n<pre>\r\n  process(currentIteration, sum(Task.Estimated_Hours) where Task.Completion_Date &lt; now())\r\n</pre>\r\nIn fact, this parses perfectly.  What doesn't parse perfectly (or at least, how I'd like it to) is this:\r\n<pre>\r\nsum(Task.Estimated_Hours) where Task.Completion_Date &lt; now() and Task.Flag != true\r\n</pre>\r\n<p>This parses, but produces a tree rooted at the AND.  In other words, the root node is a BinExpr with AND as the binOp and &quot;sum(Task.Estimated_Hours) where Task.Completion_Date &lt; now()&quot; as the left hand side and &quot;Task.Flag != true&quot; as the right hand side.</p>\r\n<p>I guess this sort of makes sense, but what are my options on getting the full expression (including the AND) to the right of the WHERE to parse under the WHERE so that the FunCall expression is the root?</p>\r\n<br>\r\nThanks in advance!",
+    "PostedDate": "2010-05-26T08:40:12.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "448257",
+    "ThreadId": "213931",
+    "Html": "<p>My very first guess would be to register &quot;where&quot; as an operator (RegisterOperator) with the lowest precedence value.&nbsp;</p>\r\n<p>If it does not work, please post the entire grammar file with test examples</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-05-27T09:25:05.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

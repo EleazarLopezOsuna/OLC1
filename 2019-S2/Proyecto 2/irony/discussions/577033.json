@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1339578",
+    "ThreadId": "577033",
+    "Html": "Hi,<br />\n<br />\nI have been working on a grammar using Irony for a couple of weeks and have made substantial progress.  The language is VBA (quite similar to VB6) and the source can be found <a href=\"https://github.com/rossknudsen/Vba.Language\" rel=\"nofollow\">here</a>.<br />\n<br />\nWhat I want to do is validate a list of non-terminals, the first check being that there is only one of each 'attribute' within the list (i.e. no duplicate declarations).  The relevant source is:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\nRoot = module;\nmodule.Rule = moduleHeader + Optional(NewLinePlus + moduleBody);\nmoduleHeader.Rule = MakePlusRule(moduleHeader, NewLine, attribute);\nmoduleHeader.Reduced += ModuleHeaderReduced;\n\nattribute.Rule = ToTerm(<span style=\"color:#A31515;\">&quot;Attribute&quot;</span>) + attributeType + <span style=\"color:#A31515;\">&quot;=&quot;</span> + attributeValue;\nattributeType.Rule = ToTerm(<span style=\"color:#A31515;\">&quot;VB_Name&quot;</span>) | <span style=\"color:#A31515;\">&quot;VB_GlobalNameSpace&quot;</span> | <span style=\"color:#A31515;\">&quot;VB_Creatable&quot;</span> | <span style=\"color:#A31515;\">&quot;VB_PredeclaredId&quot;</span> | <span style=\"color:#A31515;\">&quot;VB_Exposed&quot;</span> |  <span style=\"color:#A31515;\">&quot;VB_Customizable&quot;</span>;\nattributeValue.Rule = stringLiteral | <span style=\"color:#A31515;\">&quot;True&quot;</span> | <span style=\"color:#A31515;\">&quot;False&quot;</span>;\r\n</pre></div>So you will see that I'm trying to use the moduleHeader.Reduced event to perform this validation however I see that I get multiple fires of this event (which the Irony source says happens for lists).  Is this the best approach, or should I be using the AstNodeCreated event or something else entirely?<br />\n<br />\nPS the plus symbols are escaping weirdly, if you know how I can edit this so that it is more readable, let me know.<br />\n",
+    "PostedDate": "2015-01-06T19:43:20.677-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1346113",
+    "ThreadId": "577033",
+    "Html": "hi\r<br />\nsorry for late response\r<br />\nyes, that's true, probably list' Reduced even is fired multiple times, each time new element is added to the list. One thing to do is hook to higher level non-terminal (module), and then run through the list. But on a general note. This kind of rule is in fact 'semantics', not syntax; in c# attribute (some) allow duplicates, in VBA - no. So this semantic rule, so it should be checked/enforced after completing parsing, by analyzing the completed parse tree - or even the AST tree.\r<br />\nRoman<br />\n",
+    "PostedDate": "2015-01-26T23:24:46.527-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1346155",
+    "ThreadId": "577033",
+    "Html": "Thanks for the reply Roman,<br />\n<br />\nI have since been working my way through the Irony source so I have a much better understanding since asking this question.  Its because lists are expressed recursively, like:<br />\n<pre><code>   list.Rule = item |\n               list + item;\n</code></pre>\n\nignoring delimiters etc.  Since the rule refers back to itself it needs to keep reducing the list each time it finds a new item (this is really for anyone finding this thread as I'm telling you how to suck eggs).<br />\n<br />\nI'm thinking through general ways to deal with this problem.  A method which automatically adds the extra layer so that the Reduced event only fires once when the list is complete?  Perhaps the method accepts parameters detailing the min/max number of items in the list?<br />\n<br />\nAnyway, you are right with the comment that it is more semantics rather than syntax.  I see a lot of questions in these forums with that comment.  I guess the problem is that we are creating a derived class from Grammar and it isn't always clear where the separation is between the different layers.  I guess it also depends on how Irony is to be used as well.  I'm hoping to use it as a language service inside Visual Studio.  So I would like to report back semantic issues as well as syntactic, is it possible to push errors back at the AST tree stage?<br />\n",
+    "PostedDate": "2015-01-27T00:57:00.96-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1346396",
+    "ThreadId": "577033",
+    "Html": "I'm pretty sure you can (push errors) - just add error to parsing context while you're running post-parse activities<br />\n",
+    "PostedDate": "2015-01-27T11:22:58.72-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

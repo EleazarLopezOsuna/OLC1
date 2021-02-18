@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1318375",
+    "ThreadId": "571098",
+    "Html": "Hi,\r<br />\n<br />\nI am new to Irony, and I am impressed how easy it is to create a parser with it.\r<br />\n<br />\nI created a parser for WIQL (Query Language for Microsoft TFS), this worked pretty good.\r<br />\n<br />\nThe reason for this is i want to extend the WIQL with e.g. taking the columns from another query.\r<br />\n<br />\nFor this I need some &quot;special&quot; Syntax which fits to the WIQL-Language, otherwise I cannot store my changes in TFS.\r<br />\n<br />\nAnd now to the problem: I want to add my reference to the columns of another query like this:\r<br />\nSELECT ... FROM Workitems WHERE &lt;normal where clause&gt; AND [system.title] &lt;&gt; '%COLUMNSET%QueryPath%COLUMNSET%\r<br />\n<br />\nAnd i want to assign this clause a special non-terminal.\r<br />\n<br />\nMy problem is that [system.title] &lt;&gt; '%COLUMNSET% is not regocnized, because [system.title] is taken as a fieldName.\r<br />\n<br />\nThe following grammer works perfectly:<br />\n<pre><code>      var selectStmt = new NonTerminal(&quot;selectStmt&quot;);\n      this.Root = selectStmt;\n \n      var refColumnSet = new NonTerminal(&quot;refColumnSet&quot;);\n \n      refColumnSet.Rule = ToTerm(&quot;[system.title] &lt;&gt; '%COLUMNSET%&quot;);\n \n      selectStmt.Rule = ToTerm(&quot;SELECT&quot;) + refColumnSet;</code></pre>\n\nmeaning, the refColumnSet is recognized.\r<br />\n<br />\nBut if a add the fieldname-definition like this:<br />\n<pre><code>  var selectStmt = new NonTerminal(&quot;selectStmt&quot;);\n  this.Root = selectStmt;\n\n  var fieldName = TerminalFactory.CreateSqlExtIdentifier(this, &quot;fieldName&quot;); //covers normal identifiers (abc) and quoted id's ([abc d], &quot;abc d&quot;)\n\n  var refColumnSet = new NonTerminal(&quot;refColumnSet&quot;);\n\n  refColumnSet.Rule = ToTerm(&quot;[system.title] &lt;&gt; '%COLUMNSET%&quot;);\n  fieldName.Priority = TerminalPriority.Low;\n\n  selectStmt.Rule = ToTerm(&quot;SELECT&quot;) + fieldName | ToTerm(&quot;SELECT&quot;) + refColumnSet;\n\n</code></pre>\n\nI only get the error &quot;invalid character: '&lt;', because before [system.title] is referenced as a fieldName. Decreasing the priority of fieldName does not help.\r<br />\n<br />\nAny ideas how to solve this?\r<br />\n<br />\nThanks,\r<br />\nKlaus<br />\n",
+    "PostedDate": "2014-11-02T05:27:09.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1319220",
+    "ThreadId": "571098",
+    "Html": "I don't understand at all.. Using \r<br />\n<br />\nToTerm(&quot;[system.title] &lt;&gt; '%COLUMNSET%&quot;)\r<br />\n<br />\nseems like completely wrong way to go. ToTerm converts its argument as a whole into a terminal, as a whole string literal. ToTerm should be only used when combining two literals with &quot;+&quot; operator, to avoid compiler confusing it with string concatenation operation: \r<br />\nso that \r<br />\n  &quot;a&quot; + &quot;b&quot;\r<br />\nis interpreted by c# as &quot;ab&quot;, before even Irony has a chance to look at it; instead you write\r<br />\n<br />\nToTerm(&quot;a&quot;) + &quot;b&quot;\r<br />\n<br />\nthen Irony will correctly understand that this means literal &quot;a&quot; followed by some spaces followed by &quot;b&quot;. \r<br />\nThat's the only reason to use ToTerm() method!!!\r<br />\nSo try to express the rules without it. It does not matter what errors it gives you currently, the arrangement is wrong to begin with\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-11-04T20:46:05.493-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1319262",
+    "ThreadId": "571098",
+    "Html": "Hi Roman,\r<br />\n<br />\nThanks for your answer - probably my explanation was too short. I hope the below is not too short again. (Or I am completely wrong …).\r<br />\n<br />\nI have tried to give a very short example. Below is a little bit more.\r<br />\n<br />\nI have “normal” where-conditions (like “a &gt; 15”). I treat these conditions as it should be with the non-Terminals fieldname, operator and value. This works perfectly.\r<br />\n<br />\nBut then I have a “special” where-condition like “([system.title] &lt;&gt; '%COLUMNSET% /path/QueryName’)”.\r<br />\n<br />\nThis is of course again a combination of non-terminals fieldname, operator and value.\r<br />\n<br />\nBut I would like to treat it differently, because this syntax has a special meaning, and I can find it much easier in the parse tree if it is not fieldname, operator and value, but something like\r<br />\nColumnsetref + querypath. Therefore I really want to treat “([system.title] &lt;&gt; '%COLUMNSET%)” as one string.\r<br />\n<br />\nUnfortunately I cannot define a special syntax for this columnSet, because I have to store my query definition in TFS, and this is only possible with a syntax TFS understands. Therefore I created this “workaround”.\r<br />\n<br />\nAbove solution does not work, because irony detects it (correctly) as fieldname, operator and value. Therefore I would like to give the Columnsetref + querypath higher priority than fieldname, operator and value. Is this possible?\r<br />\n<br />\nI hope it is more clear now.\r<br />\n<br />\nRegards,\r<br />\nKlaus<br />\n",
+    "PostedDate": "2014-11-05T00:46:17.937-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1319641",
+    "ThreadId": "571098",
+    "Html": "At least for the problem in the &quot;very small&quot; grammar I found a solution.\r<br />\n<br />\nI changed<br />\n<pre><code>var fieldName = TerminalFactory.CreateSqlExtIdentifier(this, &quot;fieldName&quot;);</code></pre>\n\nto<br />\n<pre><code>var fieldName = new IdentifierTerminal(&quot;fieldName&quot;, &quot;[].&quot;, &quot;[&quot;);\n</code></pre>\n\nWith this change, my strange &quot;[system.title] &lt;&gt; '%COLUMNSET%&quot; is recognized as own token.\r<br />\n<br />\nBut this is just a workaround, is it possible to solve this with the &quot;correct&quot; fieldname definition for the SQL identifier?\r<br />\n<br />\nKlaus<br />\n",
+    "PostedDate": "2014-11-06T05:25:05.99-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1321386",
+    "ThreadId": "571098",
+    "Html": "I don't think this workaround would really work; how about spaces inside? Identifier terminal would stop at space char thinking this is the end. \r<br />\nI don't quite understand, in pure human terms, what would be the criteria for recognizing this special fragment as one special token (fieldname)? Like if we &quot;hit the string that starts with '[' and ends with '%' THEN this is one special fieldName token. Formulate this rule in pure human language, then try to find an implementation (pre-existing terminal in Irony) or create custom terminal that can handle these special strings\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-11-12T11:25:14.967-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1322693",
+    "ThreadId": "571098",
+    "Html": "I have already recognized (and solved) the problem with the spaces with an own &quot;TerminalIdentifierWithSpaces&quot;.\r<br />\n<br />\nRegarding your question: The criteria for the special fragment are just is exactly <em>&quot;[system.title] &lt;&gt; '%COLUMNSET%&quot;</em>. (This is really a constant).\r<br />\n<br />\nBut my main question is still open: Why is <em>&quot;[system.title] &lt;&gt; '%COLUMNSET%&quot;</em> recognized as own token with my own definition of fieldName (<em>new IdentifierTerminal(&quot;fieldName&quot;, &quot;[].&quot;, &quot;[&quot;)</em>), but it is not with <em>fieldName = TerminalFactory.CreateSqlExtIdentifier(this, &quot;fieldName&quot;);</em>?\r<br />\n<br />\nKlaus<br />\n",
+    "PostedDate": "2014-11-16T04:11:22.387-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1324087",
+    "ThreadId": "571098",
+    "Html": "because CreateSqlExtIdentifier defines identifier with optionally quoted by square brackets; so right bracket is a token-end char for terminal; the other version allows brackets INSIDE terminal<br />\n",
+    "PostedDate": "2014-11-19T23:07:42.453-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

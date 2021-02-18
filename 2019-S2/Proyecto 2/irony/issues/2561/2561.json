@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T11:43:35.913-07:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "Scanner.SelectTerminals() should include all fallback terminals in its returned list, regardless of whether TerminalLookup selects any terminals. Currently, terminals that don't define a Firsts list (eg RegexBasedTerminal) will be ignored during this selection if their matches begin with a sequence that is recognised as a terminal in TerminalsLookup.\n\neg if a grammar defines Symbol(\"and\") and RegexBasedTerminal(\"andy\"), and we try to parse the string \"andy\", the regex will never match because the symbol matches its prefix.\n\nThe code for SelectTerminals() should probably look something like this:\n\nif (!_caseSensitive)\n  current = char.ToLower(current);\nTerminalList result = new TerminalList();\n_data.TerminalsLookup.TryGetValue(current, out result);\nresult.AddRange( _data.FallbackTerminals );\nreturn result;\n\nThen you could safely remove the use of fallback in Scanner.ReadToken(), ie these lines:\n\n//If no token, try FallbackTerminals\nif (result == null && _data.FallbackTerminals.Count > 0)\nresult = MatchTerminals(_data.FallbackTerminals);",
+    "LastUpdatedDate": "2010-03-26T11:43:35.913-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2008-08-11T21:57:41.12-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Scanner does not handle fallback terminals correctly",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 2561
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Whoops, that will crash if TryGetValue finds nothing. The code for SelectTerminals() should probably look something like this:\r\n\r\nif (!_caseSensitive)\r\n\tcurrent = char.ToLower(current);\r\nTerminalList result;\r\nif(!_data.TerminalsLookup.TryGetValue(current, out result))\r\n\tresult = new TerminalList();\r\nresult.AddRange( _data.FallbackTerminals );\r\nreturn result;\r\n",
+      "PostedDate": "2008-08-11T22:03:01.41-07:00",
+      "Id": 29087
+    },
+    {
+      "Message": "This behavior is by design. The idea about FallbackTerminals is that they are examined ONLY if there are no matches with terminal with prefixes. What is your goal for Regex use? - what is the particular pattern you want to recognize with it? \r\nAs a guess, the proper way to do things is to add Prefixes collection to Regex terminal and allow implementer to specify it explicitly, so that your regex terminal gets into TerminalsLookup. It is not there yet, I know, it should be added - look at CustomTerminal as an example. Additionally you may specify a higher priority for your regex terminal so that it is checked first, before the symbols in the grammar. \r\nLet me know if this works for your case.\r\n",
+      "PostedDate": "2008-08-12T11:03:43.2-07:00",
+      "Id": 29088
+    },
+    {
+      "Message": "It seems to me that the reason for having a fallback terminals list is to cover cases where the Firsts list is impractical to define, eg where the first character could be any unicode character, as per the example given in FallbackTerminal's doco in Grammar.cs (C# identifiers). In fact if we define a symbol token consisting of non-latin characters, then currently no identifier token can begin with that symbol!\r\n\r\nIs there some other example which better justifies the need for fallback terminals being treated with lower priority? There is a priority mechanism which currently handles match priorities (and does it very nicely!). Currently the fallback terminals list seems like a hack to support unicode idenitfiers.\r\n\r\nDefining the Firsts list should be seen as an optimisation (allowing terminals to be omitted from the match process if they definitely will not match the input), rather than as a required attribute for terminals.\r\n\r\nSide note: i'm using regex for matching terminals of a DSL, eg dates, times, and identifiers unlike those matched by IdentifierTerminal.",
+      "PostedDate": "2008-08-12T20:35:10.707-07:00",
+      "Id": 29089
+    },
+    {
+      "Message": "have a look at IdentifierTerminal, and c# identifier terminal setup in TerminalFactory.CreateCSharpIdentifier() - see how it handles unicode chars and fallback terminals. that's the only place i can suggest. Overall, if this is not enough for your case, you can always list \"all possible firsts\" for your regex terminal, so that it gets into every list for every preview character. Let me know some more specifics - then maybe I can help; if your case seems like a real-life situation not properly handled by current scanner architecture, then let's fix the architecture.\r\nthanks - Roman",
+      "PostedDate": "2008-09-02T21:06:41.673-07:00",
+      "Id": 29090
+    }
+  ]
+}

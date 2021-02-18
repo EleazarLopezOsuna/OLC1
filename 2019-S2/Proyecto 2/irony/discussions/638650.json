@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1427261",
+    "ThreadId": "638650",
+    "Html": "Hello i have this:\r<br />\n Code.Rule = Statments;\r<br />\nthis.Root = Code;\r<br />\n<br />\nbut how do i make that you can add as many statements as you like.\r<br />\n<br />\n(just to make my point clear)\r<br />\nand ebnf its like this\r<br />\n &quot;Code := Statments {Statments} &quot;\r<br />\nand regex &quot;(Statments)+&quot;<br />\n",
+    "PostedDate": "2015-05-23T07:13:10.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1427541",
+    "ThreadId": "638650",
+    "Html": "look at the sample grammars in Samples project<br />\n",
+    "PostedDate": "2015-05-25T19:00:31.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1429393",
+    "ThreadId": "638650",
+    "Html": "Could you point out a specific location in the samples ?<br />\n",
+    "PostedDate": "2015-06-06T12:49:56.11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1429485",
+    "ThreadId": "638650",
+    "Html": "Look at almost any sample, look at use MakeStarRule and MakePlusRule methods<br />\n",
+    "PostedDate": "2015-06-07T22:34:59.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

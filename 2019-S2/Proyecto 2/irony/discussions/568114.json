@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1307221",
+    "ThreadId": "568114",
+    "Html": "Currently there is two Irony assembly version - for .Net Framework and Silverlight.\r<br />\nI think it will be good idea to create PCL (portable) assembly.\r<br />\nI've created pull request where I've introduce Irony.Shared project, that is Net4.5/Sl5/Win8 portable assembly:\r<br />\n<a href=\"https://irony.codeplex.com/SourceControl/network/forks/darkman666/PCL/contribution/7486\" rel=\"nofollow\">https://irony.codeplex.com/SourceControl/network/forks/darkman666/PCL/contribution/7486</a><br />\n",
+    "PostedDate": "2014-09-22T20:08:06.607-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

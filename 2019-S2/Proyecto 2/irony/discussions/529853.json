@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1204576",
+    "ThreadId": "529853",
+    "Html": "Hi,\r<br />\n<br />\nI'm a novice user.  I'm getting a syntax error after attempting to expand a grammar.  The existing grammar accepts a list of identifiers like &quot;A, B&quot;.  The enhancement is to be able to intermix &quot;qualified dot&quot; identifier's such as &quot;c.c&quot;.  E.g. feed it a list like:  &quot;A, B, c.c&quot; \r<br />\n<br />\nA and B should be recognized as propStringId's and &quot;c.c&quot; should be an qualifiedField.  The problem is that it tries to make the first token an Alias and then complains that there is no &quot;dot.&quot;\r<br />\n<br />\nThanks,\r<br />\nChris\r<br />\n<br />\nAttempted to partially extract from the full grammar:\r<br />\n<br />\nvar propStringId = new IdentifierTerminal(&quot;propStringId&quot;, &quot;_&quot;, &quot;&quot;);\r<br />\nvar field = new IdentifierTerminal(&quot;field&quot;, &quot;_&quot;, &quot;&quot;);\r<br />\nvar alias = new IdentifierTerminal(&quot;alias&quot;, &quot;_&quot;, &quot;&quot;);         <br />\nvar dot = g.ToTerm(&quot;.&quot;);\r<br />\n<br />\nvar selectExprList = new NonTerminal(&quot;selectExprList&quot;);\r<br />\nvar selectExprTerm = new NonTerminal(&quot;selectExprTerm&quot;);\r<br />\n<br />\nselectExprList.Rule = MakePlusRule(selectExprList, comma, selectExprTerm);\r<br />\nselectExprTerm.Rule = propStringId | qualifiedField;\r<br />\n<br />\nqualifiedField.Rule = alias + dot + field; <br />\n",
+    "PostedDate": "2014-02-07T12:55:00.297-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1204610",
+    "ThreadId": "529853",
+    "Html": "you can't do that - define identical terminals (like alias, field, propStringId), unless you have very separate areas, surrounding context that can help parser determines which one to use for a string of characters. All three are essentially identifier, one and the same thing - the difference is in it's role inside the statement, which should be attributed after parsing. <br />\n",
+    "PostedDate": "2014-02-07T14:04:02.543-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1204627",
+    "ThreadId": "529853",
+    "Html": "So if made them the same then I still seem to have the same problem because the leading prefix &quot;alias plus dot&quot; is optional for each term in the list but the parser keeps going down the scopeDot path expecting the &quot;.&quot;. <br />\n<br />\nvar stringId = new IdentitiferTerminal(&quot;stringId&quot;, &quot;_&quot;, &quot;&quot;);<br />\nvar dot = g.ToTerm(&quot;.&quot;); <br />\n<br />\nvar optionallyQualifiedStringId = new NonTerminal(&quot;optionallyQualifiedStringId&quot;); <br />\nvar selectExprList = new NonTerminal(&quot;selectExprList&quot;); <br />\nvar selectExprTerm = new NonTerminal(&quot;selectExprTerm&quot;); <br />\n<br />\nselectExprList.Rule = MakePlusRule(selectExprList, comma, selectExprTerm); <br />\nselectExprTerm.Rule = optionallyQualifiedStringId;<br />\n<br />\noptionallyQualifiedStringId.Rule = optScopeDot + stringId;<br />\noptScopeDot.Rule = Empty | scopeDot;<br />\nscopeDot.Rule = scope + dot;<br />\n<br />\n<br />\nOh, wait, I think maybe I see, do I have to flip it and make the first part (scope) required and then the second part (dot plus id) optional (and unwind the meaning after parsing)?<br />\n",
+    "PostedDate": "2014-02-07T14:32:32.657-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1204639",
+    "ThreadId": "529853",
+    "Html": "Yes that is working! Thanks for your comments.\r<br />\n<br />\nvar stringId = new IdentitiferTerminal(&quot;stringId&quot;, &quot;_&quot;, &quot;&quot;);\r<br />\nvar dot = g.ToTerm(&quot;.&quot;); \r<br />\nvar optionallyQualifiedStringId = new NonTerminal(&quot;optionallyQualifiedStringId&quot;); \r<br />\nvar selectExprList = new NonTerminal(&quot;selectExprList&quot;); \r<br />\nvar selectExprTerm = new NonTerminal(&quot;selectExprTerm&quot;); \r<br />\n<br />\nselectExprList.Rule = MakePlusRule(selectExprList, comma, selectExprTerm); \r<br />\nselectExprTerm.Rule = optionallyQualifiedStringId;\r<br />\n<br />\noptionallyQualifedStringId.Rule = stringId + optDotStringId;   <strong><em>// put optional part at end rather than front</em></strong>\r<br />\noptDotStringId.Rule = Empty | dotStringId;\r<br />\ndotStringId.Rule = dot + stringId;<br />\n",
+    "PostedDate": "2014-02-07T14:50:00.253-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-02-07T14:50:37.537-08:00"
+  }
+]

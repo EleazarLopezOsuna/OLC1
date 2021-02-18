@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1105475",
+    "ThreadId": "461626",
+    "Html": "When writing an AST mapping, one has to make many calls such as <code>myNode.ChildNodes[3]</code> which are not overly readable. It would be nice to be have a second index <code>string -&gt; ParseTreeNode</code> implicitly mapping <code>ParseTreeNode.Term.Name</code> - so that the example above could become <code>myNode.ChildNodes[&quot;Condition&quot;]</code>.\r<br />\n<br />\nWhat do you think?<br />\n",
+    "PostedDate": "2013-10-09T07:02:57.607-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1106099",
+    "ThreadId": "461626",
+    "Html": "that's something I considered, but the problem is - it might be VERY confusing. Terminal names are something identifying the 'nature' of token, like identifier, while the child node you try to get is more about 'role'. Like field definition might look like:\r<br />\n<br />\nvar identifier = new IdentifierTerminal(&quot;identifier&quot;); \r<br />\nfield.Rule = identifer + identifier + &quot;;&quot;\r<br />\n<br />\nThe first identifier is field's type, while the second is field name. Getting child node by name 'identifier' would not work here. You can always add an extension method that does this for you, but you would clearly understand its limitations, like the case just shown. So that's why I did not add it out of the box - might be really confusing in many cases\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-10-10T10:03:52.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1106109",
+    "ThreadId": "461626",
+    "Html": "I remember discussing this problem with Roman a year (or maybe two years) ago.<br />\nUsing child node indexes adds tight coupling between the grammar and the code that builds AST.<br />\nOnce you adjust the grammar, you have to update the AST builder, otherwise it breaks.<br />\nMy proposal was to add names to child nodes (to set their &quot;roles&quot;) like this:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\nIfExpr.Rule = ToTerm(<span style=\"color:#A31515;\">&quot;if&quot;</span>) + Expr.Named(<span style=\"color:#A31515;\">&quot;Expression&quot;</span>) + <span style=\"color:#A31515;\">&quot;Then&quot;</span> + Stmt.Named(<span style=\"color:#A31515;\">&quot;IfBranch&quot;</span>) +\n    <span style=\"color:#A31515;\">&quot;Else&quot;</span> + Stmt.Named(<span style=\"color:#A31515;\">&quot;ElseBranch&quot;</span>);\r\n</pre></div>so that you can write <code>myNode.ChildNodes[&quot;Expression&quot;]</code> and so on.<br />\nBut Roman disliked this approach saying it's ugly as hell :)<br />\nI admit that it looks a bit clumsy, but I still think that getting rid of hardcoded numbers would be a big improvement.<br />\n<br />\nMaybe we could combine these two approaches?<br />\nIf the term is unique in BNF rule, we could use it's default name (like &quot;identifier&quot; mentioned above).<br />\nBut if the term is non-unique, we could name it explicitly:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">var</span> identifier = <span style=\"color:Blue;\">new</span> IdentifierTerminal(<span style=\"color:#A31515;\">&quot;identifier&quot;</span>); \nfield.Rule = identifer + identifier.Named(<span style=\"color:#A31515;\">&quot;FieldName&quot;</span>) + <span style=\"color:#A31515;\">&quot;;&quot;</span> \r\n</pre></div>Any better ideas? :)<br />\n",
+    "PostedDate": "2013-10-10T10:22:39.017-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1106113",
+    "ThreadId": "461626",
+    "Html": "Yeah, look at the expression (it doubles in length) and imagine bigger, much more complex rules in real languages. \r<br />\nThis in turn introduces another tight coupling and with loose/weak name matching, don't you think? AST nodes are supposed to be shared between languages (c# vs VB.NET); then particular grammar (c#) should use precise role names as arguments, everywhere. And you cannot easily turn on/off using/building AST. There's a facility called child node mapping, you can specify how to remap the order of child nodes before it is submitted to AST node constructor, it is shown somewhere in samples. At least this piece (all statement specifying maps + ast node type) can be moved to a separate block and enabled/disabled with one switch<br />\n",
+    "PostedDate": "2013-10-10T10:30:29.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1106118",
+    "ThreadId": "461626",
+    "Html": "again, I spent some time hard thinking about this; I know this is ugly, but always consider the consequences of introduction of a new 'convenience' feature - how many uses might be confused, use it inappropriately and scream for help here? this is always a big consideration.<br />\n",
+    "PostedDate": "2013-10-10T10:34:11.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1106120",
+    "ThreadId": "461626",
+    "Html": "<blockquote>\nThis in turn introduces another tight coupling and with loose/weak name matching, don't you think?<br />\n</blockquote>\n <br />\nI completely agree with that.<br />\nBut I still hope to get rid of node indices somehow :)<br />\n",
+    "PostedDate": "2013-10-10T10:39:02.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1106137",
+    "ThreadId": "461626",
+    "Html": "Thank you all for your very interesting insights. There are indeed a lot of implications to consider.<br />\n",
+    "PostedDate": "2013-10-10T11:25:49.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

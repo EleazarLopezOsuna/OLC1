@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1058086",
+    "ThreadId": "447385",
+    "Html": "At the time of this posting, Irony.CharHashSet.Add performs the following logic<br />\n<pre><code>base.Add(ch.ToString().ToLowerInvariant()[0]);\nbase.Add(ch.ToString().ToUpperInvariant()[0]);</code></pre>\n\nWhere it would probably be more efficient to perform the the same logic as such:<br />\n<pre><code>base.Add(char.ToLowerInvariant(ch));\nbase.Add(char.ToUpperInvariant(ch));</code></pre>\n\nWhere we're using the System.Char class methods to perform the invariant casing instead of needlessly allocating a new string and using the string's implementation of ToCASE which itself may allocate a new string for the result.\r<br />\n<br />\nIt's a &quot;possible inefficiency&quot; because I haven't done any performance tests to back it up. The actual implementation for char and string's ToCASE methods lead to external implementations, so I can't gauge how inefficient one is over the other. Best case scenario, you nix 2*2 needless string allocations and execute in fewer cycles (if you're into counting pennies). Worst case scenario, the ultimate (and framework dependent) ToCASE implementation is optimized for strings. But one would think the string implementation uses the char implementation for each char in the actual string.\r<br />\n<br />\nOn the topic of utilities, isn't it kind of silly to use a try/catch block like you do in Irony.StringList.LongerFirst, instead of actually checking for null?<br />\n<pre><code>if(x != null &amp;&amp; y != null &amp;&amp;\n    x.Length &gt; y.Length)\n    return -1;</code></pre>\n\n",
+    "PostedDate": "2013-06-18T02:14:50.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1059449",
+    "ThreadId": "447385",
+    "Html": "the idea of using try/catch is that try/catch is free (no perf penalty) if code executes without exception. But checking costs a few cycles, every time. Yeah, it might look silly, and probably not worth doing it in such simple cases<br />\n",
+    "PostedDate": "2013-06-20T19:27:08.137-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1059461",
+    "ThreadId": "447385",
+    "Html": "about char.To...Invariant - thanks for the tip, missed this static method somehow.. will put it there<br />\n",
+    "PostedDate": "2013-06-20T21:18:05.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

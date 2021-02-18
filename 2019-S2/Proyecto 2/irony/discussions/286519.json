@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "726934",
+    "ThreadId": "286519",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I have following grammar:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> TestGrammar : Grammar\r\n    {\r\n        <span style=\"color:blue\">public</span> TestGrammar()\r\n        {\r\n            FreeTextLiteral freeTextLiteral = <span style=\"color:blue\">new</span> FreeTextLiteral(<span style=\"color:#a31515\">&quot;freeTextLiteral&quot;</span>, <span style=\"color:#a31515\">&quot;;&quot;</span>);\r\n\r\n            NonTerminal mainNonTerminal = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;mainNonTerminal&quot;</span>, <span style=\"color:blue\">typeof</span>(TestAstNode));\r\n            mainNonTerminal.Rule = <span style=\"color:#a31515\">&quot;VAR&quot;</span> &#43; freeTextLiteral;\r\n\r\n            <span style=\"color:blue\">this</span>.Root = mainNonTerminal;\r\n        }\r\n    }\r\n</pre>\r\n</div>\r\n<p>For testing I use following code:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>TestGrammar testGrammar = <span style=\"color:blue\">new</span> TestGrammar();\r\nParser parser2 = <span style=\"color:blue\">new</span> Parser(testGrammar);\r\nParseTree parseTree2 = parser2.Parse(<span style=\"color:#a31515\">&quot;VARtest;&quot;</span>);\r\n</pre>\r\n</div>\r\n<p>I dont know why but Root of ParseTree is NULL. Can you please help me how to obtain valid result? I am not sure how FreeTextLiteral exactly works.</p>\r\n<p>Thank you.</p>\r\n",
+    "PostedDate": "2012-01-18T01:55:41.593-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "729042",
+    "ThreadId": "286519",
+    "Html": "<p>Using \"var\" as a term in the grammar, as you use it, requires that in the source text it is followed by a space or some delimiter - only in this case parser would recognize it as a term \"Var\". What you need is specify \"Var\" as freeTextLiteral prefix - just add it to freeTextLiteral.Firsts set.</p>\r\n<p>roman</p>",
+    "PostedDate": "2012-01-22T16:53:53.183-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1433120",
+    "ThreadId": "640939",
+    "Html": "Hi,\r<br />\n<br />\nhow can i generate AST from the SQL grammar?<br />\n",
+    "PostedDate": "2015-07-04T12:21:18.653-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1433152",
+    "ThreadId": "640939",
+    "Html": "look at expression evaluator as an example - you need to specify AST node types for all non-terminals, and set CreateAst grammar flag. <br />\n",
+    "PostedDate": "2015-07-05T08:31:10.983-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

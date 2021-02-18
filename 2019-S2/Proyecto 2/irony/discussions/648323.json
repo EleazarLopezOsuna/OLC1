@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1454466",
+    "ThreadId": "648323",
+    "Html": "I need simple t-sql parser and I started with demo SqlGrammar. t-sql escaping ([, ]) works fine with identifiers (it looks that there is some &quot;magic&quot; inside call \r<br />\n<br />\nvar Id_simple = TerminalFactory.CreateSqlExtIdentifier(this, &quot;id_simple&quot;);\r<br />\n<br />\nbut I need this also for typenames so for example\r<br />\ncreate table abc ([a] [int])\r<br />\ncould work (now it's problem with [int] which is not recognised)\r<br />\n<br />\nHow should I change rule\r<br />\ntypeName.Rule = ToTerm(&quot;BIT&quot;) | &quot;DATE&quot; | &quot;TIME&quot; | &quot;TIMESTAMP&quot; | &quot;DECIMAL&quot; | &quot;REAL&quot; | &quot;FLOAT&quot; | &quot;SMALLINT&quot; | &quot;INTEGER&quot;\r<br />\n    <br />\nthat it will also support sql quotes [, ]?\r<br />\n<br />\nThanks for help \r<br />\n<br />\nMatej<br />\n",
+    "PostedDate": "2015-12-03T12:48:10.707-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1454724",
+    "ThreadId": "648323",
+    "Html": "Just add \r<br />\n  ... | id_simple; \r<br />\nto typeName rule<br />\n",
+    "PostedDate": "2015-12-05T10:36:18.777-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1454930",
+    "ThreadId": "648323",
+    "Html": "thanks. it works.<br />\n",
+    "PostedDate": "2015-12-07T05:25:22.963-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

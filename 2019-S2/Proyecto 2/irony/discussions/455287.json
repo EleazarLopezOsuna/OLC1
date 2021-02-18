@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1087734",
+    "ThreadId": "455287",
+    "Html": "(I've already asked this on Stack Overflow - but figured I should share it here too. <a href=\"http://stackoverflow.com/questions/18578267/whitespace-terminators-makeplusrule-in-irony\" rel=\"nofollow\">http://stackoverflow.com/questions/18578267/whitespace-terminators-makeplusrule-in-irony</a>)\r<br />\n<br />\nI'm trying to create a fairly simple parser using Irony, but am coming to the conclusion that Irony may not be suitable in this particular case.\r<br />\n<br />\nThese is an example of what I'm trying to parse:<br />\n<pre><code>server_name  example.com  *.example.com  www.example.*; \n\nserver_name  www.example.com   ~^www\\d+\\.example\\.com$;\n\nserver_name   ~^(?&lt;subdomain&gt;.+?)\\.(?&lt;domain&gt;.+)$;\n</code></pre>\n\nI'm using FreeTextLiterals with either a space or semi-colon as a terminator<br />\n<pre><code> var serverNamevalue = new FreeTextLiteral(&quot;serverNameValue&quot;, FreeTextOptions.None, &quot; &quot;, &quot;;&quot;);</code></pre>\n\nI'm then using the MakePlusRule to pick up one or more server_name values:<br />\n<pre><code>httpCoreServerName.Rule = &quot;server_name&quot; + httpCoreServerNameItems + semicolon;\nhttpCoreServerNameItems.Rule = MakePlusRule(httpCoreServerNameItems, serverNamevalue);</code></pre>\n\nHowever - I think there's a problem with having whitespace as a terminator for the FreeTextLiteral in this case. When I run this, I get a parser error. If I substitute the whitespace for another specific character to act as terminator (and also add this a delimiter in the call to MakePlusRule) - it works fine.\r<br />\n<br />\nDoes anyone have any ideas as to how I could deal with this in Irony? \r<br />\n<br />\nMark<br />\n",
+    "PostedDate": "2013-09-03T08:08:35.487-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1087842",
+    "ThreadId": "455287",
+    "Html": "the problem is with semicolon as terminator. For me, parser got stuck on it producing FreeTextLiteral's with empty content. I've added an option AllowEmpty, so that if it is not set, an empty terminal is not produced. Now it should be working. Here's my test grammar: <br />\n<pre><code>  [Language(&quot;ServerGrammar&quot;, &quot;1&quot;, &quot;Http Server name Grammar&quot;)]\n  public class ServerGrammar : Irony.Parsing.Grammar {\n    public ServerGrammar()  : base() {\n      var serverNamevalue = new FreeTextLiteral(&quot;serverNameValue&quot;, FreeTextOptions.None, &quot; &quot;, &quot;;&quot;);\n      var semicolon = ToTerm(&quot;;&quot;);\n      var httpCoreServerName = new NonTerminal(&quot;httpCoreServerName&quot;);\n      var httpCoreServerNameItems = new NonTerminal(&quot;httpCoreServerNameItems&quot;);\n\n      httpCoreServerName.Rule = &quot;server_name&quot; + httpCoreServerNameItems + semicolon;\n      httpCoreServerNameItems.Rule = MakePlusRule(httpCoreServerNameItems, serverNamevalue);\n\n      this.Root = httpCoreServerName;\n\n    }\n\n  }\n</code></pre>\n\nyour samples work now<br />\n",
+    "PostedDate": "2013-09-03T11:13:54.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1087863",
+    "ThreadId": "455287",
+    "Html": "Hi Roman,\r<br />\n<br />\nMany thanks for adding that change so quickly. I've also tested it out - and it works perfectly. \r<br />\n<br />\nKeep up the great work on a great project!\r<br />\n<br />\nMark.<br />\n",
+    "PostedDate": "2013-09-03T12:21:30.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

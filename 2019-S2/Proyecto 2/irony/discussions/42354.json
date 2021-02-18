@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "140710",
+    "ThreadId": "42354",
+    "Html": "Hey, I'm trying to use the class to make a Google-like Full Text Search (http://www.sqlservercentral.com/articles/Full-Text+Search+(2008)/64248/) but we are running .NET 2.0 not 3.5. Is there any DLL or source that I could build under 2.0???<br>\r\n<br>\r\nI've tried to use the .dll and .cs files but I'm getting the following exception...<br>\r\n<br>\r\nCould not load file or assembly 'System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089' or one of its dependencies. The system cannot find the file specified.<br>\r\n<br>\r\nat line 16 from SearchGrammar.cs<br>\r\nIdentifierTerminal Term = new IdentifierTerminal(&quot;Term&quot;, &quot;!@#$%^*_'.?&quot;, &quot;!@#$%^*_'.?0123456789&quot;);<br>\r\n<br>\r\nIs it possible to make it work under .NET 2.0?<br>\r\n<br>\r\nPlease, I really need this =P<br>\r\n<br>\r\nThanks and congratulations for your work! <br>\r\n<br>\r\n<br>\r\n\r\n",
+    "PostedDate": "2008-12-15T12:51:56.077-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "140719",
+    "ThreadId": "42354",
+    "Html": "I'm afraid that's not possible already, or it might be quite difficult. .NET 3.5 features are too much involved already, especially in LanguageRuntime classes. You can try to cut out manually all dependencies on 3.5. Just start with source code, reference .NET 2.0; disable LanguageRuntimeInit class - it has a lot of lambda expressions. For FullTextSearch, you don't need runtime anyway. Just either remove use of LanguageRuntime, or clean-up the class from .NET 3.5 stuff. Just try to fix all compiler errors. Hopefullly it will work once you can compile it.<br>\r\nAnother trouble may be with the Hashset&lt;T&gt; class, not sure if it is there in .NET 2.0. <br>\r\nGood luck<br>\r\n",
+    "PostedDate": "2008-12-15T13:24:19.47-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "141005",
+    "ThreadId": "42354",
+    "Html": "emzero,<br>\r\n<br>\r\nalthough you could convert the project to support 2.0 your going branch into an unsupported library.<br>\r\n<br>\r\nExample:<br>\r\nlambda expressions can be converted to delegate(arg1, arg2,....){ .... return ...;}<br>\r\n<br>\r\nlinq queries can use linqbridge<br>\r\nhttp://www.albahari.com/nutshell/linqbridge.aspx<br>\r\n<br>\r\nHashSet&lt;T&gt; just grab the code from mono project or from microsoft reference.<br>\r\n<br>\r\n============<br>\r\n<br>\r\nInstead create a wcf service host the service inside windows service application, configure the service to be tcp....and your done <br>\r\nNow your 2.0 application will call the wcf service and wait for the returned data asynchronously. (All valid 2.0)<br>\r\n<br>\r\nwww.mixhacks.com&nbsp; has example of signature you will have.<br>\r\n<br>\r\nActually this should probably also be the solution for those wanting to make this work with sql server .. easy and maintainable.<br>\r\n<br>\r\n-lm<br>\r\n",
+    "PostedDate": "2008-12-16T08:26:49.16-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

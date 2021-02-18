@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1495552",
+    "ThreadId": "662580",
+    "Html": "Hello!\r<br />\nI'm trying to build a language using Irony. The problem I'm facing is that I want my language to have some built-in data types (not just strings and mubers, but also some custom objects with properties etc.) In ExpressionEvaluator I see how built-in methods can be added, but I don't see how built-in data types can be added.<br />\n",
+    "PostedDate": "2017-04-17T07:45:16.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

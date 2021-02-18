@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "187589",
+    "ThreadId": "55549",
+    "Html": "Hi, I am looking into this project but didn't found any documents which explains the details of the project and its design. Could anyone provide me links for that.<br>\r\nI am research student and wanted to contribute to this project.<br>\r\n<br>\r\n",
+    "PostedDate": "2009-05-06T22:21:45.783-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "187593",
+    "ThreadId": "55549",
+    "Html": "Hi<br>\r\nNo wonder you couldn't find any docs - there aren't any... sorry, that's how it is. Read my blog, read articles (links on project home page), go thru the code - it is not too hard to get the idea of project architecture directly from code. Contribution - welcome, especially if you're from research field - research in computer science/compilers? Many open areas, lots of things to do, especially for someone with theoretical expertise. <br>\r\nRoman \r\n",
+    "PostedDate": "2009-05-06T22:57:50.097-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

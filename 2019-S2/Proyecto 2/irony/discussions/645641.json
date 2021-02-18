@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1446524",
+    "ThreadId": "645641",
+    "Html": "Thanks to help with reduce-reduce, I believe I understand what is causing this conflict and I understand that I likely just need a PreferShiftHere() call in the place(s), I just can't figure out where that is.  I have the following rules<br />\n<pre><code>expression.Rule = primaryExpression + ReduceHere() | conditionalExpression | binOpExpression | assignmentExpression | scatteringAssignmentExpression;\n            primaryExpression.Rule =\n                identifier\n                | unaryExpression\n                | parenthesizedExpression\n                | builtinFunctionCall\n                | indexMemberAccess\n                | objectMemberAccess\n                | preIncrDecrExpression\n                | postIncrDecrExpression\n                | literal;\nbinOp.Rule = ToTerm(&quot;&lt;&quot;) | &quot;||&quot; | &quot;&amp;&amp;&quot; | &quot;^&quot; | &quot;==&quot; | &quot;!=&quot; | &quot;&gt;&quot; | &quot;&lt;=&quot; | &quot;&gt;=&quot; | &quot;&lt;&lt;&quot; | &quot;&gt;&gt;&quot; | &quot;+&quot; | &quot;-&quot; | &quot;*&quot; | &quot;/&quot; | &quot;%&quot; | &quot;in&quot;;\nbinOpExpression.Rule = expression + binOp + expression;\nincrOrDecr.Rule = ToTerm(&quot;++&quot;) | &quot;--&quot;;\npreIncrDecrExpression.Rule = incrOrDecr + expression;\nconditionalExpression.Rule = expression + qmark + expression + ToTerm(&quot;|&quot;) + expression;\nassignmentOperator.Rule = ToTerm(&quot;=&quot;) | &quot;+=&quot; | &quot;-=&quot; | &quot;*=&quot; | &quot;/=&quot; | &quot;%=&quot; | &quot;&amp;=&quot; | &quot;|=&quot; | &quot;^=&quot; | &quot;&lt;&lt;=&quot; | &quot;&gt;&gt;=&quot;;\nassignmentLeft.Rule = identifier | objectMemberAccess;\nassignmentRight = expression;\nassignmentExpression.Rule = assignmentLeft + assignmentOperator + assignmentRight;\nindexMemberAccess.Rule = expression + indexExpression;\nindexArgument.Rule = expression | &quot;$&quot;;\nindexRangeExpression.Rule = indexArgument + &quot;..&quot; + indexArgument;\nindexSpecifier.Rule = indexArgument | indexRangeExpression;\nindexExpression.Rule = lbrk + indexSpecifier + rbrk;</code></pre>\n\nThe moment I introduced the indexMemberAccess rule I got 4 shift-reduce conflicts.  I'm fairly certain this is because while the conditional, pre increment/decrement, assigment and binary operations all end with an expression, they can also be an expression as a whole.  This means that<br />\n<blockquote>\n&quot;foo&quot; + &quot;bar&quot;[1..2]<br />\n</blockquote>\ncould also be seen as<br />\n<blockquote>\n(&quot;foo&quot; + &quot;bar&quot;)[1..2]<br />\n</blockquote>\nthus the shift-reduce conflicts.  I'm hoping someone can simply tell me where the PreferShiftHere() call(s) will go and that will solve the issue.  I have been trying a number of different spots that I thought it would be and none have resolved any of the four conflicts.<br />\n",
+    "PostedDate": "2015-09-30T06:26:46.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1446534",
+    "ThreadId": "645641",
+    "Html": "Ok, I found it through process of elimination by just pasting and cutting a PreferShiftHere() call all throughout all involved rules until I finally got a positive result.  The answer was to change the IndexExpression as follows:<br />\n<blockquote>\nindexExpression.Rule = PreferShiftHere() + lbrk + indexSpecifier + rbrk;<br />\n</blockquote>\nHopefully this will help anyone else who runs into a similar issue in troubleshooting their grammar.<br />\n",
+    "PostedDate": "2015-09-30T07:11:25.443-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2015-09-30T07:11:30.117-07:00"
+  }
+]

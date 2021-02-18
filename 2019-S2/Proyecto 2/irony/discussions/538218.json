@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1220051",
+    "ThreadId": "538218",
+    "Html": "I am trying to update the C# grammar to the 4.0 syntax, and I am getting an error when Irony parses the <a href=\"https://irony.codeplex.com/SourceControl/latest#Irony.Samples/CSharp/CSharpGrammar.cs\" rel=\"nofollow\">C# grammar file</a> when it is hitting line:<br />\n<pre><code>case '\\u2085':</code></pre>\n\nin the SkipWhitespace override method. I see when the code creating the char literal, is going through some 'TerminalFactory'.<br />\n<br />\nHow can I add support to the CharLiteral object for unicode characters?<br />\n<br />\nThanks!<br />\n",
+    "PostedDate": "2014-03-06T12:54:25.567-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1220153",
+    "ThreadId": "538218",
+    "Html": "can you pls provide more details? inside this 'case' is just 'source.PreviewPosition++' - how this can fail? can you share your grammar?<br />\n",
+    "PostedDate": "2014-03-06T23:00:04.043-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1220278",
+    "ThreadId": "538218",
+    "Html": "Sorry, I suppose I do know a bit more about the problem then I was giving you.<br />\nThe problem was not with parsing the code after the case, it was with parsing the char <strong>'\\u2085'</strong>. When the parser got to that position it was throwing an error about an invalid char, only expecting it to be one character.<br />\nI fixed the problem though, instead of creating the CharLiteral object from:<br />\n<pre><code>TerminalFactory.CreateCSharpChar (&quot;CharLiteral&quot;)</code></pre>\n\nI used the following code, and it seems to work fine:<br />\n<pre><code>new StringLiteral (&quot;CharLiteral&quot;, &quot;'&quot;, StringOptions.AllowsUEscapes);</code></pre>\n\nThanks for the quick reply though.<br />\n",
+    "PostedDate": "2014-03-07T05:15:52.937-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1220505",
+    "ThreadId": "538218",
+    "Html": "one more question, please. It appears that 'standard' c# char literal from TerminalFactory did not work for you. This might be some bug. Can you please share some details (what was input that failed), so I can spot the problem and fix it?\r<br />\nthanks\r<br />\nroman<br />\n",
+    "PostedDate": "2014-03-07T21:40:41.09-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1221010",
+    "ThreadId": "538218",
+    "Html": "Sure,\r<br />\n<br />\nI have updated the CSharpGrammar to what you will find at the link below:\r<br />\n<br />\n<a href=\"https://peter.codeplex.com/SourceControl/latest#trunk/src/Peter/Logic/IronyGrammers/CSharpGrammar.cs\" rel=\"nofollow\">https://peter.codeplex.com/SourceControl/latest#trunk/src/Peter/Logic/IronyGrammers/CSharpGrammar.cs</a>\r<br />\n<br />\nThis updated version has the changes I mentioned above, but in order to catch the error you will need to revert lines 47 and 48 back to using the 'TerminalFactory'.\r<br />\nI then feed that exact file to the parser that has the same grammar above loaded. You will then see the error about the invalid char representation.\r<br />\n<br />\nI hope this helps!\r<br />\n<br />\nJon<br />\n",
+    "PostedDate": "2014-03-10T05:58:13.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

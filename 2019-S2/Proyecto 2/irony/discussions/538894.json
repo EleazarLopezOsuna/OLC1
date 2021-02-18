@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1222322",
+    "ThreadId": "538894",
+    "Html": "Hi\r<br />\nI want to learn about Irony to make a very simple language\r<br />\nbut i found no tutorial about Irony so will any one help me to construct a very simple language\r<br />\nWill anyone help me<br />\n",
+    "PostedDate": "2014-03-13T06:29:18.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1222951",
+    "ThreadId": "538894",
+    "Html": "just use any grammar in samples as starting point, and proceed step by step. But if you're serious, make sure you read a compiler construction book, and know things like LALR, scanner, parser, etc<br />\n",
+    "PostedDate": "2014-03-14T16:38:13.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-04-10T02:20:24.22-07:00"
+  }
+]

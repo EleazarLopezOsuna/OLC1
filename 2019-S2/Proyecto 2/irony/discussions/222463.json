@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "476512",
+    "ThreadId": "222463",
+    "Html": "<p>Is it possible to use a FreeTextLiteral without a stop character? Or is there some other way of achieving what I want to do?</p>\r\n<p>Here's a sample of my DSL...</p>\r\n<p>&nbsp;</p>\r\n<pre>Questionnaire: Q\r\n  Question: Q1\r\n    Text: What is your name?\r\n  Question: Q2\r\n    Text: What is your quest?\r\n\r\n</pre>\r\n<p>and part of my grammar...</p>\r\n<p>\r\n<pre>var questionnaire = new NonTerminal(&quot;questionnaire&quot;);\r\nvar questions = new NonTerminal(&quot;questions&quot;);\r\nvar question = new NonTerminal(&quot;question&quot;);\r\nvar text = new NonTerminal(&quot;text&quot;);\r\nvar id = new IdentifierTerminal(&quot;id&quot;, &quot; &quot;, &quot;0123456789&quot;);\r\nvar value = new FreeTextLiteral(&quot;value&quot;, FreeTextOptions.AllowEof, &quot;\\t&quot;);\r\n\r\nid.Priority = Terminal.LowestPriority;\r\nvalue.Priority = Terminal.LowestPriority;\r\n\r\nquestionnaire.Rule = &quot;Questionnaire:&quot; + id + text + questions;\r\nquestions.Rule = MakeStarRule(questions, (question | section));\t\t\t\r\nquestion.Rule = &quot;Question:&quot; + id + text + type + validation;\r\n<br>text.Rule = (&quot;Text:&quot; + value) | Empty;</pre>\r\n</p>\r\n<p>&nbsp;<em>value</em> can be multi-line and can include any character. I'd like it to be terminated by any keyword but the only way I can make it work is by using a tab as a stop character. I'd rather not have white-space be significant at all.</p>\r\n<p>I'm hoping that I am missing something really obvious.</p>\r\n<p>Thanks in advance,</p>\r\n<p>Kevin</p>",
+    "PostedDate": "2010-08-04T09:36:29.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "476861",
+    "ThreadId": "222463",
+    "Html": "<p>I don't think you can. The FreeTextLiteral would simply consume everything until EOF. You need a stop condition, and given your requirement, it has to be a pretty clever one.</p>\r\n<p>How about using two newlines?</p>\r\n<p>Or, if you don't mind indenting the text, maybe take a look at that. I have never played with it, but I know Irony has some features to handle this.</p>\r\n<p>Good luck!</p>\r\n<p>Michelangelo</p>",
+    "PostedDate": "2010-08-05T06:04:44.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "476998",
+    "ThreadId": "222463",
+    "Html": "I agree with Mich-PM, it's too much to ask from FreeTextLiteral - to recognize that certain specific text is in fact a beginning of the new terminal. I suggest to come up with more reasonable grammar rules\r\nRoman",
+    "PostedDate": "2010-08-05T09:50:23.46-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "477010",
+    "ThreadId": "222463",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>MichelangeloPM wrote:</strong></blockquote>\r\n<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\">How about using two newlines?</blockquote>\r\n<p>I tried two newlines but it hangs when the input document doesn't have two newlines. The tab is working for me at the moment, but I'd welcome suggestions for a better idea.</p>\r\n<p>Here's what I am trying to achieve:</p>\r\n<p>I want the DSL to be editable by totally non-technical users, so I am avoiding explicit delimiters where ever possible.</p>\r\n<p>There are a number of fields where the <em>value</em> will almost always be a single line of plain text but the <em>value </em>can also use markdown syntax that will span multiple lines.</p>\r\n<p>So it will usually be something like:</p>\r\n<pre>Text: What is your quest?<br></pre>\r\n<p>but it could be:</p>\r\n<pre>Text: If its not a *personal* question?<br><br>**Are you a virgin?**<br></pre>\r\n<p>The tab works in my demo but there is no way a <em>real</em> person will be able to deal with invisible white-space. The best I can come up with is to use delimiters around multi-line statements like this:</p>\r\n<pre>Text: [If its not a *personal* question?<br><br>**Are you a virgin?**]<br></pre>\r\n<p>But still allow single line <em>values</em> without delimiters which is the most common case by far.</p>\r\n<p>This is a demo app to evangelize the idea of DSLs in my company, so it's too critical but I'll need to come up with a better solution eventually (if I succeed in persuading my colleagues that this is worth doing).</p>\r\n<p>I'd welcome suggestions if you have any ideas.</p>\r\n<p>Kevin</p>",
+    "PostedDate": "2010-08-05T10:21:57.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "477015",
+    "ThreadId": "222463",
+    "Html": "Then just create two terminals - one for one-liners, without any quoting chars, another for mulitline with surrounding brackets, and put both into the rule for &quot;value&quot;, smth like\r\nValue.Rule = OneLineValue | QuotedValue\r\nOne important thing - make priority of QuotedValue higher than priority of OneLineVAlue, so parser always checks for opening bracket first.",
+    "PostedDate": "2010-08-05T10:27:20.56-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "477052",
+    "ThreadId": "222463",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>rivantsov wrote:</strong><br>&nbsp;Value.Rule = OneLineValue | QuotedValue <br></blockquote>\r\n<p>That worked out great. Thanks again for your help.</p>",
+    "PostedDate": "2010-08-05T12:14:16.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

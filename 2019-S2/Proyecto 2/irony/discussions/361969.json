@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "857432",
+    "ThreadId": "361969",
+    "Html": "\r\n<p>This is first time I'm using Irony, for some database activity. I could able to parse it successfully but want to improve user interface by allowing users to pass optional parameters in any order.</p>\r\n<p>MAP &lt;&lt;table name&gt;&gt;, Target &lt;&lt;table name&gt;&gt; &lt;param1&gt; &lt;param2&gt; &lt;param3&gt; &lt;param4&gt; &lt;param5&gt; &nbsp;</p>\r\n<p>where param2, param3, param4 and param5 are optional parameters to the map&nbsp;statement.&nbsp;</p>\r\n<p>Currently I can able to parse if the param values are provided in sequential, ex: param3, followed by param2.</p>\r\n<p>However, I would like users to provide those optional parameters in any order.</p>\r\n<p>Bnf rules for map statement:</p>\r\n<p>map.rule = MAP &#43; Id &#43; comma &#43; TARGET &#43; Id &#43; param1 &#43; param2 &#43; param3 &#43; param4 &#43; param5</p>\r\n<p>param2.rule = Empty | &lt;&lt;some other rules&gt;&gt;</p>\r\n<p>param3.rule = Empty | &lt;&lt;some other rules&gt;&gt;</p>\r\n<p>param4.rule = Empty | &lt;&lt;some other rules&gt;&gt;</p>\r\n<p>param5.rule = Empty | &lt;&lt;some other rules&gt;&gt;</p>\r\n<p>Kindly someone help me.</p>\r\n",
+    "PostedDate": "2012-07-04T08:27:58.84-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "857440",
+    "ThreadId": "361969",
+    "Html": "<p>Define parameter set as a list (with MakePlus/StarRule method) - look at MiniPython or expression evaluator grammars as an example</p>",
+    "PostedDate": "2012-07-04T08:47:17.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "857457",
+    "ThreadId": "361969",
+    "Html": "\r\n<p>Thanks for your reply.</p>\r\n<p>I'm currently using MakePlus/StarRule for arguments to a function and other parameters, but in the map rule these parameters are like properties /&nbsp;definitions&nbsp;for each map table in a list of MAP_TABLES.</p>\r\n<p>Param Examples are:</p>\r\n<p>CSVCALLLIST =&gt; a list of CSVCALL rule, it is MAKEPLUSRULE with CSVCALLs.</p>\r\n<p>THREADS &lt;number&gt; =&gt; a numeric parameter</p>\r\n<p>LIMIT&nbsp;&lt;number&gt; =&gt; a numeric parameter</p>\r\n<p>SQLCALLLIST =&gt; a list of SQLCALL rule,&nbsp;it is MAKEPLUSRULE with SQLCALLs.</p>\r\n<p>Can you please kindly give me here a good example to put such non-identical params in a MakePlus/MakeStar method</p>\r\n",
+    "PostedDate": "2012-07-04T09:14:38.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "857464",
+    "ThreadId": "361969",
+    "Html": "\r\n<p>I modified my Grammar and I'm getting conflict errors, please help me.</p>\r\n<p>&nbsp;</p>\r\n<p>colsmap.Rule = COLMAP &#43; &quot;(&quot; &#43; columnDefList &#43; &quot;)&quot;;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>columnDefList.Rule = MakePlusRule(columnDefList, comma, columnDef);&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>getval.Rule = GETVAL &#43; &quot;(&quot; &#43; id_simple &#43; &quot;.&quot; &#43; id_simple &#43; &quot;)&quot;;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>columnDef.Rule = id_simple |&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; id_simple &#43; equal &#43; id_simple |&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; id_simple &#43; equal &#43; getval;</p>\r\n<p>tableId.Rule = MakePlusRule(tableId, dot, id_simple);&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>mapTableList.Rule = MakeStarRule(mapTableList, eofRule, mapTableDef);&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>mapTableDef.Rule = MAP &#43; TABLE &#43; tableId &#43; comma &#43; TARGET &#43; tableId &#43; mapParamsList &#43; colsmap ;</p>\r\n<p>mapParams.Rule = sqlexec | csvcall | limit | threads;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>mapParamsList.Rule = MakePlusRule(mapParamsList, eofRule, mapParams);</p>\r\n<p>&nbsp;</p>\r\n<p>Grammar Errors:</p>\r\n<table>\r\n<tbody>\r\n<tr>\r\n<td>\r\n<p>Reduce-reduce conflict. State S57, lookaheads: COLMAP ;. Selected reduce on first production in conflict set.</p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table>\r\n<tbody>\r\n<tr>\r\n<td>Reduce-reduce conflict. State S76, lookaheads: COLMAP ;. Selected reduce on first production in conflict set.</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n",
+    "PostedDate": "2012-07-04T09:33:58.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "857468",
+    "ThreadId": "361969",
+    "Html": "<p>you have to post more, it's not enough to see where the conflict is coming from - I need to see the rules that come \"before\" the COLMAP and thus use it as a lookahead. If possible, post the entire grammar. I'm out for the day (it's 4th here in US), going out for BBQ and fireworks, will look at it when I'm back late tonight or tomorrow. Or maybe somebody around here can help you while I'm away</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-07-04T09:47:56.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "857493",
+    "ThreadId": "361969",
+    "Html": "<p>Thanks <a class=\"UserProfileLink\" href=\"http://www.codeplex.com/site/users/view/rivantsov\">rivantsov</a>&nbsp;for your help<a class=\"UserProfileLink\" style=\"text-decoration: none; color: #ce8b10; margin: 0px; padding: 0px; border: 0px; outline: 0px; font-size: 14px; vertical-align: baseline; background-color: #ddddff; font-family: 'Segoe UI', Tahoma, Arial, Helvetica, sans-serif; line-height: 19px; white-space: pre-wrap;\" href=\"http://www.codeplex.com/site/users/view/rivantsov\"> </a>I could able to resolve the conflict and also implement unordering of parameters.</p>",
+    "PostedDate": "2012-07-04T11:02:49.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

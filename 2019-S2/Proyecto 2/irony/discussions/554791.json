@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1279824",
+    "ThreadId": "554791",
+    "Html": "First, Irony is awesome, and I really appreciate the time you've invested in building it. Second, I've got a PostgreSQL grammar I'd love to contribute (I took the SQL89 grammar as a starting point and built upon it). Third, and to the point of this post, I'm having a lot of trouble parsing arrays in my PostgreSQL grammar. I tried studying the Java and C# languages to see if I could glean anything from them, but nothing I've tried has worked. Here's the code:<br />\n<pre><code>exprList.Rule = MakePlusRule(exprList, comma, expression);\nexpression.Rule = term | unExpr | binExpr;// | betweenExpr; //-- BETWEEN doesn't work - yet; brings a few parsing conflicts \nterm.Rule = Id + castOpt | any_string + castOpt | number + castOpt | array | funCall + castOpt | tuple | parSelectStmt;// | inStmt;\narray.Rule = Id + &quot;[&quot; + exprList + &quot;]&quot;;</code></pre>\n\nAnd here's a sample statement:<br />\n<pre><code>a1[i] &lt;&gt; a2[i]</code></pre>\n\nI thought this would parse as (binExpr (term (array ... )) (binOp) (term (array ... ))), but the parser thinks there's a syntax error after the &quot;a1&quot; identifier. I've tried marking the left and right brackets as punctuation, since I saw the left and right parentheses marked as such, but to no avail. Any help would be greatly appreciated. Thanks very much,<br />\n<ul>\n<li>Daniel</li>\n</ul>\n",
+    "PostedDate": "2014-07-31T21:57:38.833-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1280070",
+    "ThreadId": "554791",
+    "Html": "What might be a problem is that [ and ] brackets are treated in original SQL grammar as 'quote' symbols - it is in fact TSQL (MS SQL) grammar. So scanner catches this symbol and treats the following as part of quoted identifier. \r<br />\nDon't remember how it is in Postgres, but standard SQL uses mostly double quote &quot; symbol as name quote symbol. So modify or use different definition for id_simple identifier, without using brackets.  <br />\n",
+    "PostedDate": "2014-08-01T10:05:50.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1289097",
+    "ThreadId": "554791",
+    "Html": "Yes, that did the trick -- totally overlooked the use of brackets as identifier quotes. Thanks very much for pointing that out.<br />\n",
+    "PostedDate": "2014-08-11T20:40:33.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

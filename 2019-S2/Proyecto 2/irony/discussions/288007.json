@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "733133",
+    "ThreadId": "288007",
+    "Html": "<p>Hi</p>\n<p>I am trying to \"flatten\" the parsing as it takes place using the ASTNodeCreator delegate, rather than, say, walking the tree after construction.</p>\n<div style=\"color: black; background-color: white;\">\n<pre>    [Language(<span style=\"color: #a31515;\">\"...\"</span>)]\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> SqlDialect : Grammar\n    {\n\n        <span style=\"color: blue;\">readonly</span> IList&lt;Element&gt; _details = <span style=\"color: blue;\">new</span> List&lt;Element&gt;();\n\n        <span style=\"color: blue;\">public</span> SqlDialect(IList&lt;Element&gt; details) : <span style=\"color: blue;\">base</span>(caseSensitive: <span style=\"color: blue;\">false</span>) \n\n            _details = details;\n\n            <span style=\"color: blue;\">var</span> id_simple = TerminalFactory.CreateSqlExtIdentifier(<span style=\"color: blue;\">this</span>, <span style=\"color: #a31515;\">\"id_simple\"</span>); \n            ...\n            <span style=\"color: blue;\">var</span> domainIdentifier = <span style=\"color: blue;\">new</span> NonTerminal(Constants.Domain, (c, n) =&gt; \n                                        {\n                                            _details.Add(<span style=\"color: blue;\">new</span> Element() \n                                            { \n                                                NodeType = NodeType.domain, \n                                                Value = n.Token.Value.ToString()</pre>\n<pre><span style=\"background-color: white;\">                                            });</span></pre>\n</div>\n<pre><span>  <span style=\"white-space: pre;\">\t</span>               \t\t\t    </span>var&nbsp;astNode&nbsp;=&nbsp;new&nbsp;NullAstNode();\n<span>\t</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;astNode.Init(c,&nbsp;n);</pre>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"background-color: white;\">                                        });</span></pre>\n<pre>            ...\n</pre>\n</div>\n<p>I obviously haven't quite got it right in terms of using the delegate since there is a parse error (Object Reference Not Set to an instance of an Object).&nbsp;<a href=\"http://irony.codeplex.com/discussions/70954\">http://irony.codeplex.com/discussions/70954</a>&nbsp;suggests  looking at the ExpressionEvaluator but the version I have downloaded only uses the Type NodeType overload and not the AstNodeCreator delegate overload. I have checked the other sample grammars and couldn't see any there either. FYI, I'm not doing anything  at all in the NullAstNode</p>\n<p>I was wondering if someone could point my in the right direction with a sample or perhaps if this is not the best option indicate the better way. Perhaps there is a better extension point I should be using?</p>\n<p>Many thx</p>\n<p>Simon</p>",
+    "PostedDate": "2012-01-31T03:23:47.17-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "733211",
+    "ThreadId": "288007",
+    "Html": "<p>So I decided to flatten it after creation.</p>\n<p>Thx</p>",
+    "PostedDate": "2012-01-31T06:22:52.87-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

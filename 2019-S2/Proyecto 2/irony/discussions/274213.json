@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "678053",
+    "ThreadId": "274213",
+    "Html": "<p>Hi,</p>\n<p>I have following language (dsl) example:</p>\n<p>entity A</p>\n<p>{</p>\n<p>&nbsp; &nbsp;column Id int;</p>\n<p>&nbsp; &nbsp;column Name &nbsp; //here we have a syntax error</p>\n<p>&nbsp; &nbsp;column Description string;</p>\n<p>}</p>\n<p>For the column declaration: \"column\" + Id + Id + semi;</p>\n<p>If i configure ErrorRule as in CSharpGrammar example: column.ErrorRule =<span style=\"white-space: pre;\"> </span>SyntaxError + semi; I have following problem:</p>\n<p>for the example above, the parser will ignore \"column Name\" but also next declaration \"column Description string ;\" and this is not what i need.</p>\n<p>I would need somehow to instruct the parser to go back one token if the syntax error is on a keyword, so that in my case,</p>\n<p>it would permit matching \"column Description string\"&nbsp;</p>\n<p>Is this possible?</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-09-29T01:28:44.033-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "678242",
+    "ThreadId": "274213",
+    "Html": "<p>ErrorRule allows you to \"recover\" from error and continue parsing - not to parse successfully at the end, but to discover more errors further in the source, if there's more than one. If ErrorRule is activated, it means that we are in error state, and will NOT end up with a successfully parsed script (!). So <strong>there's not much value in your effort to recover the last column</strong> declaration and make it parse successfully - it will be thrown away anyway. The parser will correctly point to location around Name as a place of error - that's all what is needed - to point user to error location. Parser will then proceed to the next column declaration (or next Entity) to possibly discover more errors.</p>\r\n<p>Hope that clears the confusion</p>\r\n<p>Roman&nbsp;</p>",
+    "PostedDate": "2011-09-29T09:14:27.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "678393",
+    "ThreadId": "274213",
+    "Html": "<p>Thanks, I understand this now.</p>\r\n<p>I find error rule very problematic to configure.</p>\r\n<p>lets take &nbsp;this declarations from my dsl: &nbsp; entity A { column A1 int ; column A2 int; } entity B { column B1 }</p>\r\n<p>If there is a syntax error in column definition for A1 &nbsp;and i have an errorrule = SyntaxError + semi; then it will ignore everything till the end of A2 int.</p>\r\n<p>But if i have an error in A2 definition, let's say missing semicolon. than it will ignore everything till member B1 of next entity.</p>\r\n<p>If i reconfigure errorRule = SyntaxError + (\"}\" | semi) &nbsp;this will solve problem 2 but will match till end of entity if any column but the last has an error.</p>\r\n<p>If i switch&nbsp;errorRule = SyntaxError + ( semi | \"}\") will have both problems.</p>\r\n<p>ACTUALLY WHAT IS NEEDED IS AN ERROR RULE THAT MATCHES &nbsp;ANY \"}\" or semi whichever comes first, but match both even if first succeds!!!&nbsp;</p>\r\n<p>Can something like this be done in Irony?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-09-29T14:50:05.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "678398",
+    "ThreadId": "274213",
+    "Html": "<p>Look in sample c# grammar, all instances of ErrorRule; you need smth similar to member declaration:</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp; &nbsp; &nbsp; columndef.ErrorRule = SyntaxError + \";\" | SyntaxError + \"}\" ;</p>\r\n<p>that should do the trick for you</p>",
+    "PostedDate": "2011-09-29T14:55:36.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

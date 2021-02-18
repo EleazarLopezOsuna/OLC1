@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "721748",
+    "ThreadId": "285283",
+    "Html": "\r\n<p>Roman,</p>\r\n<p>I think I may have found a bug with the TerminalFactory.CreateCSharpNumber method. It doesn't allow signs to begin with.</p>\r\n<p>I had the following code:</p>\r\n<p>NumberLiteral numberLiteral = TerminalFactory.CreateCSharpNumber(&quot;numberLiteral&quot;);</p>\r\n<p>And the following unit test:</p>\r\n<p>String expression = @&quot;-300.0 == -300.0&quot;;<br>\r\nresult = Expression.Evaluate&lt;bool&gt;(expression);<br>\r\n<br>\r\nAssert.IsTrue(result);</p>\r\n<p>The unit test failed until I changed the above code to:</p>\r\n<p>NumberLiteral numberLiteral = new NumberLiteral(&quot;numberLiteral&quot;, NumberOptions.AllowSign);</p>\r\n",
+    "PostedDate": "2012-01-06T15:27:05.963-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "721753",
+    "ThreadId": "285283",
+    "Html": "<p>It should not allow sign I think, unary minus is expressed in grammar as unary operation, explicitly</p>",
+    "PostedDate": "2012-01-06T15:41:41.547-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "723746",
+    "ThreadId": "285283",
+    "Html": "<p>It seems to me that if you are generating a C# number you should allow a sign since the C# language does allow positive and negative numbers.</p>\r\n<p>Otherwise am I just using this method incorrectly?</p>",
+    "PostedDate": "2012-01-11T08:48:44.48-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "723774",
+    "ThreadId": "285283",
+    "Html": "<p>Languages like c# define unary operator +/- that can be applied not only to numbers but to expressions, like:</p>\r\n<p>-(x+y)</p>\r\n<p>In this case, allowing signed numbers introduces ambiguity. How the string \"-3\" should be parsed? - as a signed number or as an unary expression \"unop + expr\", where expr is unsigned number \"3\"?&nbsp;</p>\r\n<p>To avoid this ambiguity, numbers in c# and most other languages are defined as unsigned.&nbsp;</p>\r\n<p>Why we need this signed flag for numbers then?</p>\r\n<p>There are cases when language allows only numbers in some places, and number can be preceded with sign. In this case it would be a trouble to define an extra unary expression rule just for this, so Irony provides this shortcut.&nbsp;</p>",
+    "PostedDate": "2012-01-11T09:38:28.123-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

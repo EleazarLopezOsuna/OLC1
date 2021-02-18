@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1261154",
+    "ThreadId": "550109",
+    "Html": "I have a rule like that c = a | b.  The prooblem is that &quot;a&quot; rule has &quot;b&quot; rule as its part. And when im trying to use &quot;a&quot; rule error appears because parser is trying to parse &quot;b&quot; rule.\r<br />\nCan I somwhow force parser to check &quot;a&quot; rule first and only then &quot;b&quot; rule?\r<br />\n<br />\nThanks.<br />\n",
+    "PostedDate": "2014-06-30T06:32:25.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1261242",
+    "ThreadId": "550109",
+    "Html": "not sure what you mean. Parser, as it is LALR parser, does not check one thing first, then other thing - it 'explores' all paths in parallel. Or mean that 'a' and 'b' are terminals, and it is scanner that messes up? in the case of terminals you can set Priority property to force scan attempt order. <br />\n",
+    "PostedDate": "2014-06-30T09:36:25.96-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1261326",
+    "ThreadId": "550109",
+    "Html": "i'll try ot explain my sotiation.\r<br />\nOne rule is a definition of C-like struct &quot;struct { some fields}&quot; another rule is a composition of that definition and variable delcaration like &quot;struct {some fields} var;&quot;\r<br />\n<br />\nWhen I use theese rules individually they work fine, but when i try to make new rule &quot;first | second&quot; and give the string &quot;struct {some fields} var;&quot; as input parser allways trying to parse input as first rule and allways fail because there is variable definition after struct declaration. The question is: How can i sort this problem out?<br />\n",
+    "PostedDate": "2014-06-30T13:08:21.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1261328",
+    "ThreadId": "550109",
+    "Html": "ah, you should then define one structNonTerminal, with optional 'var' at the end. <br />\n",
+    "PostedDate": "2014-06-30T13:18:30.123-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1261333",
+    "ThreadId": "550109",
+    "Html": "It's not so simple.<br />\n<ol>\n<li>when i declare a variable i can use not only struct definition but also typenames so the second rule is &quot;build_in_types|struct_definition|typenames + identifier;&quot;</li>\n<li>i created 2 rules to distinguish struct definitions and variable declarations</li>\n</ol>\n",
+    "PostedDate": "2014-06-30T13:30:43.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1261337",
+    "ThreadId": "550109",
+    "Html": "well, that's your problem - you try to follow semantics (what is var decl) instead of first following pure grammatic structure. Focus on surface, structural similarities - that's what parser is trying to follow, and not 'meaning'/semantics<br />\n",
+    "PostedDate": "2014-06-30T13:37:37.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1261340",
+    "ThreadId": "550109",
+    "Html": "Thank you. I'll try.<br />\n",
+    "PostedDate": "2014-06-30T13:57:10.55-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

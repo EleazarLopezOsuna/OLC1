@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "192762",
+    "ThreadId": "57043",
+    "Html": "<p>Hello,</p>\r\n<p>I've downloaded the latest version of Irony and I'm trying to get familiar with it. My purpose is to use this tool in order to parse and evaluate expressions written in a custom grammar, so I would like to use Irony without any UI just to parse &amp; evaluate expressions. First of all I'm working on ExpressionEvaluatorGrammar sample provided with Irony and I parsed a simple expression using following lines of code:</p>\r\n<p>string expr = @&quot;a = 150 + 28 + 1*2&quot;;<br><br>ExpressionEvaluatorGrammar grammar = new ExpressionEvaluatorGrammar();<br>Compiler compiler = new Compiler(grammar);<br>ParseTree tree = compiler.Parse(expr);</p>\r\n<p>I got AST tree in tree variable and displayed the tokens recursively using:</p>\r\n<p>Action&lt;ParseTreeNode&gt; traverse = null;<br>traverse = (n) =&gt;<br>{<br>&nbsp; if (n.Token != null)<br>&nbsp;&nbsp;&nbsp; Debug.Print (n.Token.Text);<br>&nbsp; n.ChildNodes.ForEach(traverse);<br>};<br>traverse(tree.Root);</p>\r\n<p>Having all these: tree, tokens...etc, can you please guide me how should I evaluate the expression?</p>\r\n<p>Thank you very much in advance!</p>\r\n<p>-Radu</p>",
+    "PostedDate": "2009-05-21T05:03:33.013-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "192824",
+    "ThreadId": "57043",
+    "Html": "<p>Hi</p>\r\n<p>Unfortunately, evaluation does not work yet in latest versions of Irony (on Source page), it hadn't been brought back to life after big refactoring work that happened lately. You'll have to use the old version in Downloads page. You can run expression evaluator in Grammar Explorer, and then see in code on the form how it is done</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-05-21T08:23:39.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "194290",
+    "ThreadId": "57043",
+    "Html": "<p>Hi Roman,</p>\r\n<p>Thanks for your feedback. I will check the code on the form and let you know if something is unclear. I started to define my own grammar and now I'm stuck when i'm trying to define something similar with regular expression.</p>\r\n<p>i.e.</p>\r\n<p>NonZeroNumber ::= One | Two | Three | Four | Five | Six | Seven | Eight | Nine</p>\r\n<p>NonZeroNumber ::= One | Two | Three | Four | Five | Six | Seven | Eight | Nine</p>\r\n<p>Integer ::= NonZeroNumber ( Number )*</p>\r\n<p>Numeric ::= ( NegativeSign )? ( Number )+ ( Period ( Number )+ )?</p>\r\n<p>first two rules were easy, but for the rest I need some advices from you.</p>\r\n<p>... Of course to have a numeric I may find a workaround, but I have many rules that has the same pattern as described above and I need to be sure that are supported by Irony..</p>\r\n<p>I look forward for your feedback. Many thanks in advance.</p>\r\n<p>-Radu</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-05-26T07:38:03.597-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "194325",
+    "ThreadId": "57043",
+    "Html": "<p>Hi</p>\r\n<p>I'm afraid you're on the wrong track. Things like numbers, string literals are treated in Irony as single entities - Terminals; in some language definitions numbers composition&nbsp;are detailed in BNF-like rules, the same way as syntax rules are defined. But this is done mainly for explanation purposes. In language implementation the Scanner/Tokenizer will recognize&nbsp;them as single entities. In Irony you should use NumberLiteral, StringLiteral classes to define these elements. Look at sample grammars.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-05-26T09:00:42.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "194662",
+    "ThreadId": "57043",
+    "Html": "<p>Hi,</p>\r\n<p>I saw the code and is clear for me how to define numbers as Terminals in Irony. The above rules are described in order to gave a concrete example easily to understand. For instance I have to implement the following rule:</p>\r\n<p>RightOperandNumeric ::= Numeric | ( Segment SubscriptNotThis )* Set ( ( ( SubscriptNotThis )? ( ( (FieldGroup SubscriptNotThis )? Field ) | ( FieldGroup ( SubscriptThis | SubscriptEveryOrCorresponding ) ) ) ) | ( ( SubscriptThis | SubscriptEveryOrCorresponding )? ) ) | SegmentsWithOverlappingSubscripts</p>\r\n<p>How shall I proceed in this case? (I don't want to provide the composing rules for of all elements: Segment SubscriptNotThis, SubscriptNotThis, FieldGroup, ... etc because is a quite complex grammar and I don't want to waste your time, but I'm interested only if this kind of rules are supported by Irony...)</p>\r\n<p>Regards,</p>\r\n<p>Radu</p>",
+    "PostedDate": "2009-05-27T00:46:17.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "194826",
+    "ThreadId": "57043",
+    "Html": "<p>Well, it's better to define all elements, and then compose them in final expression. I recommend not to make individual rules too complex, with several levels of expression nesting; it should be &quot;OR&quot; (&quot;|&quot;) of several &quot;+&quot; expressions of elements.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-05-27T08:43:38.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "195063",
+    "ThreadId": "57043",
+    "Html": "<p>I have a clear description of all the rules from the grammar and I do not want to modify it. I'm interested if Irony support defining a rule such:</p>\r\n<p>A ::= B | (C*)D</p>\r\n<p>How do you recommend to implement such rule?</p>\r\n<p>Regards,</p>\r\n<p>Radu</p>",
+    "PostedDate": "2009-05-28T00:39:31.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "195074",
+    "ThreadId": "57043",
+    "Html": "<p>here it is, you have to define extra non-terminal CStar:</p>\r\n<p>CStar.Rule = MakeStarRule(CStar, C);</p>\r\n<p>A.Rule = B | &quot;(&quot; + CStar&nbsp;+ &quot;)&quot;&nbsp;+ D;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-05-28T01:08:29.36-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "195079",
+    "ThreadId": "57043",
+    "Html": "<p>ok; Thank you very much. This is what I'm looking for.</p>",
+    "PostedDate": "2009-05-28T01:19:44.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

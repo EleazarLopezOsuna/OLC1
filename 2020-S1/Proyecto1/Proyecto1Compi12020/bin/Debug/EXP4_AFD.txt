@@ -1,0 +1,11 @@
+digraph G {
+rankdir = LR;
+S1 -> S2 [label = "[:todo:]"];
+S1 -> S3 [label = "\\n"];
+S2 -> S2 [label = "[:todo:]"];
+S2 -> S3 [label = "\\n"];
+S3 -> S4 [label = "letras"];
+S3[shape=doublecircle];
+S4 -> S4 [label = "letras"];
+S4[shape=doublecircle];
+}

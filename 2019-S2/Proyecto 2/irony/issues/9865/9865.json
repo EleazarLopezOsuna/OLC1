@@ -1,0 +1,70 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2013-02-25T21:17:52.68-08:00",
+    "CommentCount": 6,
+    "Custom": null,
+    "Description": "In GrammarExplorer if you try to load project dll that has dependencies\r\n\r\nfmSelectGrammars.LoadGrammars methopd will throw exception on line 84\r\ntypes = asm.GetTypes();\r\n\r\nTo fix it we need to change line 73 from\r\nasm = Assembly.Load(File.ReadAllBytes(assemblyPath));\r\nto\r\nasm = Assembly.LoadFrom(assemblyPath);\r\n\r\nHope it will save time\r\n\r\nOD.",
+    "LastUpdatedDate": "2013-02-25T21:17:52.68-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2012-01-17T00:51:36.793-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "GrammarExplorer ReflectionTypeLoadException",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 9865
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": ">asm = Assembly.LoadFrom(assemblyPath);\n\nThis would break grammar auto-refresh feature.\nLoadFrom method won't load the new version grammar assembly once the file is updated.",
+      "PostedDate": "2012-01-17T06:00:34.697-08:00",
+      "Id": 52820
+    },
+    {
+      "Message": "Alexey, can you please have a look at it and see how to fix this - for assemblies with dependencies? \nthx",
+      "PostedDate": "2012-01-17T09:51:02.057-08:00",
+      "Id": 52845
+    },
+    {
+      "Message": "Sure, I will, perhaps this weekend.",
+      "PostedDate": "2012-01-18T23:23:39.227-08:00",
+      "Id": 53558
+    },
+    {
+      "Message": "Just uploaded new version with fix (by yallie); pleas verify and confirm it works now",
+      "PostedDate": "2012-01-22T20:00:45.83-08:00",
+      "Id": 53736
+    },
+    {
+      "Message": "I've just been bitten by this and changed my copy of Irony to use LoadFrom(). However, I also added some code to set the current directory to be that of the target DLL. Otherwise, it won't locate the dependencies if they are not in the GAC / path etc.\n\nDan\n",
+      "PostedDate": "2012-01-29T15:16:51.053-08:00",
+      "Id": 54963
+    },
+    {
+      "Message": ">changed my copy of Irony to use LoadFrom()\nUnfortunately, LoadFrom() locks the loaded assembly.\nYou won't be able to rebuild your grammar once it is loaded by the GrammarExplorer.\n\n>Otherwise, it won't locate the dependencies if they are not in the GAC / path etc.\nMy dependency resolver is very simple. It won't locate the dependencies in the GAC,\nbut it will locate them within the same folder as your grammar assembly.\n\nI'd suggest that AutoRefresh option changes assembly loading method.\nAutoRefresh is disabled -> assembly is loaded via LoadFrom(fileName) and is locked.\nAutoRefresh is enabled -> assembly is loaded as a byte array and isn't locked.\nThis way the user will have an option to use the standard (more reliable) assembly probing algorithm.\nBut checking/unchecking AutoRefresh checkbox will require restarting GrammarExplorer (to release locked files).",
+      "PostedDate": "2012-01-31T13:52:16.14-08:00",
+      "Id": 55080
+    }
+  ]
+}

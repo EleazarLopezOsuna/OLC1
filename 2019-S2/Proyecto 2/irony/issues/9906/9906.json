@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": null,
+    "Description": "\"Boolean\" node type is not creating using defaultAstnodecreator . via Getconstructor.It throws Null exception in DotNetcore.Please help me on this? there is a way without using Getconstructor.",
+    "LastUpdatedDate": "2017-06-19T23:17:35.503-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2017-06-19T00:13:21.083-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "\"Boolean\" node type is not creating using defaultAstnodecreator .",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9906
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "my guess is your custom AStNode class for this bool node has no public parameterless constructor (default constructor)",
+      "PostedDate": "2017-06-19T10:23:14.25-07:00",
+      "Id": 208598
+    },
+    {
+      "Message": "Yeah I will change it and test it.",
+      "PostedDate": "2017-06-19T23:17:35.503-07:00",
+      "Id": 208602
+    }
+  ]
+}

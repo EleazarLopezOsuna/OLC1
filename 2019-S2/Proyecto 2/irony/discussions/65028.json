@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "221458",
+    "ThreadId": "65028",
+    "Html": "<p>if a NonTerminal instance as Parser.Root, and that permit nullable, the Compiler occars MissingMethodException in parsing.</p>\r\n<p>The patch is to fix the problem.</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>Index: StatementListNode.cs<br>===================================================================<br>--- StatementListNode.cs\t(revision 31660)<br>+++ StatementListNode.cs\t(working copy)<br>@@ -19,9 +19,10 @@<br> <span style=\"color:Blue\">namespace</span> Irony.Scripting.Ast {<br> <br>   <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> StatementListNode : AstNode </span>{<br>-    <br>-    <span style=\"color:Blue\">public</span> StatementListNode(NodeArgs args) : <span style=\"color:Blue\">base</span>(args) { }<br> <br>+      <span style=\"color:Blue\">public</span> StatementListNode() { }<br>+      <span style=\"color:Blue\">public</span> StatementListNode(NodeArgs args) : <span style=\"color:Blue\">base</span>(args) { }<br>+<br>     <span style=\"color:Blue\">public</span> StatementListNode(NodeArgs args, AstNodeList statements) : <span style=\"color:Blue\">base</span>(args) {<br>       ChildNodes.Clear();<br>       <span style=\"color:Blue\">foreach</span> (AstNode stmt <span style=\"color:Blue\">in</span> statements)<br><br></pre>\r\n</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-10T03:37:19.337-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "222097",
+    "ThreadId": "65028",
+    "Html": "<p>So as far as I undertstand, the node class was missing parameter-less (default) constructor, which is required for automatically created nodes.</p>\r\n<p>Thanks for reporting this, the fix seems to be right</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-08-11T10:23:05.47-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

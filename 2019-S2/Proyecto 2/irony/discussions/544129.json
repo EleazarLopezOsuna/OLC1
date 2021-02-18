@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1240957",
+    "ThreadId": "544129",
+    "Html": "Hi I've modified the sql example parser slightly to permit UNIONS etc. <br />\n<pre><code>Dim UNION = ToTerm(&quot;UNION&quot;)\nDim stmtOp = New NonTerminal(&quot;stmtOp&quot;)\nstmtOp.Rule = UNION Or UNION + &quot;ALL&quot;\n...\nselectStmt.Rule = MakePlusRule(selectStmt, stmtOp, atomicSelectStmt, TermListOptions.None)\natomicSelectStmt.Rule = [SELECT] + selRestrOpt + selList + intoClauseOpt + fromClauseOpt + whereClauseOpt + groupClauseOpt + havingClauseOpt + orderClauseOpt</code></pre>\n\nEverything parses fine. However, when I look at the parse tree there is no node for the UNION/UNION ALL operator. I have not added anything to make it transient.<br />\n<pre><code>MyBase.MarkTransient(stmt, term, asOpt, aliasOpt, stmtLine, expression, unOp, tuple)</code></pre>\n\nI'll be translating this parse tree and so need to know what type of  UNION to translate to.<br />\n<br />\nSo how can I get that operator to appear in the parse tree?<br />\n<br />\nMany thx<br />\n<br />\nS<br />\n",
+    "PostedDate": "2014-05-03T01:00:58.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1240967",
+    "ThreadId": "544129",
+    "Html": "OK found my answer  in <a href=\"https://irony.codeplex.com/discussions/399061\" rel=\"nofollow\">https://irony.codeplex.com/discussions/399061</a> (thx pgeerkens!) so my select statement became<br />\n<pre><code>selectStmt.Rule = atomicSelectStmt Or selectStmt + stmtOp + atomicSelectStmt</code></pre>\n\nThx<br />\n",
+    "PostedDate": "2014-05-03T03:28:24.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-05-03T03:41:04.613-07:00"
+  }
+]

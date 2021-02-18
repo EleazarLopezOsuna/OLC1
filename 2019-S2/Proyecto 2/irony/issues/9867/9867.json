@@ -1,0 +1,80 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed, as much it can be fixed",
+    "ClosedDate": "2013-02-25T21:16:54.553-08:00",
+    "CommentCount": 8,
+    "Custom": null,
+    "Description": "I've just updated to the version 54d64b40c923 and the problem with GrammarLoader failing to find and load dependent assemblies is still there (it throws a ReflectionTypeLoadException when you call GetTypes()).\r\n\r\nChanging GrammarLoader.LoadAssembly() from Load(byte[]) to LoadFrom(filename) is still a workaround but it naturally destroys the reloading logic.\r\n",
+    "LastUpdatedDate": "2013-02-25T21:16:54.553-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2012-01-30T01:25:11.6-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Assembly.LoadFrom is still required",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9867
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Looks like we should further improve dependency resolver.\nCurrently, it looks for dependent assemblies inside the same folder as your grammar assembly.\nIt doesn't check subfolders, application executable folder and GAC.\nPlease provide more details on your setup (it would be great if you can zip and attach your solution to this work item).",
+      "PostedDate": "2012-01-31T14:07:09.633-08:00",
+      "Id": 55083
+    },
+    {
+      "Message": "I have a suggestion. It might be that the reason for failure (in improved version) is that we enable path lookup only while we are loading grammar type; once type is located, the resolver is disabled. However, the dependency may be activated when we start to execute the grammar constructor, and at this moment loader does not know about the path. The suggestion is to see if leaving path for lookup enabled indefinitely would help - and if yes, leave it there",
+      "PostedDate": "2012-01-31T14:30:19.577-08:00",
+      "Id": 55084
+    },
+    {
+      "Message": "Roman, you're not quite right... Dependency resolver is currently enabled while grammar is being loaded and created. If dependent assembly is required by the grammar constructor, it will be processed as well. If ReflectionTypeLoadException is thrown while calling GetTypes(), it means that dependency resolver was active and couldn't locate the assembly. So, it must be improved to support everything that standard probing algorithm does.",
+      "PostedDate": "2012-02-01T01:10:14.417-08:00",
+      "Id": 55124
+    },
+    {
+      "Message": "Sorry for the delay; I got called elsewhere for a moment.\n\nThe code goes straight from where it does the Assembly.Load() (at the end of GrammarLoader.LoadAssembly) to where it explodes on calling GetTypes() (line 66 of frmSelectGrammars.cs). There's no flag being reset or anything, so I don't understand what you mean by \"the resolver is disabled\".\n\nIf I change your version to call LoadFrom(), then everything works fine.\n\nIf that doesn't make enough sense (it's a bit garbled because it's hard to describe when there's nothing much to talk about!). If not, can you point me at the code you think you're talking about and I'll take a look at it?\n",
+      "PostedDate": "2012-02-02T13:39:43.79-08:00",
+      "Id": 55254
+    },
+    {
+      "Message": "What if we use the checkbox AutoRefresh to decide which method to use? if it is checked, use Load from bytes; otherwise, use LoadFrom. Then everybody is happy",
+      "PostedDate": "2012-02-04T08:23:42.987-08:00",
+      "Id": 55377
+    },
+    {
+      "Message": "I've just improved auto-refresh feature:\n1. Shadow copying of loaded assemblies is enabled, so Assembly.LoadFrom(fileName) doesn't lock the loaded file.\n2. For the first time an assembly is always loaded using Assembly.LoadFrom(fileName) to enable standard dependency resolution.\n3. If the standard loader returned an old version from the current AppDomain, then we reload it using Assembly.LoadFrom(byte[]).\n4. If assembly resolution handler fails to locate the dependency, it asks the user to browse for a file, just like .NET Reflector does.\n5. Refresh button is added: it's useful when Auto-refresh feature is disabled or the file system doesn't support change notifications.\n\nP.S. Please note that these changes are currently available on my fork, IronyContrib.",
+      "PostedDate": "2012-03-08T17:16:44.807-08:00",
+      "Id": 57393
+    },
+    {
+      "Message": "thanks! will look at it and pull it soon",
+      "PostedDate": "2012-03-09T11:34:13.43-08:00",
+      "Id": 57437
+    },
+    {
+      "Message": "I've just simplified a bit the latest fixes. Please pull the latest changes from my fork.",
+      "PostedDate": "2012-03-10T10:47:07.343-08:00",
+      "Id": 57477
+    }
+  ]
+}

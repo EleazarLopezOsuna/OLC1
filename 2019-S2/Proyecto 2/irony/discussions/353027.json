@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "826711",
+    "ThreadId": "353027",
+    "Html": "\r\n<p>Hi all,</p>\r\n<p>I've already define a Grammar using Irony, right now i open documents using Visual Studio and my LanguageService Highlights code and have intellisense for keywords, but i would like to show in the editor of visual studio sintax errors. For example, when\r\n i miss a &quot;;&quot; i would like the editor shows the error. For this i need 2 things: How to recover parse error from irony and how to show the error in visual studio editor.</p>\r\n<p>Regards,</p>\r\n",
+    "PostedDate": "2012-04-20T15:16:16.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "826715",
+    "ThreadId": "353027",
+    "Html": "I'm not an expert on VS language integration, read this:\r\n<div><a href=\"http://www.codeproject.com/Articles/33250/Writing-Your-First-Visual-Studio-Language-Service\">http://www.codeproject.com/Articles/33250/Writing-Your-First-Visual-Studio-Language-Service</a>\r\n</div>\r\n<div>note that it uses much old version of Irony, so sources should be adjusted</div>\r\n<div>Also note that to get errors you should make Irony parser return parse tree even if there are errors - for this, you need to define error rules (recovery rules) in your grammar.</div>\r\n<div><br>\r\n<br>\r\n<div>On Fri, Apr 20, 2012 at 3:16 PM, aquintana <span dir=\"ltr\">&lt;<a href=\"mailto:notifications@codeplex.com\">notifications@codeplex.com</a>&gt;</span> wrote:<br>\r\n<blockquote style=\"margin:0 0 0 .8ex; border-left:1px #ccc solid; padding-left:1ex\">\r\n<div>\r\n<p>From: aquintana</p>\r\n<div>\r\n<p>Hi all,</p>\r\n<p>I've already define a Grammar using Irony, right now i open documents using Visual Studio and my LanguageService Highlights code and have intellisense for keywords, but i would like to show in the editor of visual studio sintax errors. For example, when\r\n i miss a &quot;;&quot; i would like the editor shows the error. For this i need 2 things: How to recover parse error from irony and how to show the error in visual studio editor.</p>\r\n<p>Regards,</p>\r\n</div>\r\n<div>\r\n<p>Read the <a href=\"http://irony.codeplex.com/discussions/353027#post826711\" target=\"_blank\">\r\nfull discussion online</a>.</p>\r\n<p>To add a post to this discussion, reply to this email (<a href=\"mailto:irony@discussions.codeplex.com?subject=[irony:353027]\" target=\"_blank\">irony@discussions.codeplex.com</a>)</p>\r\n<p>To start a new discussion for this project, email <a href=\"mailto:irony@discussions.codeplex.com\" target=\"_blank\">\r\nirony@discussions.codeplex.com</a></p>\r\n<p>You are receiving this email because you subscribed to this discussion on CodePlex. You can\r\n<a href=\"https://irony.codeplex.com/subscriptions/thread/project/edit\" target=\"_blank\">\r\nunsubscribe or change your settings</a> on codePlex.com.</p>\r\n<p>Please note: Images and attachments will be removed from emails. Any posts to this discussion will also be available online at\r\n<a href=\"http://codeplex.com\" target=\"_blank\">codeplex.com</a></p>\r\n</div>\r\n</div>\r\n</blockquote>\r\n</div>\r\n<br>\r\n</div>\r\n",
+    "PostedDate": "2012-04-20T15:21:44.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

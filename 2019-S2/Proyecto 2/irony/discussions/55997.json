@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "189127",
+    "ThreadId": "55997",
+    "Html": "<p>I have a grammar where my boolean operators are eq, ne, le, lt, ge, gt rather than symbolic (eg in same order =, &lt;&gt;, &lt;=, &lt;, &gt;=, &gt;).</p>\r\n<p>I am also using the IdentifierTerminal for my variable names.</p>\r\n<p>When I set a precedence, it is ignored, and it looks like when the parser is comparing operator precedences and looking at the stack, it is seeing the previous operator as an identifier with precedence 0 rather than the operator it is.</p>\r\n<p>For example - &quot;a eq 7 or b ne 5&quot; with:</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BinExpr.Rule = Expr + BinOp + Expr;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BinOp.Rule = Symbol(&quot;+&quot;) | &quot;**&quot; | &quot;*&quot; | &quot;/&quot; | &quot;-&quot; | &quot;eq&quot; | &quot;ne&quot; | &quot;lt&quot; | &quot;le&quot; | &quot;gt&quot; | &quot;ge&quot; | &quot;and&quot; | &quot;or&quot;;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterOperators(60, Associativity.Right, &quot;**&quot;);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterOperators(50, &quot;*&quot;, &quot;/&quot;);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterOperators(40, &quot;+&quot;, &quot;-&quot;);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterOperators(30, &quot;eq&quot;, &quot;ne&quot;, &quot;lt&quot;, &quot;le&quot;, &quot;gt&quot;, &quot;ge&quot;);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterOperators(20, &quot;and&quot;, &quot;or&quot;);</p>\r\n<p>comes out with the operators in the order specified. If I alter my grammar to make them symbolic, it all works fine and the tree is correct, but I am trying to parse a different DSL and need to have the &quot;named&quot; operators.</p>\r\n<p>How can I get the operators to be identified as operators rather than as identifiers during precedence checking?</p>",
+    "PostedDate": "2009-05-11T22:35:16.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "189133",
+    "ThreadId": "55997",
+    "Html": "<p>which Irony version are you using? if it is Dec build from Downloads page, then no surprise - this was a known issue. Try with latest build from Source Code page, and look at SQL grammar, it has the same thing with precedence for identifier-like operators &quot;AND&quot;, &quot;OR&quot;. Try it with SQL sample sql_op_test.txt, which shows that precedence works correctly.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-05-11T22:46:43.343-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "189136",
+    "ThreadId": "55997",
+    "Html": "<p>Thanks! Perfect!</p>",
+    "PostedDate": "2009-05-11T22:57:02.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

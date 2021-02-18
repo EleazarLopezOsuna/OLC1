@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "271214",
+    "ThreadId": "79203",
+    "Html": "<p>Hi,</p>\r\n<p>&nbsp;</p>\r\n<p>I just started using Irony, so sorry if this is a real stupid question.</p>\r\n<p>&nbsp;</p>\r\n<p>I have a string that can l7ook like any of the following: (the cards in POKER!)</p>\r\n<p>&quot;hand = A&quot; (only one ACE)</p>\r\n<p>&quot;hand=AA&quot; (pair of aces)</p>\r\n<p>&quot;hand = T T&quot; (Pair of tens, but with a space between the two)</p>\r\n<p>&quot;hand = 6 suited 7&quot; (a 6 and a 7 of the same suit (heart, diamon, spades, club))</p>\r\n<p>I managed to get everything working except case 2 (&quot;hand=AA&quot;, the one without any spaces</p>\r\n<p>&nbsp;</p>\r\n<p>I used the following code:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>Rank.Rule = ToTerm(<span style=\"color:#A31515\">&quot;A&quot;</span>) | <span style=\"color:#A31515\">&quot;K&quot;</span> | <span style=\"color:#A31515\">&quot;Q&quot;</span> | <span style=\"color:#A31515\">&quot;J&quot;</span> | <span style=\"color:#A31515\">&quot;T&quot;</span> | <span style=\"color:#A31515\">&quot;9&quot;</span> | <span style=\"color:#A31515\">&quot;8&quot;</span> | <span style=\"color:#A31515\">&quot;7&quot;</span> | <span style=\"color:#A31515\">&quot;6&quot;</span> | <span style=\"color:#A31515\">&quot;5&quot;</span> | <span style=\"color:#A31515\">&quot;4&quot;</span> | <span style=\"color:#A31515\">&quot;3&quot;</span> | <span style=\"color:#A31515\">&quot;2&quot;</span>;\r\n            Hand.Rule = ToTerm(<span style=\"color:#A31515\">&quot;hand&quot;</span>) + EqualSign + Rank |\r\n                        <span style=\"color:#A31515\">&quot;hand&quot;</span> + EqualSign + Rank + Rank |\r\n                        <span style=\"color:#A31515\">&quot;hand&quot;</span> + EqualSign + Rank + <span style=\"color:#A31515\">&quot;suited&quot;</span> | \r\n                        <span style=\"color:#A31515\">&quot;hand&quot;</span> + EqualSign + Rank + <span style=\"color:#A31515\">&quot;suited&quot;</span> + Rank |\r\n                        <span style=\"color:#A31515\">&quot;hand&quot;</span> + EqualSign + Rank + Rank + <span style=\"color:#A31515\">&quot;suited&quot;</span>;\r\n<br><br>how can I get it to work with case 2? </pre>\r\n</div>\r\n</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-28T10:47:37.34-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "271219",
+    "ThreadId": "79203",
+    "Html": "<p>To control whitespace explicitly you need to assign empty string to WhitespaceChars property:</p>\r\n<p>this.WhitespaceChars = string.Empty;</p>\r\n<p>But then you have to add explicit whitespace elements between the terms.</p>\r\n<p>But I suspect this is not exactly your problem - can you please provide more info, what does it mean - it does not work for case 2? does the parser give you an error at thsi point?</p>\r\n<p>Or parser builder reports some conflict?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-28T11:02:01.163-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "271355",
+    "ThreadId": "79203",
+    "Html": "<p>I looked in the GrammarExplorer on the &quot;Test&quot; tab and I had multiple lines of my script.</p>\r\n<p>&nbsp;</p>\r\n<p>But let me rephrase this:</p>\r\n<p>&nbsp;</p>\r\n<p>Let's take a C# code:</p>\r\n<p>You could write:</p>\r\n<p>if(xy&lt;=3)</p>\r\n<p>&nbsp;</p>\r\n<p>or: if( xy &lt;= 3)</p>\r\n<p>&nbsp;</p>\r\n<p>I need to get the &quot;name&quot; of the variable ('xy') and I need to have it restrained to a maxium of 2 letters and to a range of characters (A,K,Q,J,T,9,8,7,6,5,4,3,2)</p>",
+    "PostedDate": "2009-12-29T00:35:31.543-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "271369",
+    "ThreadId": "79203",
+    "Html": "<p>Use identifierTerminal, assign AllFirstChars and AllChars properties explicitly (list only allowed leters and digits), then handle ValidateToken event of the IdentifierTerminal, and reject those terminals that are invalid for your rules (longer than 2 chars for ex)</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-29T01:37:56.797-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "271479",
+    "ThreadId": "79203",
+    "Html": "<p>This works great, thanks.</p>\r\n<p>&nbsp;</p>\r\n<p>But there is still one combination, where I don't get the right results.</p>\r\n<p>This time with poker syntax:</p>\r\n<p>&quot;hand=AA&quot; (works fine)</p>\r\n<p>&quot;hand=AK&quot; (works fine, too)</p>\r\n<p>&quot;hand=A K&quot;(does not work) GrammarExplorer says: &quot;Invalid Character: K&quot;</p>\r\n<p>***************************************************************************</p>\r\n<p>Rank.AllChars = &quot;AKQJT98765432dshc&quot;;<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rank.AllFirstChars = Rank.AllChars;<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rank.ValidateToken += new EventHandler&lt;ParsingEventArgs&gt;(rank_ValidateToken);</p>\r\n<p>&nbsp;</p>\r\n<p>Hand.Rule = ToTerm(&quot;hand&quot;) + EqualSign + Rank |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;hand&quot; + EqualSign + Rank + &quot;suited&quot;;</p>\r\n<p>***************************************************************************</p>\r\n<p>&nbsp;</p>\r\n<p>If I change the code to:</p>\r\n<p>Hand.Rule = ToTerm(&quot;hand&quot;) + EqualSign + Rank |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;hand&quot; + EqualSign + Rank + &quot;suited&quot; |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;hand&quot; + EqualSign + Rank + Rank |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;hand&quot; + EqualSign + Rank + Rank + &quot;suited&quot; | /* */<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;hand&quot; + EqualSign + Rank + &quot;suited&quot; + Rank;</p>\r\n<p>&nbsp;</p>\r\n<p>I get the following results:</p>\r\n<p>&quot;hand=AA&quot; (works fine)</p>\r\n<p>&quot;hand=AK suited &quot; (does not work) GrammarExplorer: &quot;Invalid character: u&quot; (the 'u' in 'suited')</p>\r\n<p>&quot;hand=A K&quot;(works)</p>\r\n<p>&nbsp;</p>\r\n<p>How can I make the &quot;suited&quot; more binding than the Rank? <br>This error happens, because Irony tries to parse 'suited' as Rank :-/</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-29T09:35:25.033-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "273879",
+    "ThreadId": "79203",
+    "Html": "<p>Hey Medic,<br> <br></p>\r\n<p>Looking at your first code, the last scenario fails because the letter K in the string does not make up any part of the expression.&nbsp; Is there a line break or some other type of indication that the expression is complete? If there is a line break that follows, then you may just need to add it to the expression and update rank_ValidateToken.&nbsp; If there is not, you may have to get crafty with the MakePlusRule or find another way to let the parser know it's done with that expression.</p>\r\n<p>Blackjack anyone! ;-)<br><br> -MindCore</p>",
+    "PostedDate": "2010-01-06T09:33:38.983-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "274835",
+    "ThreadId": "79203",
+    "Html": "<p>I'd like&nbsp;to add my guess. The&nbsp;scanner is at position after AK and before &quot;suited&quot;. It tries to figure out which terminal to use, and it has a choice of 2: Rank and &quot;suited&quot; key term. Key terms always have lower priority, so scanner tries Rank first.&nbsp;The terminal&nbsp;succeeeds with first &quot;s&quot;, fires validation event and fails at &quot;u&quot;.</p>\r\n<p>Try marking all keywords in your language as Reserved words - that will give them highest priority; this makes sense in your case as all these &quot;words&quot; are really reserved and cannot be used as identifiers or as Rank tokens. Use Grammar.MarkReservedWords method.</p>",
+    "PostedDate": "2010-01-08T08:57:45.857-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "274897",
+    "ThreadId": "79203",
+    "Html": "<p>Thanks Roman,</p>\r\n<p>I just learned something new about the terminal priority.</p>\r\n<p>&nbsp;</p>\r\n<p>Medic - I took a crack at your code and came up with the following. I'm sure there may be a better way to handle the Face term.</p>\r\n<p>&nbsp;</p>\r\n<p>[Language(&quot;BlackJack&quot;, &quot;1.0&quot;, &quot;Black Jack grammar&quot;)]<br>&nbsp; public class BlackJackGrammar : Grammar<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal FixedLengthLiteral Face = new FixedLengthLiteral(&quot;Face&quot;, 1, TypeCode.String);&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal NonTerminal Hand = new NonTerminal(&quot;Hand&quot;);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal NonTerminal EqualSign = new NonTerminal(&quot;Equal_Sign&quot;);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal NonTerminal Suited = new NonTerminal(&quot;Suited&quot;);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal const string valid_faces = &quot;AKQJT98765432&quot;;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public BlackJackGrammar() : base(false)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Face.ValidateToken += new EventHandler&lt;ParsingEventArgs&gt;(face_ValidateToken);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Suited.Rule = ToTerm(&quot;suited&quot;) + Face + Face |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Face + ToTerm(&quot;suited&quot;) + Face |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Face + Face + ToTerm(&quot;suited&quot;);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hand.Rule = ToTerm(&quot;hand&quot;) + EqualSign + Face |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;hand&quot; + EqualSign + Face + Face |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;hand&quot; + EqualSign + Suited;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EqualSign.Rule = ToTerm(&quot;=&quot;);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.MarkReservedWords(&quot;hand&quot;, &quot;suited&quot;);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Root = Hand;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal void face_ValidateToken(object sender, ParsingEventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!valid_faces.Contains(e.Context.CurrentToken.ValueString))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Context.CurrentToken <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = e.Context.Source.CreateErrorToken(&quot;Must specify a valid Card face. They are {0}&quot;, valid_faces); <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp; }</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-08T11:19:24.45-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

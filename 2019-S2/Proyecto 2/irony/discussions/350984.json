@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "819122",
+    "ThreadId": "350984",
+    "Html": "\r\n<p>Hi,</p>\r\n<p><span>how to combine</span>&nbsp;<span>the two</span>&nbsp;<span>rules :</span></p>\r\n<ul>\r\n<li>blockIfElse.Rule = ToTerm(&quot;if&quot;) &#43; generalExpr &#43; NewLine &#43; &quot;begin&quot; &#43; NewLine &#43; listStatement &#43; NewLine &#43; &quot;end&quot; &#43; NewLine &#43; &quot;else&quot; &#43; NewLine &#43; &quot;begin&quot; &#43; NewLine &#43; listStatement &#43; NewLine &#43; &quot;end&quot; &#43; NewLine; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;\r\n</li><li>blockIf.Rule = ToTerm(&quot;if&quot;) &#43; Expr &#43; NewLine &#43; &quot;begin&quot; &#43; NewLine &#43; AssignmentStmt&#43;NewLine&#43;&quot;end&quot;;\r\n</li></ul>\r\n",
+    "PostedDate": "2012-04-03T01:17:38.703-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "819909",
+    "ThreadId": "350984",
+    "Html": "<p>look at c# grammar, you need to create smth like&nbsp;</p>\r\n<p>else_clause_opt.Rule = Empty | PreferShiftHere() + \"else\" + statement;</p>",
+    "PostedDate": "2012-04-04T09:25:37.547-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

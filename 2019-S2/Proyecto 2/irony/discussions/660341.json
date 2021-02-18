@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1490309",
+    "ThreadId": "660341",
+    "Html": "Hello,\r<br />\n<br />\nnow I want to introduce into my language variables. The user has to be able to create new variables and read this variables. I want that the language, supports boolean and numbers. How can i do this, with the irony framework? \r<br />\nShould I create two rules like: BooleanExpression and NumbersExpression ?\r<br />\n<br />\nBest regards<br />\n",
+    "PostedDate": "2016-12-26T11:02:48.317-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1490310",
+    "ThreadId": "660341",
+    "Html": "Again, look at expression evaluator sample (and expr samples), it allows local variables<br />\n",
+    "PostedDate": "2016-12-26T13:53:54.537-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1434144",
+    "ThreadId": "641272",
+    "Html": "Hi,\r<br />\n<br />\nI am wondering if it is possible to generate source code from AST for a particular grammar.\r<br />\n<br />\nMost tutorials I googled parse code to AST but I would like to go from AST to code.\r<br />\n<br />\nA use case would be to build/modify the AST and have Irony generate the resulting code.\r<br />\n<br />\nI am also wondering if validation will be possible based on the grammar provided.\r<br />\n<br />\nThank you.<br />\n",
+    "PostedDate": "2015-07-13T06:22:57.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1434172",
+    "ThreadId": "641272",
+    "Html": "This is possible and is called (pretty-)printing an AST.\r<br />\nOf course you will lose the original formatting and can only pront a &quot;standard&quot; form, hence pretty-printing.\r<br />\n<br />\nIn Irony you could make a print method with a large switch inside that handles all types of nodes. For child nodes you (recursively) call this method inside the case's.<br />\n",
+    "PostedDate": "2015-07-13T10:06:49.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1434240",
+    "ThreadId": "641272",
+    "Html": "Hi,\r<br />\n<br />\nWhat is the method to call and could you provide some sample code to do this please?\r<br />\n<br />\nThank you.<br />\n",
+    "PostedDate": "2015-07-13T23:13:56.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1434251",
+    "ThreadId": "641272",
+    "Html": "It's something you'll have to write yourself. You could make it something like this:<br />\n<pre><code>public string Print(AstNode node) {\n    switch(node.GetType().Name) {\n        case &quot;BinaryOperationNode&quot;:\n            var binopnode = (BinaryOperationNode)node;\n            return String.Format(&quot;{0} {1} {2}&quot;, Print(binopnode.Left), binopnode.OpSymbol, binopnode.Right);\n        // all your AST node types here\n        default:\n            throw new ArgumentException(&quot;Could not print node of type {0}&quot;, node.GetType().Name);\n    }\n}\n</code></pre>\n\nSwitching on types is... subpar in C# (until we get pattern matching in a future version) so <a href=\"https://stackoverflow.com/questions/4478464/c-sharp-switch-on-type\" rel=\"nofollow\">there's other/&quot;better&quot; ways you can do it</a>. I also like defining multiple methods with concrete subtypes and using the runtime method resolution of C#'s <code>dynamic</code>.\r<br />\n<br />\nIf you want to print ParseTreeNode's it gets simpler. You can first check if it's a nonterminal or terminal (terminals are usually just outputted), and switch on Term.Name for nonterminals with the proper logic.<br />\n<pre><code>public string Print(ParseTree tree) { return Print(tree.Root); }\n\npublic string Print(ParseTreeNode node) {\n    if(node.Term is Terminal) return node.Token.Text;\n    var childs = node.ChildNodes.Select(Print);\n    List&lt;string&gt; childsC; // concrete\n    switch(node.Term.Name) {\n        case &quot;BinOp&quot;:\n            childsC = childs.toList();\n            return String.Format(&quot;{0} {1} {2}&quot;, childsC[0], childsC[1], childsC[2]);\n        // all your nonterminals here\n        default:\n            throw new ArgumentException(&quot;Could not print node of type {0}&quot;, node.GetType().Name);\n    }\n}</code></pre>\n\n",
+    "PostedDate": "2015-07-14T00:21:24.477-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

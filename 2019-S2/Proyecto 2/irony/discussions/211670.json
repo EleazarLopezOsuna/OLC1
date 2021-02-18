@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "439343",
+    "ThreadId": "211670",
+    "Html": "<p>I can't get the parser to recognise a function call.\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</p>\r\n<p>What I have is very similar to the SQL example, where:\r\n<p>&nbsp;</p>\r\n</p>\r\n<p>expression.Rule = term | unExpr | binExpr;\r\n<p>&nbsp;</p>\r\n</p>\r\n<p>&nbsp;term.Rule = Id | string_literal | number | funCall;\r\n<p>&nbsp;</p>\r\n</p>\r\n<p>&nbsp;funCall.Rule = Id +&quot;(&quot; + funArgs + &quot;)&quot;;\r\n<p>&nbsp;</p>\r\n</p>\r\n<p>funArgs.Rule = exprList;\r\n<p>&nbsp;</p>\r\n</p>\r\n<p>&nbsp;\r\n<p>&nbsp;</p>\r\n</p>\r\n<p>Any thoughts?</p>\r\n<p>&nbsp;</p>\r\n<p>-Steven&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;\r\n<p>&nbsp;</p>\r\n<p>&nbsp;\r\n<p>&nbsp;</p>\r\n<p>&nbsp;\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"font-size:x-small\">\r\n<p><span style=\"font-size:x-small\"><span style=\"font-size:x-small\">\r\n<p><span style=\"font-size:x-small\">&nbsp;</span>\r\n<p>&nbsp;</p>\r\n<span style=\"font-size:x-small\">&nbsp;</span>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</p>\r\n</span></span></p>\r\n</span></p>\r\n</p>\r\n</p>\r\n</p>",
+    "PostedDate": "2010-05-05T09:15:03.607-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "439354",
+    "ThreadId": "211670",
+    "Html": "<p>What do you mean &quot;not recognizing&quot;? Do you get grammar errors? or parser error? Please give more details</p>",
+    "PostedDate": "2010-05-05T09:38:07.63-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "439456",
+    "ThreadId": "211670",
+    "Html": "<p>I dug in with the Grammar Explorer, found the state that was causing it, and resolved the issue -- I was using rounded brackets instead of square brackets as per the definition. I did swap it back and forward a few times when testing earlier, but oh well, it now works.</p>\r\n<p>I guess I'm not sure why it's saying that&nbsp;it needs to find sum/multiplicative/relational operators&nbsp;VS&nbsp;open/close braces, as the former aren't defined in the function definition.</p>\r\n<p>The big question would be how do you intercept an error like this and make it more meaningful for a user.</p>\r\n<p>State S48 (Inadequate)<br>&nbsp; Shift items:<br>&nbsp;&nbsp;&nbsp; Id -&gt; Id &middot;. IdAtom <br>&nbsp;&nbsp;&nbsp; FunctionCall -&gt; Id &middot;( ExpressionList ) <br>&nbsp; Reduce items:<br>&nbsp;&nbsp;&nbsp; Term -&gt; Id &middot; [+&nbsp;-&nbsp;* /&nbsp;^ = &gt; &lt;&nbsp;&gt;= &lt;= &lt;&gt; and or ) , ;]<br>&nbsp; Transitions: .-&gt;S23, (-&gt;S59</p>",
+    "PostedDate": "2010-05-05T12:25:02.843-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

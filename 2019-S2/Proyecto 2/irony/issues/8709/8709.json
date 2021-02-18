@@ -1,0 +1,71 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Resolved in private communication. It turned out the grammar was messed up a bit. But highlighted some shortcomings of Irony, will try to see what can be done",
+    "ClosedDate": "2010-06-09T22:11:29.153-07:00",
+    "CommentCount": 5,
+    "Custom": "",
+    "Description": "This one is tough for me to debug because I only have around 45 seconds before my machine runs out of memory. With that being said, I'm sorry about the minimal information, but from what I can tell, the parser appears to be in some sort of loop resetting that is consuming vast amounts of memory (my machine has 12GB, and it has pushed upwards of 10GB before Windows shut it down. I would be happy to provide any further information at your request.\n\nThanks for your great work!",
+    "LastUpdatedDate": "2010-06-09T22:11:29.153-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2010-06-07T22:20:43.783-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Memory Leak?",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8709
+  },
+  "FileAttachments": [
+    {
+      "FileId": 210351,
+      "FileName": "irony.jpg",
+      "DownloadUrl": ".\\210351"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "UPDATE: When I watch the application initialize line by line, everything appears ok (memory consumption is normal), but when it is through initializing and I press F5, memory use skyrockets. However, if I pause the application while it is jamming on the ram, and then continue, memory utilization is flat. Attached is a Task Manager screenshots that shows the sawteeth pattern of executing the application.",
+      "PostedDate": "2010-06-07T22:56:06.387-07:00",
+      "Id": 29168
+    },
+    {
+      "Message": "UPDATE: I did some more digging, and it appears that the memory is skyrocketing during the Parse() method on the CoreParser. I have a feeling it may be poor coding on my part in terms of the lexical structure of my grammar, however it should probably still be addressed:\r\n\r\n   public void Parse() {\r\n      //main loop\r\n      Context.Status = ParserStatus.Parsing;\r\n      while(Context.Status == ParserStatus.Parsing) {\r\n        ExecuteAction();\r\n      } \r\n    }//Parse",
+      "PostedDate": "2010-06-08T03:10:08.657-07:00",
+      "Id": 29169
+    },
+    {
+      "Message": "So, as it turns out, the MarkTransient method was the culprit- or more arcurately it's absence was. I'll leave this open in case you want more info about the debugging process/performance. While the cause for this was my fault, it may be worthwhile shoring up in the CoreParser because of the severe consequences it can have on a system. Let me know if I can be of any assistance.\r\n\r\nThanks,\r\nSteve",
+      "PostedDate": "2010-06-08T04:21:38.18-07:00",
+      "Id": 29170
+    },
+    {
+      "Message": "Ok, so I was wrong. It appears that I can stop the memory leak, but only if I get a grammar error on the marktransient statement. So it's probably just not able to reach the code that is spewing ram all over the place. I'm really not too sure where to go from here, any help would be greatly appreciated.\r\n\r\nThanks!",
+      "PostedDate": "2010-06-08T05:15:08.523-07:00",
+      "Id": 29171
+    },
+    {
+      "Message": "Please publish (in new discussion) or email me the grammar. Looks like some recursive loop is there, would be interesting to see, and maybe come up with some automatic way to prevent it",
+      "PostedDate": "2010-06-08T09:06:44.013-07:00",
+      "Id": 29172
+    }
+  ]
+}

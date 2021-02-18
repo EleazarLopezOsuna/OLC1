@@ -1,0 +1,114 @@
+[
+  {
+    "Id": "59633",
+    "ThreadId": "18253",
+    "Html": "\r\nWelcome to the general discussion of Irony! Please post here anything you have to say or ask about Irony - feedback, errors, opinions, questions, suggestions, current and desired features, etc. <br /><br />",
+    "PostedDate": "2007-11-23T22:27:00.847-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "60486",
+    "ThreadId": "18253",
+    "Html": "\r\nHi!<br />Just to say that I'm really impressed by the Irony library! It enables to do very complicated things really easily (much more than Yacc/Lex does)!<br /><b>Congratulations!</b> :)<br />",
+    "PostedDate": "2007-11-29T13:00:06.92-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "64130",
+    "ThreadId": "18253",
+    "Html": "\r\nI have the feeling this is a very poweful library, although I haven't tried it yet. What's the current status of the project? Regards, Rob<br />",
+    "PostedDate": "2007-12-19T10:21:36.76-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "64350",
+    "ThreadId": "18253",
+    "Html": "\r\nI'm currently working on resolving the remaining issues in pre-release: decent error recovery and rounding up the list of standard terminals. Once these are resolved, Irony would become ready for prime-time - directly usable \"as is\" in any project that involves parsing. This will be a first official 1.0 release, and I expect it to happen somewhere in Jan/Feb 2008. I also started looking at runtime/interpreter modules, that would be the next step - creating general-purpose interpreter. That should take another couple of months or so.  <br />Thanks for your interest<br />Regards<br />Roman <br />",
+    "PostedDate": "2007-12-20T09:04:57.127-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "64449",
+    "ThreadId": "18253",
+    "Html": "\r\nThis is great news! I am going to have a look at the current release briefly. Keep up the good work.<br />Take care,<br />Rob<br />",
+    "PostedDate": "2007-12-20T17:54:25.21-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "65092",
+    "ThreadId": "18253",
+    "Html": "\r\nInteresting project,<br /><br />Do you ever plan to have it so you have a language-building framework that will read a standard language grammar file to build the Terminal/Nonterminal language structure in a non-code format?<br /><br />While the method you presently have is interesting, I'm curious as to how you would utilize the resulted Concrete Syntax Tree (CST/Parse Tree) once you've parsed a source file.<br /><br />You seem to be able to iterate the structure of a language file once the language has been compiled into an ASTNode, what steps would someone need to take to use Irony to build a true to life language?<br /><br />Are there any plans to build a Language File -&gt; CIL translator, for compilation with ilasm?<br /><br />I only ask because your project is similar to mine (not yet released), I'm building what I call a 'High Level Abstract Syntax Tree' which defines standard language elements (classes, enums, delegates, et al.), standard form order of operation and so on.<br /><br />The intent on my end is to use a Recursive Descent parser builder with a grammar definition system that'll allow you to translate the code files into the HL-AST, which can then be translated into CIL using the translator class I'm writing to compliment the HL-AST.<br />",
+    "PostedDate": "2007-12-27T07:47:56.74-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "65119",
+    "ThreadId": "18253",
+    "Html": "\r\nThat's very interesting as well. Do you have a link where I could read more about that, Alexander?<br />",
+    "PostedDate": "2007-12-27T10:32:34.397-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "65133",
+    "ThreadId": "18253",
+    "Html": "<br /><div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />AlexanderMorou wrote:<br />Interesting project,<br /><br />Do you ever plan to have it so you have a language-building framework that will read a standard language grammar file to build the Terminal/Nonterminal language structure in a non-code format?<br /><br /></div>Well, I guess by \"standard language grammar file\" you mean YACC grammar format file. But this is the main point so far - to get rid of \"custom grammar language\" and use c# directly. I understand that there's some downside to it - you cannot reuse grammar files already written for yacc/bison. But you can't use them anyway, because they contain embedded action snippets in target language (usually c) and are tightly linked to the architecture of the target parser being generated. I think Irony's approach is much more powerful. Using c# directly allows you get a full power of a real language for expressing grammar constructs. For example, look at helper methods WithStar, WithPlus, WithQ in Grammar class. These are helpers implementing Kleene operators over arbitrary expressions. You can invent your own methods to make grammar expressions more compact. As another example, look how we can use string literals directly in grammar expressions mixing them with terminals and non-terminals - this all comes from c# flexibility, particularly ability to overload operator definitions.  <br /><br /><div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />While the method you presently have is interesting, I'm curious as to how you would utilize the resulted Concrete Syntax Tree (CST/Parse Tree) once you've parsed a source file.<br /><br /></div>I'll use it the same way as compilers use the result of parser. In a standard compiler architecture scanner+parser produce AST node tree. The middle part of the compiler runs through the tree and generates the IL/assembly code. The other possibility is to evaluate the tree directly - this is interpreter mode. <br />Each node defines Evaluate method, so to run the program you simply call Evaluate on the root node. Implementing the interpreter is the next phase I'm working on; then will come the compilation to IL. Both cases - interpreting or compiling - require some kind of runtime environment, especially for scripting and dynamic languages. This what I'm looking at now. <br /><br /><div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />You seem to be able to iterate the structure of a language file once the language has been compiled into an ASTNode, what steps would someone need to take to use Irony to build a true to life language?<br /><br /></div>The Scheme sample contains an example of defining custom AST nodes that are associated with non-terminals. The resulting tree then contains these node types instead of generic AstNode instances. Particular language would define node types for each of its constructs and attach them to non-terminals used in grammar. I intend to build a set of standard Ast nodes for common language constructs (if, switch, assignment operators, etc) - this work is in progress; and looks like this is what you are doing now in your project. <br /><br /><div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />Are there any plans to build a Language File -&gt; CIL translator, for compilation with ilasm?<br /><br /></div>Definitely yes, although again, first is standard AST node list, interpreter and runtime infrastructure. <br /><br /><div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />I only ask because your project is similar to mine (not yet released), I'm building what I call a 'High Level Abstract Syntax Tree' which defines standard language elements (classes, enums, delegates, et al.), standard form order of operation and so on.<br /><br /></div>Sounds the same as I'm doing now. Want to cooperate? <br /><br /><div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />The intent on my end is to use a Recursive Descent parser builder with a grammar definition system that'll allow you to translate the code files into the HL-AST, which can then be translated into CIL using the translator class I'm writing to compliment the HL-AST.<br /><br /></div>You say you want to use RD parser builder - is it that you create this builder or you want to use existing one like Antlr?<br /><br />Thank you<br />Sorry, still didn't find time to write a project road map - this would probably clarify these issues<br /><br />",
+    "PostedDate": "2007-12-27T11:46:50.2-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "65137",
+    "ThreadId": "18253",
+    "Html": "\r\nYou can download what I have of my project now by clicking on my name (in this post), go to the right-hand side of the page and you'll see \"OILexer\", which is the project I'm working on.<br /><br />As far as cooperation, I have to get the project to a much further point before I worry about that.<br /><br />As far as the RD Parser Builder, yes, I'm writing it.  The HL-AST, or Objectified Intermediate Language ('OIL', coined name, mind you) is mostly present in the current source code upload provided in the project details (no release submitted, just source.) You'll notice the test project with it called 'TranslationSample' contains the following code:<br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\nIExpression test = typeof(Console).GetTypeExpression().GetMethod(\"WriteLine\").Invoke(\"This is a test invocation\".ToPrimitive());\r\nConsole.WriteLine(test.Translate(TargetLanguages.CIL));\r\n</pre>Which shows on the console:<br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\nldstr \"This is a test invocation\"\r\ncall void [mscorlib]System.Console::WriteLine(string)\r\n</pre><br />You'll notice that it automatically figures out that from the various 'WriteLine' methods on the Console, it picks '<span class=\"codeInline\" style=\"font-family:Consolas, Courier New, Courier, Monospace;\">void System.Console::WriteLine(string)</span>', this is because it infers the value of the 'Invoke' expressions by doing a 'type-based' evaluation.  I've much to do regarding that such as allowing for 'operator overloads' that properly break down the binary/unary overloads possible in the Common Intermediate Language (CIL).  The idea is that the OIL framework is smart enough to <i>Link</i> on the fly, or at least that's the idea.<br /><br />If you have any suggestions for the project that might aid it, I'm all ears.  I'd suggest more for your project; however, it seems you already know where exactly you want to go.<br />",
+    "PostedDate": "2007-12-27T12:40:42.747-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "65308",
+    "ThreadId": "18253",
+    "Html": "\r\nI  hope you don't mind if I double post; however, I'm posting regarding both projects...<br /><br />We've got our work cut out for us if we plan on doing anything close to as extensive as C# or Visual Basic.NET in support for language features.<br /><br />Operator overloads have been around for ages, but will require a series of implicit conversions if the immediate operator overloads don't hit pay dirt (that is to say, if the type on the left and the type on the right don't have operator overloads to those exact types); extension methods are new, simple in concept but <i>fun</i> to implement (lots of lookups); lambda expressions should prove interesting on data-type inference (if you'll allow for that) as well as inferring the data-members shared across the methods, nesting of lambda expressions generates even more complexity in the resultant CIL code.  Lets not forget about the newest (or at least most talked about) feature: Language Integrated Query (LINQ) and anonymous types.<br /><br />If we both intend on doing all of these features it's going to take quite some time, and a lot of luck (research).  I'm thinking that if I get OIL to a point where it can generate appropriate code to handle all of these it might be useful for the <a href=\"http://www.codeplex.com/OILexer\" class=\"externalLink\">OILexer<span class=\"externalLinkIcon\" style=\"font-family:Consolas, Courier New, Courier, Monospace;\"></span></a> project as well as others.<br /><br />Based upon what you've got so far, your approach is a bit different than mine, but I'm eagerly waiting to see what you come up with next with <a href=\"http://www.codeplex.com/irony/Wiki/View.aspx?title=Home\">Irony</a>.<br />",
+    "PostedDate": "2007-12-28T23:50:44.5-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "65776",
+    "ThreadId": "18253",
+    "Html": "\r\nThat all certainly sounds interesting, although I look at this at a slightly different angle. New c# features are  challenging and fun, but they are already done, the solution is known - just analyze IL code for simple c# snippet. And here is the twist - most of the c# features you're talking about are borrowed from dynamic and scripting languages. They are implemented mostly at compiler level, as compiler hacks, and mostly in reduced manner compared to originals. For example, lambda expressions are known as \"closures\" and are available in many languages, starting from Lisp and Scheme. c# designers recognized their value, and implemented a cut-down version as lambdas. The reason of not having real closures is the .NET runtime - it does not allow manipulating call stack directly which is required if you want to have real closures. Same goes for iterators, continuations/co-routines, etc. The .NET runtime is carved for static languages like c#, and doing dynamic stuff is quite challenging. <br />I'm on the other hand mostly interested in dynamic implementation of \"real things\", just because my end goal is a dynamic language, not another c# compiler. That does not mean Irony would not support features you are talking about. Simply the implementation will be mostly at the AST tree analysis and transformation level and in particular compiler implementation. As for support for such advanced AST analysis - I'm all in, and some general purpose methods should definitely be in core Irony - it is just not my current priority. <br />And compiler-to-IL is also not the first item. I really think well-built interpreter with full .NET interoperability support is almost as good as a real compiler, so I'm focusing on this. And again, IL or interpreter, you first need a robust dynamic runtime which is not there (in .NET framework) and should be built from scratch. There are lot of challenges there: object models (JavaScript uses prototype OOP instead of class-based supported by .NET); multiple inheritance, direct call stack manipulations for iterators, closures and continuations; efficient dynamic (not static!) operator resolution; macro-expansions, etc. <br />That's the way I see and plan it. <br />thanks<br />",
+    "PostedDate": "2008-01-02T15:56:32.94-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "65782",
+    "ThreadId": "18253",
+    "Html": "\r\nSee this is why these kinds of discussions are helpful:  I give you insight into my straightforward approach and you give me ideas of where it can go.<br /><br />As I mentioned in the e-mail message to you, it gives me ideas on how to implement dynamic features by enabling a dynamically adaptable OIL (AST) infrastructure; whereby the feature itself discerns the resulted 'form' of the code in traditional OIL form, if the language its translating into doesn't support the feature.<br /><br />Here's hoping that the projects both go well.<br /><br />Though I fear due to scope, my journey might be a bit longer than most.  Since my goal is not just the language constructor, but a language translation framework and an AST builder.  Though from what I've been reading of your work, you build an AST mock-up design, in a more 'in memory' way, am I right?<br />",
+    "PostedDate": "2008-01-02T17:34:14.09-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "65944",
+    "ThreadId": "18253",
+    "Html": "\r\nAn article about Irony on CodeProject: <a href=\"http://www.codeproject.com/KB/recipes/Irony.aspx\" class=\"externalLink\">http://www.codeproject.com/KB/recipes/Irony.aspx<span class=\"externalLinkIcon\" style=\"font-family:Consolas, Courier New, Courier, Monospace;\"></span></a><br />",
+    "PostedDate": "2008-01-03T16:22:34.85-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "70167",
+    "ThreadId": "18253",
+    "Html": "\r\nWhat's appealing to me about Irony is that it seems I can use it as the basis for an interpreter for \"languages\" based on my own grammars.  The interpreter does not need to compile down to CIL (in an direct or explicit sense).  The sample I'm using to learn to use Irony is parsing of Excel formulas.  Conceptually I can then execute a formula piece-by-piece calling Excel to perform the execution.  Issues of performance arise in this example but in the general case the additional benefit of Irony is being able to parse some request, the structure of which is defined by a grammar, and then call methods in some other application, assembly or service to service the requests in a dynamic way (assuming there are no errors in the request code).<br />",
+    "PostedDate": "2008-01-26T17:30:49.563-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

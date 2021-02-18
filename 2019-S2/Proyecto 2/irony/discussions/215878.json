@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "454988",
+    "ThreadId": "215878",
+    "Html": "Has anyone looked into this project on CodePlex and thought about how it might be used with Irony?",
+    "PostedDate": "2010-06-13T15:04:20.007-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "455840",
+    "ThreadId": "215878",
+    "Html": "<p>Look at these:</p>\r\n<p>http://code.google.com/p/ironlua/</p>\r\n<p>http://www.protsyk.com/cms/?p=152</p>\r\n<p>http://git.neteril.org/bechamel/</p>\r\n<p>I personally gave up on the idea, for a simple reason: DLR is too complex for a simple guy like me. Waaay too much stuff....</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-06-15T14:45:00.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "457548",
+    "ThreadId": "215878",
+    "Html": "<p>Thanks. &nbsp;From the looks of the DLR project, it does seem to be a very complex version of what you're already providing. &nbsp;It probably just depends on the design, complexity, and features of the language you're building as to whether you go with the DLR or the built-in runtime in Irony. &nbsp;I could see someone starting off with the built-in runtime and then moving to the DLR, especially if they're wanting to provide a debug experience.</p>\r\n<p>I'm going mess around with it and see just how difficult it would be to use. &nbsp;The IronLua project is a good example. &nbsp;You should probably make reference to it on the home page or maybe I'll put a section in the wikibook.</p>",
+    "PostedDate": "2010-06-19T05:13:09.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

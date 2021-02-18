@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "428874",
+    "ThreadId": "208722",
+    "Html": "<p>Hi thanks lot for this library .</p>\r\n<p>i m trying to create a little script language .</p>\r\n<p>Basically i extend the expression evaluator example by adding new feature.</p>\r\n<p>Each statement ends with newline like VB.</p>\r\n<p>So i want to add line break with underscore.&nbsp;</p>\r\n<p>I follow instruction found on forum</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">var</span> comment = <span style=\"color:Blue\">new</span> CommentTerminal(<span style=\"color:#A31515\">&quot;comment&quot;</span>, <span style=\"color:#A31515\">&quot;#&quot;</span>, <span style=\"color:#A31515\">&quot;\\n&quot;</span>, <span style=\"color:#A31515\">&quot;\\r&quot;</span>);\r\n<span style=\"color:Blue\">var</span> comment2 = <span style=\"color:Blue\">new</span> CommentTerminal(<span style=\"color:#A31515\">&quot;comment2&quot;</span>, <span style=\"color:#A31515\">&quot;_&quot;</span>, <span style=\"color:#A31515\">&quot;\\r\\n&quot;</span>);\r\n</pre>\r\n</div>\r\n</p>\r\n<p>But that seems not work.&nbsp;</p>\r\n<p>Can u help me please ?</p>\r\n<p>thank u in advance !!!</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-08T09:05:04.04-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "428898",
+    "ThreadId": "208722",
+    "Html": "<p>i found one solution\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">var</span> comma = ToTerm(<span style=\"color:#A31515\">&quot;,&quot;</span>) + (Empty | <span style=\"color:#A31515\">&quot;\\r&quot;</span> | <span style=\"color:#A31515\">&quot;\\n&quot;</span> | <span style=\"color:#A31515\">&quot;\\r\\n&quot;</span>);       <br>comma.Name = <span style=\"color:#A31515\">&quot;comma&quot;</span>;\r\n<span style=\"color:Blue\">var</span> stmtsep = ToTerm(<span style=\"color:#A31515\">&quot;;&quot;</span>) + (Empty | <span style=\"color:#A31515\">&quot;\\r&quot;</span> | <span style=\"color:#A31515\">&quot;\\n&quot;</span> | <span style=\"color:#A31515\">&quot;\\r\\n&quot;</span>); <br>stmtsep.Name = <span style=\"color:#A31515\">&quot;statement_separator&quot;</span>;\r\n<br>It seems work. But i m not sure its the good solution . <br><br>What u think about ?<br></pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2010-04-08T09:48:13.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "428944",
+    "ThreadId": "208722",
+    "Html": "<p>declare explicit non-terminals, what you have is BnfExpression objects.</p>\r\n<p>Like this:</p>\r\n<p>var stmtSep = new NonTerminal(&quot;stmtSep&quot;);&nbsp;</p>\r\n<p>stmtSep.Rule = ToTerm(&quot;;&quot;) + .. ... ..&nbsp;</p>\r\n<p>Not sure why you need to re-define comma...</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-08T11:14:55.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

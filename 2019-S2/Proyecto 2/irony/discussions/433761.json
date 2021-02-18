@@ -1,0 +1,298 @@
+[
+  {
+    "Id": "1003814",
+    "ThreadId": "433761",
+    "Html": "Just to give some info on what's happening. I'm still here, life continues, and Irony development continues - now more actively.<br />\nI'm back to regular work on Irony, and currently looking at substantial redesign in almost all areas. My focus is GLR parser (so that we finally can ask parser to resolve conflicts automatically, thru exploring all possible paths). Also looking at rebuilding Scanner - moving away from old, traditional char-by-char model and doing something more modern (scanning/chopping the entire text), making it possible to 'replace' whole fragments of source text, in things like macro or source rewriting in LINQ). Another focus - parsing not-quite complete/correct sources (for intellisense), hopefully using some theoretical foundation (suffix parsing). If you're interested to know more - I use &quot;Parsing techniques&quot; by Grune, Jacobs as a source of theoretical algorithms, so read chapters 11 and 12 about GLR parsing and suffix parsing. <br />\nOne of the challenges is to make changes as backward-compatible as possible, so that old grammars will continue to work without or with minimal changes. I hope this can be done. <br />\nAlso move to VS 2012 is coming, in the next source push hopefully. <br />\n<br />\nAnd if you're in database apps development - keep an eye on my other project VITA (vita.codeplex.com) - soon will push new code, with BIG set of COOL and UNIQUE features (like authorization framework). Trying to split my time between these two open-source babies - and of course my offline, real-life children (twins, 6 yo, lots of fun and trouble:). <br />\n<br />\nThank you and stay in touch<br />\nRoman <br />\n",
+    "PostedDate": "2013-02-19T23:07:12.287-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1003835",
+    "ThreadId": "433761",
+    "Html": "Forgot to mention - timeline. Hard to predict, hope it will take no more than two-three months. <br />\n<br />\nAnd I need some help from you guys. If there's somebody there with some expertise .NET internals, performance tuning and passion for assembly code - here's the task. <br />\nWhat is the most efficient way in c# to find in a given string the first location of any of the prefixes from a given set of strings? <br />\n(one straightforward solution - method String.IndexOfAny( ) with first chars of strings to search. But is it the fastest one?)<br />\n<br />\nHere's a more detailed description. <br />\nThere's a string in memory (ex: 500-line c# source file). Starting from some position P, find the first occurrence of any word from a set of words (ex: all special symbols in c# like { } ; + += ++ etc; or /* - comment start symbol). What is the fastest way of doing this in c#/.NET 4.5?<br />\nNote that this is not a question of theoretical algorithm, but of a concrete code, with particular classes and methods (hashsets vs lists vs arrays and stuff like that)<br />\n<br />\nThis will be used in new Scanner in initial pre-scanning/chopping the source file into pieces using 'prefixed' terminals like string literals, comments or any special symbols - that are fragments by themselves. <br />\nCurrently I'm using string.IndexOfAny, grouping prefixes by first char, then searching for first chars, then trying to match all prefixes starting with this char. Each of these steps should be counted as well, so the best algorithm should end with a matching suffix (or even Terminal having this prefix?) <br />\n<br />\nthanks <br />\nRoman<br />\n",
+    "PostedDate": "2013-02-19T23:58:21.95-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1004186",
+    "ThreadId": "433761",
+    "Html": "Hi Roman!<br />\n<br />\nThat's absolutely great!<br />\nVery glad to hear that Irony is back into active development :)<br />\nGLR parsing is quite an interesting area to explore.<br />\n <br />\n<blockquote>\nCurrently I'm using string.IndexOfAny, grouping prefixes by first char, then <br />\nsearching for first chars, then trying to match all prefixes starting with this char.<br />\n</blockquote>\n <br />\nCan you post your current code as a starting point for the further optimization?<br />\nMy straightforward implementation based on your description is as follows:<br />\n<pre><code>using System;\nusing System.Linq;\n\n// Usage example:\n// var text = &quot;Quick Brown Fox Jumps Over The Lazy Dog&quot;;\n// var index = text.IndexOfAny(3, &quot;Over&quot;, &quot;Fox&quot;, &quot;The&quot;); // returns 12\n\npublic static class StringExtensions\n{\n  public static int IndexOfAny(this string sourceCode,\n    int position, params string[] prefixes)\n  {\n    var strings = prefixes.Where(s =&gt; s != null &amp;&amp; s.Length &gt; 0).ToLookup(s =&gt; s[0]);\n    var chars = strings.Select(g =&gt; g.Key).ToArray();\n\n    while (position &lt; sourceCode.Length)\n    {\n      var index = sourceCode.IndexOfAny(chars, position);\n      if (index &lt; 0)\n      {\n        return index;\n      }\n\n      var @char = sourceCode[index];\n      foreach (var s in strings[@char])\n      {\n        if (string.CompareOrdinal(sourceCode, index + 1, s, 1, s.Length - 1) == 0)\n        {\n          return index;\n        }\n      }\n\n      position = index + 1;\n    }\n\n    return -1;\n  } \n}</code></pre>\n\n",
+    "PostedDate": "2013-02-20T12:02:04.443-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1004503",
+    "ThreadId": "433761",
+    "Html": "yes, you are on the right track. Just a few things to emphasize. All these preparations with strings/Where, chars/Select - these should be factored out, and assumed done before we start the process, at construction stage. List of prefixes/terminals is derived from grammar, and remains the same thru the whole process. So you need to figure out what 'optimal' structures to prepare. Another thing - prefixes may be substrings of each other. Like in your example you may have 'The' and 'Them' prefix - so the prefixes should be sorted in ascending length order, so that longest are checked first. \r<br />\nAnother thing - I think you know it, but just to make sure.. In the search process itself, you should use fastest versions of operations - so for example, use 'for' loops instead of 'foreach' - as you do in 'foreach(var s in <a href=\"mailto:strings[@char])...'\" rel=\"nofollow\">strings[@char])...'</a>. \r<br />\nNow, as an example of a place to look at. You do string.CompareOrdinal to compare entire prefix once you matched first char. One trick would be to try to compare the second char of prefix (if it has one), before trying to compare entire prefix. I used a structure like this:\r<br />\n<br />\n<br />\n class TermLookupInfo {<br />\n<pre><code>public Char FirstChar;\npublic Char SecondChar; // 0 for 1-len Prefix\npublic string Prefix;\npublic Terminal Terminal;</code></pre>\n\n}\r<br />\n   Dictionary&lt;char, List&lt;TermLookupInfo&gt;&gt; TermLookupTable =  new Dictionary&lt;char,List&lt;TermLookupInfo&gt;&gt;();\r<br />\n<br />\nI lookup TermLookupInfo by the found char, then check the second char match, then finally check the Prefix; if all passes, I call Terminal.TryMatch. The point is that reading char at position might be faster than comparing substrings, to get 'false' on match.  Notice I place List&lt;TermLookupInfo&gt; as target value in dictionary - it should be array in the final version - which is faster than list for iterating and lookups. \r<br />\nSo the goal is to design the structure like TermLookupInfo and lookup table and figure out how to use it efficiently. \r<br />\n<br />\nHere are items to think about:<br />\n<ol>\n<li>What about creating a char array (sourceCode.ToCharArray()), and then working only with char array? Perf gain/loss depends on what's going on inside string.IndexOfAny, but if it is a plain loop over characters (not some special CPU 'scan' command) - then maybe it's worth doing it directly. Again, many repeated searches will be progressively made over the same source string, so we may do some preparation with it as well. </li>\n<li>lookup table - should it be a dictionary? Dictionary lookup is complex operation; hashing the char (how expensive it is?), then deriving the index and doing 'bucket' lookup in internal array(s). What about a plain array of 256 objects, indexed by lower byte of the character? So we just join in one bucket all infos for chars that have the same minor byte. Then table lookup might be much faster.</li>\n<li>String case matching must be configurable - depending on language case sensitivity - how this impacts the solution?</li>\n</ol>\n",
+    "PostedDate": "2013-02-21T01:03:27.84-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1004510",
+    "ThreadId": "433761",
+    "Html": "I think a good way to go is to use c# parsing as a test case. \r<br />\nYou have c# source code file. You have a set of Terminals from grammar that have explicit prefixes (return non-empty list in GetFirsts()):<br />\n<ol>\n<li>Comment terminals</li>\n<li>Literal strings and chars</li>\n<li>All special symbols (operators, braces, brackets etc) - Key terms that are not keywords (do not start with letter)</li>\n<li>Compiler directives (start with #)</li>\n<li>\nNewLine symbol - need to detect this to have line counter (for SourceLocation)<br />\n</li>\n</ol>\nBuild a solution for progressive scan of the entire source file. Preparation time does not matter. The goal is to locate all Terminals from above groups, based on their declared prefixes. The scan is progressive, we move forward, and at each step we need to find a position starting from currentStartPos, that has a prefix and return a Terminal for this prefix. <br />\n",
+    "PostedDate": "2013-02-21T01:12:15.783-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1004515",
+    "ThreadId": "433761",
+    "Html": "This is first-step preScan, when we want to chop the entire file into fragments containing Tokens for discovered prefixed terminals, with some pieces on unscanned raw text (containing other terminals like identifiers) between them. \r<br />\nI consider this task of finding the fastest scanner kind of important. There were some comments out there that Irony's parsing performance is not quite the top, and some other parsers outperform it. True it or not, but I would like to have the fastest possible now. Mostly, performance is determined by Scanner - most of the time parser spends there. \r<br />\nSo let's build a scanner that is the fastest, and kicks ass of all competing toolsets! <br />\n",
+    "PostedDate": "2013-02-21T01:20:36.193-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1004918",
+    "ThreadId": "433761",
+    "Html": "<blockquote>\nAll these preparations with strings/Where, chars/Select - these should be factored out, and assumed done before we start the process, at construction stage. List of prefixes/terminals is derived from grammar, and remains the same thru the whole process.  So you need to figure out what 'optimal' structures to prepare. <br />\n</blockquote>\n \r<br />\nAh, that's for sure! Of course I shouldn't have implemented it  as a general-purpose method accepting an array of strings.\r<br />\n <br />\n<blockquote>\nAnother thing - prefixes may be substrings of each other.  Like in your example you may have 'The' and 'Them' prefix - so the prefixes should be sorted in ascending length order, so that longest are checked first. <br />\n</blockquote>\n \r<br />\nYes, I overlooked that! But the order should be descending :)\r<br />\n <br />\n<blockquote>\nAnother thing - I think you know it, but just to make sure..  In the search process itself, you should use fastest versions of operations - so for example,  use 'for' loops instead of 'foreach' - as you do in 'foreach(var s in <a href=\"mailto:strings[@char])...'\" rel=\"nofollow\">strings[@char])...'</a>. <br />\n</blockquote>\n \r<br />\nAbout loops — that's certainly true for many cases (like iterating over an array of chars or bytes), but it's not always so. In most cases, the performance is almost identical. I think, somebody had blogged about that (Jon Skeet perhaps?).\r<br />\n<br />\nWhen I just posted my solution, I tried a few simple optimizations like replacing LINQ methods with custom loops, rewriting 'foreach' loops as 'for' and so on, but the differences were neglectible (i.e., within measurement error).\r<br />\n <br />\n<blockquote>\nI used a structure like this:<br />\n</blockquote>\n \r<br />\nCan you post the complete code so we can benchmark our versions against yours? I tried to implement something similar to what you suggest, but to my surprise it doesn't outperform my first naive approach.\r<br />\n<br />\nHere is the result:\r<br />\nTime elapsed: 00:00:05.9503524, single iteration: 0,0059503524 ms // naive version\r<br />\nTime elapsed: 00:00:05.8370052, single iteration: 0,0058370052 ms // optimized version\r<br />\n<br />\nAnd here is the code for my benchmark:\r<br />\n<a href=\"https://gist.github.com/yallie/5008959\" rel=\"nofollow\">https://gist.github.com/yallie/5008959</a><br />\n",
+    "PostedDate": "2013-02-21T14:31:15.273-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1004922",
+    "ThreadId": "433761",
+    "Html": "hmmm... look here:\r<br />\n<br />\n// pre-setup for #2\r<br />\nvar index = RootIndex.FromStrings(prefixes);\r<br />\nBenchmark(&quot;#2&quot;, iterations, () =&gt; sourceCode.IndexOfAny(3, chars, strings));\r<br />\n<br />\nshould the last parameter be 'index'?!\r<br />\nno wonder results are identical :)<br />\n",
+    "PostedDate": "2013-02-21T14:37:17.88-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1004925",
+    "ThreadId": "433761",
+    "Html": "Damn, what a typo! :)\r<br />\n<br />\nNew results, compiled with /debug:\r<br />\n<br />\nTime elapsed: 00:00:06.5206798, single iteration: 0,0065206798 ms\r<br />\nTime elapsed: 00:00:05.5773253, single iteration: 0,0055773253 ms\r<br />\n<br />\nCompiled with /o:\r<br />\n<br />\nTime elapsed: 00:00:05.7961817, single iteration: 0,0057961817 ms\r<br />\nTime elapsed: 00:00:04.7258132, single iteration: 0,0047258132 ms\r<br />\n<br />\nThat's about 15%...<br />\n",
+    "PostedDate": "2013-02-21T14:43:22.483-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1004926",
+    "ThreadId": "433761",
+    "Html": "<blockquote>\nAgain, many repeated searches will be progressively made over the same source string, <br />\nso we may do some preparation with it as well.<br />\n</blockquote>\n \r<br />\nWhy doing many searches?\r<br />\nTo me, it looks like prefixed terminals can be extracted in a single pass.\r<br />\nMany calls to IndexOfAny, but each call processes its own range of text.\r<br />\n <br />\n<blockquote>\nWhat about a plain array of 256 objects<br />\n</blockquote>\n \r<br />\nLooks promising, but we really must experiment with that. Dictionary&lt;T&gt; is an optimized beast.<br />\n",
+    "PostedDate": "2013-02-21T14:46:40.977-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1004930",
+    "ThreadId": "433761",
+    "Html": "About my version - here's the line:\r<br />\n<br />\n// TODO: see if this can be optimized.\r<br />\n<br />\nit's not much different from your original version, so nothing new to benchmark against\r<br />\n<br />\nI'll look at your code later. one thing I see is that you repeat 10K times the same search from position 3, so you hit the same char/prefix each time - not very representative IMHO, it is not progressive scan. In your optimized version, you have a hashset and a dict for lookups - I don't think you really win much, 'cause dict lookups are quite expensive.<br />\n",
+    "PostedDate": "2013-02-21T14:50:14.137-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1004934",
+    "ThreadId": "433761",
+    "Html": "'many repeated searches' - i meant from different, increasing position values, repeated calls to this 'findNext' method.\r<br />\nDictionary is optimized beast - it maybe best dict in its class, but it does have non-reduceable overhead, so the question is - can we do something better. For example, it is known that for small sizes direct search in List is faster than dict lookup - so there's HybridDictionary in .NET - it is list for small counts, and then dynamically switches to real dict. (<a href=\"http://msdn.microsoft.com/en-us/library/system.collections.specialized.hybriddictionary.aspx\" rel=\"nofollow\">http://msdn.microsoft.com/en-us/library/system.collections.specialized.hybriddictionary.aspx</a>). Something to think about. \r<br />\nOr, for example, you have Hashset&lt;char&gt; SingleChars, to check if char 'belongs'. What about joining all chars in a string and doing string.Contains(ch)? \r<br />\nMany things like that... like working with source text as array of chars...<br />\n",
+    "PostedDate": "2013-02-21T14:58:30.713-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005048",
+    "ThreadId": "433761",
+    "Html": "<blockquote>\none thing I see is that you repeat 10K times the same search from position 3, <br />\nso you hit the same char/prefix each time - not very representative IMHO, it is not progressive scan. <br />\n</blockquote>\n <br />\nYes, I agree.<br />\n<br />\nI've modified my methods to return a Tuple&lt;int, int&gt; (position + length) and rewritten the benchmark to run progressive scans iteratively. Now my 'optimized' version performs even slower than simple version. What a crap! :)<br />\n <br />\n<blockquote>\nFor example, it is known that for small sizes direct search in List is faster than dict lookup - <br />\nso there's HybridDictionary in .NET - it is list for small counts, and then dynamically switches to real dict. <br />\n</blockquote>\n <br />\nI used to use HybridDictionary in .NET 1.0 days, but it still doesn't have its generic counterpart. Non-generic version with char keys will cause boxing overhead, that's why I didn't consider using it.<br />\n <br />\n<blockquote>\nOr, for example, you have Hashset&lt;char&gt; SingleChars, to check if char 'belongs'. <br />\nWhat about joining all chars in a string and doing string.Contains(ch)? <br />\n</blockquote>\n <br />\nNo, I tried that. HashSet&lt;char&gt;.Contains(c) performs better than string.Contains(c), especially on large sets:<br />\n<br />\nString, small. Time elapsed: 00:00:01.7959951, single iteration: 0,00017959951 ms<br />\nString, large. Time elapsed: 00:00:07.0341469, single iteration: 0,00070341469 ms<br />\nHashSet&lt;char&gt;, small. Time elapsed: 00:00:01.0829801, single iteration: 0,00010829801 ms<br />\nHashSet&lt;char&gt;, large. Time elapsed: 00:00:01.0054292, single iteration: 0,00010054292 ms<br />\n<br />\nHere is a benchmark for HashSet&lt;char&gt;:<br />\n<a href=\"https://gist.github.com/yallie/5011260\" rel=\"nofollow\">https://gist.github.com/yallie/5011260</a><br />\n",
+    "PostedDate": "2013-02-21T22:44:13.19-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005071",
+    "ThreadId": "433761",
+    "Html": "man, this hash/string test is quite f-d up, to the point of being meaningless. You use lambda to pass 'expression under test', and then call it in iteration loop. It is not just lambda, it's a whole closure, so you have an extra call/return included into the test. Plus, inside lambda you do a few more operations (devise index and make char lookup) - all this sh.t is comparable in terms of execution time to the function under test. So hell knows what you actually test and what results mean. You are trying to measure tiny piece, maybe a few instructions long - not a remote call to database. So every IL instruction matters. <br />\nIn benchmarking, unlike in regular coding, repeating yourself and copy/pasting is better, and sometimes the only way to go. You should directly repeat 10 or even 20 simple calls inside the loop:<br />\n<br />\nfor(i = 0 to iterCount/20) {<br />\n  v1 = str.contains(c1);<br />\n  v2 = str.contains(c2);<br />\n  . . . . <br />\n  v20 = str.contains(c20)<br />\n}<br />\nthat's might give you some realistic numbers. Fanciness and elegance is no use in benchmarking, sorry.<br />\n<br />\nAbout hybridDictionary - I know it's old and ugly, and has no generic version. I did not suggest to use it, but tried to illustrate the point - for small sets direct search in list is faster than dict lookup by hash code. I expect a lot of sets in our case to be small, so this should be considered. <br />\nthanks for the effort, let's move on, we'll crack it, eventually<br />\nRoman<br />\n<br />\nEDITED: fixed the sample code to use string.Contains.<br />\n",
+    "PostedDate": "2013-02-22T00:15:58.757-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005081",
+    "ThreadId": "433761",
+    "Html": "<blockquote>\nman, this hash/string test is quite f-d up, to the point of being meaningless. <br />\n</blockquote>\n <br />\nHaha, bullshit :)<br />\nI know it has a little bit of overhead but it's not practically noticeable.<br />\n <br />\n<blockquote>\nYou use lambda to pass 'expression under test', and then call it in iteration loop. It is not just lambda, it's a whole closure, <br />\n</blockquote>\n <br />\nRight, lambda is always a whole closure. The closure is created only once, when my Benchmark method is called. In the loop it's just a non-virtual call, not a disaster.<br />\n <br />\n<blockquote>\nPlus, inside lambda you do a few more operations (devise index and make char lookup) - all this sh.t  is comparable in terms of execution time to the function under test. <br />\n</blockquote>\n <br />\nString.Contains(c) compared to indexed array access plus a % is a monster. Hundreds of CPU instructions compared to a few ones.<br />\n <br />\n<blockquote>\nSo hell knows what you actually test and what results mean.  You are trying to measure tiny piece, maybe a few instructions long - not a remote call to database. So every IL instruction matters. In benchmarking, unlike in regular coding, repeating yourself and copy/pasting is better, and sometimes the only way to go. You should directly repeat 10 or even 20 simple calls inside the loop: <br />\n</blockquote>\n <br />\nWell, here is the updated version, perhaps it might convince you:<br />\n<a href=\"https://gist.github.com/yallie/5011774\" rel=\"nofollow\">https://gist.github.com/yallie/5011774</a><br />\n<br />\n(I guess you might neatpick on calling IEnumerable&lt;string&gt;.Contains for both string and a HashSet&lt;char&gt;, but I'm almost certain that both string and HashSet&lt;T&gt; classes don't implement this method explicitly, so it's exactly the same thing as native method call).<br />\n <br />\nThe results are almost the same (HashSet runs from 2 to 10 times faster than string):<br />\n<br />\nString, small Time elapsed: 00:00:01.2767976, single iteration: 0,012767976 ms<br />\nString, large Time elapsed: 00:00:05.2250165, single iteration: 0,052250165 ms<br />\nHashSet&lt;char&gt;, small Time elapsed: 00:00:00.5833501, single iteration: 0,005833501 ms<br />\nHashSet&lt;char&gt;, large Time elapsed: 00:00:00.5777248, single iteration: 0,005777248 ms<br />\n",
+    "PostedDate": "2013-02-22T00:43:36.413-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005099",
+    "ThreadId": "433761",
+    "Html": "i think this is even bigger non-sense, sorry. You cast string and hashset to IEnumerable&lt;char&gt; ???!!! And you still think that with this conversion, Hashset still uses lookup by Hash code?!! 'Contains' now comes from LINQ extensions - check it! In both cases, objects are converted to sequence, and converted means new enumerator created, which runs through list SEQUENTIALLY, essentially serializing the set. Don't forget extra multi-step call to enumerator (.MoveNext, current) which adds overhead in access - in addition to conversion to a 'sequence' per se. You are measuring efficiency of derived enumerators, not core objects functionality.<br />\n<br />\nMan, just copy the method, and make one accept string, another hashset. <br />\n<br />\nAnd let's try the third test - try sending charset as char[] array, with explicit loop (in a separate function for now). <br />\n",
+    "PostedDate": "2013-02-22T01:36:49.873-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005105",
+    "ThreadId": "433761",
+    "Html": "<blockquote>\ni think this is even bigger non-sense, sorry. You cast string and hashset to IEnumerable&lt;char&gt; ???!!! <br />\n</blockquote>\n \r<br />\nNope. I don't cast anything, I just call method via interface. It's a BIG difference.\r<br />\n <br />\n<blockquote>\nAnd you still think that with this conversion, Hashset still uses lookup by Hash code?!!<br />\n</blockquote>\n \r<br />\nNo doubts. Try decompiling the code yourself.\r<br />\n <br />\n<blockquote>\nIn both cases, objects are converted to sequence, and converted means new enumerator created, which runs through list SEQUENTIALLY, essentially serializing the set. Don't forget extra multi-step call to enumerator (.MoveNext, current) which adds overhead in access - in addition to conversion to a 'sequence' per se. You are measuring efficiency of derived enumerators, not core objects functionality.<br />\n</blockquote>\n \r<br />\nNo, you're simply wrong. Nothing gets converted. Period. Both string and HashSet&lt;char&gt; classes ARE already sequences, are already IEnumerable&lt;char&gt;. When I call ((IEnumerable&lt;char&gt;)string).Contains, I call the same string.Contains method. When I call ((IEnumerable&lt;char&gt;)HashSet&lt;char&gt;).Contains, I still call the same HashSet&lt;char&gt;.Contains method.\r<br />\n<br />\nAbout the enumerator — it's not called. These sequences are not being enumerated in my benchmark. I don't use a foreach loop.\r<br />\n <br />\n<blockquote>\nMan, just copy the method, and make one accept string, another hashset. <br />\nAnd let's try the third test - try sending charset as char[] array, with explicit loop (in a separate function for now).<br />\n</blockquote>\n \r<br />\nHere you are:\r<br />\n<a href=\"https://gist.github.com/yallie/5012163\" rel=\"nofollow\">https://gist.github.com/yallie/5012163</a>\r<br />\n<br />\nAnd here are the results, still the same:\r<br />\n<br />\nString, small. Time elapsed: 00:00:01.1362458, single iteration: 0,011362458 ms\r<br />\nString, large. Time elapsed: 00:00:05.1326987, single iteration: 0,051326987 ms\r<br />\nHashSet&lt;char&gt;, small. Time elapsed: 00:00:00.3934139, single iteration: 0,003934139 ms\r<br />\nHashSet&lt;char&gt;, large. Time elapsed: 00:00:00.3017178, single iteration: 0,003017178 ms\r<br />\nchar[], small. Time elapsed: 00:00:01.2390625, single iteration: 0,012390625 ms\r<br />\nchar[], large. Time elapsed: 00:00:01.8747489, single iteration: 0,018747489 ms\r<br />\n<br />\nArray.Contains is faster that string.Contains, but much slower than HashSet&lt;char&gt;.Contains.<br />\n",
+    "PostedDate": "2013-02-22T01:49:27.833-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005114",
+    "ThreadId": "433761",
+    "Html": "in the old version, with IEnumerable&lt;char&gt;, inside Benchmark method, right-click over set.Contains method - it carries you to System.Linq.Enumerable class, extension method Contains. This contains knows nothing about efficient lookup inside Hashset (which is behind IEnumerable) - all it can do is go through the sequence, one-by-one. You probably looked at IL of the last version, with separate method versions. <br />\n",
+    "PostedDate": "2013-02-22T01:58:29.53-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005115",
+    "ThreadId": "433761",
+    "Html": "Oops, Roman, sorry! The magic behind all that is very different.\r<br />\nMy arguments are all wrong because IEnumerable doesn't have Contains method :)<br />\n",
+    "PostedDate": "2013-02-22T01:58:43.987-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005119",
+    "ThreadId": "433761",
+    "Html": "char[] version is wrong - again, you're using Contains from Enumerable.cs. Please remove System.Linq from used namespaces. When you do, you'll see also that string.Contains is not a native method - it is LINQ extension. So we need to use IndexOf method instead - sorry, my bad.\r<br />\nFor char[] version, pls use the following function :\r<br />\n<br />\nbool ArrayContains(char ch, char[] inArray){\r<br />\n  for(int i.. to inArray.Length)\r<br />\n   if (ch == inArray[i]) return true; \r<br />\nreturn false;\r<br />\n}<br />\n",
+    "PostedDate": "2013-02-22T02:05:32.193-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005121",
+    "ThreadId": "433761",
+    "Html": "<blockquote>\nin the old version, with IEnumerable&lt;char&gt;, inside Benchmark method, right-click over set.Contains method - it carries you to System.Linq.Enumerable class, extension method Contains. This contains knows nothing about efficient lookup inside Hashset (which is behind IEnumerable) - all it can do is go through the sequence, one-by-one. You probably looked at IL of the last version, with separate method versions.<br />\n</blockquote>\n <br />\nWell, not exactly! LINQ has a special treatment for that exact case (for careless guys like me):<br />\n <br />\n<pre><code>// in static class Enumerable\npublic static bool Contains&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, TSource value)\n{\n    ICollection&lt;TSource&gt; is2 = source as ICollection&lt;TSource&gt;;\n    if (is2 != null)\n    {\n        return is2.Contains(value); // this guy uses native HashSet&lt;char&gt;.Contains\n    }\n    return source.Contains&lt;TSource&gt;(value, null);\n}</code></pre>\n\n",
+    "PostedDate": "2013-02-22T02:06:11.07-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005123",
+    "ThreadId": "433761",
+    "Html": "going to bed, it's too late already here. Thanks, and let's continue tomorrow.\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-02-22T02:06:46.013-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005125",
+    "ThreadId": "433761",
+    "Html": "<blockquote>\nchar[] version is wrong - again, you're using Contains from Enumerable.cs. Please remove System.Linq from used namespaces. When you do, you'll see also that string.Contains is not a native method - it is LINQ extension. So we need to use IndexOf method instead - sorry, my bad.<br />\n</blockquote>\n <br />\nAh shit! I should have used Visual Studio to write these benchmarks... Notepad shows its ugly face :)<br />\nI was assuming that string.Contains is a native method.<br />\n<br />\nThe updated results are very different:<br />\n<a href=\"https://gist.github.com/yallie/5012299\" rel=\"nofollow\">https://gist.github.com/yallie/5012299</a><br />\n<br />\nString, small. Time elapsed: 00:00:00.7501351, single iteration: 0,0015002702 ms<br />\nString, large. Time elapsed: 00:00:03.0149584, single iteration: 0,0060299168 ms<br />\nHashSet&lt;char&gt;, small. Time elapsed: 00:00:02.0382007, single iteration: 0,0040764014 ms<br />\nHashSet&lt;char&gt;, large. Time elapsed: 00:00:01.6572213, single iteration: 0,0033144426 ms<br />\nchar[], small. Time elapsed: 00:00:00.6324895, single iteration: 0,001264979 ms<br />\nchar[], large. Time elapsed: 00:00:04.1838394, single iteration: 0,0083676788 ms<br />\n",
+    "PostedDate": "2013-02-22T02:16:23.713-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005333",
+    "ThreadId": "433761",
+    "Html": "So we have a winner, for small sets - it is char[] with direct loop. For big sets Hashset is a way to go, it has the same lookup time irrelevant of size. <br />\nNow, an important fact to find out is a break-even point, the number to to switch to Hashset. <br />\n<br />\nGoing back to original search in string, let's see which is faster <br />\n<ol>\n<li>Using source.IndexOfAny(chars) + hash/array lookup of char's info (full prefix + terminal).  \n</li>\n<li>\nUsing plain loop over string chars with nested loop/lookup in first chars. Here we get the final (prefix + terminal) info directly inside the loop. One variation to try is to convert source string to char array at the beginning and work with this array, instead of doing source[i] lookup in string.<br />\n</li>\n</ol>\nAbout Enumerable.Contains - didn't know that it is smart and actually checks for ICollection, good to know. It always helps to look in the source. <br />\nthanks<br />\nRoman<br />\n<br />\nPS  pls be careful with swearing, it is public forum after all, 400+ people watching. At least don't fully spell sh.. words<br />\n",
+    "PostedDate": "2013-02-22T09:41:02.92-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005398",
+    "ThreadId": "433761",
+    "Html": "<blockquote>\nPS  pls be careful with swearing, it is public forum after all, 400+ people watching. At least don't fully spell sh.. words<br />\n</blockquote>\n <br />\nSure, no problem.<br />\n <br />\n<blockquote>\nlookup table - should it be a dictionary? Dictionary lookup is complex operation; hashing the char (how expensive it is?), then deriving the index and doing 'bucket' lookup in internal array(s). What about a plain array of 256 objects,<br />\n</blockquote>\n <br />\nJust tried to write CharDictionary&lt;T&gt; to replace Dictionary&lt;char, T&gt;:<br />\n<a href=\"https://gist.github.com/yallie/5016153\" rel=\"nofollow\">https://gist.github.com/yallie/5016153</a><br />\n<br />\nIts more memory-consumptive, but performs ~4 times faster. Here are the results:<br />\n <br />\n<blockquote>\nDictionary. Time elapsed: 3.8990184, single iteration: 0,00038990184 ms<br />\nCharDictionary. Time elapsed: 0.9705137, single iteration: 9,705137E-05 ms<br />\n</blockquote>\n",
+    "PostedDate": "2013-02-22T12:05:14.603-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005435",
+    "ThreadId": "433761",
+    "Html": "Looks good, but not exactly what I meant. You do not need UnicodeTable that eats all this memory. In 99.9% of cases the chars we lookup will be special characters (like { + - / ) so they'll always be in Ascii range. Instead, make AsciiTable contain an element (array in fact): <br />\n<br />\nclass CharLookupData {<br />\n  public Tuple&lt;char, T&gt;[] Data;<br />\n}<br />\npublic CharLookupData[]  AsciiTable;<br />\n<br />\nIn most cases Data array will have a single element. When looking up, get the tuple array in AsciiTable, then compare the char and return T value if it matches (repeat if array has more than one element). <br />\n<br />\nEdited: fixed the declaration code, introduced CharLookupData;<br />\n",
+    "PostedDate": "2013-02-22T13:44:23.833-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005788",
+    "ThreadId": "433761",
+    "Html": "<blockquote>\nYou do not need UnicodeTable that eats all this memory. In 99.9% of cases the chars we lookup will be special characters (like { + - / ) so they'll always be in Ascii range. <br />\n</blockquote>\n <br />\nIt's not too greedy: UnicodeTable is a jagged array, not two-dimensional array. For 99.9% cases, UnicodeTable has size of 256*sizeof(T): if T is a reference type on a 32-bit machine, then it's an extra kilobyte. Every new character range with a fresh value of the high-order byte (for example, cyrillic chars) adds an extra kilobyte to my dictionary. A language with english and localized keywords will use a CharDictionary of approx. 3 kb in size (or 6 kb on a 64-bit machine).<br />\n <br />\n<blockquote>\nInstead, make AsciiTable contain an element (array in fact): <br />\n</blockquote>\n <br />\nOk, I added CompactCharDictionary&lt;T&gt; that behaves according to your proposal.<br />\n<a href=\"https://gist.github.com/yallie/5022202\" rel=\"nofollow\">https://gist.github.com/yallie/5022202</a><br />\n<br />\nWhen compiled with /debug switch, it performs slower than Dictionary&lt;char, T&gt;:<br />\n <br />\n<blockquote>\nDictionary. Time elapsed: 4.3209235, single iteration: 0,00043209235 ms<br />\nCharDictionary. Time elapsed: 2.8315795, single iteration: 0,00028315795 ms<br />\nCompactCharDictionary. Time elapsed: 6.4523438, single iteration: 0,00064523438 ms<br />\n</blockquote>\n <br />\nWhen compiled with /o switch, it performs ~3 times faster than Dictionary&lt;char, T&gt;, but ~1.5 times slower than CharDictionary&lt;T&gt;:<br />\n <br />\n<blockquote>\nDictionary. Time elapsed: 4.1239435, single iteration: 0,00041239435 ms<br />\nCharDictionary. Time elapsed: 1.0770744, single iteration: 0,00010770744 ms<br />\nCompactCharDictionary. Time elapsed: 1.4382816, single iteration: 0,00014382816 ms<br />\n</blockquote>\n",
+    "PostedDate": "2013-02-23T18:00:12.203-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005842",
+    "ThreadId": "433761",
+    "Html": "well, your test is a bit biased, as usual :) (I'm ready to agree with your suggestion, but just to be fair and make sure we really compared correctly)\r<br />\nFirst, you use System.Tuple for Compact dictionary. Look inside and you'll see it is a class with PROPERTIES. Replace it with the following: <br />\n<pre><code>public class Tuplex&lt;T1, T2&gt; {\n  public T1 Item1;\n  public T2 Item2;\n  public Tuplex(T1 item1, T2 item2) {\n    Item1 = item1;\n    Item2 = item2;\n  }\n}\n</code></pre>\n\nand you'll see execution time drops by around 30% (struct is slower by around 10%). So property accessors do have a price!\r<br />\nOne other problem in Benchmark method you use only chars that are in the dict. (you were aware of this - I see your comment that missing entry may cause IndexOutOfRange exc). In Irony scanner in typical the positives would be only around 10% of total dict lookups.\r<br />\nSo I changed the input string to include different characters and left only one 1 character that is used in Benchmark so in tests only 1 in 9 would be positive. That immediately blew up in a few places. I changed Dictionary benchmark to use TryGetValue. That made its results much worse, and it is out of competition. \r<br />\nAlso, I switched to VS 2012/.NET 4.5 - this speeded things up a bit, and narrowed the gap between charDict and compactCharDict.\r<br />\nBut.. surprise! This all does not matter much. When I started running .exe file directly (with release build), things speeded up by a factor of 10. I even had to increase iteration count 10x to 100 million, to get to execution time around 1 second each test, similar to your times. I guess you were running from under VS? (I don't think you have old 486 from last century :). If you did, then your numbers don't mean much. I have seen this before, VS slows down execution by factor of 5 to 10. \r<br />\nBut comparative results are the following: Char dictionary is 5 times faster than compact dict (and stardard Dict is about 20 times slower). It appears two simple array lookups with one conditional are hard to beat. It looks like we'll be using this method. \r<br />\n(I'm still suspicious that compactDict is at artificial disadvantage here - there's an extra wrapping into this CharLookupData, and maybe we can get rid of it - but it does not matter much)\r<br />\nI'm a bit puzzled by perf numbers. It looks like a single iteration (10 accesses to charDict) takes about 5 nanoseconds, which on my 2.6GHz machine is what - 10-20 instructions? that seems not enough for 10 calls. I suspected optimizer simply removes the calls (as we don't use the result), so I put the access count in dictionaries, and then printed it - no, access count is correct, things slowed down a bit, but not much. Anybody? how to interpret the numbers - is it realistic?\r<br />\nthanks\r<br />\nRoman\r<br />\n<br />\ncode is here: \r<br />\n<a href=\"https://gist.github.com/rivantsov/5022903\" rel=\"nofollow\">https://gist.github.com/rivantsov/5022903</a><br />\n",
+    "PostedDate": "2013-02-24T01:05:42.023-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005977",
+    "ThreadId": "433761",
+    "Html": "<blockquote>\nBut.. surprise! This all does not matter much. When I started running .exe file directly (with release build), things speeded up by a factor of 10. <br />\n</blockquote>\n <br />\nYes, I'm aware of that. Perhaps VS is doing some kind of instrumentation for profiling/debugging purposes.<br />\n <br />\n<blockquote>\nI even had to increase iteration count 10x to 100 million, to get to execution time around 1 second each test, similar to your times. I guess you were running from under VS?<br />\n</blockquote>\n <br />\nNo, I'm too lazy to boot up VS to write such a small snippets :)<br />\nI use Far Manager to edit these benchmarks and compile them with csc /o.<br />\n <br />\n<blockquote>\n(I don't think you have old 486 from last century :). <br />\n</blockquote>\n <br />\nNo, but I developed my benchmarks with smaller iteration counts. For the final measurements I increased these constants. Looks like I've uploaded some of my snippets with smaller iteration counts.<br />\n <br />\n<blockquote>\nChar dictionary is 5 times faster than compact dict (and stardard Dict is about 20 times slower). <br />\n</blockquote>\n <br />\nAh, forgot to mention!<br />\nI've got 64-bit machine, and results are very different between x64 and x32 versions of the .NET runtime.<br />\n<br />\nHere are the results of your version in 64-bit mode (compiled with /o):<br />\n <br />\n<blockquote>\nDictionary. Time elapsed: 36.2369814, single iteration: 0,000362369814 ms.<br />\nCharDictionary. Time elapsed: 12.3337299, single iteration: 0,000123337299 ms  // 2.93x<br />\nCompactCharDictionary. Time elapsed: 11.4105652, single iteration: 0,000114105652 ms // 3.17x<br />\n</blockquote>\n <br />\nAnd in 32-bit mode (compiled with /o /platform:anycpu32bitpreferred):<br />\n <br />\n<blockquote>\nDictionary. Time elapsed: 34.2510101, single iteration: 0,000342510101 ms.<br />\nCharDictionary. Time elapsed: 1.5900425, single iteration: 1,5900425E-05 ms // 21.54x<br />\nCompactCharDictionary. Time elapsed: 8.6484248, single iteration: 8,6484248E-05 ms // 3.96x<br />\n</blockquote>\n <br />\nThe difference is dramatic. Looks like 64-bit JIT is far less smart than its 32-bit counterpart. It also arises a new question: can we develop a version specifically tuned for 64-bit .NET runtime? We could then select the proper dictionary class based on IntPtr.Size. UPD: looks like CompactCharDictionary is a bit faster on a 64-bit runtime, so we can try to fine-tune it.<br />\n <br />\n<blockquote>\nI'm a bit puzzled by perf numbers. It looks like a single iteration (10 accesses to charDict) takes about 5 nanoseconds, which on my 2.6GHz machine is what - 10-20 instructions? that seems not enough for 10 calls. I suspected optimizer simply removes the calls (as we don't use the result), so I put the access count in dictionaries, and then printed it - no, access count is correct, things slowed down a bit, but not much. Anybody? how to interpret the numbers - is it realistic? <br />\n</blockquote>\n <br />\nI think that we see the results of optimization by JIT-compiler and modern multicore CPU. According to Reflector, C# compiler doesn't do anything tricky here to optimize the generated code.<br />\n<br />\nJIT-compiler might probably inline get_Item method calls, and CPU might run multiple independent operations in parallel on several instruction pipelines (also, it can change the order of execution to optimize load). So it's hard to say what exactly is happening here, I'm afraid...<br />\n",
+    "PostedDate": "2013-02-24T12:03:50.137-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005991",
+    "ThreadId": "433761",
+    "Html": "<blockquote>\nI'm still suspicious that compactDict is at artificial disadvantage here - there's an extra wrapping into this CharLookupData, and maybe we can get rid of it - but it does not matter much<br />\n</blockquote>\n <br />\nYes, looks like it doesn't matter much.<br />\n<a href=\"https://gist.github.com/yallie/5025461\" rel=\"nofollow\">https://gist.github.com/yallie/5025461</a><br />\n",
+    "PostedDate": "2013-02-24T12:30:08.43-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1007135",
+    "ThreadId": "433761",
+    "Html": "Ok, cool. I'm still unconvinced about 'too good' benchmarks explanations. It appears that if processor heavily parallizes our get_value['x'] calls inside benchmark loops, then what we are getting is distorted picture. We have 10 calls inside the benchmark loop, and what we're getting is execution time of 2 or 3 consecutive calls (10 calls executed on 4 pipelines, let's assume). This won't happen in real app - there would be no 10 calls to the same get[] method not using the return value - so no chance for such an efficient optimization. On the other hand, 10 calls in a row are introduced to reduce the impact of containing loop. So benchmarks are somewhat misleading - can we do something to suppress parallization of these calls? But one thing for sure, array-based dictionary is a better choice for very sparse sets that we expect.\r<br />\n<br />\nGoing back to original search in string, let's see which is faster <br />\n<ol>\n<li>Using source.IndexOfAny(chars) + lookup of char's info (full prefix + terminal). + checking full prefix at current position (if prefix is longer than 1 char).</li>\n<li>Using plain loop over string, getting current char with 'string[index] with lookup in first chars dict. Here we get the final (prefix + terminal) info directly inside the loop. + checking full prefix at current position</li>\n<li>\nSame as #2, but with conversion of source string to char array at the beginning and using chars[index]. + checking full prefix at current pos<br />\n</li>\n</ol>\n",
+    "PostedDate": "2013-02-26T11:02:02.81-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1007917",
+    "ThreadId": "433761",
+    "Html": "Guys,\r<br />\n<br />\nI find your discussion fascinating and slightly intimidating (because my level of C# sophistication is pretty much at your toes if not below).\r<br />\n<br />\nSo, shut me up quickly if my thought is completely stupid.\r<br />\n<br />\nHere it is.\r<br />\nThe idea could work if it is possible to look at the input stream as a bit pattern (much like the zip utilities do).\r<br />\n<br />\nWhen the grammer is initially defined, take the most frequently used tokens (those that Roman outlines) and convert them to a bit pattern that can hold the largest number of bits for some numeric type (Double, Long, Longer - whatever - you guys should know better) - the idea here is to be able have the simplest comparison with minimal to no iteration (depending on the length of token.\r<br />\nStore these guys in some array (or the quickest lookup structure) - this gets done once upfront at grammar definition time.\r<br />\n<br />\nThen when parsing use the next chunk of bits that should match some token for comparison between bit patterns (those in the array of tokens to look up vs the next token in the bit stream.)\r<br />\n<br />\nAgain, there is insufficient detail for quick implementation and may be a total bogus...\r<br />\n<br />\nBey<br />\n",
+    "PostedDate": "2013-02-27T15:31:32.66-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1008028",
+    "ThreadId": "433761",
+    "Html": "Well, thanks for the suggestion, but really things are not that straight in text handling. We can easily get text as a stream of bits but.. UNICODE! It is not byte per char, and not even always 2 bytes per char... sorry, char is always 2 bytes but the UNICODE symbol might take 2 2-byte chars!<br />\n(see here: <a href=\"http://csharpindepth.com/Articles/General/Unicode.aspx\" rel=\"nofollow\">http://csharpindepth.com/Articles/General/Unicode.aspx</a> , scroll down to 'Surrogate pairs' section)<br />\nSo when running through bit stream which is UNICODE text, you have to know, byte-by-byte, what you're looking at, where symbol begins and where it ends. Unlike zipper - which does not care about meaning of bits, just searches for repeated patterns. <br />\nTherefore, you have to use intelligent piece of code that knows how to interpret  UNICODE stream - and this is .NET String class. No way to go around it. Note that although keywords that we search for are most likely regular, standard English based chars (with 2 bytes), the source stream may include any stuff - comment or string literal in Chinese for example.<br />\nNow the problem is how to do a particular search over unicode text efficiently - using .NET string and char classes.<br />\nHope this clears the issue. <br />\n<br />\nRoman<br />\n",
+    "PostedDate": "2013-02-27T23:22:29.93-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1008236",
+    "ThreadId": "433761",
+    "Html": "Thanks for taking the time to respond.<br />\nSilly me, I thought (until reading the link) that 16 bits would suffice for humanity's character repertoire.<br />\nHurray for diversity (even if it will never be used as the article suggests.)<br />\n<br />\nAnother question / thought.<br />\nWhy wouldn't you arrange the tokens in descending 'potential prevalence'?<br />\nIn other words, suppose the space character comprise of 60% of the tokens and is the most prevalent one - I would place it at the top of the data structure for tokens (as it is both, most likely to occur and costs very little to detect.)<br />\n<br />\nI understand one cannot tell exactly how prevalent some tokens are in a given input but, certainly, one can make some good guesses.<br />\nAlso, there's no one better than you to introduce 'learning mode' to the scanner, feed it with some sample inputs and come up with a reasonable order.<br />\n<br />\nOr is it crazier than my prevous thought?<br />\n",
+    "PostedDate": "2013-02-28T07:15:26.487-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1009142",
+    "ThreadId": "433761",
+    "Html": "No, it's not crazy, and it's quite reasonable to think about optimizations like these. But, if you use hashset to lookup characters, there's no order at all, and no matter of frequency the lookup time is roughly the same. If we are using arrays - then yes, the order of chars in array does matter, but... these kind of improvements should be carefully measured with all gains and losses taken into account:<br />\n<ol>\n<li>We are discussing operating at very 'low' level, optimizing primitive loops and measuring primitive operations against each other. So introducing even a single extra  operator into the loop can considerable impact the performance. This is the case for 'auto-learning', on the fly. By the way, surely space should be considered a very special character and should be checked first anyway. </li>\n<li>Even if there's clear perf gain in certain cases, you should measure it against the factor of more complicated parser/parser construction routine. If the gain is just 1%, it's not worth introducing extra optimizer class and cs file. Any extra element in overall framework is an extra cognitive load, source of questions 'do I need it?' and potential misuse, which might bring a lot of trouble. \r<br />\nIrony in my opinion became a bit too complicated lately (and messy), time for some refactoring, so one of my priorities now is making it more understandable and easier to get into the internals.  As any engineering work, building a framework is finding the best compromises, not single 'perfect' solutions. \r<br />\nSo, if in the end there's a uniform and simple enough way to presort chars in arrays, or any other things - surely we'll go for this. \r<br />\nRoman</li>\n</ol>\n",
+    "PostedDate": "2013-03-01T22:46:21.977-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1120329",
+    "ThreadId": "433761",
+    "Html": "Hi!\r<br />\n<br />\nMay I ask for an update on this entire rework issue (use GLR, new scanner, better support for incomplete syntax etc). I really think it's a great idea, as you framework absolutely rules, but you've stopped the discussions here apruptly in march, an I wander about the status :-)\r<br />\n<br />\nregards,\r<br />\nMax<br />\n",
+    "PostedDate": "2013-11-07T23:49:14.677-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1120828",
+    "ThreadId": "433761",
+    "Html": "hi\r<br />\nI got some progress in designing, outlining and even prototyping some stuff, but got sidetracked for the last 3-4 months, really busy with other projects; VITA project is taking a lot of time with really urgent issues; just made another release - got custom LINQ engine hacked out, support for MySql and lot of other stuff. This was and is more urgent in my list of priorities - that's what we use at work, for production apps. Ah, was in home renovation project for 2+ months, not much open source, just painting walls and that kinda stuff; now done, enjoying my like-new home.<br />\nI hope to get back to Irony at evening times soon, when other pressures ease. Also, somewhere in VITA project future there's an integration with Irony, for parsing custom search queries; so at this time will definitely start hacking Irony regularly. Sorry for no good news, thanks for caring!\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-11-09T09:27:15.05-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

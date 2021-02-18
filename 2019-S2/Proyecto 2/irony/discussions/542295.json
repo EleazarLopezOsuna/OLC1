@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1234288",
+    "ThreadId": "542295",
+    "Html": "Is there any way to improve performance on the Irony Core. A simple For (loop) took so much long time than c# does if we add some test on the evaluation methods.<br />\n",
+    "PostedDate": "2014-04-15T06:16:36.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1234389",
+    "ThreadId": "542295",
+    "Html": "no surprise it is slower than c# - it is interpreter, and quite primitive one. But primitive scripts in Irony samples for expression evaluator have decent performance IMHO, around 200ns per simple expression. \r<br />\nOne thing - Irony, as it is now, does not provide For-loop AST node, so I guess you have your own implementation - are you sure it's not this custom code that is at fault?\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-04-15T09:57:00.08-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

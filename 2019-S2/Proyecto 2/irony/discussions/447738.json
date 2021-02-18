@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1059339",
+    "ThreadId": "447738",
+    "Html": "I've been working through creating a Teradata based SQL grammar starting with the SQL Grammar example provided.  I'm at the point where I have the majority of the grammar implemented and can walk the tree to extract information I need.  My problem now is handling the cases where * is used in the column list.  I have no problems with just select * from table, but rather select table.* from table inner join table2 on table.id = table2.id.\r<br />\n<br />\nI'm looking for suggestions on how to implement within the grammar to handle * in the column list with a table name or alias, but only allow it to be used 1 time consecutively.\r<br />\n<br />\nThanks!<br />\n",
+    "PostedDate": "2013-06-20T12:12:35.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1059446",
+    "ThreadId": "447738",
+    "Html": "Just modify the grammar, add the star as an option. If your problem is how to force '1-time-use', then this should be done AFTER parsing, by analyzing the tree. LALR grammar/parser is not good for defining such uniqueness conditions.<br />\n",
+    "PostedDate": "2013-06-20T19:12:11.883-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

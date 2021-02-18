@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "688356",
+    "ThreadId": "276979",
+    "Html": "\r\n<p>Hi</p>\r\n<p>I tried to target .NET 2/3.5 but then realized there is quite a few references to .NET 4 specific types.</p>\r\n<p>From what I could see though, most of the types are used in an additional sense to LALR(1) generation, eg interpreter support and predefined terminal classes like number literals.</p>\r\n<p>While this is all good and well, this is hardly needed for a parser generator and could (well, should, really) be hosted in a extension/support library.</p>\r\n<p>Removing the extras should allow one to have just a basic library that does parser generation targettable to .NET 2/3.5.</p>\r\n<p>Just a thought :)</p>\r\n<p>Cheers</p>\r\n<p>leppie</p>\r\n",
+    "PostedDate": "2011-10-24T04:47:38.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "689136",
+    "ThreadId": "276979",
+    "Html": "<p>Hi</p>\r\n<p>well, you're just out of luck. Support for prev versions of .NET was just dropped a few weeks ago - I removed the projects targeting older runtimes. The primary push for this was the fact that ExpressionType enum was extended in .NET 4, and I did not notice it until I typed too much in 2010 version. So my easy solution was just to remove 2008 projects.&nbsp;</p>\r\n<p>Yes, you're right, these .NET 4 specific things can be isolated, and probably most are in interpreter. The interpreter/AST will be completely separated soon from parsing assembly, so this would be even easier. But the main question is - why? It's been a while now since .NET 4/vs2010 is out, and even if it's not propagated to all servers - just wait for a few months, that will happen. What's your need for this? Something to do with DLR?</p>\r\n<p>We are facing another version split next year when 2012 comes out, and I intend to maintain 2010 and 2012 versions for some time. At this time 2008 would be dropped anyway - supporting 3 versions is just too much of a trouble I think.</p>\r\n<p>thanks again</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-10-25T10:15:04.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "689944",
+    "ThreadId": "276979",
+    "Html": "<p>Roman, I guess that leppie didn't mention VS2008, so It's not a problem about VS version. VS2010/2012 can target whatever framework you want, and by specifying global build configuration for your projects, It would be even possible to compile 2.0 and 4.0 version from the same solution. But yeah, 4.0 should be fine I guess... the only thing about 2.0 is that you are almost sure that it is installed on Vista.</p>",
+    "PostedDate": "2011-10-26T15:38:49.653-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "690359",
+    "ThreadId": "276979",
+    "Html": "<p>yeah, I understand this, sorry for the confusion, I was just using VS versions as \"equivalent\" of corresponding .NET versions, they are upgraded in sync. Still, to target .NET 2.0 you have to have a separate project file. Or we can just try to intentionally target lower version of .NET (like 2.0) in the main Irony project. At runtime, it will be loaded into the currently running runtime (4.0 if it is running). But again, I'm just not sure it's worth the effort at this point.&nbsp;</p>",
+    "PostedDate": "2011-10-27T09:17:27.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

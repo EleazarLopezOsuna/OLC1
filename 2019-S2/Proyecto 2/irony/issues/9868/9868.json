@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "not a real issue, just a complaint",
+    "ClosedDate": "2013-02-25T21:16:24.883-08:00",
+    "CommentCount": 3,
+    "Custom": null,
+    "Description": "Hmm. After a great start, I'm afraid to say that I am thinking of abandoning Irony as it is just too much effort to work with it in its current form.\r\n\r\nI'm trying to create a simple AST from my grammar. This is proving to be a real struggle. When I Google for help, I see about ten different answers, none of which work because they are more than a few months out of date and the design seems to change that quickly.\r\n\r\nThis is sad, because I feel that a small amount of effort spent on *simple* tutorials would make life so much easier for newbies like me. I definitely do not want to wade through the impressive but horrifically complicated samples, I want a simple but *working* definition of how to build an AST for a basic (three-line?) grammar. It's not as if an AST is an esoteric requirement, after all!\r\n\r\nFighting my way through the example expression grammar stuff (because there's a lot of ancilliary \"noise\" that is relevant to the sample but only serves to complicate it as as a tutorial), I eventually gave up and decided just to step through the code, to see what happens.\r\n\r\nWhat happened was that it crashed inside BuildAst with a null pointer reference. The code in that location says:\r\n\r\n      //We know that either NodeCreator or DefaultNodeCreator is set; VerifyAstData create the DefaultNodeCreator\r\n\r\nwhich was patently not true.\r\n\r\nI have noticed a lot of requests for help in this area, so please would you spend 30 minutes giving a simple example of how it works without all the extra \"noise\" of a full working application? I'm not stupid but I really don't want to learn the core of all of the library just to create an AST from my grammar. If I did that, I might as well write the whole thing myself!\r\n\r\nThanks!\r\n\r\nDan\r\n",
+    "LastUpdatedDate": "2014-01-01T14:16:02.06-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2012-02-02T15:21:05.76-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "AstNodes are a struggle",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 7,
+    "Id": 9868
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "> If I did that, I might as well write the whole thing myself!\nI suggest you write the whole thing yourself.\nThank you\nRoman",
+      "PostedDate": "2012-02-03T11:21:55.763-08:00",
+      "Id": 55335
+    },
+    {
+      "Message": "I think Roman, that while your Parser is pretty good, the response to Dan is a bit flippant.\n\nIt is ",
+      "PostedDate": "2012-09-13T01:04:19.75-07:00",
+      "Id": 76810
+    },
+    {
+      "Message": "I just tried to debug the interpreter sample to figure out how the AST stuff works.\nIt is too difficult for me, partly because it contains more info than I need, partly because I a a total newbie in this domain.\nWould you, to celebrate this new year with charm, offer us a short sample showing the \"how to's\" to the newbie I am?\n\nMy best wishes for 2014,\n\nMichel",
+      "PostedDate": "2014-01-01T14:16:02.06-08:00",
+      "Id": 128834
+    }
+  ]
+}

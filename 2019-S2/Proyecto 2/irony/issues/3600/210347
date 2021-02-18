@@ -1,0 +1,52 @@
+Index: Irony.Tests/NumberLiteralTests.cs
+===================================================================
+--- Irony.Tests/NumberLiteralTests.cs	(revision 21466)
++++ Irony.Tests/NumberLiteralTests.cs	(working copy)
+@@ -28,6 +28,33 @@
+     }//method
+ 
+     [TestMethod]
++    public void TestSignedDoesNotMatchSingleMinus() {
++      this.AssertSignedDoesNotMatchSingleSign("-");
++    }
++
++    [TestMethod]
++    public void TestSignedDoesNotMatchSinglePlus() {
++      this.AssertSignedDoesNotMatchSingleSign("+");
++    }
++    
++    private void AssertSignedDoesNotMatchSingleSign(string sign) {
++      var number = new NumberLiteral("number", NumberFlags.AllowSign);
++      SetTerminal(number);
++      TryMatch(sign);
++
++      Assert.IsNull(_token, "Parsed single '{0}' as a number value.", sign);
++    }
++
++    [TestMethod]
++    public void TestSignedMatchesNegativeCorrectly() {
++      var number = new NumberLiteral("number", NumberFlags.AllowSign);
++      SetTerminal(number);
++      TryMatch("-500");
++
++      Assert.AreEqual(-500, _token.Value, "Negative number was parsed incorrectly.");
++    }
++    
++    [TestMethod]
+     public void TestCSharpNumber() {
+       double eps = 0.0001;
+       SetTerminal(TerminalFactory.CreateCSharpNumber("Number"));
+Index: Irony/Compiler/Terminals/NumberLiteral.cs
+===================================================================
+--- Irony/Compiler/Terminals/NumberLiteral.cs	(revision 21466)
++++ Irony/Compiler/Terminals/NumberLiteral.cs	(working copy)
+@@ -213,6 +213,9 @@
+         break; //from while loop
+       }//while
+       int end = source.Position;
++      if (!foundDigits)
++        return false; // just a sign or something like that
++
+       details.Body = source.Text.Substring(start, end - start);
+       return true;
+     }

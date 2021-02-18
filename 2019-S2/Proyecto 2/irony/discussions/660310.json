@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1490222",
+    "ThreadId": "660310",
+    "Html": "Hello,\r<br />\n<br />\nMy grammer class:\r<br />\n NonTerminal sd = new NonTerminal(&quot;main&quot;);<br />\n<pre><code>        ConstantTerminal constTerminal = new ConstantTerminal(&quot;boolean&quot;, typeof(bool));\n        constTerminal.Add(&quot;true&quot;, true);\n        sd.Rule = constTerminal;\n        Root = sd;\n</code></pre>\n\nThis code execute a exception:\r<br />\n Grammar grammar = new GridWorldGrammar1();<br />\n<pre><code>        LanguageData language = new LanguageData(grammar);\n        Parser parser = new Parser(language);\n\n        // This method populate the tree.\n        ParseTree parseTree = parser.Parse(&quot;true&quot;);\n\n</code></pre>\n\nWhat is the reason of the exception?<br />\n",
+    "PostedDate": "2016-12-23T02:12:07.677-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1490253",
+    "ThreadId": "660310",
+    "Html": "what's the exception?!<br />\n",
+    "PostedDate": "2016-12-23T23:47:56.06-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1490256",
+    "ThreadId": "660310",
+    "Html": "Hello,\r<br />\n<br />\nThe result is a exception in the file AstBuilder on line 111 (il.Emit(OpCodes.Newobj, constr);) Message An unhandled exception of type 'System.ArgumentNullException' occurred in mscorlib.dll\r<br />\n<br />\nHow can i solve this?<br />\n",
+    "PostedDate": "2016-12-24T01:22:59.207-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1490275",
+    "ThreadId": "660310",
+    "Html": "It tries to create default AST node. Do you need to create AST? if not, remove CreateAst flag from Grammar.LanguageFlags\r<br />\nIf yes, you need AST, then assign you must provide AST node types for all Terminals and nonterminals - look at expression evaluator<br />\n",
+    "PostedDate": "2016-12-25T00:37:56.96-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

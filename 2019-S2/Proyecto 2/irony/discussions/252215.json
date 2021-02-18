@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "590491",
+    "ThreadId": "252215",
+    "Html": "<p>I am doing something I feel should be rather trivial, as it is very common. I am not happy with any solution I have to deal with it though.</p>\n<p>I have a method declaration that looks like this:</p>\n<div style=\"color: black; background-color: white;\">\n<pre>method.Rule = identifier + identifier + parameters + block;</pre>\n</div>\n<p>I would like to make static methods possible with the keyword. My attempt to do this was:</p>\n<div style=\"color: black; background-color: white;\">\n<pre>method.Rule = flags + identifier + identifier + parameters + block\nflags.Rule = Empty | <span style=\"color: #a31515;\">\"static\"</span></pre>\n</div>\n<p>But that causes a shift-reduce conflict, and it does not parse correctly. I am writing my own AST classes, and would like to keep the initialization logic as simple as possible, but I can't find a solution that helps me.</p>\n<p>What I ended up doing to make it work is create a Method class and a Static method class that inherits from method and sets a flag for static. I then had to build my grammar like this:</p>\n<div style=\"color: black; background-color: white;\">\n<pre>method = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"method\"</span>,<span style=\"color: blue;\">typeof</span>(Method));\nstaticMethod = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"staticMeth\"</span>, <span style=\"color: blue;\">typeof</span>(StaticMethod));\n\nmethod.Rule = identifier + identifier + parameters + block;\nstaticMethod.Rule = ToTerm(<span style=\"color: #a31515;\">\"static\"</span>) + identifier + identifier + parameters + block;\n\nclassMember.Rule = FieldDecl | method | staticMethod;\n</pre>\n</div>\n<p>This is a lot of redundancy, but doing it this way allowed my method and static method classes to share initialization logic, with the exception of a boolean flag for static. I tried&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>staticMethod.Rule = ToTerm(<span style=\"color: #a31515;\">\"static\"</span>) + method.Rule\n</pre>\n<pre>but quickly found out that does all kind of weird things.</pre>\n<pre>Is there a standard way to do this kind of thing with optional parts that doesn't create shift reduce conflicts?</pre>\n</div>",
+    "PostedDate": "2011-04-01T14:49:13.23-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "590493",
+    "ThreadId": "252215",
+    "Html": "<p>you could go with original solution if you mark \"static\" as reserved word:</p>\r\n<p>MarkReservedWords(\"static\");</p>\r\n<p>- if it is in fact a reserved word</p>",
+    "PostedDate": "2011-04-01T14:52:27.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "590504",
+    "ThreadId": "252215",
+    "Html": "<p>Ok, I think that works pretty well. It looks like I have an additional shift-reduce conflict elsewhere in my grammar that this exposes. I've only ever created LL grammars before, so I'm not too comfortable&nbsp;formatting&nbsp;the rules to remove ambiguity.</p>",
+    "PostedDate": "2011-04-01T15:27:29.1-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

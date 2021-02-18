@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "468673",
+    "ThreadId": "219817",
+    "Html": "<p>My question is, what is the best way to specify a grammar for a language where there are alternative symbols.</p>\r\n<p>For example, I want to support a query statement in this form:</p>\r\n<p>&quot;SELECT DIMENSIONS a,b,c ON ROWS&quot;</p>\r\n<p>but also have this be valid so that queries can be shorter:</p>\r\n<p>&quot;SELECT D a,b,c ON R&quot;</p>",
+    "PostedDate": "2010-07-18T05:42:06.663-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "471153",
+    "ThreadId": "219817",
+    "Html": "Sorry for the delay, was hoping somebody would jump in.. :)\r\nWell, there's no magic, just declare intermediate non-terminals for keywords:\r\n\r\nvar dim = new NonTerminal(&quot;Dim&quot;);\r\ndim.Rule = ToTerm(&quot;DIMENSIONS&quot;) | &quot;D&quot;; \r\n\r\nand use this &quot;dim&quot; term in your expressions.",
+    "PostedDate": "2010-07-22T11:29:32.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

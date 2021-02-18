@@ -1,0 +1,56 @@
+<div class="wikidoc"><h2>Token Preview -based Semi-Automatic Conflict Resolution</h2>(first version completed, see here: <a href="http://irony.codeplex.com/discussions/267217">http://irony.codeplex.com/discussions/267217</a>)<br /><br />Suggested research/implementation project.<br /><br />There is one very common type of reduce/reduce conflict that comes up in languages like c# and java. <br />I&#39;ll show it using a simple language as an example. The language recognizes a list of declarations, for ex:<br /><br /><div style="color:Black;background-color:White;"><pre>
+    <span style="color:Blue;">public</span> <span style="color:Blue;">readonly</span> <span style="color:Blue;">string</span> SomeField;
+    <span style="color:Blue;">private</span> <span style="color:Blue;">int</span> SomeProp {}; 
+    <span style="color:Blue;">public</span> <span style="color:Blue;">object</span> SomeMethod(){};
+</pre></div><br />Here is an Irony grammar for this language:<br /><br /><div style="color:Black;background-color:White;"><pre>
+  <span style="color:Blue;">public</span> <span style="color:Blue;">class</span> ConflictResolutionTestGrammar : Grammar {
+    <span style="color:Blue;">public</span> ConflictResolutionTestGrammar() : <span style="color:Blue;">base</span>(<span style="color:Blue;">true</span>) {
+      <span style="color:Blue;">var</span> name = <span style="color:Blue;">new</span> IdentifierTerminal(<span style="color:#A31515;">&quot;id&quot;</span>);
+
+      <span style="color:Blue;">var</span> stmt = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;Statement&quot;</span>);
+      <span style="color:Blue;">var</span> stmtList = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;StatementList&quot;</span>);
+      <span style="color:Blue;">var</span> fieldModifier = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;fieldModifier&quot;</span>);
+      <span style="color:Blue;">var</span> propModifier = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;propModifier&quot;</span>);
+      <span style="color:Blue;">var</span> methodModifier = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;methodModifier&quot;</span>);
+      <span style="color:Blue;">var</span> fieldModifierList = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;fieldModifierList&quot;</span>);
+      <span style="color:Blue;">var</span> propModifierList = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;propModifierList&quot;</span>);
+      <span style="color:Blue;">var</span> methodModifierList = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;methodModifierList&quot;</span>);
+      <span style="color:Blue;">var</span> fieldDef = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;fieldDef&quot;</span>);
+      <span style="color:Blue;">var</span> propDef = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;propDef&quot;</span>);
+      <span style="color:Blue;">var</span> methodDef = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;methodDef&quot;</span>);
+
+      <span style="color:Green;">//Rules</span>
+      <span style="color:Blue;">this</span>.Root = stmtList;
+      stmtList.Rule = MakePlusRule(stmtList, stmt);
+      stmt.Rule = fieldDef | propDef | methodDef;
+      fieldDef.Rule = fieldModifierList + name + name + <span style="color:#A31515;">&quot;;&quot;</span>;
+      propDef.Rule = propModifierList + name + name + <span style="color:#A31515;">&quot;{&quot;</span> + <span style="color:#A31515;">&quot;}&quot;</span>;
+      methodDef.Rule = methodModifierList + name + name + <span style="color:#A31515;">&quot;(&quot;</span> + <span style="color:#A31515;">&quot;)&quot;</span> + <span style="color:#A31515;">&quot;{&quot;</span> + <span style="color:#A31515;">&quot;}&quot;</span>;
+      fieldModifierList.Rule = MakeStarRule(fieldModifierList, fieldModifier);
+      propModifierList.Rule = MakeStarRule(propModifierList, propModifier);
+      methodModifierList.Rule = MakeStarRule(methodModifierList, methodModifier);
+      
+      <span style="color:Green;">// That&#39;s the key of the problem: 3 modifiers have common members</span>
+      <span style="color:Green;">//   so parser automaton has hard time deciding which modifiers list to produce - </span>
+      <span style="color:Green;">//   is it a field, prop or method we are beginning to parse?</span>
+      fieldModifier.Rule = ToTerm(<span style="color:#A31515;">&quot;public&quot;</span>) | <span style="color:#A31515;">&quot;private&quot;</span> | <span style="color:#A31515;">&quot;readonly&quot;</span> | <span style="color:#A31515;">&quot;volatile&quot;</span>;
+      propModifier.Rule = ToTerm(<span style="color:#A31515;">&quot;public&quot;</span>) | <span style="color:#A31515;">&quot;private&quot;</span> | <span style="color:#A31515;">&quot;readonly&quot;</span> | <span style="color:#A31515;">&quot;override&quot;</span>;
+      methodModifier.Rule = ToTerm(<span style="color:#A31515;">&quot;public&quot;</span>) | <span style="color:#A31515;">&quot;private&quot;</span> | <span style="color:#A31515;">&quot;override&quot;</span>;
+
+      MarkReservedWords(<span style="color:#A31515;">&quot;public&quot;</span>, <span style="color:#A31515;">&quot;private&quot;</span>, <span style="color:#A31515;">&quot;readonly&quot;</span>, <span style="color:#A31515;">&quot;volatile&quot;</span>, <span style="color:#A31515;">&quot;override&quot;</span>);   
+    } 
+</pre></div>   <br />Each statement type is defined the same way: modifiers list followed by typename, name, finally ending with either &quot;;&quot;, &quot;{}&quot;, or &quot;(){}&quot;.  The trouble is that modifiers are different for each statement type - share some keywords, but each is different. Naturally, we define different -List and -Modifier non-terminals for modifiers. And here comes the conflict: when parser sees the first word of a statement, like &quot;public&quot;, it cannot know which modifierList it belongs to, and which non-terminal to reduce, out of 3.   <br />Here&#39;s grammar error in S0, the same is in S1:<br />    <i>Reduce-reduce conflict. State S0, lookaheads: id public private readonly override. Selected reduce on first production in conflict set.</i><br />  <br />Here are reeduce items in state S0 that are in conflict:<br /><pre>
+    fieldModifierList -&gt; &#183; [id public private readonly volatile]
+    propModifierList -&gt; &#183; [id public private readonly override]
+    methodModifierList -&gt; &#183; [id public private override]
+</pre>   <br />The idea for the fix is simple: make Parser run ahead and check the first token it finds out of the set [ ; ( { ]. If it finds &quot;;&quot; first out of 3, it is field definition, if  {  then it is property, and so on. <br />We need a way to provide parser with these hints, and let parser builder know that we&#39;re OK, the conflict is resolved. <br /><br /><b>(important: the implementation section was edited on 07/20/2011)</b><br />Implementation suggestion: implement a grammar hint TokenPreviewHint, with two parameters:
+<ul><li>ComesFirst - a symbol to find first;</li>
+<li>BeforeSymbols - before these symbols; we can use either array (params array) or space-delimited list in a single string.</li></ul>
+When this hint is used in production in Shift position (not at the end), it is &quot;shift-if&quot; hint; correspondingly, when the hint is at the end of production, it is &quot;reduce-if&quot; instruction. <br />Two helper methods can be added, that return this hint: 
+<ul><li>ShiftIf(comesFirst, beforeSymbols);   - to use in shift position.</li>
+<li>ReduceIf(comesFirst, beforeSymbols);  - to use in reduce position.</li></ul>
+Note that the example we just looked at (modifiers list) is in fact a special case. When we create lists using MakePlusRule or MakeStarRule, we do not form the productions explicitly, these methods do this for us. So for this case, we need some additional way to &quot;inject&quot; these hints. Probably, some helper method ReduceIf on non-terminal that adds this hint to all productions in a non-terminal:<br />     <br /><div style="color:Black;background-color:White;"><pre>
+     fieldModifierList.ReduceIf(<span style="color:#A31515;">&quot;;&quot;</span>, <span style="color:#A31515;">&quot;; { (&quot;</span>); 
+     propModifierList.ReduceIf(<span style="color:#A31515;">&quot;{&quot;</span>, <span style="color:#A31515;">&quot;; { (&quot;</span>); 
+     methodModifierList.ReduceIf(<span style="color:#A31515;">&quot;(&quot;</span>, <span style="color:#A31515;">&quot;; { (&quot;</span>); 
+</pre></div>The first parameter is a symbol to find first, out of symbols/terminals listed in the second parameter (as a space delimited string). Note that we need different ways to specify terminals - as string literals like shown above, or as references to terminal variables used in grammar definitions.<br />Another thing - we may need to provide extra symbol(s) marking when to stop searching so that preview does not go too far - in case we are parsing source with errors. Example: user is typing text in editor, missed one symbol, while highlighter is parsing the text - we do not want parser to run too far. In our case, the termination symbols might be &quot; or &quot;)&quot;; <br />Implementing this behavior is step one - when user knows how to resolve the conflict, and he provides explicit instructions. More difficult is next step: actually verifying that with provided hints the conflict is gone for all cases. And finally, it would be nice to have automatic advice: when user runs into conflict like this the first time, Irony automatically discovers the way to resolve it using this technique, and give an advise to the user, including the symbols to use in resulution. <br /></div><div class="ClearBoth"></div>

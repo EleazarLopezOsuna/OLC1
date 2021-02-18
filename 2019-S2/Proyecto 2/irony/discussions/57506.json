@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "194376",
+    "ThreadId": "57506",
+    "Html": "<p>I'm trying to create a grammar with syntax similar to a SQL WHERE statement, but much simpler. It should basically allow me to specify &quot;conditions&quot; that are joined with AND's, OR's, NOT's and parenthesis. Here is a list of possible &quot;conditions&quot;:</p>\r\n<ul>\r\n<li>&lt;column name&gt; = &lt;value&gt;</li>\r\n<li>&lt;column name&gt; != &lt;value&gt;</li>\r\n<li>&lt;column name&gt; &lt;&gt; &lt;value&gt;</li>\r\n<li>&lt;column name&gt; between &lt;value&gt; and &lt;value&gt;</li>\r\n<li>&lt;column name&gt; &lt; &lt;value&gt;</li>\r\n<li>&lt;column name&gt; &gt; &lt;value&gt;</li>\r\n<li>&lt;column name&gt; &lt;= &lt;value&gt;</li>\r\n<li>&lt;column name&gt; &gt;= &lt;value&gt;</li>\r\n<li>&lt;column name&gt; = &lt;value&gt;</li>\r\n<li>&lt;column name&gt; is null</li>\r\n<li>&lt;column name&gt; is not null</li>\r\n<li>&lt;column name&gt; child of &lt;value&gt;</li>\r\n<li>&lt;column name&gt; not child of &lt;value&gt;</li>\r\n<li>&lt;column name&gt; like &lt;value&gt;</li>\r\n<li>&lt;column name&gt; not like &lt;value&gt;</li>\r\n<li>&lt;column name&gt; begins with &lt;value&gt;</li>\r\n<li>&lt;column name&gt; not begins with &lt;value&gt;</li>\r\n</ul>\r\n<p>Column name is an arbitrary identifier, and &lt;value&gt; is either a single/double quoted string, a number, or a token in the form {1} where 1 is an arbitrary integer.</p>\r\n<p>&nbsp;As you can see, the &quot;conditions&quot; are not recursive. They are all terminal. Here's my attempt at a grammar:</p>\r\n<p>&nbsp;           var xOr = new NonTerminal(&quot;Or&quot;);<br>&nbsp;           var xAnd = new NonTerminal(&quot;And&quot;);<br>&nbsp;           var xNot = new NonTerminal(&quot;Not&quot;);<br>&nbsp;           var xParenthesis = new NonTerminal(&quot;Parenthesis&quot;);<br>&nbsp;           var xComparison = new NonTerminal(&quot;Comparison&quot;);<br><br>&nbsp;           var xBetween = new NonTerminal(&quot;Between&quot;);<br>&nbsp;           var xChildOf = new NonTerminal(&quot;ChildOf&quot;);<br>&nbsp;           var xEquals = new NonTerminal(&quot;Equals&quot;);<br>&nbsp;           var xNotEquals = new NonTerminal(&quot;NotEquals&quot;);<br>&nbsp;           var xGreater = new NonTerminal(&quot;Greater&quot;);<br>&nbsp;           var xGreaterEqual = new NonTerminal(&quot;GreaterEqual&quot;);<br>&nbsp;           var xLess = new NonTerminal(&quot;Less&quot;);<br>&nbsp;           var xLessEqual = new NonTerminal(&quot;LessEqual&quot;);<br>&nbsp;           var xBeginsWith = new NonTerminal(&quot;BeginsWith&quot;);<br>&nbsp;           var xNotBeginsWith = new NonTerminal(&quot;NotBeginsWith&quot;);<br>&nbsp;           var xNull = new NonTerminal(&quot;IsNull&quot;);<br>&nbsp;           var xNotNull = new NonTerminal(&quot;IsNotNull&quot;);<br>&nbsp;           var xLike = new NonTerminal(&quot;Like&quot;);<br>&nbsp;           var xNotLike = new NonTerminal(&quot;NotLike&quot;);<br>&nbsp;          &nbsp;<br><br>&nbsp;           var xValue = new NonTerminal(&quot;Value&quot;);<br>&nbsp;           var xColumn = new IdentifierTerminal(&quot;ColumnIdentifier&quot;);<br>&nbsp;           var xPlaceholder = new NonTerminal(&quot;Placeholder&quot;);<br><br>&nbsp;           var opOr = Symbol(&quot;or&quot;);<br>&nbsp;           opOr.SetOption(TermOptions.IsNonGrammar);<br><br>&nbsp;          &nbsp;<br>&nbsp;           xValue.Rule =<br>&nbsp;                 new StringLiteral(&quot;String&quot;, &quot;'&quot;, StringFlags.AllowsAllEscapes | StringFlags.AllowsDoubledQuote | StringFlags.HasEscapes | StringFlags.AllowsLineBreak)<br>&nbsp;               | new NumberLiteral(&quot;Number&quot;, NumberFlags.AllowSign | NumberFlags.AllowStartEndDot)<br>&nbsp;               | xPlaceholder;<br><br>&nbsp;           xPlaceholder.Rule = &quot;{&quot; + new NumberLiteral(&quot;PlaceholderIndex&quot;, NumberFlags.IntOnly) + &quot;}&quot;;<br><br>&nbsp;           xBetween.Rule = xColumn + &quot;between&quot; + xValue + &quot;and&quot; + xValue;<br>&nbsp;           xChildOf.Rule = xColumn + &quot;child&quot; + &quot;of&quot; + xValue;<br>&nbsp;           xEquals.Rule = xColumn + &quot;=&quot; + xValue | xValue + &quot;=&quot; + xColumn;<br>&nbsp;           xNotEquals.Rule = xColumn + &quot;!=&quot; + xValue | xValue + &quot;!=&quot; + xColumn | xColumn + &quot;&lt;&gt;&quot; + xValue | xValue + &quot;&lt;&gt;&quot; + xColumn;<br>&nbsp;           xGreater.Rule = xColumn + &quot;&gt;&quot; + xValue | xValue + &quot;&lt;&quot; + xColumn;<br>&nbsp;           xGreaterEqual.Rule = xColumn + &quot;&gt;=&quot; + xValue | xValue + &quot;&lt;=&quot; + xColumn;<br>&nbsp;           xLess.Rule = xColumn + &quot;&lt;&quot; + xValue | xValue + &quot;&gt;&quot; + xColumn;<br>&nbsp;           xLessEqual.Rule = xColumn + &quot;&lt;=&quot; + xValue | xValue + &quot;&gt;=&quot; + xColumn;<br>&nbsp;           xBeginsWith.Rule = xColumn + &quot;begins&quot; + &quot;with&quot; + xValue;<br>&nbsp;           xNotBeginsWith.Rule = xColumn + &quot;not&quot; + &quot;begins&quot; + &quot;with&quot; + xValue;<br>&nbsp;           xNull.Rule = xColumn + &quot;is&quot; + &quot;null&quot;;<br>&nbsp;           xNotNull.Rule = xColumn + &quot;is&quot; + &quot;not&quot; + &quot;null&quot;;<br>&nbsp;           xLike.Rule = xColumn + &quot;like&quot; + xValue;<br>&nbsp;           xNotLike.Rule = xColumn + &quot;not&quot; + &quot;like&quot; + xValue;<br><br>&nbsp;           xComparison.Rule = <br>&nbsp;                 xBetween<br>&nbsp;               | xChildOf<br>&nbsp;               | xEquals<br>&nbsp;               | xNotEquals<br>&nbsp;               | xGreater<br>&nbsp;               | xGreaterEqual <br>&nbsp;               | xLess<br>&nbsp;               | xLessEqual<br>&nbsp;               | xBeginsWith<br>&nbsp;               | xNotBeginsWith<br>&nbsp;               | xNull<br>&nbsp;               | xNotNull<br>&nbsp;               | xLike<br>&nbsp;               | xNotLike;<br><br><br>&nbsp;           xOr.Rule = xOr + opOr + xAnd | xAnd;<br>&nbsp;           xAnd.Rule = xAnd + &quot;AND&quot; + xNot | xNot;<br>&nbsp;           xNot.Rule = Symbol(&quot;NOT&quot;) + xParenthesis | xParenthesis;<br>&nbsp;           xParenthesis.Rule = xComparison | &quot;(&quot; + xOr + &quot;)&quot;;<br><br><br>&nbsp;           this.Root = xOr;<br><br>Now, the problem is - when I try this grammar in the sample Grammar &nbsp;Explorer, I get all the keywords like &quot;and&quot;, &quot;or&quot;, &quot;begins&quot;, &quot;with&quot;, etc. as instances of ColumnIdentifier. How can this be?</p>",
+    "PostedDate": "2009-05-26T10:24:20.523-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "194405",
+    "ThreadId": "57506",
+    "Html": "<p>what Irony version are you using? - from Downloads page or from SourceCode page?</p>\r\n<p>You should be using latest one from Source Code page, it should work correctly there. Try to follow the SQL sample</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-05-26T11:18:58.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "194454",
+    "ThreadId": "57506",
+    "Html": "<p>OK, I'll try. Currently I'm using the one on the front page.</p>\r\n<p>Anyway, I checked out the SQL sample, and there is one little difference - I have some &quot;operators&quot; that are two keywords - like &quot;is null&quot; or &quot;child of&quot;. The SQL sample doesn't have anything like that.</p>",
+    "PostedDate": "2009-05-26T12:28:44.24-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "194697",
+    "ThreadId": "57506",
+    "Html": "<p>Here's another question:</p>\r\n<p>I have a node like:</p>\r\n<p>&nbsp;xPlaceholder.Rule = &quot;{&quot; + new NumberLiteral(&quot;PlaceholderIndex&quot;, NumberFlags.IntOnly) + &quot;}&quot;;</p>\r\n<p>In the parse tree the nodes are reflected like:</p>\r\n<p>Placeholder<br>&nbsp; &nbsp; &nbsp;|<br>&nbsp; &nbsp; &nbsp;+------ 123 (PlaceHolderIndex)</p>\r\n<p>Is it possible to have the node represented simply by PlaceHolderIndex? The parent node (Placeholder) is pretty useless, because it will always have exactly one child - PlaceHolderIndex which also contains the information I need.</p>",
+    "PostedDate": "2009-05-27T02:29:11.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "194823",
+    "ThreadId": "57506",
+    "Html": "<p>Mark xPlaceholder transient:</p>\r\n<p>MarkTransient(xPlaceholder);</p>\r\n<p>You should also&nbsp;register curly braces as punctuation, but I guess you're already doing so</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-05-27T08:41:18.623-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "195162",
+    "ThreadId": "57506",
+    "Html": "<p>Yes, that did it! :)</p>\r\n<p>Actually I'm registering all my literals as punctuation. Like:</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;       private SymbolTerminal PSymbol(string text)<br>&nbsp;       {<br>&nbsp;           &nbsp; &nbsp; var ret = this.Symbol(text);<br>&nbsp;           &nbsp; &nbsp; ret.SetOption(TermOptions.IsPunctuation);<br>&nbsp;           &nbsp; &nbsp; return ret;<br>&nbsp;       }</p>\r\n<p>&nbsp;</p>\r\n<p>and then later</p>\r\n<p>&nbsp;</p>\r\n<p>xBetween.Rule = xColumn + PSymbol(&quot;between&quot;) + xValue + PSymbol(&quot;and&quot;) + xValue;</p>\r\n<p>&nbsp;</p>\r\n<p>That's OK, isn't it?</p>",
+    "PostedDate": "2009-05-28T05:31:19.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "195250",
+    "ThreadId": "57506",
+    "Html": "<p>There's a bit more efficient way to do this. Just use string literals &quot;as is&quot; in grammar rules, like this:</p>\r\n<p>xBetween.Rule = xColumn + &quot;between&quot; + xValue + &quot;and&quot; + xValue;</p>\r\n<p>and&nbsp;at the end&nbsp;call RegisterPunctuation to register all symbols at once:</p>\r\n<p>RegisterPunctuation(&quot;between&quot;, &quot;and&quot;, &quot;or&quot;, ....);</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-05-28T08:20:39.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

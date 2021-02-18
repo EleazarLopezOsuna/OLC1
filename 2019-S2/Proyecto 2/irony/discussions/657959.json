@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1483701",
+    "ThreadId": "657959",
+    "Html": "Everything's in the thread title. \r<br />\n<br />\nBasically I want to create scripting language for my game and Irony seems like nice thing to build it upon. Later I want to create &quot;fun assembly plaything&quot; (think Notch's DCPU-16+Pico-8, although with its own instruction set) for which Irony would be nice as well (I could do with String.Split since it's assembly so it's supposed to be structured pretty hard, but I want to add advanced assembly functionalities such as macros, labels and so on).\r<br />\n<br />\nBut obviously I can't use it if it isn't compatible with Unity or MonoDevelop. I know Unity supports VS, but I'd rather die than use Microsoft's product more than I have to. And I know codeplex is a Microsoft's thing. That's the Irony.\r<br />\n<br />\nFrankly before writing the post I've tried to register even though I had this account since I don't even know when. That's how I feel about Microsoft's products. I actively try to wipe my memories of using them or installing/registering for them even.<br />\n",
+    "PostedDate": "2016-09-14T10:09:10.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

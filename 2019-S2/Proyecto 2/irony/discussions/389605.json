@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "893248",
+    "ThreadId": "389605",
+    "Html": "\r\n<p>Suppose I have a grammar like this:</p>\r\n<p>&lt;metric name&gt; &lt;numerical value&gt; &lt;unit&gt;</p>\r\n<p>e.g.</p>\r\n<p>Distance 45.6 ft.</p>\r\n<p>When I add the various metrics I know what units are valid for each. I think I can do this with a different tripple for each metric. However, suppose I wanted to do this with a CustomTerminal that looked up the current metric and chose the appropriate subset\r\n of units. What would that look like?</p>\r\n",
+    "PostedDate": "2012-07-30T12:51:16.47-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "893277",
+    "ThreadId": "389605",
+    "Html": "<p>You'd better simply hook to Reduce event of the nonterminal (MetricDef or whatever you have that has this rule) - and check that unit matches metric name.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-07-30T13:54:00.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

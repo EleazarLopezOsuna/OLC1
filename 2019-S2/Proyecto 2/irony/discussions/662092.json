@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1494379",
+    "ThreadId": "662092",
+    "Html": "I have a simple IdentifierTerminal. I'd like to allow it to contain certain symbols (but not ALL), and to allow it to start with a number. I've tried adding these to the AllChars field, but it doesn't seem to make any difference.<br />\n",
+    "PostedDate": "2017-03-21T01:09:05.16-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

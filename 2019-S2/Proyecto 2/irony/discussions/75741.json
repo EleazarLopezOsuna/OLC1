@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "259122",
+    "ThreadId": "75741",
+    "Html": "<p>I have a file that I would like to parse that is made up of pipe delimited lines of text where the first value describes the type of line it is.&nbsp; So for example, the file may look something like this:</p>\r\n<p>ABC | Name | Description | 01234ClienNo | 01-01-1900 | | true<br> L1 | Name | Description | formula<br> D1 | Name | 03-15-2010 | N<br> DA | D1 | Line 1 | formula<br> DB | D1 | Line 2 | formula<br>...</p>\r\n<p><em>Note that DA and DB are children under D1 and some fields like Description can span multiple lines, but each line type has a set number of fields.</em></p>\r\n<p>Anyhow, I am currently using the System.String Split method and I'm leaning toward switching to Irony so that the result would be a tree and the lines with formulas would continued to be parsed and maintain awareness of their child/parent relationship.&nbsp; Originally, I felt that I could continue to use this design and simply parse the formulas, however, Irony seems to have no way to pass the parser meta data to maintain the needed awareness.</p>\r\n<p>The only meta data that seems to be passed in is a filename string which defaults to &lt;source&gt; - referring to the Parse methods in Parser.cs.</p>\r\n<p>So,&nbsp; what's the most efficient way to handle this scenario? Should I continue to use the Split method from System.String and only use the Parser for the formulas, or is there an easier way for Irony to parse the pipe delimited data and the formulas together while maintaining it's parent/child relationship?</p>\r\n<p>Thanks,<br> MindCore</p>",
+    "PostedDate": "2009-11-20T09:16:27.14-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "259152",
+    "ThreadId": "75741",
+    "Html": "<p>If you need to pass some &quot;context&quot; values to formula parser, you can use ParsingContext.Values dictionary - it is for storing custom context, values, whatever, and to exchange this information between terminals or between caller program and terminals or custom processing code in grammar. You can reach the ParsingContext object through parser.Context property right after you create Parser instance but before you call parser.Parse(...)</p>",
+    "PostedDate": "2009-11-20T10:15:03.7-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "259182",
+    "ThreadId": "75741",
+    "Html": "<p>Great, that should be helpful and reduce my work. I will continue on my original path and use the ParsingContext.Values dictionary to pass custom data between calls.</p>\r\n<p>&nbsp;</p>\r\n<p>On a related note, what is an example on where the DsvLiteral would but used?&nbsp; I know it wouldn't help in my scenario, but while researching, I couldn't think of any practical scenario where I would have some delimited text that's being parsed and convert all of the values to one specific System.TypeCode.</p>\r\n<p>Thanks,</p>\r\n<p>MindCore</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-20T11:30:21.997-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "259192",
+    "ThreadId": "75741",
+    "Html": "<p>I will publish a sample grammar using DsvTerminal for reading some comma-delimited files, it will be clear from an example I hope how to use it.</p>\r\n<p>good luck</p>",
+    "PostedDate": "2009-11-20T12:04:22.087-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

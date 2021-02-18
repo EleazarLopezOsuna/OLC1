@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1490610",
+    "ThreadId": "660475",
+    "Html": "Hello,<br />\n<br />\nI want to create a grammar class for parsing boolean expressions. It can't create the syntax tree. The message is: &quot;Invalid character: 't'.&quot; Can anyone find the error in the code?<br />\nMy Code<br />\n<pre><code> public class grammar : InterpretedLanguageGrammar\n    {\n        public grammar() : base(caseSensitive: false)\n        {\n            #region Definitions\n            ConstantTerminal boolTe = new ConstantTerminal(&quot;b&quot;, typeof(LiteralValueNode));\n            boolTe.Add(&quot;true&quot;, true);\n            boolTe.Add(&quot;false&quot;, false);\n\n            var boolexp = new NonTerminal(&quot;e&quot;);\n            var boolT = new NonTerminal(&quot;t&quot;);\n            var bnexp = new NonTerminal(&quot;br&quot;, typeof(BinaryOperationNode));\n            var pexp = new NonTerminal(&quot;p&quot;);\n            var bop = new NonTerminal(&quot;b&quot;, &quot;operator&quot;);\n\n            #endregion\n\n            #region BNF Rules\n            boolexp.Rule = boolTe | boolT | bnexp;\n            boolT.Rule = pexp;\n            pexp.Rule = &quot;(&quot; + boolexp + &quot;)&quot;;\n\n            bnexp.Rule = boolexp + bop + boolexp;\n            bop.Rule = ToTerm(&quot;&amp;&quot;) | &quot;|&quot;;\n            #endregion\n\n            this.Root = boolexp;\n            RegisterOperators(2, &quot;&amp;&quot;);\n            RegisterBracePair(&quot;(&quot;, &quot;)&quot;);\n            MarkPunctuation(&quot;(&quot;, &quot;)&quot;);\n            MarkTransient(boolT, boolexp, bop, pexp);\n            this.LanguageFlags = LanguageFlags.CreateAst;\n        }        \n    }\n\n ParseTree parseTree = parser.Parse(&quot;true&amp;true&quot;);\n            ScriptApp app = new ScriptApp(parser.Language);\n            Object obj = app.Evaluate(parseTree);</code></pre>\n\nBest regards,<br />\ndesigner<br />\n",
+    "PostedDate": "2017-01-04T03:29:01.587-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

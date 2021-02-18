@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1151924",
+    "ThreadId": "484319",
+    "Html": "My Irony references (Iron.dll and Irony.Interpreter.dll, latest versions from NuGet as of today) are being loaded in a child app domain.<br />\n\r<br />\nWhen the assembly resolution take place for the &quot;Irony.resources&quot; file, I load an return the Irony.dll assembly, but the .Net framework throws a FileNotFound exception &quot;Could not find file 'Irony.resources'.&quot;.  Apparently, this not the correct thing to do, but I don't see any other assemblies to try...  My culture is neutral (en-US).\r<br />\n<br />\nAnybody know how to handle this? <br />\n",
+    "PostedDate": "2014-01-10T12:58:28.947-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1151925",
+    "ThreadId": "484319",
+    "Html": "Here's a quick snippet from the relevant exception's stack trace:<br />\n<pre><code>at System.Reflection.RuntimeAssembly.InternalGetSatelliteAssembly(String name, CultureInfo culture, Version version, Boolean throwOnFileNotFound, StackCrawlMark&amp; stackMark)\n       at System.Resources.ManifestBasedResourceGroveler.GetSatelliteAssembly(CultureInfo lookForCulture, StackCrawlMark&amp; stackMark)\n       at System.Resources.ManifestBasedResourceGroveler.GrovelForResourceSet(CultureInfo culture, Dictionary`2 localResourceSets, Boolean tryParents, Boolean createIfNotExists, StackCrawlMark&amp; stackMark)\n       at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo requestedCulture, Boolean createIfNotExists, Boolean tryParents, StackCrawlMark&amp; stackMark)\n       at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents)\n       at System.Resources.ResourceManager.GetString(String name, CultureInfo culture)\n       at Irony.Resources.get_LabelLineBreak() in c:\\Users\\jhaltom\\Development\\irony\\Irony\\Resources.Designer.cs:line 851\n       at Irony.Parsing.NewLineTerminal..ctor(String name) in c:\\Users\\jhaltom\\Development\\irony\\Irony\\Parsing\\Terminals\\NewLineTerminal.cs:line 23\n       at Irony.Parsing.Grammar..ctor(Boolean caseSensitive) in c:\\Users\\jhaltom\\Development\\irony\\Irony\\Parsing\\Grammar\\Grammar.cs:line 403\n       at Irony.Interpreter.InterpretedLanguageGrammar..ctor(Boolean caseSensitive) in c:\\Users\\jhaltom\\Development\\irony\\Irony.Interpreter\\InterpretedLanguageGrammar.cs:line 28\n       at Irony.Interpreter.Evaluator.ExpressionEvaluatorGrammar..ctor() in c:\\Users\\jhaltom\\Development\\irony\\Irony.Interpreter\\_Evaluator\\ExpressionEvaluatorGrammar.cs:line 36\n       </code></pre>\n\n",
+    "PostedDate": "2014-01-10T12:59:42.923-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1152556",
+    "ThreadId": "484319",
+    "Html": "it is obviously not the problem of Irony itself, but with a loading process - it could be any dll with satellite assembly. Just google/msdn stuff, find out how to investigate/debug/fix this assembly loading paths problem\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-01-10T20:44:12.307-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1153832",
+    "ThreadId": "484319",
+    "Html": "\r\n<div>I spent 4 hours searching for a solution, and accidentally bumped into it. I need to return null from assembly resolve method.\r\n<br>\r\n<br>\r\nSent from my iPad</div>\r\n<div><br>\r\n</div>\r\n",
+    "PostedDate": "2014-01-11T05:11:34.713-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

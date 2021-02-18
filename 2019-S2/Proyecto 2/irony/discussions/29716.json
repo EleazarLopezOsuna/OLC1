@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "99064",
+    "ThreadId": "29716",
+    "Html": "Hey all,<br>\r\n<br>\r\nAnd let me first say what a fantastic project this is.&nbsp; I have been writing a custom parser for the last 2 months which in 2 hours i have managed to scrap in favour of Irony :)<br>\r\n<br>\r\nI was just wondering what has happened to the SQL Language definition, i see it was removed in the latest code available on the Source Code Tab.<br>\r\n<br>\r\nIs there any links any is aware of that implements the SQL Language in Irony as i really think this is one of the best components \\ API's available for the .net framework.<br>\r\n<br>\r\nCheers everyone :)<br>\r\n<br>\r\nScott\r\n",
+    "PostedDate": "2008-06-16T05:55:14.36-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99115",
+    "ThreadId": "29716",
+    "Html": "<p>Hi</p>\r\n<p>thanks for praising Irony! </p>\r\n<p>SQL grammar - this was an unfinished effort by one of the contributors, it was not planned to be included in samples until it's done, it just slipped through, so I removed it from file set in latest submission. So&nbsp;SQL grammar is&nbsp;still unfinished - wanna take over it? - you're welcome to do it; I&nbsp;can promise&nbsp;all help and support I can. </p>\r\n<p>thanks again</p>\r\n<p>Roman&nbsp;</p>\r\n",
+    "PostedDate": "2008-06-16T09:29:11.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99117",
+    "ThreadId": "29716",
+    "Html": "<p>Hello Roman,<br>\r\n<br>\r\nI have already started work on implementing the SQL language in Irony.<br>\r\n<br>\r\nI am still trying to get my head around many of the constructs and the way Irony works, its been years since i did absolutely anything to do with parsers&nbsp;\\ linkers \\ compilers.</p>\r\n<p>Its late afternoon here now , so i am going to make some dinner for the family and will probably post back tomorrow with any updates or questions i have.</p>\r\n<p>Cheers :)</p>\r\n",
+    "PostedDate": "2008-06-16T09:35:19.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "110563",
+    "ThreadId": "29716",
+    "Html": "Any update? I'm looking to do the same thing - parse SQL for auto-completion use.<br>\r\n",
+    "PostedDate": "2008-08-12T05:52:42.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "129774",
+    "ThreadId": "29716",
+    "Html": "If you want a good example of a SQL grammar for an LALR, go to Gold Parser's web site and get it. (<a href=\"http://www.devincook.com/goldparser/grammars/index.htm\">http://www.devincook.com/goldparser/grammars/index.htm</a>)<br>\r\n<br>\r\nThat being said:  auto-completion for SQL actually is a very difficult thing to do. You might not think so at first, but honestly the only reason auto-complete works so well for C# and vb.net is because they're static typed, and the thing can parse, compile, and use reflection on them while you're typing.  You'll need to have a connection to the database in order to determine what kind of column is generated when a given expression is typed in the SELECT clause column list, and some of them cannot be determined even until the query is run and some aggregate is tabulated.  Actually, if you followed LINQ at all, you'll know that this is one of the reasons they make you say &quot;FROM&quot; before you say &quot;SELECT.&quot;   That means you can't possibly add much effect, in a disconnected environment, other than to pop up all of the possible next tokens, and if identifiers are valid next tokens, well, might as well skip autocomplete.   Loosely typed languages do not work well with autocompletion. In fact, static typing's popularity was probably only expanded because of such widespread use of the technology in auto-completion scenarios.  \r\n",
+    "PostedDate": "2008-11-03T13:33:44.263-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "129857",
+    "ThreadId": "29716",
+    "Html": "thanks for the link and info!<br>\r\nRoman\r\n",
+    "PostedDate": "2008-11-03T22:08:05.567-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "136283",
+    "ThreadId": "29716",
+    "Html": "Just checked in a SQL parser sample - have a look\r\n",
+    "PostedDate": "2008-11-29T14:10:35.997-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "136307",
+    "ThreadId": "29716",
+    "Html": "Nice!&nbsp; I think you forgot the bits from the TerminalFactory for the ext identifier, nevertheless I have a way that I came up with to do that:<br>\r\n<br>\r\nI can (mis-)use the CommentTerminal constructor, and just accidentally forget to add it to the NonGrammarTerminals collection.<br>\r\n<br>\r\nTerminal boxId = new CommentTerminal(&quot;boxID&quot;, &quot;[&quot;, &quot;]&quot;);<br>\r\n<br>\r\nThen I guess you can string it up with a plus to make the extended identifier.<br>\r\n<br>\r\nTerminal shortId = new IdentifierTerminal(&quot;shortID&quot;);<br>\r\n<br>\r\nNonTerminal idChunk = new NonTerminal(&quot;IDChunk&quot;);<br>\r\n<br>\r\nidChunk.Rule = boxId | shortId;<br>\r\n<br>\r\nNonTerminal extId = new NonTerminal(&quot;extId&quot;);<br>\r\nextId.Rule = MakePlusRule(extId, Symbol(&quot;.&quot;),&nbsp; idChunk);<br>\r\n<br>\r\nI don't know if that's what you did or not, but I spent a little bit on my own figuring that out for a similar scenario <br>\r\na while back around the original test release time. Perhaps you have a simpler way?&nbsp; If so, I certainly wouldn't object to seeing it!<br>\r\n<br>\r\n",
+    "PostedDate": "2008-11-29T21:13:05.683-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "136309",
+    "ThreadId": "29716",
+    "Html": "Just checked the 19274 version in source, using Browse Source on codeplex - the function is there. Just in case, here is the source: <br>\r\n<br>\r\n<span style=\"color:#0000ff\">public</span> <span style=\"color:#0000ff\">static</span> StringLiteral CreateSqlExtIdentifier(<span style=\"color:#0000ff\">string</span> name) {<br>\r\n      StringLiteral term = <span style=\"color:#0000ff\">new</span> StringLiteral(name, TermOptions.SpecialIgnoreCase);<br>\r\n      term.AddStartEnd(<span style=\"color:#a31515\">&quot;[&quot;</span>, <span style=\"color:#a31515\">&quot;]&quot;</span>, ScanFlags.DisableEscapes);<br>\r\n      term.AddStartEnd(<span style=\"color:#a31515\">&quot;\\&quot;</span>&quot;, ScanFlags.DisableEscapes);<br>\r\n      <span style=\"color:#0000ff\">return</span> term;<br>\r\n    }<br>\r\n<br>\r\nAs you see, I used a StringLiteral (instead of CommentTerminal as you suggest), but I had to enhance it to support different open/close symbols.<br>\r\nall the rest is just like you describe - see SqlGrammar in samples...\r\n",
+    "PostedDate": "2008-11-29T21:34:48.253-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "136375",
+    "ThreadId": "29716",
+    "Html": "Wow, ok it appears it was there before anyway, I just missed it.&nbsp; I must be going nuts, because I looked 3 times. Thanks.<br>\r\n",
+    "PostedDate": "2008-11-30T09:50:11.027-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,186 @@
+/*--------- 1ra Area: Codigo de Usuario ---------*/
+
+//--------> Paquetes e importaciones
+package Analizadores;
+import java_cup.runtime.Symbol;
+import Estructuras.Cola;
+import java.util.ArrayList;
+import Modelos.*;
+
+//--------> Codigo para el parser, variables, metodos
+parser code
+{:
+    public Cola TodosLosErrores = new Cola();
+    private Cola dato = new Cola();
+    private Cola tipos = new Cola();
+    private Cola registros = new Cola();
+    private Cola cabecera = new Cola();
+    private Boolean esPrimero = true;
+
+    public Archivo archivo = new Archivo();
+
+    //Metodo al que se llama automaticamente ante algun error sintactico
+    public void syntax_error(Symbol s){
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        Errores error = new Errores(lexema,fila,columna,"Token " + lexema + " No esperado", "Sintactico");
+        TodosLosErrores.insertar(error);
+    }
+
+    //Metodo al que se llama en el momento en el que ya no es posible una recuperacion de errores
+    public void unrecovered_syntax_error(Symbol s){
+
+    }
+:}
+
+//--------> Codigo para las acciones gramaticales
+action code
+{:
+    
+:}
+
+/*--------- 2da Area: Declaraciones ---------*/
+
+//--------> Declaracion de terminales
+terminal corcheteA, corcheteC, llaveA, llaveC, coma, igual;
+terminal numero, claves, registros, cadena;
+terminal comentarioLinea, comentarioMultiLinea;
+
+//--------> Declaracion de no terminales
+non terminal INICIO, S;
+non terminal CLAVES, L_CLAVES, COM, CLAVES2, CLAVES3;
+non terminal L_REGISTROS, REGISTROS, REGISTRO, REGISTROS2;
+non terminal L_VALORES, VALOR, REGISTRO2, FIN, RE, COM2;
+
+start with S;
+
+/*--------- 3ra Area: Reglas Semanticas ---------*/
+
+S ::= INICIO
+{:
+
+    ArrayList<Object> regis = registros.obtenerDatos();
+    ArrayList<Object> cabe = cabecera.obtenerDatos();
+    ArrayList<Object> tip = tipos.obtenerDatos();
+
+    for(int i = 0; i < cabe.size(); i++){
+        String nombre = cabe.get(i).toString().replace("\"", "");
+        String tipo = tip.get(i).toString().replace("\"","");
+        Cabecera cabecera = new Cabecera(nombre,tipo);
+        archivo.getCabeceras().add(cabecera);
+    }
+
+    for (int i = 0; i < regis.size(); i++) {
+        Cola cola = (Cola) regis.get(i);
+        ArrayList<Object> regi = cola.obtenerDatos();
+        Registro registro = new Registro();
+        for (int j = 0; j < regi.size(); j++) {
+            String dato = regi.get(j).toString().replace("\"","");
+            registro.getRegistros().add(dato);
+        }
+        archivo.getRegistros().add(registro);
+    }
+    archivo.setErrores(TodosLosErrores);
+
+:}
+        ;
+
+INICIO ::=  COM CLAVES RE
+        | CLAVES RE
+        ;
+RE ::= COM REGISTROS FIN
+        | REGISTROS FIN
+        ;
+FIN ::= COM
+        |
+        ;
+COM ::= COM COM2
+        | COM2
+        ;
+COM2 ::= comentarioMultiLinea
+        | comentarioLinea
+        ;
+CLAVES ::= claves igual corcheteA L_CLAVES CLAVES3
+        ;
+CLAVES3 ::= COM corcheteC
+        | corcheteC
+        ;
+L_CLAVES ::= L_CLAVES FIN coma CLAVES2
+        | COM CLAVES2
+        | CLAVES2
+        ;
+CLAVES2 ::= cadena:a                                               {: cabecera.insertar(a); :}
+        ;
+REGISTROS ::= registros igual corcheteA L_REGISTROS REGISTROS2
+        ;
+REGISTROS2 ::= COM corcheteC
+        | corcheteC
+        ;
+L_REGISTROS ::=     L_REGISTROS REGISTRO
+                    | REGISTRO:a                                        {: if(a != null) esPrimero = false; :}
+        ;
+REGISTRO ::= COM REGISTRO2:a                                            {: RESULT = a; :}
+        | REGISTRO2:a                                                   {: RESULT = a; :}
+        ;
+REGISTRO2 ::=       llaveA {: dato = new Cola(); :} L_VALORES:a llaveC  {: 
+                                                                            if(cabecera.contador == dato.contador){
+                                                                                if(esPrimero == false){
+                                                                                    ArrayList<Object> array1 = dato.obtenerDatos();
+                                                                                    ArrayList<Object> array2 = tipos.obtenerDatos();
+                                                                                    int contadorErrores = 0;
+                                                                                    for(int i = 0; i < array1.size(); i++){
+                                                                                        if(array1.get(i).toString().startsWith("\"") && array2.get(i).equals("int")){
+                                                                                            contadorErrores++;
+                                                                                            Errores error = new Errores(array1.get(i).toString(),0,aright,"Se esperaba tipo Numerico, tipo Cadena encontrado","Semantico");
+                                                                                            TodosLosErrores.insertar(error);
+                                                                                        } else if(!array1.get(i).toString().startsWith("\"") && array2.get(i).equals("string")){
+                                                                                            contadorErrores++;
+                                                                                            Errores error = new Errores(array1.get(i).toString().replace("\"",""),0,aright,"Se esperaba tipo Cadena, tipo Numerico encontrado","Semantico");
+                                                                                            TodosLosErrores.insertar(error);
+                                                                                        }
+                                                                                    }
+                                                                                    if(contadorErrores == 0){
+                                                                                        registros.insertar(dato);
+                                                                                    }
+                                                                                } else {
+                                                                                    registros.insertar(dato);
+                                                                                    RESULT = "ads";
+                                                                                }
+                                                                            } else {
+                                                                                if(dato.contador != 0){
+                                                                                    Errores error = new Errores(dato.cabeza.getContenido().toString().replace("\"",""),0,aright,"No coinciden las cantidades","Semantico");
+                                                                                    TodosLosErrores.insertar(error);
+                                                                                } else {
+                                                                                    Errores error = new Errores("",0,aright,"No coinciden las cantidades","Semantico");
+                                                                                    TodosLosErrores.insertar(error);
+                                                                                }
+                                                                                RESULT = null;
+                                                                            }
+                                                                        :}
+        ;
+L_VALORES ::=       L_VALORES coma VALOR:a                              {: 
+                                                                            if(esPrimero == true){
+                                                                                if(a.toString().startsWith("\"")){
+                                                                                    tipos.insertar("string");
+                                                                                } else {
+                                                                                    tipos.insertar("int");
+                                                                                }
+                                                                            }
+                                                                            dato.insertar(a); 
+                                                                        :}
+                    | VALOR:a                                           {: 
+                                                                            if(esPrimero == true){
+                                                                                if(a.toString().startsWith("\"")){
+                                                                                    tipos.insertar("string");
+                                                                                } else {
+                                                                                    tipos.insertar("int");
+                                                                                }
+                                                                            }
+                                                                            dato.insertar(a); 
+                                                                        :}
+
+        ;
+VALOR ::=           cadena:a                                            {: RESULT = a; :}
+                    | numero:a                                          {: RESULT = a; :}
+        ;

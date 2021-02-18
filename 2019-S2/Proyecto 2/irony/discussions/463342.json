@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1111357",
+    "ThreadId": "463342",
+    "Html": "When I open the irony solution in visual studio 2010, it says I need silverlight, and gives me a link to install it, but when I run the install program, it says I already have silverlight 64 bit. Any ideas what's going on?<br />\n",
+    "PostedDate": "2013-10-23T20:28:53.117-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111368",
+    "ThreadId": "463342",
+    "Html": "do you really need silverlight? Silverlight project is optional, so if you're not going to use Irony in SL, just remove the project from the solution.<br />\n",
+    "PostedDate": "2013-10-23T21:32:00.547-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111396",
+    "ThreadId": "463342",
+    "Html": "nope, don't need it. ok, i'll remove it.<br />\n",
+    "PostedDate": "2013-10-23T23:08:19.483-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

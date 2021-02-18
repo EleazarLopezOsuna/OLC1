@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "214847",
+    "ThreadId": "63212",
+    "Html": "<p>Does anyone know of an example of an Irony version of simple &quot;hello world&quot; language with the basic language stuff like conditionals, variable declarations, and looping? I'm trying to fast track re-learning how to design a language about 20 years after my last compiler class, and I learn best by example. Something that shows how to implement a language similar to the following example in Irony is what I'm looking for.</p>\r\n<p>int a;</p>\r\n<p>for a=0 to 10</p>\r\n<p>if a == 5</p>\r\n<p>&nbsp;&nbsp;&nbsp; print &quot;Hello, World!&quot;</p>\r\n<p>end for</p>\r\n<p>Any variation on that theme (i.e. C# style for loop) would be fine. Any suggestions for books that are more up to date (and hopefully easier to read) than my 20-year-old college text book would be welcome too.</p>",
+    "PostedDate": "2009-07-22T09:44:58.657-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "214865",
+    "ThreadId": "63212",
+    "Html": "<p>You might try an article at CodeProject that demonstrates adding a new language to MS Visual Studio using Irony...it has a simplified C language derivative called 'MyC' whose grammar you could use:&nbsp; <a href=\"http://www.codeproject.com/KB/recipes/VSLanguageService.aspx\">http://www.codeproject.com/KB/recipes/VSLanguageService.aspx</a></p>\r\n<p>Ignore all the complexities of Visual Studio and just pinch the grammar file :)</p>\r\n<p>Please note that Irony has been updated quite a bit since that article was written and you might have some re-factoring issues if you download the latest Irony from here.</p>",
+    "PostedDate": "2009-07-22T10:16:49.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "214892",
+    "ThreadId": "63212",
+    "Html": "<p>That's a good article. I'm just getting back to Irony after about a 7 month detour into wasting my time playing computer games, and that article is new since my last search on CodeProject.com. The grammar is a bit more complicated than I had in mind, but I might be able to strip out some of the bits I don't need and use it as a baseline for experimentation. It's as good a place as any to start.</p>",
+    "PostedDate": "2009-07-22T11:34:24.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "214910",
+    "ThreadId": "63212",
+    "Html": "<p>Video games are good to improve your hand-eye coordination...really :)</p>\r\n<p>Yeah, the MyC example is the simplest C derivative I've seen so far...it comes with the Visual Studio SDK.&nbsp; I'm working on a VS addon for Digital Mars D Language, which is the most complicated one I've seen so far :)</p>",
+    "PostedDate": "2009-07-22T11:58:43.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

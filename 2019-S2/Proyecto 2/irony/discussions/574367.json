@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1329884",
+    "ThreadId": "574367",
+    "Html": "I'm implementing a grammar using Irony, which has some rules defined like this:<br />\n<pre><code>ident   ::=  ( letter ∣  _ ) { letter ∣  0 … 9 ∣  _ ∣  ' }  \n \ncapitalized-ident   ::=  (A … Z) { letter ∣  0 … 9 ∣  _ ∣  ' }  \n \nlowercase-ident ::= (a … z ∣  _) { letter ∣  0 … 9 ∣  _ ∣  ' }  \n \nletter  ::=  A … Z ∣  a … z</code></pre>\n\nThe point is that I don't know whether IdentifierTerminal captures all the options above. I also did something like this: <br />\n<pre><code>RegexBasedTerminal letter = new RegexBasedTerminal(&quot;letter&quot;, &quot;[a-zA-Z]&quot;);</code></pre>\n\nI don't know really how can I implement the above rules in Irony? I nearly finished with everything, though only that part is left.<br />\n",
+    "PostedDate": "2014-12-08T11:41:32.407-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1329914",
+    "ThreadId": "574367",
+    "Html": "you can simply assign AllChars and AllFirstChars properties for lower/upper case versions - these strings contain all characters allowed in identifier<br />\n",
+    "PostedDate": "2014-12-08T13:23:22.717-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1329948",
+    "ThreadId": "574367",
+    "Html": "Can you give me a short code sample, please?<br />\n",
+    "PostedDate": "2014-12-08T15:13:01.193-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1330045",
+    "ThreadId": "574367",
+    "Html": "var allLowerId = new IdentifierTerminal(&quot;AllLowerId&quot;);\r<br />\nallLowerId.AllFirstChars = &quot;abcd...xyz&quot;;\r<br />\nallLowerId.AllChars = allLowerId.AllFirstChars + &quot;0123456789&quot;;\r<br />\n<br />\nvar alUpperId = new IdentifierTerminal(&quot;AllUpperId &quot;);\r<br />\nalUpperId .AllFirstChars = &quot;ABCD...XYZ&quot;;\r<br />\nalUpperId .AllChars = alUpperId .AllFirstChars + &quot;0123456789&quot;;<br />\n",
+    "PostedDate": "2014-12-09T00:51:42.993-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1330290",
+    "ThreadId": "574367",
+    "Html": "Thank you very much! One more quick question. I see there is NumberLiteral and StringLiteral, but no CharLiteral. Can I use the above code to define character literal?<br />\n",
+    "PostedDate": "2014-12-09T11:40:55.607-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1330293",
+    "ThreadId": "574367",
+    "Html": "look at c# grammar, there's char literal there<br />\n",
+    "PostedDate": "2014-12-09T11:50:21.29-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

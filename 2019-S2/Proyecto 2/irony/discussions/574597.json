@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1330787",
+    "ThreadId": "574597",
+    "Html": "I have Visual Studio 2010, Version 10.0.40219.1 SP1 Release with Microsoft .NET Framework, Version 4.5.51209 SP1 Release. I'm using the Irony_2013_12_12 build.<br />\n<br />\nHere's the code I parsed while using the Irony Grammar Explorer with the SQL, version 89 grammar.<br />\n<pre><code>INSERT INTO Quasar.dbo.Activity ( intActivityID, intObjectID, stdActivityStartDate )\nSELECT intActivityID, intObjectID, sdtActivityStartDate\nFROM #LoadActivity</code></pre>\n\nThe result is: The Grammar Errors tab is empty but the Parser Output tab doesn't like the pound sign ( # ). The Error Message is &quot;Invalid character: '#'&quot;<br />\n<br />\n&quot;<strong>#LoadActivity</strong>&quot; is a temporary table and it should be acceptable.<br />\n<br />\nWhat is your recommendation?<br />\n<br />\nThanks,<br />\nMichael<br />\n",
+    "PostedDate": "2014-12-10T14:45:06-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1330794",
+    "ThreadId": "574597",
+    "Html": "what files are missing?!\r<br />\nas for parsing error - come on, it clearly says SQL grammar is just a SAMPLE, not complete implementation of the standard, and specifically TSQL.<br />\n",
+    "PostedDate": "2014-12-10T14:56:19.173-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

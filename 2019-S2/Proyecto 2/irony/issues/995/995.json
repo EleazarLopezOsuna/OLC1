@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T11:46:56.99-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "As a test I'm creating a grammar to parse Excel formulas (the grammar is documented in the OpenXML specifications). Because cell references are non-standard (row references are always positive integers between 1 and 65535; column references are 1..255 or A..IV) I'm using three custom terminals.  Using custom terminal will also make it easier than creating separate classes because there's just one file/class containing the grammar definition and the delegate implementations.  However each custom terminal delegate method has to return a Token instance and the first param is a reference to the Terminal and unless each custom terminal is made a member of the parsing class (rather than being declared in the constructor) it's not available to the delegate method.  It would be great to be able to have the custom terminal passed in the MatchHandler delegate signature so it can be passed onto the Token instance.  Or am I missing something?\n\nThanks",
+    "LastUpdatedDate": "2010-03-26T11:46:56.99-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2008-01-26T17:10:57.827-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "How to return the Terminal in CustomTerminal delegate?",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 995
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Nop, you're not missing anything, this is really a missing point in design, expect additional Terminal parameter in next source update (by monday I hope). You are on the right track, you should create custom terminal for Excel cell references, rather than specifying it as a Non-terminal in grammar, with construction rule from simpler parts. \r\nthanks for finding it!\r\nRoman",
+      "PostedDate": "2008-01-26T20:13:42.36-08:00",
+      "Id": 29069
+    }
+  ]
+}

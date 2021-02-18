@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Grammar is just a demo. Will rewrite it in the future",
+    "ClosedDate": "2009-04-26T19:11:40.743-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Try following code fragment\n\nnamespace liuxia.cib.coderock.tester {\n    class Program{\n       static void A() {int[] a = null;}\n    }\n}\n\nA syntax error will be generated while no error actually exist at all.",
+    "LastUpdatedDate": "2009-04-26T19:11:40.743-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-04-15T08:04:28.957-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Array definition bug in sample C# grammar",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 4263
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I know, I noticed it before, the grammar is crap, intended to be just a demo. I tweaked the original version from spec a lot, and not sure if it is error in original (there are quite a few there for sure), or result of my tweaking. \r\nAnyhow, I would welcome some help with this. Can you (or somebody else?) start c# grammar from scratch and translate one-to-one the spec grammar, including LINQ stuff? Would really appreciate the help. I'm planning to use this grammar as a test pad for non-canonical parsing algorithm, that supposed to be much better at conflict resolution.\r\nthanks\r\nRoman\r\n",
+      "PostedDate": "2009-04-20T13:19:48.33-07:00",
+      "Id": 29115
+    }
+  ]
+}

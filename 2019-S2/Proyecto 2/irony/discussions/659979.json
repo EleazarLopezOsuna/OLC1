@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1489430",
+    "ThreadId": "659979",
+    "Html": "I have set up a basic grammar class, in the constructor I have the following:\r<br />\n<br />\nFreeTextLiteral FreeTextTerm = new FreeTextLiteral(&quot;FreeTextTerm&quot;, FreeTextOptions.AllowEof | FreeTextOptions.AllowEmpty);\r<br />\nvar Expression = new NonTerminal(&quot;Expression&quot;);\r<br />\nvar ParenthesizedExpression = new NonTerminal(&quot;ParenthesizedExpression&quot;);\r<br />\nParenthesizedExpression.Rule = &quot;(&quot; + Expression + &quot;)&quot;;\r<br />\nthis.Root = Expression;\r<br />\nExpression.Rule = FreeTextTerm | ParenthesizedExpression;\r<br />\n<br />\nWhen I parse a string such as \r<br />\n<br />\n(fuzzy logic)\r<br />\n<br />\nI want it to recognise the whole thing as being a ParenthesizedExpression, and then go on to recognise the 'fuzzy logic' part as being the FreeTextTerm. Instead, it just recognises the whole phrase (fuzzy logic) as a FreeTextTerm. Any ideas on how I can change the code to pick up the parenthesis correctly?\r<br />\n<br />\nThanks,\r<br />\nMatt<br />\n",
+    "PostedDate": "2016-12-07T08:31:17.877-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1490116",
+    "ThreadId": "659979",
+    "Html": "I believe if you flip the expression.Rule to:<br />\n<pre><code>Expression.Rule = ParenthesizedExpression | FreeTextTerm;</code></pre>\n\nIt should give preference to evaluating as a ParenthesizedExpression first.\r<br />\n<br />\nNote that I'm no expert to parsing so not sure if there are any additional implications of doing this..<br />\n",
+    "PostedDate": "2016-12-20T19:29:47.603-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

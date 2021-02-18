@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1449030",
+    "ThreadId": "646368",
+    "Html": "Hi<br />\n<br />\nI am struggling to work out the component parts (non-terminals) required to generate the grammar for the following:<br />\n<pre><code>a) string \nb) (string JOIN string ON (x=y))\nc) ((string JOIN string ON (x=y))\n            JOIN string ON (x=y))\nd) (((string JOIN string ON (x=y))\n             JOIN string ON (x=y))\n             JOIN string ON (x=y)))\ne) etc\n</code></pre>\n\nI can see that there will be an equality non-terminal to represent the<br />\n<pre><code> (x=y)</code></pre>\n\nand a further non-terminal to represent<br />\n<pre><code>JOIN string ON (x=y)\n</code></pre>\n\nBeyond that, I am struggling to put it all together. As you can see, the number of brackets at the start increase relative to the number of JOINS, so I'm guessing there must be a recursive structure involved, but can't quite see it. Alternatively, I wasn't sure whether I could implement it using a MakePlusRule but couldn't see how to increase correctly the no of brackets at the start of the expression using that method - hence recursion seems right.<br />\n<br />\nMany thx in advance once again.<br />\n",
+    "PostedDate": "2015-10-19T07:00:16.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1449116",
+    "ThreadId": "646368",
+    "Html": "OK. So I found <a href=\"https://code.google.com/p/bsn-modulestore/source/browse/bsn.ModuleStore.Parser/Sql/ModuleStoreSQL.grm\" rel=\"nofollow\">this link</a> and line 1204 and following.<br />\n<br />\nHere's the bit from my grammar<br />\n<pre><code>  joinSourceExpression.Rule =\n        csvExpression Or\n        [LPAREN] + joinSourceExpression + joinChainExpression + [RPAREN]\n\n  joinChainExpression.Rule =\n        joinExpression + joinChainExpression Or\n        Empty\n\n  joinExpression.Rule =\n        [INNER] + [JOIN] + joinSourceExpression + [ON] + expression Or\n        [LEFT] + [JOIN] + joinSourceExpression + [ON] + expression Or\n        [RIGHT] + [JOIN] + joinSourceExpression + [ON] + expression Or\n        [LEFT] + [OUTER] + [JOIN] + joinSourceExpression + [ON] + expression Or\n        [RIGHT] + [OUTER] + [JOIN] + joinSourceExpression + [ON] + expression\n\n  fromClause.Rule =\n        [FROM] + joinSourceExpression + joinChainExpression Or\n        Empty\n</code></pre>\n\n(where &amp;#43 = plus symbol)<br />\n",
+    "PostedDate": "2015-10-20T01:16:41.71-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

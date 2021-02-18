@@ -1,0 +1,106 @@
+[
+  {
+    "Id": "524530",
+    "ThreadId": "235375",
+    "Html": "\r\n<p>Hi Roman,</p>\r\n<p>I've refactored the Visual Studio Language Service project on CodePlex to use VS 2010, and factored most of the code into a separate assembly Irony.VisualStudio.LanguageService.dll which handles everything except for the configuration, grammar, and the vs\r\n package itself.&nbsp;&nbsp;&nbsp; This dll allows you to create a language service with a project of just 3 very short files, one of them being the grammar.</p>\r\n<p>I think this would make a nice addition to the base project, along with a VSIX installable template for creating your own language service.&nbsp; Do you think this could be added to the default irony source base.</p>\r\n<p>Two problems I'm currently having though:</p>\r\n<p>One is that the Location in irony doesn't take into account the current tab size setting.&nbsp; Where is the current tab size set in Irony.&nbsp; I'm sure I could find it if I do a deep search, but maybe you could help me out.&nbsp; Irony is currently assuming\r\n 8 char tabs, and mine are 4.&nbsp; VS tells you what the current file setting is, but Irony needs to be informed.</p>\r\n<p>The other is that in many cases, the raw parser error information coming from irony is not very informative (I often get an error unexpected character 'i', for example).&nbsp; I'd like to have a chance to handle errors myself for various parse tree non-terminals.&nbsp;\r\n Is this possible.. easy?</p>\r\n<p>Finally, is an Irony grammar Xaml serializable?&nbsp; (i.e. do grammar elements have public setters, and a default constructor, etc.)&nbsp;&nbsp; Might be nice to be able to define grammars in Xaml and load them on the fly.</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2010-11-19T13:17:23.733-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "524635",
+    "ThreadId": "235375",
+    "Html": "\r\n<p>For the tab size issue, the TabSize from the Context needs to update the SourceStream tab size when Parse is called.&nbsp; There is no way to actually set the SourceStream in the current system, so no way to change the tab size as far as I can tell.&nbsp;\r\n I think the intention was that the TabWidth can be changed in the Context, which would affect the next call to Parse, and that's what I changed.</p>\r\n<p>Line 49, Parser.cs:</p>\r\n<p>&nbsp;&nbsp;&nbsp; public ParseTree Parse(string sourceText, string fileName) {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AutoReset();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Context.SourceStream.TabWidth = Context.TabWidth; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Context.SourceStream.SetText(sourceText, 0, Context.Status == ParserStatus.AcceptedPartial);</p>\r\n<p>The SourceStream TabWidth property needs to be made either internal or public.&nbsp; I chose internal.</p>\r\n<p>Thanks.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-19T19:18:30.18-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "524645",
+    "ThreadId": "235375",
+    "Html": "\r\n<p>Also, to make the line scanner work in the language serivce.&nbsp; I formatted the code in the current style of the file.</p>\r\n<p>ParsingContext.cs line 55:</p>\r\n<p>&nbsp;&nbsp;&nbsp; public int TabWidth {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return _tabWidth; } <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _tabWidth = value;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (SourceStream != null) {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SourceStream.TabWidth = value;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp; } int _tabWidth = 8;</p>\r\n",
+    "PostedDate": "2010-11-19T20:56:20.243-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "524965",
+    "ThreadId": "235375",
+    "Html": "\r\n<p>Hi</p>\r\n<p>About VS integration - would be happy to look at it and include in code base. Contact me directly (through this site, Contact user feature), I'll reply and you'll send zip</p>\r\n<p>About problems you describe.</p>\r\n<p>Tab size - I know about the problem; the main problem is that (as user yallie pointed in one of previous discussions - cannot find the discussion), so the real problem is that tab handling in incorrect. Instead of &quot;skipping&quot;&nbsp;n symbols on Tab, the code\r\n should move to the next position which is multiple of &quot;n&quot;. That's how tabbing behaves in general in apps. So I need to fix that</p>\r\n<p>Error handling - I'm working on the fix; there's already a grammar method &quot;ConstructParserErrorMessage&quot; that you can override to customize the message; the problem is that it is called not for all messages. I will be submitting the fix shortly</p>\r\n<p>About Xaml-serialiation - have no idea what you're talking about</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2010-11-21T08:42:45.44-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "528086",
+    "ThreadId": "235375",
+    "Html": "\r\n<p>&gt; About VS integration - would be happy to look at it and include in code base. Contact me directly (through this site, Contact user feature), I'll reply and you'll send zip.</p>\r\n<p>I'm going to fix the original template for the 2008 project, then send it.</p>\r\n<p>&gt;Tab size - I know about the problem; the main problem is that (as user yallie pointed in one of previous discussions - cannot find the discussion), so the real problem is that tab &gt;handling in incorrect. Instead of &quot;skipping&quot;&nbsp;n symbols on Tab,\r\n the code should move to the next position which is multiple of &quot;n&quot;. That's how tabbing behaves in general in apps. So I &gt;need to fix that</p>\r\n<p>Not sure about that.&nbsp; My fix was to just allow the TabWidth properties in SourceText and ParseContext to be set by the application.&nbsp; No problem. &nbsp; With this fix irony seems to work correctly (as far as I can tell). Unfortunately the visual\r\n studio language service doesn't seem to correctly draw the red error underscores based on the editor tab size, so it looks like I may need to go directly to the text editor to draw the underscores manually using the new WPF editor system.</p>\r\n<p>&gt;Error handling - I'm working on the fix; there's already a grammar method &quot;ConstructParserErrorMessage&quot; that you can override to customize the message; the problem is that it is called not for all messages. I will be submitting the fix shortly</p>\r\n<p>It looks like the scanner is throwing an error recognizing what should be valid tokens before the parser has a chance to actually throw a useful parsing error.&nbsp; I'm getting &quot;Invalid character &quot;x&quot; when I type a valid keyword or identifier in the wrong\r\n place.&nbsp; Shouldn't the scanner be tokenizing the identifier and/or keywords, then letting the parser notice that they're unexpected?</p>\r\n<p>&gt; About Xaml-serialiation - have no idea what you're talking about.</p>\r\n<p>Xaml just allows you to read in a tree of .NET objects directly to and from XML files without any other setup (if the classes follow a few basic rules).&nbsp; The names of the xml tags are the class names, and the attributes are public properties.&nbsp;\r\n It's generally useful for instantiating or writing out DAG's of objects without having to write any serialization code. &nbsp; Just wondering if it would be possible to use XamlReader.Load() or XamlWriter.Save() to read or write a grammar to/from a xaml file.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-29T01:16:35.843-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "528953",
+    "ThreadId": "235375",
+    "Html": "\r\n<p>TabSize - added your code snippet in the latest code drop;</p>\r\n<p>Error handling - fixed and improved; now you have full control over the message in all cases.</p>\r\n<p>Xaml - serialization... seems fancy, but what it can be used for?</p>\r\n<p>thanks</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2010-11-30T11:19:38.437-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "529199",
+    "ThreadId": "235375",
+    "Html": "\r\n<p>&gt; Xaml - serialization... seems fancy, but what it can be used for?</p>\r\n<p>Editing grammars on the fly and loading and saving them.</p>\r\n<p>One more thing.. I changed ParserMessage to return a SourceSpan instead of a SourceLocation (the language service wants a span).&nbsp; The error highligher on the language service uses the span to highlight exactly the text that is incorrect.&nbsp; The old\r\n language service just highlighted the whole line.</p>\r\n<p>------ ParserMessage.cs -------</p>\r\n<p>&nbsp; public class ParserMessage {<br>\r\n&nbsp;&nbsp;&nbsp; public ParserMessage(ParserErrorLevel level, SourceSpan span, string message, ParserState parserState) {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Level = level; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Span = span;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Message = message;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ParserState = parserState;<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; public readonly ParserErrorLevel Level;<br>\r\n&nbsp;&nbsp;&nbsp; public readonly ParserState ParserState;<br>\r\n&nbsp;&nbsp;&nbsp; public readonly SourceSpan Span;<br>\r\n&nbsp;&nbsp;&nbsp; public readonly string Message;<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; public SourceLocation Location {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return Span.Location; }<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; public override string ToString() {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Message;<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp; }//class</p>\r\n<p>-----------</p>\r\n<p>--------- ParsingContext.cs ---------------</p>\r\n<p>&nbsp;&nbsp;&nbsp; public void AddParserError(string message, params object[] args) {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var span = CurrentParserInput == null? new SourceSpan(Source.Location, 1) : CurrentParserInput.Span;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HasErrors = true; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddParserMessage(ParserErrorLevel.Error, span, message, args);<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp; public void AddParserMessage(ParserErrorLevel level, SourceSpan span, string message, params object[] args) {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (CurrentParseTree == null) return; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (CurrentParseTree.ParserMessages.Count &gt;= MaxErrors) return;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (args != null &amp;&amp; args.Length &gt; 0)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; message = string.Format(message, args);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CurrentParseTree.ParserMessages.Add(new ParserMessage(level, span, message, CurrentParserState));<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (OptionIsSet(ParseOptions.TraceParser)) <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ParserTrace.Add( new ParserTraceEntry(CurrentParserState, ParserStack.Top, CurrentParserInput, message, true));<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; public void AddTrace(string message, params object[] args) {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!OptionIsSet(ParseOptions.TraceParser)) return;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (args != null &amp;&amp; args.Length &gt; 0)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; message = string.Format(message, args);\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ParserTrace.Add(new ParserTraceEntry(CurrentParserState, ParserStack.Top, CurrentParserInput, message, false));<br>\r\n&nbsp;&nbsp;&nbsp; }</p>\r\n<p>--------------------</p>\r\n<p>A few other files modified to either pass a span, or to create a span with a length of 1 if they don't have one.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-30T20:19:06.527-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "529204",
+    "ThreadId": "235375",
+    "Html": "\r\n<p>Updating my project, I noticed exceptions being thrown in ParseTreeNode for FirstChild and LastChild.&nbsp; This seems to fix it.</p>\r\n<p>-------- ParseTree.cs Line 103 -------</p>\r\n<p>&nbsp;&nbsp;&nbsp; public ParseTreeNode FirstChild {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return ChildNodes.Count &gt; 0 ? ChildNodes[0] : null; }<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp; public ParseTreeNode LastChild {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return ChildNodes.Count &gt; 0 ? ChildNodes[ChildNodes.Count -1] : null; }<br>\r\n&nbsp;&nbsp;&nbsp; }</p>\r\n",
+    "PostedDate": "2010-11-30T20:37:11.987-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "529711",
+    "ThreadId": "235375",
+    "Html": "\r\n<p>Ok, will add it. thanks!</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2010-12-01T14:24:10.817-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "534016",
+    "ThreadId": "235375",
+    "Html": "\r\n<p>I'm at this point in my project (meaning that I'm working on the language service because the grammar part is done). &nbsp;Any idea when we will see this in the repository?</p>\r\n<p>Jere</p>\r\n",
+    "PostedDate": "2010-12-10T10:14:02.8-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "534017",
+    "ThreadId": "235375",
+    "Html": "\r\n<p>And an example on how to create a language service?&nbsp; I would like to add Clojure to to VS.</p>\r\n",
+    "PostedDate": "2010-12-10T10:17:44.873-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "922780",
+    "ThreadId": "235375",
+    "Html": "<p>Sorry to revive this thread, but I'd like to know if there have been any updates</p>",
+    "PostedDate": "2012-10-06T04:25:18.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "924122",
+    "ThreadId": "235375",
+    "Html": "<p>no new development on this, sorry</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-10-09T09:40:54.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

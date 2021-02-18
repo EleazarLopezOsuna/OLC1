@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1096816",
+    "ThreadId": "458512",
+    "Html": "When I try to parse a code file containing only comments, Irony shows a syntax error saying that it is expecting something. Is there any method to avoid this? I mean, if the file is having only comments, display the ast as null without throwing any errors?\r<br />\n<br />\nPS: I was working with grammars for the first time. With the help of Dragon book and Irony, I managed to write a grammar in a span of one month. Thanks for this great tool.<br />\n",
+    "PostedDate": "2013-09-20T01:32:43.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1097009",
+    "ThreadId": "458512",
+    "Html": "well, probably your root nonterminal does not allow an empty content. Look at its rule closely<br />\n",
+    "PostedDate": "2013-09-20T08:49:19.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2015-04-22T01:35:09.103-07:00"
+  }
+]

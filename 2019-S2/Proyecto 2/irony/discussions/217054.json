@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "459017",
+    "ThreadId": "217054",
+    "Html": "I'm working on making a grammar for sparql to validate queries. This means I also need to validate IRI (Internationalized Resource Identifier) references, which are like URIs or URLs. Here's an example of a valid IRI ref:\r\n\r\n&lt;http://purl.org/dc/elements/1.1/title&gt;.\r\n\r\nI'd like to make an identifier in Irony for IRI refs that is defined by a regular expression. Is there a [n easy] way to do this?",
+    "PostedDate": "2010-06-23T08:56:44.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "459020",
+    "ThreadId": "217054",
+    "Html": "There's a RegexBasedTerminal there, try it",
+    "PostedDate": "2010-06-23T09:05:38.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "459025",
+    "ThreadId": "217054",
+    "Html": "oh cool! thanks! Another question:\r\n\r\nRegexBasedTerminal( string name, string pattern, string[] prefixes )\r\n\r\nI don't quite understand what prefixes are for. ",
+    "PostedDate": "2010-06-23T09:17:21.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "459089",
+    "ThreadId": "217054",
+    "Html": "these are any specific fixed strings that may start your terminal - if any. In your case it would probably be &quot;&lt;&quot;",
+    "PostedDate": "2010-06-23T11:30:00.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "464888",
+    "ThreadId": "217054",
+    "Html": "I'm sorry this is kinda an old thread, but I have a problem with the RegexBasedTerminal. I want to define a identifier like so: <br><br> var identifier = new RegexBasedTerminal(&quot;[0-9a-zA-Z\\\\.]+&quot;); <br><br>The problem with this (I think) is that I can't go on to say that this identifier cannot be a key word. I have an unary operator (the only unary operator in the grammar) that is defined like so: <br><br>var notOp = new NonTerminal(&quot;not operator&quot;);<br> notOp.Rule = ToTerm(&quot;not&quot;); <br><br>But if I try to parse the text &quot;not&quot;... the 'not' gets recognized as an 'identifier'! I've spent hours trying to fix this. Any ideas? I'd be happy to post my whole grammar here if it helps.",
+    "PostedDate": "2010-07-08T08:28:57.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "464977",
+    "ThreadId": "217054",
+    "Html": "Don't declare &quot;not operator&quot; non-terminal, use &quot;not&quot; directly, but mark it as reserved word:\r\nMarkReservedWord(&quot;not&quot;);\r\nor smth like this, don't remember exact syntax, you'll figure it out\r\n",
+    "PostedDate": "2010-07-08T10:20:35.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

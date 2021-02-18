@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1056215",
+    "ThreadId": "446904",
+    "Html": "I want to have a grammar which would have following functionality.\r<br />\n1 - Loops , Conditional Statements\r<br />\n2 - Math Calculations\r<br />\n3 - Some extra methods to do Integration,Derivation , Double Derivation etc.\r<br />\n<br />\nShould I develop a completely new grammar or just change the existing grammar like ExpressionEvaluatorGrammar ?\r<br />\n<br />\nIf I want to change ExpressionEvaluatorGrammar to support conditional and loop statements , can i just copy similar rules from C# grammar to ExpressionEvaluatorGrammar or do i need to do anything else ?<br />\n",
+    "PostedDate": "2013-06-13T00:26:45.92-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1056393",
+    "ThreadId": "446904",
+    "Html": "<strong>Update</strong> : I have created a new Grammar as following . <br />\n<pre><code>public class MathEngineGrammar : InterpretedLanguageGrammar\n    {\n        public MathEngineGrammar()\n            : base(false)\n        {\n            NumberLiteral Number = TerminalFactory.CreateCSharpNumber(&quot;Number&quot;);\n            var statementList = new NonTerminal(&quot;statementList&quot;,typeof(StatementListNode));\n            var statement = new NonTerminal(&quot;statement&quot;);\n            var if_statement = new NonTerminal(&quot;if_statement&quot;);\n\n            var expression = new NonTerminal(&quot;expression&quot;);\n            var binexpr = new NonTerminal(&quot;binexpr&quot;, typeof(BinaryOperationNode));            \n            var binop = new NonTerminal(&quot;binop&quot;, &quot;operator&quot;);\n\n            \n            statementList.Rule = MakeStarRule(statementList, null, statement);\n            statement.Rule = expression | if_statement;\n            if_statement.Rule = ToTerm(&quot;if&quot;) + &quot;(&quot; + expression + &quot;)&quot; + &quot;{&quot;+expression+&quot;}&quot;;\n\n            expression.Rule = binexpr | Number;            \n            binexpr.Rule = expression + binop + expression;\n            binop.Rule = ToTerm(&quot;+&quot;) | &quot;-&quot; | &quot;/&quot; | &quot;*&quot;;\n\n            this.Root = statementList;\n\n            MarkPunctuation(&quot;(&quot;, &quot;)&quot;);\n\n            RegisterOperators(1, &quot;+&quot;, &quot;-&quot;);\n            RegisterOperators(2, &quot;*&quot;, &quot;/&quot;);\n            AddOperatorReportGroup(&quot;operator&quot;);\n\n            this.MarkTransient(expression, binop, statement, if_statement);\n            //LanguageFlags = LanguageFlags.CreateAst;\n        }\n}</code></pre>\n\nI am getting app.Evaluate(richTextBox1.Text) as null<br />\n<br />\nOn debugging i found LastScript.Root.AstNode for statement is coming null ( of course it should as I have not defined any node for it) in EvaluateParsedScript function.<br />\n<br />\nDo I need to create a node for &quot;statement&quot; , &quot;if_statement&quot; ? <br />\nThe c# grammar example also has not defined any node for statement or if_statement , then how is it working ? <br />\n",
+    "PostedDate": "2013-06-13T07:10:58.14-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1056468",
+    "ThreadId": "446904",
+    "Html": "I suggest you start with miniPyhon grammar - it is an extension of expression evaluator; start adding missing grammar constructs and Ast nodes for them - yes, you need to define special Ast node class for any grammar construct.<br />\n",
+    "PostedDate": "2013-06-13T09:45:12.08-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1056498",
+    "ThreadId": "446904",
+    "Html": "Thank You Roman , for taking time to reply despite your busy schedule.<br />\n<br />\nI hope you can clear just one doubt of mine.<br />\n<br />\nWhere is the Ast  Node defined for if_statement in c# grammar?<br />\n<pre><code>var if_statement = new NonTerminal(&quot;if_statement&quot;);</code></pre>\n\nAnd also I don't find any conditional statement implementation in MiniPython grammar , that's what i need for my grammar and can't figure out how to do it.<br />\n",
+    "PostedDate": "2013-06-13T11:26:37.22-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1056505",
+    "ThreadId": "446904",
+    "Html": "no, probably there isn't any (for If). There's 'IIF' implementation, but this is a special form, not AST node.\r<br />\n Look in interperter's AST folder, whatever nodes are defined there - that's all. Look at Refal sample as well, it does have a full implementation of AST node set for a language. For If statement, it shouldn't be that difficult, look at other nodes and do similar thing\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-06-13T11:48:06.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1056529",
+    "ThreadId": "446904",
+    "Html": "Roman,<br />\nI also need to implement loops in addition to conditional statements.These are already implemented in c# grammar right ?<br />\n<br />\nSorry for repeating the question again but I still do not understand <strong>how the conditional statements and loops are implemented in the c# grammar ?</strong><br />\n<br />\nFollowing are some lines I am facing trouble to understand.<br />\n<br />\n<br />\nvar if_statement = new NonTerminal(&quot;if_statement&quot;); <br />\n var statement_list = new NonTerminal(&quot;statement_list&quot;);<br />\nvar statement = new NonTerminal(&quot;statement&quot;, &quot;statement&quot;); // I used this same statement but got Null reference exception<br />\n<br />\n<strong>These statments don't have any AST Nodes . Then how are these working</strong> ? <br />\n",
+    "PostedDate": "2013-06-13T12:48:29.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1056532",
+    "ThreadId": "446904",
+    "Html": "you should read some basics on parsing - use wikipedia, about abstract and concrete trees. There are 2 phases - parse (concrete) tree, just a tree structure of input, nothing else, no execution/interpretation/compiling. That's what c# grammar is set for, so no AST nodes there. If you want to execute (like expr evaluator), then you create AST tree from parse tree. Irony does this if you provide AST node types for grammar terms. Then you evaluate the AST tree. EAch AST node implements particular evaluation for a syntax construct - like binary expression or if-statement, etc<br />\n",
+    "PostedDate": "2013-06-13T13:14:17.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

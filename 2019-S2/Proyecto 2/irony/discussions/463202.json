@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1110733",
+    "ThreadId": "463202",
+    "Html": "I'm working on a script grammar to define dice rolls for rpg gaming.  This script syntax uses letters as operators in some cases, the most common being something like 3d6.  Sadly irony seems to choke on that example in my grammar unless I express it as '3 d 6'.  Is there a way for me to instruct the parser to treat these new letter operands just like the typical ones and not require spacing?<br />\n",
+    "PostedDate": "2013-10-22T12:11:36.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1110735",
+    "ThreadId": "463202",
+    "Html": "here's a previous discussion of this language implementation:\r<br />\n<a href=\"http://irony.codeplex.com/discussions/449926\" rel=\"nofollow\">http://irony.codeplex.com/discussions/449926</a><br />\n",
+    "PostedDate": "2013-10-22T12:14:59.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2013-11-20T12:45:56.677-08:00"
+  },
+  {
+    "Id": "1110745",
+    "ThreadId": "463202",
+    "Html": "Thank you very much, I appreciate the assist.  It's impressive how quickly you reply to an issue, this solution is working great :)<br />\n",
+    "PostedDate": "2013-10-22T12:26:09.64-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

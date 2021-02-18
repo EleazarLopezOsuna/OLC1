@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1452443",
+    "ThreadId": "647579",
+    "Html": "Hi All,\r<br />\nI noticed that if you need to evaluate you need to have ScriptThread \r<br />\nvar output = rooAST.Evaluate(thread);\r<br />\n<br />\nand in order to create ScriptThread object you need a ScriptApp object, but the constructor of the ScriptApp expects your grammar to be child class of InterpretedLanguageGrammar not Grammar. \r<br />\nI did build my grammar by subclassing Grammar and I don't know what is the best way to solve this issue (All non-terminals got theri ASTNode class).\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2015-11-15T11:58:12.1-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1452462",
+    "ThreadId": "647579",
+    "Html": "all these things are built to work together, so if you want to use evaluation machinery already there, you should follow the rules, like using InterpretedLanguageGrammar as a base class. I don't understand, what is the big problem switching to it as a base class? Just change one word in class declaration<br />\n",
+    "PostedDate": "2015-11-15T17:13:18.16-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1452574",
+    "ThreadId": "647579",
+    "Html": "Hi Roman \r<br />\nThank you very much for replying back to me. You are right, I just changed again and it worked, when I subclass InterpretedLanguageGrammar didn't work before and I thought this is only for scripting languages.  I did it now and it is working.\r<br />\n<br />\nI have one more question, should I use DoEvaluate to validate the programming syntax , to generate MSIL code, or both?<br />\n",
+    "PostedDate": "2015-11-16T07:15:27.313-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

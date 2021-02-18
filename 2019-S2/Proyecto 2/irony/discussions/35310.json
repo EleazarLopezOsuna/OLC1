@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "117376",
+    "ThreadId": "35310",
+    "Html": "I'm new to this field and have already started building terminals(class), non terminals(class), scanner(class), and parser(class) manually based on traditional model.&nbsp; The traditional approach is nice since these are all classes + different types i can use a reflective visitor to make different representations of the ast.<br>\r\n<br>\r\nExample I could support:<br>\r\nindustry format -&gt; AST -&gt; visitor to &quot;my format&quot;<br>\r\nMANUALLY create AST -&gt; visitor to recreate industry format <br>\r\n<br>\r\nthe AST acts as the medium that allows the conversion to any format using visitors.<br>\r\n<br>\r\nTherefore if i needed to i should be able to create the AST without irony or parser.<br>\r\nWould i be able to accomplish this goal (AST as the medium) with Irony?<br>\r\n<br>\r\n<br>\r\nSince i will be using NonTerminal, Terminal classes in Irony will that mean that my visitor will need to contain logic to differentiate between terminals?<br>\r\nno method overloading since everything is NonTerminal, Terminal?&nbsp; or is it encouraged to inherit from these classes?<br>\r\n<br>\r\n<br>\r\nthanks<br>\r\n<br>\r\nleblanc meneses<br>\r\n",
+    "PostedDate": "2008-09-09T15:17:56.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "117449",
+    "ThreadId": "35310",
+    "Html": "<p>Hi</p>\r\n<p>Not quite sure what you mean by traditional model, but basically things in Irony are done quite similar to what happens in other parser tools. I think you confuse grammar terms (terminals and nonterminals) with elements of output AST tree - nodes - objects of type AstNode or derived classes. Terminals and NonTerminals are defined in grammar, and stay there.&nbsp;Parser produces AstNodes (or derived class instance) for each reduce operation corresponding to a production of nonterminal's rule. The exact type of AST node can be specified in NonTerminal's NodeType property. There are some basic AstNode classes already defined in Irony, but you can define more of your own. And then create &quot;reflective&quot; visitor as you call it. </p>\r\n<p>The alternative way would be to&nbsp;not define custom AST node classes;&nbsp;parse would&nbsp;create all nodes as instances of AstNode class.&nbsp;To distinguish nodes during visiting/processing, you can use &quot;Term&quot; property of each node which holds the terminal/nonterminal that corresponds to this node. You&nbsp;create a visitor with a big switch statement in Visit method for dispatching to appropriate processing:</p>\r\n<p>switch(node.Term.Name) {</p>\r\n<p>&nbsp; case &quot;Identifier&quot;:&nbsp; DoStuff(); break;</p>\r\n<p>&nbsp; case &quot;Expression&quot;: doOtherStuff(); break;<br>\r\n....<br>\r\n}</p>\r\n<p>Hope this helps<br>\r\nRoman</p>\r\n",
+    "PostedDate": "2008-09-09T21:46:03.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "118354",
+    "ThreadId": "35310",
+    "Html": "Thanks Roman,<br>\r\n<br>\r\nI'm trying to create a parser for an industry standard of RS274X<br>\r\nI created the grammer that interprets the first top level object: Polygon Area Fill (G36, G37) definition:<br>\r\n<br>\r\nG36*<br>\r\nX2Y4D02*<br>\r\nX7D01*<br>\r\nY2D01*<br>\r\nX11Y6D01*<br>\r\nX7Y9D01*<br>\r\nX7D01*<br>\r\nX2D01*Y4D01*G37*<br>\r\n<br>\r\n<br>\r\nthis will now be mapped to .net gdi+ FillPolygon.<br>\r\n<span></span>FillPolygon Method (Brush, <span>array&lt;</span>Point<span>&gt;</span><span>[]</span><span>()</span><span></span>)<br>\r\n<br>\r\n<br>\r\nHere is the output of my visitor:<br>\r\nBeginVisit PolygonAreaFillDefinition<br>\r\nBeginVisit G36<br>\r\nBeginVisit *<br>\r\nBeginVisit PointDefinition<br>\r\nBeginVisit AxisDefinition<br>\r\nBeginVisit X<br>\r\nBeginVisit NumberMakePlus<br>\r\nBeginVisit 2<br>\r\nBeginVisit AxisDefinition<br>\r\nBeginVisit Y<br>\r\nBeginVisit NumberMakePlus<br>\r\nBeginVisit 4<br>\r\nBeginVisit D02<br>\r\nBeginVisit *<br>\r\nBeginVisit PolygonAreaFillPointMakePlus<br>\r\nBeginVisit PolygonAreaFillPoint<br>\r\nBeginVisit AxisDefinition<br>\r\nBeginVisit X<br>\r\nBeginVisit NumberMakePlus<br>\r\nBeginVisit 7<br>\r\nBeginVisit D01<br>\r\nBeginVisit *<br>\r\nBeginVisit PolygonAreaFillPoint<br>\r\nBeginVisit AxisDefinition<br>\r\nBeginVisit Y<br>\r\nBeginVisit NumberMakePlus<br>\r\nBeginVisit 2<br>\r\nBeginVisit D01<br>\r\nBeginVisit *<br>\r\nBeginVisit PolygonAreaFillPoint<br>\r\nBeginVisit PointDefinition<br>\r\nBeginVisit AxisDefinition<br>\r\nBeginVisit X<br>\r\nBeginVisit NumberMakePlus<br>\r\nBeginVisit 1<br>\r\nBeginVisit 1<br>\r\nBeginVisit AxisDefinition<br>\r\nBeginVisit Y<br>\r\nBeginVisit NumberMakePlus<br>\r\nBeginVisit 6<br>\r\nBeginVisit D01<br>\r\nBeginVisit *<br>\r\nBeginVisit PolygonAreaFillPoint<br>\r\nBeginVisit PointDefinition<br>\r\nBeginVisit AxisDefinition<br>\r\nBeginVisit X<br>\r\nBeginVisit NumberMakePlus<br>\r\nBeginVisit 7<br>\r\nBeginVisit AxisDefinition<br>\r\nBeginVisit Y<br>\r\nBeginVisit NumberMakePlus<br>\r\nBeginVisit 9<br>\r\nBeginVisit D01<br>\r\nBeginVisit *<br>\r\nBeginVisit PolygonAreaFillPoint<br>\r\nBeginVisit AxisDefinition<br>\r\nBeginVisit X<br>\r\nBeginVisit NumberMakePlus<br>\r\nBeginVisit 7<br>\r\nBeginVisit D01<br>\r\nBeginVisit *<br>\r\nBeginVisit PolygonAreaFillPoint<br>\r\nBeginVisit AxisDefinition<br>\r\nBeginVisit X<br>\r\nBeginVisit NumberMakePlus<br>\r\nBeginVisit 2<br>\r\nBeginVisit D01<br>\r\nBeginVisit *<br>\r\nBeginVisit PolygonAreaFillPoint<br>\r\nBeginVisit AxisDefinition<br>\r\nBeginVisit Y<br>\r\nBeginVisit NumberMakePlus<br>\r\nBeginVisit 4<br>\r\nBeginVisit D01<br>\r\nBeginVisit *<br>\r\nBeginVisit G37<br>\r\nBeginVisit *<br>\r\n<br>\r\n<br>\r\nHow should i go about converting this tree into new Point(x, y) objects and creating a Graphic.FillPolygon method call?<br>\r\nSeems like i'll have to implement: http://en.wikipedia.org/wiki/State_pattern so i can maintain state and interpret the tree into meaningful parts. (meaning i'm still parsing)<br>\r\nOr i could extend astnode and create my own top level PolygonAreaFillAstNode.<br>\r\nOr i can send a visitor that simply is to recreate the same tree with specific areas of the tree optimized for easier parsing.<br>\r\nwhat is the recommended approach to interpret the tree to call Graphic.FillPolygon ?<br>\r\n<br>\r\n<br>\r\nAlso when i call compiler.Parse(txt)<br>\r\nif my grammer or input is not correct it returns null instead of an Irony.Compiler.AstNode.&nbsp; So how do i get errors back to know where it failed?&nbsp; character position?<br>\r\n<br>\r\n<br>\r\n<br>\r\nthanks,<br>\r\n-lm<br>\r\n<br>\r\n<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2008-09-13T12:27:35.753-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "118575",
+    "ThreadId": "35310",
+    "Html": "About your parser and .NET objects conversion - I don't understand at all what you're trying to do. If possible, please send me a zip with your code and comments.<br>\r\nErrors in parsing - errors are available through context.Errors property.<br>\r\nRoman\r\n",
+    "PostedDate": "2008-09-15T08:20:50.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "118725",
+    "ThreadId": "35310",
+    "Html": "http://resources.robusthaven.com/<br>\r\n<br>\r\ndownload: RS274XParser.zip&nbsp; <br>\r\nAbout the project:<br>\r\nBasically the only irony stuff are 3 files: <br>\r\nRS274XGrammar.cs - <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Root = PolygonAreaFillDefinition;&nbsp; // most of the grammer after PolygonAreaFillDefinition is not used... <br>\r\n<br>\r\nRS274XParser.cs<br>\r\nRS274XFileVisitor.cs<br>\r\n<br>\r\nall the other files was my attempt to manually create my own parser/scanner/ before i found irony.<br>\r\n<br>\r\nthe documentation folder in the project contains the industry format specification.<br>\r\n<br>\r\nthere is unit tests for my stuff and i started one file to test the irony grammar i created.<br>\r\nIronyVersion.cs, to successfully run the tests modify App.config to point to an absolute path.<br>\r\n<br>\r\n<br>\r\n<br>\r\n=============<br>\r\nLike i said i'm creating the ast tree for polygonareafilldefinition but i'm not seeing how i should preceed from the tree representation to what i really want a bitmap file.<br>\r\n<br>\r\n- lm<br>\r\n<br>\r\n",
+    "PostedDate": "2008-09-15T22:30:51.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "118946",
+    "ThreadId": "35310",
+    "Html": "<p>Got it - I'll have a look at it and reply directly to you shortly</p>\r\n<p>Roman</p>\r\n<p>&nbsp;PS Please contact me directly, let's handle details offline thru direct contact</p>\r\n",
+    "PostedDate": "2008-09-16T13:58:19.887-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

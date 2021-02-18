@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1490181",
+    "ThreadId": "660287",
+    "Html": "Hello,\r<br />\n<br />\nwith Irony Framework operators can be registered in the Grammar component class.\r<br />\nIn some languages, the operators are dependend of the operand type.\r<br />\nFor instance: number operator &quot;+&quot;,&quot;-&quot;<br />\n<pre><code>                 Boolean operator &quot;&amp;&quot;,&quot;|&quot;</code></pre>\n\nHow can i implement this in irony?\r<br />\n<br />\nThank you for all answers.<br />\n",
+    "PostedDate": "2016-12-22T06:53:21.003-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1490229",
+    "ThreadId": "660287",
+    "Html": "I has been solved.<br />\n",
+    "PostedDate": "2016-12-23T04:45:40.673-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2016-12-23T04:45:45.887-08:00"
+  }
+]

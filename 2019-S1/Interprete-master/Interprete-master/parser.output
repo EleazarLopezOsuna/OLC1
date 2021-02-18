@@ -1,0 +1,408 @@
+Terminals unused in grammar
+
+   id
+
+
+Gramática
+
+    0 $accept: INICIO $end
+
+    1 INICIO: LEXPA
+
+    2 LEXPA: LEXPA EXPA puntocoma
+    3      | EXPA puntocoma
+
+    4 EXPA: EXPA suma EXPA
+    5     | EXPA menos EXPA
+    6     | EXPA multi EXPA
+    7     | EXPA division EXPA
+    8     | EXPA potencia EXPA
+    9     | menos EXPA
+   10     | entero
+   11     | caracter
+   12     | decimal
+   13     | booleano
+   14     | cadena
+   15     | pari EXPA pard
+
+
+Terminales con las reglas donde aparecen
+
+$end (0) 0
+error (256)
+entero (258) 10
+decimal (259) 12
+caracter (260) 11
+booleano (261) 13
+cadena (262) 14
+id (263)
+pari (264) 15
+pard (265) 15
+suma (266) 4
+menos (267) 5 9
+multi (268) 6
+division (269) 7
+potencia (270) 8
+puntocoma (271) 2 3
+
+
+No terminales con las reglas donde aparecen
+
+$accept (17)
+    en la izquierda: 0
+INICIO (18)
+    en la izquierda: 1, en la derecha: 0
+LEXPA (19)
+    en la izquierda: 2 3, en la derecha: 1 2
+EXPA (20)
+    en la izquierda: 4 5 6 7 8 9 10 11 12 13 14 15, en la derecha:
+    2 3 4 5 6 7 8 9 15
+
+
+estado 0
+
+    0 $accept: . INICIO $end
+
+    entero    desplazar e ir al estado 1
+    decimal   desplazar e ir al estado 2
+    caracter  desplazar e ir al estado 3
+    booleano  desplazar e ir al estado 4
+    cadena    desplazar e ir al estado 5
+    pari      desplazar e ir al estado 6
+    menos     desplazar e ir al estado 7
+
+    INICIO  ir al estado 8
+    LEXPA   ir al estado 9
+    EXPA    ir al estado 10
+
+
+estado 1
+
+   10 EXPA: entero .
+
+    $default  reduce usando la regla 10 (EXPA)
+
+
+estado 2
+
+   12 EXPA: decimal .
+
+    $default  reduce usando la regla 12 (EXPA)
+
+
+estado 3
+
+   11 EXPA: caracter .
+
+    $default  reduce usando la regla 11 (EXPA)
+
+
+estado 4
+
+   13 EXPA: booleano .
+
+    $default  reduce usando la regla 13 (EXPA)
+
+
+estado 5
+
+   14 EXPA: cadena .
+
+    $default  reduce usando la regla 14 (EXPA)
+
+
+estado 6
+
+   15 EXPA: pari . EXPA pard
+
+    entero    desplazar e ir al estado 1
+    decimal   desplazar e ir al estado 2
+    caracter  desplazar e ir al estado 3
+    booleano  desplazar e ir al estado 4
+    cadena    desplazar e ir al estado 5
+    pari      desplazar e ir al estado 6
+    menos     desplazar e ir al estado 7
+
+    EXPA  ir al estado 11
+
+
+estado 7
+
+    9 EXPA: menos . EXPA
+
+    entero    desplazar e ir al estado 1
+    decimal   desplazar e ir al estado 2
+    caracter  desplazar e ir al estado 3
+    booleano  desplazar e ir al estado 4
+    cadena    desplazar e ir al estado 5
+    pari      desplazar e ir al estado 6
+    menos     desplazar e ir al estado 7
+
+    EXPA  ir al estado 12
+
+
+estado 8
+
+    0 $accept: INICIO . $end
+
+    $end  desplazar e ir al estado 13
+
+
+estado 9
+
+    1 INICIO: LEXPA .
+    2 LEXPA: LEXPA . EXPA puntocoma
+
+    entero    desplazar e ir al estado 1
+    decimal   desplazar e ir al estado 2
+    caracter  desplazar e ir al estado 3
+    booleano  desplazar e ir al estado 4
+    cadena    desplazar e ir al estado 5
+    pari      desplazar e ir al estado 6
+    menos     desplazar e ir al estado 7
+
+    $default  reduce usando la regla 1 (INICIO)
+
+    EXPA  ir al estado 14
+
+
+estado 10
+
+    3 LEXPA: EXPA . puntocoma
+    4 EXPA: EXPA . suma EXPA
+    5     | EXPA . menos EXPA
+    6     | EXPA . multi EXPA
+    7     | EXPA . division EXPA
+    8     | EXPA . potencia EXPA
+
+    suma       desplazar e ir al estado 15
+    menos      desplazar e ir al estado 16
+    multi      desplazar e ir al estado 17
+    division   desplazar e ir al estado 18
+    potencia   desplazar e ir al estado 19
+    puntocoma  desplazar e ir al estado 20
+
+
+estado 11
+
+    4 EXPA: EXPA . suma EXPA
+    5     | EXPA . menos EXPA
+    6     | EXPA . multi EXPA
+    7     | EXPA . division EXPA
+    8     | EXPA . potencia EXPA
+   15     | pari EXPA . pard
+
+    pard      desplazar e ir al estado 21
+    suma      desplazar e ir al estado 15
+    menos     desplazar e ir al estado 16
+    multi     desplazar e ir al estado 17
+    division  desplazar e ir al estado 18
+    potencia  desplazar e ir al estado 19
+
+
+estado 12
+
+    4 EXPA: EXPA . suma EXPA
+    5     | EXPA . menos EXPA
+    6     | EXPA . multi EXPA
+    7     | EXPA . division EXPA
+    8     | EXPA . potencia EXPA
+    9     | menos EXPA .
+
+    multi     desplazar e ir al estado 17
+    division  desplazar e ir al estado 18
+    potencia  desplazar e ir al estado 19
+
+    $default  reduce usando la regla 9 (EXPA)
+
+
+estado 13
+
+    0 $accept: INICIO $end .
+
+    $default  aceptar
+
+
+estado 14
+
+    2 LEXPA: LEXPA EXPA . puntocoma
+    4 EXPA: EXPA . suma EXPA
+    5     | EXPA . menos EXPA
+    6     | EXPA . multi EXPA
+    7     | EXPA . division EXPA
+    8     | EXPA . potencia EXPA
+
+    suma       desplazar e ir al estado 15
+    menos      desplazar e ir al estado 16
+    multi      desplazar e ir al estado 17
+    division   desplazar e ir al estado 18
+    potencia   desplazar e ir al estado 19
+    puntocoma  desplazar e ir al estado 22
+
+
+estado 15
+
+    4 EXPA: EXPA suma . EXPA
+
+    entero    desplazar e ir al estado 1
+    decimal   desplazar e ir al estado 2
+    caracter  desplazar e ir al estado 3
+    booleano  desplazar e ir al estado 4
+    cadena    desplazar e ir al estado 5
+    pari      desplazar e ir al estado 6
+    menos     desplazar e ir al estado 7
+
+    EXPA  ir al estado 23
+
+
+estado 16
+
+    5 EXPA: EXPA menos . EXPA
+
+    entero    desplazar e ir al estado 1
+    decimal   desplazar e ir al estado 2
+    caracter  desplazar e ir al estado 3
+    booleano  desplazar e ir al estado 4
+    cadena    desplazar e ir al estado 5
+    pari      desplazar e ir al estado 6
+    menos     desplazar e ir al estado 7
+
+    EXPA  ir al estado 24
+
+
+estado 17
+
+    6 EXPA: EXPA multi . EXPA
+
+    entero    desplazar e ir al estado 1
+    decimal   desplazar e ir al estado 2
+    caracter  desplazar e ir al estado 3
+    booleano  desplazar e ir al estado 4
+    cadena    desplazar e ir al estado 5
+    pari      desplazar e ir al estado 6
+    menos     desplazar e ir al estado 7
+
+    EXPA  ir al estado 25
+
+
+estado 18
+
+    7 EXPA: EXPA division . EXPA
+
+    entero    desplazar e ir al estado 1
+    decimal   desplazar e ir al estado 2
+    caracter  desplazar e ir al estado 3
+    booleano  desplazar e ir al estado 4
+    cadena    desplazar e ir al estado 5
+    pari      desplazar e ir al estado 6
+    menos     desplazar e ir al estado 7
+
+    EXPA  ir al estado 26
+
+
+estado 19
+
+    8 EXPA: EXPA potencia . EXPA
+
+    entero    desplazar e ir al estado 1
+    decimal   desplazar e ir al estado 2
+    caracter  desplazar e ir al estado 3
+    booleano  desplazar e ir al estado 4
+    cadena    desplazar e ir al estado 5
+    pari      desplazar e ir al estado 6
+    menos     desplazar e ir al estado 7
+
+    EXPA  ir al estado 27
+
+
+estado 20
+
+    3 LEXPA: EXPA puntocoma .
+
+    $default  reduce usando la regla 3 (LEXPA)
+
+
+estado 21
+
+   15 EXPA: pari EXPA pard .
+
+    $default  reduce usando la regla 15 (EXPA)
+
+
+estado 22
+
+    2 LEXPA: LEXPA EXPA puntocoma .
+
+    $default  reduce usando la regla 2 (LEXPA)
+
+
+estado 23
+
+    4 EXPA: EXPA . suma EXPA
+    4     | EXPA suma EXPA .
+    5     | EXPA . menos EXPA
+    6     | EXPA . multi EXPA
+    7     | EXPA . division EXPA
+    8     | EXPA . potencia EXPA
+
+    multi     desplazar e ir al estado 17
+    division  desplazar e ir al estado 18
+    potencia  desplazar e ir al estado 19
+
+    $default  reduce usando la regla 4 (EXPA)
+
+
+estado 24
+
+    4 EXPA: EXPA . suma EXPA
+    5     | EXPA . menos EXPA
+    5     | EXPA menos EXPA .
+    6     | EXPA . multi EXPA
+    7     | EXPA . division EXPA
+    8     | EXPA . potencia EXPA
+
+    multi     desplazar e ir al estado 17
+    division  desplazar e ir al estado 18
+    potencia  desplazar e ir al estado 19
+
+    $default  reduce usando la regla 5 (EXPA)
+
+
+estado 25
+
+    4 EXPA: EXPA . suma EXPA
+    5     | EXPA . menos EXPA
+    6     | EXPA . multi EXPA
+    6     | EXPA multi EXPA .
+    7     | EXPA . division EXPA
+    8     | EXPA . potencia EXPA
+
+    potencia  desplazar e ir al estado 19
+
+    $default  reduce usando la regla 6 (EXPA)
+
+
+estado 26
+
+    4 EXPA: EXPA . suma EXPA
+    5     | EXPA . menos EXPA
+    6     | EXPA . multi EXPA
+    7     | EXPA . division EXPA
+    7     | EXPA division EXPA .
+    8     | EXPA . potencia EXPA
+
+    potencia  desplazar e ir al estado 19
+
+    $default  reduce usando la regla 7 (EXPA)
+
+
+estado 27
+
+    4 EXPA: EXPA . suma EXPA
+    5     | EXPA . menos EXPA
+    6     | EXPA . multi EXPA
+    7     | EXPA . division EXPA
+    8     | EXPA . potencia EXPA
+    8     | EXPA potencia EXPA .
+
+    $default  reduce usando la regla 8 (EXPA)

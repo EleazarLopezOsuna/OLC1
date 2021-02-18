@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "659688",
+    "ThreadId": "269483",
+    "Html": "\r\n<p>I'm trying to build a parser for a DSL I'm building and found problem I can't find a way around.</p>\r\n<p>I have the following input:</p>\r\n<pre>yesterday at drug store \r\n</pre>\r\n<p>With the following grammar:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> expr = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;expr&quot;</span>);\r\n<span style=\"color:blue\">var</span> location = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;location&quot;</span>);\r\n\r\n<span style=\"color:blue\">var</span> date = <span style=\"color:blue\">new</span> RegexBasedTerminal(<span style=\"color:#a31515\">&quot;date&quot;</span>, <span style=\"color:#a31515\">@&quot;today|tomorrow|yesterday&quot;</span>);\r\n<span style=\"color:blue\">var</span> preposition = <span style=\"color:blue\">new</span> RegexBasedTerminal(<span style=\"color:#a31515\">&quot;preposition&quot;</span>, <span style=\"color:#a31515\">@&quot;at&quot;</span>);\r\n<span style=\"color:blue\">var</span> locationToken = <span style=\"color:blue\">new</span> RegexBasedTerminal(<span style=\"color:#a31515\">&quot;locationToken&quot;</span>, <span style=\"color:#a31515\">@&quot;.*&quot;</span>);\r\n\r\npreposition.Priority = Terminal.LowestPriority;\r\nlocationToken.Priority = Terminal.LowestPriority;\r\ndate.Priority = Terminal.HighestPriority;\r\n\r\nexpr.Rule =\r\n\tdate &#43; location\r\n\t| location &#43; date;\r\n\r\nlocation.Rule =\r\n\tpreposition &#43; locationToken\r\n\t| locationToken;          \r\n\r\n<span style=\"color:blue\">this</span>.MarkPunctuation(preposition);\r\n\r\n<span style=\"color:blue\">this</span>.Root = expr;\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>Which works like a charm giving me a Location and a Date. However if I change the input to&nbsp;</p>\r\n<p>at drug store yesterday</p>\r\n<p>It won't work because the locationToken regex is too broad. I thought that Priority could solve my problem but It didn't. Is there a way to do this? Or in a more broadly phrased question: is there a way to create a Terminal that gets everything that couldn't\r\n be tokenized?</p>\r\n<p>Thanks a lot!</p>\r\n",
+    "PostedDate": "2011-08-17T16:05:48.16-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "659787",
+    "ThreadId": "269483",
+    "Html": "<p>Terminal that matches all that couldn't be tokenized - no, there's no such terminal in Irony, yet. It is one of the suggested problems to work on (BackgroundTextTerminal, P11 : [<a href=\"http://irony.codeplex.com/wikipage?title=ContribProjects&amp;referringTitle=Home\">http://irony.codeplex.com/wikipage?title=ContribProjects</a>])</p>\n<p>Don't know match about regex, so just an idea - can you change locationToken to match one word only, like match any char except space?</p>",
+    "PostedDate": "2011-08-17T22:46:26.003-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "659971",
+    "ThreadId": "269483",
+    "Html": "<p>Thanks for the quick answer :)</p>\r\n<p>I need the locationToken to capture everything, since the location in question can be composed of multiple words so just a single word won't do. For now I think I will use a delimiter character (like comma for example) or use a StringLiteral to work around it.</p>\r\n<p>I will try to patch it to implement P11 even though I&acute;m not really good on parsers. I will let u know if I succeed.</p>\r\n<p>Thanks again! :)</p>",
+    "PostedDate": "2011-08-18T05:47:49.81-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "660022",
+    "ThreadId": "269483",
+    "Html": "<p>Hi!</p>\n<p>I think I was able to implement P11. Probably there are some problems with it (I can think of some situations) but I think I can share as a rough draw here so you (and others) can take a look and comment at it.</p>\n<p>I am still going to test it further and when done will submit a patch for the project.</p>\n<p>Here is the code:</p>\n<p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> BackgroundTextTerminal : Terminal\n    {\n        <span style=\"color: blue;\">public</span> BackgroundTextTerminal(<span style=\"color: blue;\">string</span> name) : <span style=\"color: blue;\">base</span>(name) { }\n\n        <span style=\"color: blue;\">private</span> List&lt;Terminal&gt; OtherTerminals { <span style=\"color: blue;\">get</span>; <span style=\"color: blue;\">set</span>; }\n\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> Init(GrammarData grammarData)\n        {\n            OtherTerminals = grammarData.AllTerms.Where(x =&gt; x.GetType().IsSubclassOf(<span style=\"color: blue;\">typeof</span>(Terminal)) &amp;&amp; x.Name != <span style=\"color: blue;\">this</span>.Name).Select(x =&gt; (Terminal)x).ToList();\n\n            <span style=\"color: blue;\">base</span>.Init(grammarData);\n        }\n\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">override</span> Token TryMatch(ParsingContext context, ISourceStream source)\n        {\n            <span style=\"color: blue;\">var</span> text = String.Empty;\n            <span style=\"color: blue;\">var</span> otherMatch = OtherTerminals.Any(t =&gt; t.TryMatch(context, source) != <span style=\"color: blue;\">null</span>);\n            <span style=\"color: blue;\">var</span> initialPosition = source.PreviewPosition;\n\n            <span style=\"color: blue;\">while</span> (!otherMatch)\n            {\n                text += source.Text.Substring(source.PreviewPosition, 1);\n\n                <span style=\"color: blue;\">if</span> (source.PreviewPosition == (source.Text.Length - 1))\n                    <span style=\"color: blue;\">break</span>;\n\n                source.PreviewPosition++;\n\n                otherMatch = OtherTerminals.Any(t =&gt; t.TryMatch(context, source) != <span style=\"color: blue;\">null</span>);\n            }\n\n            <span style=\"color: blue;\">if</span> (String.IsNullOrWhiteSpace(text))\n            {\n                <span style=\"color: blue;\">return</span> <span style=\"color: blue;\">null</span>;\n            }\n            <span style=\"color: blue;\">else</span>\n            {\n                source.PreviewPosition = initialPosition + text.Length;\n                <span style=\"color: blue;\">return</span> source.CreateToken(<span style=\"color: blue;\">this</span>.OutputTerminal);\n            }\n        }\n    }\n</pre>\n</div>\n</p>",
+    "PostedDate": "2011-08-18T07:15:58.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "660088",
+    "ThreadId": "269483",
+    "Html": "<p>&nbsp;</p>\r\n<p>Looks good, but...&nbsp;That's not what I had in mind - but you're on the right track!</p>\r\n<p>What your code does it stops at every char and tries to match ALL other terminals - making a full TryMatch call. This is very inefficient.<br />What you should do instead is: get a full list of all Firsts symbols from all other terminals (using Terminal.GetFirsts() method);</p>\r\n<p>then in Match method run through this list and make a search for the first occurrence of any of these First prefixes.</p>\r\n<p>(There might be some extra optimizations, like you group terminals by first char and first for this first char first, then try to match all prefixes in the group at this position P.)&nbsp;<br />When finally you match the prefix at position Px, you call otherTerminal.TryMatch to try full match and create a token; if a non-null token OToken is returned, you don't throw it away;</p>\r\n<p>you first create a Background token Btoken with all text before position Px, and then return multitoken with (BToken, OToken) inside.</p>",
+    "PostedDate": "2011-08-18T09:23:04.973-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

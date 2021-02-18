@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "997764",
+    "ThreadId": "432293",
+    "Html": "Hi,\r<br />\n<br />\nI'm trying to create a grammer using Irony and it work nice. But i had a problem:\r<br />\nSo my grammer is like c# code and here is an example of how to use it.<br />\n<pre><code>int x=5;\nprint x;</code></pre>\n\n=&gt; result 5\r<br />\n<br />\nThat's ok but the parsing is down Top so i had an error of parsing saying that &quot;x&quot; is not declared but the evaluation is great.\r<br />\n<br />\nIs there any way to inverse Parsing?\r<br />\n<br />\nThanks a lot.<br />\n",
+    "PostedDate": "2013-02-07T00:52:52.03-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "998187",
+    "ThreadId": "432293",
+    "Html": "honestly I don't understand a word you're saying. evaluation succeeds, but error in parsing? 'x is not declared' does not seem like a parser error, more like interpreter error... what do you mean by 'inverse parsing'?<br />\n",
+    "PostedDate": "2013-02-07T13:19:48.337-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "998365",
+    "ThreadId": "432293",
+    "Html": "Hi,\r<br />\n<br />\nwell the init function is called from the last node to the first. what i need to do is to call this function starting from the first Node going to the last. \r<br />\nNot childre first. \r<br />\n<br />\nThanks.<br />\n",
+    "PostedDate": "2013-02-07T23:56:57.157-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "999175",
+    "ThreadId": "432293",
+    "Html": "if you're trying to do variable allocation/scoping analysis, then Init method is wrong place to do it. It should be in a separate run/iteration over the AST tree\r<br />\nSo the ordering in Init should not matter\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-02-10T07:51:01.747-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "455799",
+    "ThreadId": "216123",
+    "Html": "<div>\r\n<div>\r\n<p>Dear Irony developer community,</p>\r\n<p>&nbsp;</p>\r\n<p>1. I've just dived into Irony as well the field of Domain-Specific Languages. I'm using Visual Studio 2008 with SilverLight 3 and the Irony 51617 DLL.</p>\r\n<p>In trying to duplicate the following segment of D. Flowers' tutorial code:</p>\r\n<pre id=pre9 lang=cs>MyGrammar grammar = <span>new</span> MyGrammar();\r\nLanguageCompiler compiler = <span>new</span> LanguageCompiler(grammar);\r\nAstNode program = compiler.Parse(source_code);</pre>\r\n<p>I've run into an obstacle: I can't find LanguageCompiler. Has it been replaced? Or am I missing a reference?</p>\r\n<p>2. I haven't found much online help in getting started with Irony, and none at all with code examples that work with the latest version. I hope I'm missing something. Do you guys have any advice, references, or resources that I could use?</p>\r\n<p>3. I'm interested in creating a&nbsp;validation program for owl 2 manchester syntax (<a href=\"http://www.w3.org/TR/2009/NOTE-owl2-manchester-syntax-20091027/\">http://www.w3.org/TR/2009/NOTE-owl2-manchester-syntax-20091027/</a>) using Irony.&nbsp;If anyone has any experience/knowledge in this area, I would much appreciate your assistance (in the form of&nbsp;advice, references, or resources).</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks!</p>\r\n</div>\r\n</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-15T13:09:44.05-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "455837",
+    "ThreadId": "216123",
+    "Html": "<p>1. Daniel's article (its code) is hopelessly out of sync with current Irony version. Look at Grammar.RunSample method in Irony project for an example of running a parser</p>\r\n<p>2. No docs, sorry. Play with samples, hopefully you'll figure it out.</p>\r\n<p>3. Have no idea about this. Anybody?</p>\r\n<p>Good luck</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-06-15T14:40:46.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "456227",
+    "ThreadId": "216123",
+    "Html": "<p>Grammar.RunSample? I didn't want to run anything, I just wanted to get the top node of the tree that results from parsing a string of source with respect to a certain grammar. I found what I was looking for from slowing tracing through the GrammarExplorer project:</p>\r\n<pre style=\"color:#000000;font-family:Consolas, 'Courier New', Courier, monospace;font-size:1em;margin:8px\">MyGrammar grammar = <span style=\"color:blue\">new</span> MyGrammar();\r\nLanguageData language = <span style=\"color:blue\">new</span> LanguageData(grammar);\r\nParser parser = <span style=\"color:blue\">new</span> Parser(language);\r\nparser.Parse(source_code);\r\nParseTree parseTree = parser.Context.CurrentParseTree;\r\nParseTreeNode program = parseTree.Root;</pre>\r\n<p>Thanks though!</p>",
+    "PostedDate": "2010-06-16T08:20:41.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "457231",
+    "ThreadId": "216123",
+    "Html": "<p>I was having this exact same problem and have been scratching my head about it for the past couple of hours. Thanks.</p>",
+    "PostedDate": "2010-06-18T05:42:34.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

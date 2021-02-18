@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "i generated documentation for irony using Sandcastle but  with [Missing <summary> documentation \r\ni hope we get xml built in documentation to help using  Irony,  at least for public properties/methods .\r\nI found valuable documentation in the form of comments // not  /// which is  needed for xml docs, which can be modified to be usable in the generated docs.\r\nThanks for that great software.\r\n\r\n\r\n",
+    "LastUpdatedDate": "2015-01-20T14:08:17.963-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2013-09-28T09:26:12.74-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Xml documentation for public methods /properties",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 3,
+    "Id": 9887
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

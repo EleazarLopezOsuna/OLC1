@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1281551",
+    "ThreadId": "555894",
+    "Html": "hi,\r<br />\ni want to parse a structure like this: &quot;Node time &gt;= 1 Endnode&quot; where &quot;time &gt;= 1&quot; is an expression with &quot;time&quot; as some user defined name of the variable  followed by &quot;&gt;=&quot; and a number...this expression can occur multiple times..i.e.: &quot;Node time &gt;= 1 weight &gt;= 5 x &gt;= 0 Endnode&quot;\r<br />\n<br />\ni definded the grammar like this:<br />\n<pre><code>// Terminals\n            Terminal number = new NumberLiteral(&quot;number&quot;);\n            IdentifierTerminal identifier = new IdentifierTerminal(&quot;Identifier&quot;);\n            KeyTerm ENDNODE = ToTerm(&quot;Endnode;&quot;);\n            KeyTerm NODE = ToTerm(&quot;Node&quot;);\n\n            // Non-terminals\n            NonTerminal Node = new NonTerminal(&quot;Node&quot;);\n            NonTerminal LTN = new NonTerminal(&quot;LTN&quot;);\n            NonTerminal UGL = new NonTerminal(&quot;UGL&quot;);\n\n            // BNF\n            Node.Rule = NODE + LTN + ENDNODE;\n            LTN.Rule = MakePlusRule(LTN, UGL);\n            UGL.Rule = identifier + ToTerm(&quot;&gt;=&quot;) + number;\n\n            LanguageFlags = LanguageFlags.NewLineBeforeEOF;\n            this.Root = Node;</code></pre>\n\nand the paring code:<br />\n<pre><code> LanguageData language = new LanguageData(new GrammarClass());\n\n            Parser parser = new Parser(language);\n\n            ParseTree parseTree = parser.Parse(&quot;Node time &gt;= 13 x &gt;= 12 Endnode;&quot;);\n\n            ParseTreeNode root = parseTree.Root;</code></pre>\n\nbut this isnt working...the root object is null.\r<br />\n<br />\nif i change the last rule<br />\n<pre><code> UGL.Rule = identifier + ToTerm(&quot;&gt;=&quot;) + number;</code></pre>\n\nto:<br />\n<pre><code> UGL.Rule = number+ ToTerm(&quot;&gt;=&quot;) + number;</code></pre>\n\nor:<br />\n<pre><code> UGL.Rule = ToTerm(&quot;&gt;=&quot;) + number;</code></pre>\n\nthe string &quot;Node time 1&gt;= 13  1&gt;= 12 Endnode;&quot; and &quot;Node &gt;= 13 &gt;= 12 Endnode;&quot; can be parsed correctly...only if i put the &quot;identifier&quot; at the beginning of the rule the root object is null...why is this? is there something wrong with the IdentifierTerminal?<br />\n",
+    "PostedDate": "2014-08-02T11:18:56.93-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1284421",
+    "ThreadId": "555894",
+    "Html": "remove ';' from Endnode and add it explicitly in the UGL rule:<br />\n<pre><code>        Node.Rule = NODE + LTN + ENDNODE + &quot;;&quot;;</code></pre>\n\n",
+    "PostedDate": "2014-08-04T01:05:25.6-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

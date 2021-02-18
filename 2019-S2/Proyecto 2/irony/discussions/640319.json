@@ -1,0 +1,138 @@
+[
+  {
+    "Id": "1431441",
+    "ThreadId": "640319",
+    "Html": "I have been working with a friend on creating a grammar for parsing AngelScript using Irony. As usual there were various ambiguities in the grammar specification that cause conflicts. I have attempted to fix these however I have not been 100% successful. I think that I must be using the hints and ReduceIf calls incorrectly.<br />\n<br />\nBelow this are some specific questions I have, then below the questions is the full grammar spec for AngelScript. I have also uploaded my current sourcecode to <a href=\"https://gist.github.com/anonymous/f2186d671b8cbe71c91e\" rel=\"nofollow\">https://gist.github.com/anonymous/f2186d671b8cbe71c91e</a>.<br />\nCan you please point out if I am doing things incorrectly in my sourcecode? <br />\n<br />\n1) Does ReduceIf() only operate on a single character rather than strings of characters?<br />\n<br />\n2) Does TokenPreviewHint() only operate on a single character rather than strings of characters?<br />\n<br />\n3) I tried to differentiate between &quot;modifiers&quot; (such as private, public, shared, etc) for various things like functions and classes based on example #4 from &quot;Irony.Tests\\TokenPreviewResolution\\ConflictGrammars.cs&quot;. However when I look at the Parse Trace in &quot;Irony Grammer Explorer&quot; it appears that my TokenPreviewHint is not working properly. <br />\n<br />\nI do a test parse of:<br />\n<pre><code>shared enum MyEnum { eValue0, eValue2 = 2, eValue3 = 3 }</code></pre>\n\nUsing the hint rule (from my sourcecode):<br />\n<pre><code>var enum_mod_hint = new TokenPreviewHint(PreferredActionType.Reduce, k_ENUM,  k_CLASS, op_L_PAR, k_INTERFACE);</code></pre>\n\nAnd the Parse Trace reports:<br />\n<blockquote>\nConditional Parser Action.<br />\nChecking condition: Reduce if enum comes before class l_par interface.<br />\nAll conditions failed, executing default action. Reduce on 'enum_modifier-&gt;shared'<br />\nPopped state from stack, pushing enum_modifier.<br />\n</blockquote>\nI would expect the condition to be TRUE here based on my sourcecode and the text being parsed. What am I doing wrong?<br />\n<br />\n4) I am still having grammar conflict errors in the rule for INTERFACE_IV, where it should choose INTFMTHD if it sees a &quot;{&quot; character before &quot;(&quot; or choose VIRTPROP if it sees a &quot;(&quot; before a &quot;{&quot;. I have tried inserting hints in various ways, but every way I do it I still get the grammar conflicts. My sourcecode shows some of the various ways I have tried to do so in commented out code lines are the line:<br />\n<pre><code>INTERFACE_IV.Rule = ReduceIf(&quot;{&quot;, &quot;(&quot;) + INTFMTHD | ReduceIf(&quot;(&quot;, &quot;{&quot;) + VIRTPROP;</code></pre>\n\nWhat am I doing wrong here? Why does this not work when it seems to me that it should work?<br />\n<br />\n<br />\n<br />\nThis is the full AngelScript grammar:<br />\n<blockquote>\nARGLIST ::= '(' [IDENTIFIER ':'] ASSIGN {',' [IDENTIFIER ':'] ASSIGN} ')'<br />\nASSIGN ::= CONDITION [ ASSIGNOP ASSIGN ]<br />\nASSIGNOP ::= '=' | '+=' | '-=' | '*=' | '/=' | '|=' | '&amp;=' | '^=' | '%=' | '**=' | '&lt;&lt;=' | '&gt;&gt;=' | '&gt;&gt;&gt;=' <br />\nBITOP ::= '&amp;' | '|' | '^' | '&lt;&lt;' | '&gt;&gt;' | '&gt;&gt;&gt;'<br />\nBITS ::= single token:  binary 0b or 0B, octal 0o or 0O, decimal 0d or 0D, hexadecimal 0x or 0X<br />\nBREAK ::= 'break' ';'<br />\nCASE ::= (('case' EXPR) | 'default') ':' {STATEMENT}<br />\nCAST ::= 'cast' '&lt;' TYPE '&gt;' '(' ASSIGN ')'<br />\nCLASS ::= {'shared' | 'abstract' | 'final'} 'class' IDENTIFIER [':' IDENTIFIER {',' IDENTIFIER}] '{' {VIRTPROP | FUNC | VAR} '}'<br />\nCOMPOP ::= '==' | '!=' | '&lt;' | '&lt;=' | '&gt;' | '&gt;=' | 'is' | '!is'<br />\nCONDITION ::= EXPR ['?' ASSIGN ':' ASSIGN]<br />\nCONSTRUCTCALL ::= TYPE ARGLIST<br />\nCONTINUE ::= 'continue' ';'<br />\nDATATYPE ::= IDENTIFIER | PRIMTYPE | '?' | 'auto'<br />\nDOWHILE ::= 'do' STATEMENT 'while' '(' ASSIGN ')' ';'<br />\nENUM ::= ['shared'] 'enum' IDENTIFIER '{' IDENTIFIER ['=' EXPR] {',' IDENTIFIER ['=' EXPR]} '}'<br />\nEXPR ::= (TYPE '=' INILIST) | (EXPRTERM {EXPROP EXPRTERM})<br />\nEXPR_OP ::= MATHOP | COMPOP | LOGICOP | BITOP<br />\nEXPR_PREOP ::= '-' | '+' | '!' | '++' | '--' | '~' | '@'<br />\nEXPR_POSTOP ::= ('.' (FUNCCALL | IDENTIFIER)) | ('[' [IDENTIFIER ':'] ASSIGN {',' [IDENTIFIER ':' ASSIGN} ']') | ARGLIST | '++' | '--'<br />\nEXPR_STAT ::= [ASSIGN] ';'<br />\nEXPR_TERM ::= {EXPRPREOP} EXPRVALUE {EXPRPOSTOP}<br />\nEXPR_VALUE ::= 'void' | CONSTRUCTCALL | FUNCCALL | VARACCESS | CAST | LITERAL | '(' ASSIGN ')'<br />\nFOR ::= 'for' '(' (VAR | EXPR_STAT) EXPR_STAT [ASSIGN {',' ASSIGN}] ')' STATEMENT<br />\nFUNC ::= ['private' | 'protected' | 'shared'] [((TYPE ['&amp;']) | '~')] IDENTIFIER PARAMLIST ['const'] {'override' | 'final'} STATBLOCK <br />\nFUNCCALL ::= SCOPE IDENTIFIER ARGLIST<br />\nFUNCDEF ::= 'funcdef' TYPE ['&amp;'] IDENTIFIER PARAMLIST ';'<br />\nIDENTIFIER ::= single token:  starts with letter or _, can include any letter and digit, same as in C++<br />\nIF ::= 'if' '(' ASSIGN ')' STATEMENT ['else' STATEMENT]<br />\nIMPORT ::= 'import' TYPE ['&amp;'] IDENTIFIER PARAMLIST 'from' STRING ';'<br />\nINITLIST ::= '{' [ASSIGN | INITLIST] {',' [ASSIGN | INITLIST]} '}'<br />\nINTERFACE ::= ['shared'] 'interface' IDENTIFIER [':' IDENTIFIER {',' IDENTIFIER}] '{' {VIRTPROP | INTFMTHD} '}'<br />\nINTFMTHD ::= TYPE ['&amp;'] IDENTIFIER PARAMLIST ['const'] ';'<br />\nLITERAL ::= NUMBER | STRING | BITS | 'true' | 'false' | 'null'<br />\nLOGICOP ::= '&amp;&amp;' | '||' | '^^' | 'and' | 'or' | 'xor'<br />\nMATHOP ::= '+' | '-' | '<em>' | '/' | '%' | '</em>*'<br />\nMIXIN ::= 'mixin' CLASS<br />\nNAMESPACE ::= 'namespace' IDENTIFIER '{' SCRIPT '}'<br />\nPARAMLIST ::= '(' ('void' | (TYPE TYPEMOD [IDENTIFIER] ['=' EXPR] {',' TYPE TYPEMOD [IDENTIFIER] ['=' EXPR]}) ')'<br />\nPRIMTYPE ::= 'void' | 'int' | 'int8' | 'int16' | 'int32' | 'int64' | 'uint' | 'uint8' | 'uint16' | 'uint32' | 'uint64' | 'float' | 'double' | 'bool'<br />\nNUMBER ::= single token:  includes integers and real numbers, same as C++<br />\nRETURN ::= 'return' [ASSIGN] ';'<br />\nSCOPE ::= [[IDENTIFIER] '::' {IDENTIFIER '::'}]<br />\nSCRIPT ::= {IMPORT | ENUM | TYPEDEF | CLASS | MIXIN | INTERFACE | FUNCDEF | VIRTPROP | VAR | FUNC | NAMESPACE | ';'}<br />\nSTATBLOCK ::= '{' {VAR | STATEMENT} '}'<br />\nSTATEMENT ::= (IF | FOR | WHILE | RETURN | STATBLOCK | BREAK | CONTINUE | DOWHILE | SWITCH | EXPR_STAT)<br />\nSTRING ::= single token:  single quoted ', double quoted &quot;, or heredoc multi-line string &quot;&quot;&quot;<br />\nSWITCH ::= 'switch' '(' ASSIGN ')' '{' {CASE} '}'<br />\nTYPE ::= ['const'] SCOPE DATATYPE ['&lt;' TYPE {',' TYPE} '&gt;'] { ('[' ']') | '@' }<br />\nTYPEDEF ::= 'typedef' PRIMTYPE IDENTIFIER ';'<br />\nTYPEMOD ::= ['&amp;' ['in' | 'out' | 'inout']]<br />\nVAR ::= ['private'|'protected'] TYPE IDENTIFIER [( '=' (INITLIST | EXPR)) | ARGLIST] {',' IDENTIFIER [( '=' (INITLIST | EXPR)) | ARGLIST]} ';'<br />\nVARACCESS ::= SCOPE IDENTIFIER<br />\nVIRTPROP ::= ['private' | 'protected'] TYPE ['&amp;'] IDENTIFIER '{' {('get' | 'set') ['const'] [('override' | 'final')] (STATBLOCK | ';')} '}'<br />\nWHILE ::= 'while' '(' ASSIGN ')' STATEMENT<br />\n</blockquote>\n",
+    "PostedDate": "2015-06-22T21:55:37.633-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431442",
+    "ThreadId": "640319",
+    "Html": "edit: removed sourcecode chunks as it is now available on gist.guthub<br />\n",
+    "PostedDate": "2015-06-22T21:59:04.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431443",
+    "ThreadId": "640319",
+    "Html": "edit: removed sourcecode chunks as it is now available on gist.guthub<br />\n",
+    "PostedDate": "2015-06-22T21:59:44.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431444",
+    "ThreadId": "640319",
+    "Html": "edit: removed sourcecode chunks as it is now available on gist.guthub<br />\n",
+    "PostedDate": "2015-06-22T22:02:51.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431445",
+    "ThreadId": "640319",
+    "Html": "edit: removed sourcecode chunks as it is now available on gist.guthub<br />\n",
+    "PostedDate": "2015-06-22T22:03:31.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431446",
+    "ThreadId": "640319",
+    "Html": "edit: removed sourcecode chunks as it is now available on gist.guthub<br />\n",
+    "PostedDate": "2015-06-22T22:04:14.657-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431447",
+    "ThreadId": "640319",
+    "Html": "Please use some code share site like gist or smth for your grammar. \r<br />\n<a href=\"https://gist.github.com/\\\" rel=\"nofollow\">https://gist.github.com/\\</a><br />\n",
+    "PostedDate": "2015-06-22T22:09:15.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431451",
+    "ThreadId": "640319",
+    "Html": "Ok I have added the grammar to gist.github, I will edit the above posts to remove the huge sourcecode chunks to make the thread more readable.<br />\n<br />\n<a href=\"https://gist.github.com/anonymous/f2186d671b8cbe71c91e\" rel=\"nofollow\">https://gist.github.com/anonymous/f2186d671b8cbe71c91e</a><br />\n<br />\n(I edited the link to also include the grammar in a file)<br />\n",
+    "PostedDate": "2015-06-22T22:20:44.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431583",
+    "ThreadId": "640319",
+    "Html": "Oh man, sorry to tell you this, but this grammar is really messed up. Just launch GrammarExplorer and look at Non-Terminals tab. The list opens with 4 (!!!) identical ** non-terminals. Start scrolling and you'll find many other duplicates. This is really bad, and should be cleaned up first. After looking at grammar code, I guess the reason is that you use all of these helper methods that construct non-terminals on the fly. This is a bad thing; while in general in .NET code there's nothing wrong with having multiple copies of the same thing, in LALR grammar it is VERY BAD THING - a primary source of conflicts - which I see you tried to fix with hints and custom actions. \r<br />\nSo start with removing all duplicates. General rule/recommendation - do not use non-terminals constructed on-the-fly, everything should be declared explicitly with appropriate name. One example - you have Optional() method, it does the same as &quot;.Q()&quot; method already in Irony (Q for Question mark) - do not use it, use of Q() is strongly discouraged too. Declaring everything explicitly helps you keep grammar slim and avoid bogus conflicts. This is the reality of LALR algorithm, not Irony's quirks. Comment out all these custom parser actions, hints, etc - these may come only at the very end, when you clearly understand the remaining conflicts. \r<br />\nOne thing - you have a Number and BITS terminals, identical by definition, and used inside one rule with OR between them. This is another type of duplicate that Irony cannot detect, but which can become trouble. Since they are identical by definition (call to the same CreateAngelNumber function), they are different only semantically, not syntactically - and therefore you should use just one terminal for both - and probably re-classify some Numbers as Bits in semantic analysis (after parsing)\r<br />\nHaving so many dups with the same name makes it impossible to debug/analyse the grammar. \r<br />\nIn general, throw away the original BNF describing the language. From my own experience, these descriptive grammar are good for describing the language to humans but unfit for LALR parser. Start from scratch, designing grammar from you own understanding of the language. A good starting point is C grammar. \r<br />\nWith C-style language, a common problem is the lists of modifiers (public, private, static etc) preceding element definition. These lists are slightly different for each element type (class or function or prop). The solution is to use the same (one and the only, all-inclusive) list term for all element types, and later detect improper use of modifier in after-parse analysis (by running through parse tree).\r<br />\nI would also advise, at least initially, to remove all this fancy stuff (like char ranges which look suspiciously like Unicode categories/ language pages), slim down to very basics and try to build an initial grammar with minimal amount of conflicts. Start using hints ONLY after you tried everything else, and you clearly understand the nature of the conflict to fix, and you know that this is language ambiguity (like dangling else), so it MUST be solved by hint. Minimize number of terminals and non-terminals. By the way, there's nothing wrong with using direct string literals inside expressions, without explicitly declaring them - they are converted to term objects automatically. \r<br />\nSo my advise - cleanup first.\r<br />\nRoman<br />\n",
+    "PostedDate": "2015-06-23T10:42:35.673-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431637",
+    "ThreadId": "640319",
+    "Html": "Thank you, that already helps a lot. I was treating it like it required a strict grammar match to exactly fit the grammar specification. But I see now that more of a loose match is done to set up the parse tree where the various nodes are then visited in a later (semantics) pass to perform the stricter match.\r<br />\n<br />\nI am rewriting it now to simplify it. You say not to use Optional() or Q(), but is it ok to use MakeStarRule() if it has a named NonTerminal (and optional delimiter)?\r<br />\nOr should I replace MakeStarRule() calls with my own handcoded rules for doing star rule?<br />\n",
+    "PostedDate": "2015-06-23T18:19:25.053-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431644",
+    "ThreadId": "640319",
+    "Html": "why you need your own hard-coded code for making lists?! I would recommend to stick with standard Irony-implemented methods - just inspect source code of all variations, see what they do. Pretty sure they cover most if not all cases - at least what I expect to be in c-like language like AngelScript. If MakeStar/PlusRule do not work for you, be very careful inventing your own - again, LALR parsing is very sensitive to seemingly little things. Note that these methods are just helper/shortcuts over LALR, abiding to LALR limitations. So if these methods don't work for you, you can just fall back to traditional definition of lists thru a couple of recursive bnf rules.<br />\n",
+    "PostedDate": "2015-06-23T21:31:38.587-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431645",
+    "ThreadId": "640319",
+    "Html": "What he meant by that was if it was okay to use the MakeStar/PlusRule methods. Or if he should make his own NonTerminal that does what MakeStar/PlusRule do for us before. So instead of calling the MakeStar rule he defines a non terminal in the constructor and does the same thing that the methods do for us which is creates a new terminal and set its flags and such. Since you mentioned we shouldnt be using the Optional or Q methods because they create an extra nonterminal so he just wanted to be sure if this applies for the StarPlus methods as well since they also create a new one. The make star rule function that he created was just a wrapper to help. It would name the list item so it didnt appear as unnamed when the MakeStar rule creates the new nonterminal. Because when you pass it a BnfExpression they arent named so this gives us the ability to set that name for it. Thanks for all the help, you really have clarified a lot of things.<br />\n",
+    "PostedDate": "2015-06-23T21:55:47.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431658",
+    "ThreadId": "640319",
+    "Html": "Yeh what Anth0ny said. Just wondering if it is ok to use the built in MakeStarRule and MakePlusRule methods.\r<br />\n<br />\n<br />\nAlso is there any preference as to how this should be handled:\r<br />\nA ::= (B | C) + (D | E)\r<br />\n<br />\nWhich of the following should I do?\r<br />\n<br />\n1) A.Rule = (B | C) + (D | E)\r<br />\n<br />\n2) A.Rule = B + D | B + E | C + D | C + E\r<br />\n<br />\n3) BC.Rule = B | C\r<br />\n   DE.Rule = D | E\r<br />\n   A.Rule = BC + DE<br />\n",
+    "PostedDate": "2015-06-24T00:33:33.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431733",
+    "ThreadId": "640319",
+    "Html": "1 - nothing wrong with it. The only trouble will come if you start defining AST nodes (for interpreter), then AST node for A would have to deal with a possible variety of child node types <br />\n",
+    "PostedDate": "2015-06-24T09:35:37.653-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431780",
+    "ThreadId": "640319",
+    "Html": "It's been rewritten as you suggested without use of custom actions and by not creating terminals at runtime and it seems like most of it is correct besides the 3 reduce-reduce errors which I cant seem to spot where its coming from.\r<br />\n<br />\n<a href=\"http://pastebin.com/8qyXJrx7\" rel=\"nofollow\">http://pastebin.com/8qyXJrx7</a><br />\n",
+    "PostedDate": "2015-06-24T15:15:13.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1432092",
+    "ThreadId": "640319",
+    "Html": "Thanks for you help Roman, by loosening the restrictions and doing various rule rewrites I was able to get it to parse correctly (finally).<br />\n",
+    "PostedDate": "2015-06-26T17:31:15.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1432100",
+    "ThreadId": "640319",
+    "Html": "Great! and good luck to you guys<br />\n",
+    "PostedDate": "2015-06-26T21:04:14.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1090718",
+    "ThreadId": "456387",
+    "Html": "I have a conflict with this grammar <br />\nEntity.Rule = MakeStarRule(Entity, Member);<br />\nMember.Rule = Property | Operation;<br />\nProperty.Rule = ID + Many_opt + ID + ToTerm(&quot;;&quot;);<br />\nOperation.Rule = ID + ID + ToTerm(&quot;(&quot;) + ToTerm(&quot;)&quot;);<br />\nMany_opt.Rule = Empty | ToTerm(&quot;*&quot;);<br />\n<br />\nI saw a <a href=\"67217\" rel=\"nofollow\">discussion</a><br />\n about ReduceIf which could help me but i don't understand how i can use it in my case.<br />\n",
+    "PostedDate": "2013-09-10T09:38:44.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1091005",
+    "ThreadId": "456387",
+    "Html": "I think the problem is in Many_opt nonterminal; so you should add a ReduceIf stating that it should be reduced if there's semicolon ahead (before opening brace).<br />\n",
+    "PostedDate": "2013-09-10T23:45:05.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1091009",
+    "ThreadId": "456387",
+    "Html": "Thank you roman,\r<br />\n<br />\nI added this line Many_opt.AddHintToAll(ReduceIf(&quot;;&quot;, &quot;(&quot;)) and all is ok.\r<br />\nBut is it the right way ?<br />\n",
+    "PostedDate": "2013-09-11T00:05:46.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1091316",
+    "ThreadId": "456387",
+    "Html": "yep, why not? Just test it on inputs that cover all possible cases and make sure the output tree is correct.<br />\n",
+    "PostedDate": "2013-09-11T09:59:36.39-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

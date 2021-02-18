@@ -1,0 +1,4 @@
+var variable1, variable2, variable3 = 2;
+var variable4;
+var variable5 = true, variable6 = '5', variable7 = "asdasd";
+var variable8 = 4.12, variable9 = false, variable10 = 2; 

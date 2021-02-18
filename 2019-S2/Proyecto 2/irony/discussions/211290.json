@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "438020",
+    "ThreadId": "211290",
+    "Html": "<p>Hi,</p>\r\n<p>I'm parsing based on a simple grammar. Essentially, if I make ListOfIdsInPar transient, then I can't walk the parse tree to find children of the transient node. Also, the parse tree contains some unexpected nodes such as &quot;Keyword&quot;.&nbsp;Have you seen anything like this?&nbsp;&nbsp;&nbsp;</p>\r\n<p style=\"padding-left:30px\">var IdAtom = TerminalFactory.CreatePythonIdentifier(&quot;IdAtom&quot;);</p>\r\n<p style=\"padding-left:30px\">ListOfIdsInPar.Rule =&quot;(&quot; + ListOfIds + &quot;)&quot;;</p>\r\n<p style=\"padding-left:30px\">ListOfIds.Rule = MakePlusRule(ListOfIds, comma, Id);</p>\r\n<p style=\"padding-left:30px\">Id.Rule = MakePlusRule(Id, dot, IdAtom);</p>\r\n<p style=\"padding-left:30px\">base.MarkTransient(ListOfIdsInPar);</p>\r\n<p>Okay. I've just downloaded the latest code via SVN. Hopefully the problem will go away. Maybe it's me. Not sure yet.</p>\r\n<p>thanks,<br>Steven</p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"font-size:x-small\"><span>&nbsp;</span></span></p>",
+    "PostedDate": "2010-05-02T05:17:23.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "438385",
+    "ThreadId": "211290",
+    "Html": "<p>Hi Again,</p>\r\n<p>I've got the most recent&nbsp;version of Irony installed&nbsp;with SVN. Here's the error from the Grammar Explorer: &quot;Transient non-terminal must have zero or&nbsp;one non-punctuation child nodes; non-terminals: ListOfIdsInPar&quot;</p>\r\n<p>So, I removed all of my Transients (it worked), then put them back in one by one (it worked bar one... almost there).</p>\r\n<p>To cut a long story short, I hunted through the Irony code + examples one more time; use use&nbsp;NonGrammarTerminals.Add.</p>\r\n<p>At least it forced me to hook up SVN.</p>\r\n<p>-Steven</p>",
+    "PostedDate": "2010-05-03T08:26:13.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "438405",
+    "ThreadId": "211290",
+    "Html": "<p>You should register &quot;(&quot; and &quot;)&quot; as punctuation nodes, that will do it.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-05-03T08:59:36.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "438535",
+    "ThreadId": "211290",
+    "Html": "<p>That's fantastic, I've been able to use &quot;punctuation nodes&quot; elsewhere for keywords that I see as markers and don't want ot see in parse tree. It's taking shape.</p>\r\n<p>thanks,<br>-Steven</p>",
+    "PostedDate": "2010-05-03T15:03:22.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

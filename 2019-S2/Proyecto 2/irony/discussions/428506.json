@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "983063",
+    "ThreadId": "428506",
+    "Html": "\r\n<p>I have a binary expression that I am parsing and it works great until I put a dot.</p>\r\n<p>This works:<br>\r\nx = 3 AND (y = 4)</p>\r\n<p>This does not work:<br>\r\nx.Value = 3 AND (y = 4)</p>\r\n<p>Error I Get:<br>\r\nInvalid Character &quot;.&quot;</p>\r\n<p>Any thoughts? &nbsp;There is nothing specific in my grammar discussing anything at all with the character &quot;.&quot;. &nbsp;i.e. I want it to be treated just like a normal string character would.&nbsp;</p>\r\n",
+    "PostedDate": "2013-01-04T07:32:10.943-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "983208",
+    "ThreadId": "428506",
+    "Html": "\r\n<p>add &quot;.&quot; to the list of allowed characters in IdentifierTerminal constructor</p>\r\n",
+    "PostedDate": "2013-01-04T14:28:38.367-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

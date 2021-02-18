@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "807043",
+    "ThreadId": "347716",
+    "Html": "<p>Hello</p>\n<p>I am implementing a function call syntax with a variable number of parameters as input, like this:</p>\n<p>f(1), f(1,2), f(1,2,3), and so on</p>\n<p>this is my implementation:</p>\n<div style=\"background-color: white; color: black;\">\n<pre>firstParameter.Rule = simpleExpression;\r\nadditionalParameters.Rule = MakeStarRule(additionalParameters, <span style=\"color: #a31515;\">\",\"</span> + simpleExpression);\r\nparameterList.Rule = <span style=\"color: #a31515;\">\"(\"</span> + firstParameter + additionalParameters + <span style=\"color: #a31515;\">\")\"</span>;\r\nnAryExpression.Rule = nAryOperator + parameterList;\r\n\r\nIt works, but in the AST i find several \"UnnamedX\" nodes i would like to mark as transient.</pre>\n<pre>How can i do that?</pre>\n<pre>Thank you very much!!!</pre>\n<pre> Esteban.</pre>\n</div>",
+    "PostedDate": "2012-03-07T10:50:49.477-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "807541",
+    "ThreadId": "347716",
+    "Html": "<p>why you do all these \"firstParameter\", \"additionalParameter\", etc? why not simply a plus-list of a parameter?</p>",
+    "PostedDate": "2012-03-08T09:07:56.1-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "807659",
+    "ThreadId": "347716",
+    "Html": "<p>Esteban,</p>\n<p>To Roman's point,</p>\n<p>The <strong>Make<span style=\"text-decoration: underline;\">Star</span>Rule is for <span style=\"text-decoration: underline;\">0</span> or More</strong> expressions, while the <strong>Make<span style=\"text-decoration: underline;\">Plus</span>Rule is for <span style=\"text-decoration: underline;\"> 1</span> or More</strong>.&nbsp; So, you can consolidate your logic to something like the following:﻿﻿</p>\n<div style=\"color: black; background-color: white;\">\n<pre>parameterList.Rule = MakeStarRule(parameters, <span style=\"color: #a31515;\">\",\"</span>, simpleExpression);  <span style=\"color: green;\">// If I recall correctly, the delimiter (\",\") is a parameter for the MakeStarRule &amp; MakePlusRule functions - my order may be wrong</span>\nnAryExpression.Rule = nAryOperator + <span style=\"color: #a31515;\">\"(\"</span> + parameterList + <span style=\"color: #a31515;\">\")\"</span>;\n</pre>\n</div>\n<p>Regards,</p>\n<p>MindCore</p>",
+    "PostedDate": "2012-03-08T11:57:15.807-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

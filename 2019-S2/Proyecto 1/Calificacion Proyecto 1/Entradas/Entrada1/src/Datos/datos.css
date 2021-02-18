@@ -1,0 +1,25 @@
+panel /*Estilo general para los paneles.*/
+{
+     border: true;
+     border-color: yellow;
+     border-width: 3;
+     width: 1000;
+     height: 100;
+}
+.principal /*Sub estilo 2*/
+{
+     background: rgb(204, 204, 255);
+     border-width: 1;
+     width: 980;
+     height: 90;     
+}
+
+Text
+{
+     font : 'Cambria';
+     align : left;     
+}
+.Todo
+{
+     font-size : 12;     
+}

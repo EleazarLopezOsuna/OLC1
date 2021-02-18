@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "281638",
+    "ThreadId": "81992",
+    "Html": "<p>Hi!</p>\r\n<p>I'm wondering how should I look up symbols at runtime :)</p>\r\n<p>Let me explain. My program may have two type of functions: 1) defined in a program and 2) implicitly&nbsp;loaded from the run-time library. Functions defined in a program have names (Symbol objects) created by ParsingContext.Symbols at compile-time. Run-time library functions are registered at runtime and their names are created by EvaluationContext.Symbols. So symbol &quot;div&quot; registered in parser's symbol table is not the same as symbol &quot;div&quot; from the run-time library. Text strings are equal, but Symbol objects are different.</p>\r\n<p>When the interpreter encounters symbol &quot;div&quot;, it takes symbol created by ParsingContext.Symbols (it is stored as FunctionName in my AST node) and looks up current EvaluationContext.Symbols. EvaluationContext has also&nbsp;symbol &quot;div&quot;, but since it is registered at runtime, it is not the same symbol. So for the interpreter it's an undefined symbol :)</p>\r\n<p>I worked around this by keeping parser's symbol table and using it to generate symbol names for library functions in runtime. It works quite well, but I think doing so is apparently wrong. For example, my interpreter could deserialize AST from some external source (compile -&gt; save to XML -&gt; load from XML), so it won't have access to the parser's symbol table anymore.</p>\r\n<p>Please explain how to deal with two different symbol tables in such a case. Thanks :)</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-25T17:35:51.357-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "281934",
+    "ThreadId": "81992",
+    "Html": "<p>yeah, this part is not completed yet. Just put some hacks there to make all modules use the same symbol table. I'm working on it</p>",
+    "PostedDate": "2010-01-26T10:09:29.157-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

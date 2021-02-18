@@ -1,0 +1,146 @@
+[
+  {
+    "Id": "506874",
+    "ThreadId": "230812",
+    "Html": "<p>Hi everybody</p>\r\n<p>You might have noticed that there were no code submissions for a while now, so this might be not really any news. I've been sidetracked, and now have to admit - Irony is on hold.&nbsp;</p>\r\n<p>Building open-source compiler tool is fun, but unfortunately it does not pay the bills. I had to become involved with matters more relevant to what I do at my daytime job. The result is a new open source project that I will be publishing soon. It is a new, really cool framework for building data-connected applications in .NET. I know, it won't pay my bills either, but it is directly related to my current job and will help it a lot - I hope.&nbsp;</p>\r\n<p>I have no timeframe to promise when I can come back to Irony, hopefully early next year. The interpreter part is still on design board, will finish it someday.</p>\r\n<p>Sorry for the bad news</p>\r\n<p>Stay in touch</p>\r\n<p>&nbsp;</p>\r\n<p>Sincerely yours</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-10-13T13:53:37.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514024",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>As you can tell by the traffic on this list, there are quite a few people using Irony, probably too many to just let the project go stale.</p>\r\n<p>Why don't you do a brain dump of the internal structure of Irony, plus the last bits you were working on and any plans for changes you were going to make in the near future.&nbsp; I'm guessing a lot of people are using Irony with the VS language service\r\n plugin (which is why I started using it), so if you could maybe provide a few details about that as well.</p>\r\n<p>If there are some other serious clients here, maybe they can take over maintenance and do further development.&nbsp; I know I'd like to see the language service updated to 2010 and integrated with the code base, and possibly improved upon.</p>\r\n<p>Thanks for writing this great tool.. it's a terrific contribution.&nbsp;</p>\r\n<p>And good luck on your next effort.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-10-28T08:30:25.87-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514842",
+    "ThreadId": "230812",
+    "Html": "\r\n<blockquote style=\"border:solid .1em #ccc; font-style:italic; margin:.25em 1em 0 1em; padding:0 .25em 0 .25em\">\r\n<strong>benjcooley wrote:</strong><br>\r\n<p>Hi,</p>\r\n<p>As you can tell by the traffic on this list, there are quite a few people using Irony, probably too many to just let the project go stale.</p>\r\n<p>Why don't you do a brain dump of the internal structure of Irony, plus the last bits you were working on and any plans for changes you were going to make in the near future.&nbsp; I'm guessing a lot of people are using Irony with the VS language service\r\n plugin (which is why I started using it), so if you could maybe provide a few details about that as well.</p>\r\n<p>If there are some other serious clients here, maybe they can take over maintenance and do further development.&nbsp; I know I'd like to see the language service updated to 2010 and integrated with the code base, and possibly improved upon.</p>\r\n<p>Thanks for writing this great tool.. it's a terrific contribution.&nbsp;</p>\r\n<p>And good luck on your next effort.</p>\r\n<p>&nbsp;</p>\r\n</blockquote>\r\n<p>I agree with you! (Y)</p>\r\n",
+    "PostedDate": "2010-10-29T23:54:30.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "515565",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>thank you for your kind words... but don't know what to say, and what to promise. Yes, many people using it, but previous attempts to engage more people were not so successful (doc writing is one example). We're all busy, and everyday chores eat all our\r\n time, same here. As for future development, parsing part is more-less done, what remains is a few fixes, some non-mainstream facilities like wiki parser and terminals - need to be fixed. As for big plan and brain dump - there's not much to share, the entire\r\n plan is right there, in sources; it is clear once you browse code for couple of hours (I hope) - and I see many folks digged in and did not see any problems deciphering the architecture.</p>\r\n<p>Runtime/interpreter part - that's the big one, and it is still half-way thru. I don't think it's possible to publish all these sketches I have now... I will spend more time preparing them for publication and documenting them than advancing them to completion.&nbsp;I\r\n guess with MS killing DLR and Iron languages, that puts more pressure on us, as I think this leaves Irony as the only ongoing technology for parser/interpreter construction in .NET. DLR, in my humble opinion, had never had a slight chance to become mainstream\r\n - it's just too complex, and benefits (like performance) are non-existent.</p>\r\n<p>Anyway, there are other gaping holes in .NET technology, which are screaming &quot;fix me!&quot;, and which are more relevant to biz app programmer like myself. Entity framework and LightSwitch are jokes and don't even deserve any serious discussion. That's what I'm\r\n trying to do now - fill the void, and sorry to those who work in areas where parsers are more important than anything else.</p>\r\n<p>thank you, and stay in touch</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-01T12:59:56.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "516270",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>Thanks Roman,</p>\r\n<p>I'm pleased to hear that the parser is pretty much complete as is.&nbsp; That adds to the overall confidence in the toolset as is, and I'll continue to use it.</p>\r\n<p>I'll be using the DSL generator for Visual Studio 2008 and attempt to port my results to 2010.</p>\r\n<p>&nbsp;</p>\r\n<p>Again, thanks for all the hard work.&nbsp; I appreciate it.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-02T22:26:11.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "516653",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>Roman,</p>\r\n<p>Thanks for this wonderful gift to the open source community. I use it regularly, and for me was the difference between getting my self into&nbsp;language&nbsp;construction or not at all. The code is very useful as it is and, even though there are always\r\n thing to improve in every project, this is awesome.</p>\r\n<p>I hear you when you say that open source does not help pay the bills... unless the&nbsp;programmer&nbsp;is girlfriend-less and still lives in pops' basement. And I agree also with your comments about the DLR and the entity framework; I don't know if it proved\r\n too complex for the 'Mort' programmer (which is the big percent of the target audience for microsoft) or is just smoke and mirrors to dilute the technology.</p>\r\n<p>I have done some small changes, since you are putting the project on hold, do you plan to open a path for contributions? Maybe then it can take a life on its own.</p>\r\n<p>Jorge</p>\r\n",
+    "PostedDate": "2010-11-03T13:32:13.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "516828",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>I share everyone's comments concerning the Irony Project and what a great open source project it is.&nbsp;</p>\r\n<p>One suggestion I have to prevent the project from going stale is to move the project to GitHub (which Stephen Czetty has already forked here\r\n<a title=\"https://github.com/stephen-czetty/Irony\" href=\"https://github.com/stephen-czetty/Irony\" target=\"_blank\">\r\nhttps://github.com/stephen-czetty/Irony</a>). Git allows users to fork the source off into a personal branch where they can make changes and submit patches back to the original source. This would allow users like jorgeleo to submit a patch and leave it to Roman\r\n to accept the change once he finds time to review it.&nbsp; And other users can follow other forks it the acceptance of a change isn't done in a timely manner.</p>\r\n<p>MindCore</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-03T20:00:18.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "517031",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>I like the idea of personal branches and patch submission, GitHub as a distribute control allows that. Currently CodePlex uses Mercurial, which allows the same thing. Does GutHub supports something else, that Mercurial does not, that is needed for this kind\r\n of branching? Otherwise I don't see a reason to move to GitHub.</p>\r\n<p><a href=\"http://blogs.msdn.com/b/codeplex/archive/2010/01/22/using-mercurial-on-codeplex.aspx\">http://blogs.msdn.com/b/codeplex/archive/2010/01/22/using-mercurial-on-codeplex.aspx</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-04T06:15:01.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "517309",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>thank you guys for your input and for your support. I'll give it a thought</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2010-11-04T13:19:49.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "518209",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>Hi Roman,</p>\r\n<p>I saw that this project was in trouble and would love to give a hand and help it out. &nbsp;I like all of the ideas above and think it would be a really great idea to convert the source control from TFS/SVN to Mercurial, much easier to accept changes this\r\n way. &nbsp;Patch files are cumbersome and error-prone. &nbsp;As a token of good faith, I have converted the unit test project to use NUnit 2.5.5 instead of MSTest as this was one of the issues you had outstanding here.</p>\r\n<p>If you need help converting to mercurial or git (either on here or by moving it to github or bitbucket, etc.) then please let me know. &nbsp;I'd love to pitch in.</p>\r\n",
+    "PostedDate": "2010-11-06T12:02:42.46-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "518776",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>Hi</p>\r\n<p>thanks so much for your offer. I'll have a look at the patch, and will give it a thought about moving to git</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2010-11-08T06:58:09.127-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "521300",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>Hi again</p>\r\n<p>I just uploaded new version with a few fixes and added support for NUnit. I decided to go with double-framework support - you can run tests either in VS or in NUnit. See details in code.</p>\r\n<p>I'm back with Irony for a few days, will be moving it to VS 2010, will look at further options after that</p>\r\n<p>thanks again</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2010-11-12T13:37:32.42-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "524534",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>I second the proposal to move to git.&nbsp; It makes it much easier to submit merge requests.&nbsp;</p>\r\n<p>For example, I could have a branch of irony, and my VS2010 language service updates could just come as a merge request on github that you can review at your leisure and accept or reject based on browsing the diffs with the web interface.</p>\r\n<p>I will probably frequently be making minor tweaks to Irony for my own project, and making it easier to factor my changes and others into the trunk moving forward will probably be a good thing.</p>\r\n<p>Also Github is becoming a central place for open source C# projects with mono and others moving over there (IronPython, IronRuby, Git-Sharp, etc.).&nbsp; I really like their interface and particularly their commit history and diff and revision views.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-19T13:27:10.947-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "528954",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>thanks everybody for the feedback</p>\r\n<p>I was lucky to find a few hours to fix some outstanding issues. Looking at Git; I will probably start my new project on Github, get used to it, and then move Irony there</p>\r\n<p>thanks</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2010-11-30T11:21:25.303-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "536778",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>I don't see any reason you couldn't just have the CodePlex team convert the project in-place to Mercurial -- they preserve the history and everything. The branching and &quot;request pull&quot; functionality for Mercurial on CodePlex is quite good, so there's really\r\n no need to move to GitHub just to get that.</p>\r\n",
+    "PostedDate": "2010-12-16T06:49:12.967-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537927",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>I agree with others commentators. Irony is a great project , I'm sure It could even be sponsored by some companies.</p>\r\n<p>On direction, I don't feel like Interpreter/Runtime is the most important thing to work on, specially with the current DLR dilemma.</p>\r\n<p>The parser should probably get more attention, to be more robust with more documentation into the code (in order for others to contribute and help you more easily).</p>\r\n<p>I have used different parser around for C#, like ANTLR, MPPLEX, <a href=\"http://www.devincook.com/goldparser/\">\r\nGoldParser</a>.... probably the easiest one to use was probably GoldParser, due to a great grammar developping/testing tool, a quite good documentation and an easy Parser API (less than 10 classes for the top level API).</p>\r\n<p>But Irony, with it's integrated grammar syntax in C# is extremely promising. If you are able to build a really complete, robust and fully documented parser, there will be dozens of people to use it and provide interpreters/runtimes for it.... but yep, as\r\n you said, those open source projects are really time consuming for our little spare time!</p>\r\n<p>Anyway, keep the good work on it, a little hold but not too much! ;)</p>\r\n",
+    "PostedDate": "2010-12-19T07:12:52.287-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538883",
+    "ThreadId": "230812",
+    "Html": "\r\n<p>thanks guys! - I am carefully considering your feedback, opinions and suggestions. Still very busy with other things.</p>\r\n<p>I would respectfully disagree that interpreter is a second priority. First of all, for many it is the ultimate purpose of using Irony - to build some kind of interpreter. Also, for me, interpreter is important because it is a good &quot;stress&quot; case of parser\r\n part - I hope to discover all missing pieces in parser while I'm designing runtime part.</p>\r\n<p>thanks again</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-21T11:26:32.323-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "569146",
+    "ThreadId": "230812",
+    "Html": "<p>Moving to Mercurial - details here:</p>\r\n<p><a href=\"http://irony.codeplex.com/discussions/246783\">http://irony.codeplex.com/discussions/246783</a></p>",
+    "PostedDate": "2011-02-19T23:14:13.91-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

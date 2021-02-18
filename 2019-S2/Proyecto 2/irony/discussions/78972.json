@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "270369",
+    "ThreadId": "78972",
+    "Html": "<p>People keep reporting about troubles opening VS solution because of codeplex source control bindings.</p>\r\n<p>This issue keeps surfacing from time to time, so I need to clarify it - what's going on and how much trouble this is. I had an impression that this is not a big deal - when you try to open the solution with bindings, VS shows you message box - smth like &quot;Cannot connect to TFS, bla-bla&quot;, you click Ok, and then solution opens&nbsp;without source control, and you can run and play with it without any problems. For me it happens when I&nbsp;am not connected to Internet,&nbsp;it happens only once,&nbsp;and next time I reopen it VS does not ask any more. I thought this is not a big deal (to click Ok on message box), it was expected behavior according to Codeplex documentation, so I never worried about this.</p>\r\n<p>Now it appears a different story emerges, from your post and some previous ones. It looks like to open the solution you have to go through some manual process of removing bindings (deleting vss files?), otherwise you can't open/see anything. Is this the case? Then we need to have a second look at it. I don't mind doing it myself for release download, so you guys don't have to do it.</p>\r\n<p><strong>My question to everybody, especially those running &quot;smaller&quot; versions of visual studio:&nbsp; </strong></p>\r\n<p><strong>What is your experience with opening the project? Is it more than simply clicking a button on warning box?</strong></p>\r\n<p>Do you have any other troubles? please let me know.</p>\r\n<p>Let's work it out, identify the procedure for removing bindings for release version, and I'll follow the process each time I upload the release.</p>\r\n<p>There was an earlier discussion with comments on how to remove the bindings, need&nbsp;to look at it one more time&nbsp;Again, I was under impression at the time that this wasn't a big deal. <strong>Apologies to everyone if this is not the case. </strong>This is similar to the issue with unit testing framework. At the beginning I used nUnit, but then decided to move to VS built-in unit testing. I thought that would simplify things for everybody, but it turned out, VS unit testing framework was not available in smaller versions of VS. So I'm planning to move it back to nUnit in some near future - I want to also refactor unit tests a bit at the same time, so it has to wait for its turn.</p>\r\n<p>Thank you</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-12-23T10:11:11.983-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "271256",
+    "ThreadId": "78972",
+    "Html": "<p>My VS shows TFS login dialog, I click Cancel, and then everything goes fine. Not an issue, really.</p>\r\n<p>&gt;it happens only once,&nbsp;and next time I reopen it VS does not ask any more</p>\r\n<p>In my case it happens every time I open Irony_All solution :)</p>",
+    "PostedDate": "2009-12-28T13:36:34.703-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "271524",
+    "ThreadId": "78972",
+    "Html": "<p>I'm running Visual C# 2008 Express Edition (on Vista if that matters) with the code drop from about a month ago (I need to update, I know!&nbsp; Especially after you fixed the problem with priorities on FreeTextLiterals).&nbsp; When I try to open the solution I get a message box that says:</p>\r\n<p>&quot;The source control provider associated with this solution could not be found.&nbsp; The projects will be treated as not under source control.&nbsp; Do you want to permanently remove the source control bindings from the projects?&quot;</p>\r\n<p>For which I hit &quot;No&quot; -- in case anyone else accessing our SVN can open it with the source control bindings.</p>\r\n<p>Then I get another box that says:</p>\r\n<p>&quot;The project file 'C:\\SVN\\Irony\\Irony.Tests\\040.Irony.Tests.csproj' cannot be opened.&nbsp; The project type is not supported by this installation.&quot;</p>\r\n<p>I just hit &quot;OK&quot;, and then I get a box:</p>\r\n<p>&quot;Solution folders are not supported in this version of the application.&nbsp; Solution folder 'Solution Items' will be displayed as unavailable'.</p>\r\n<p>Again, I hit &quot;OK&quot;, which then displays:</p>\r\n<p>&quot;The project file 'C:\\SVN\\Irony\\Irony\\100.IronySilverlight.csproj' cannot be opened.&nbsp; The project type is not supported by this installation.&quot;</p>\r\n<p>So I hit &quot;OK&quot; yet again, and then everything loads fine from there for me to mess around with.</p>\r\n<p>For me, it's much more of an annoyance than a problem.</p>",
+    "PostedDate": "2009-12-29T12:32:34.54-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "271725",
+    "ThreadId": "78972",
+    "Html": "<p>I'm remove all bindings manually.</p>\r\n<p>I'm delete *.vspscc, *.vssscc files and in all .csproj files in Property/PropertyGroup element remove SccProjectName, SccLocalPath, SccAuxPath, SccProvider elements.</p>",
+    "PostedDate": "2009-12-30T08:05:31.03-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "275873",
+    "ThreadId": "78972",
+    "Html": "<p>fdddima - so why manually?&nbsp;The simpler scenario (saying OK to message box) -&nbsp;is it&nbsp;NOT working for you?</p>\r\n<p>thanks</p>\r\n<p>Roman&nbsp;</p>",
+    "PostedDate": "2010-01-11T13:49:33.3-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "276031",
+    "ThreadId": "78972",
+    "Html": "<p>Yes, simpler scenario is NOT working for me.</p>\r\n<p>My past experince for some years with MSVS and VSS say me &quot;do it manually, if you know how&quot;. :)</p>\r\n<p>MSVS 2008 is simply crashes on some projects, when can't access to source control database. With your project its happens too:</p>\r\n<p>Something like:</p>\r\n<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">---------------------------</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">Microsoft Visual Studio</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">---------------------------</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">Unexpected error encountered. It is recommended that you restart the application as soon as possible.</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">Error: Unspecified error</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">File: vsee\\lib\\vapifunctionwrapper\\vapifunctionwrapper.cpp</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">Line number: 169</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">---------------------------</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">OK &nbsp; Cancel &nbsp;&nbsp;</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">---------------------------</div>\r\n<p>\r\n<p>Unexpected error encountered. It is recommended that you restart the application as soon as possible.</p>\r\n<p>Error: Unspecified error</p>\r\n<p>File: vsee\\lib\\vapifunctionwrapper\\vapifunctionwrapper.cpp</p>\r\n<p>Line number: 169</p>\r\n<p>OK &nbsp; Cancel &nbsp;&nbsp;</p>\r\n<p>Then they promt temporarily or permanent remove bindings - but in fact it's remove only for project &quot;025.Irony.Samples.Console&quot;, other projects have &quot;unavialable&quot; state.</p>\r\n<p>&nbsp;</p>\r\n<p>Also i think, what unbinded projects more simply merge with user's current repository (if theys have bindings).</p>\r\n</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-11T23:43:46.693-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "406667",
+    "ThreadId": "198158",
+    "Html": "<p>Hi</p>\r\n<p>first of all I want to say that this project is fantastic, exactly what i need.</p>\r\n<p>I'm tring to write a grammar for our legacy language but I have some difficulties. <br>Maybe it's my little expirience on parser , i read the dragon book many years ago...and now<br>i'm reading again!!!</p>\r\n<p>The first problem is how to handle continuation line character. <br>our legacy language have some similarities with visual basic. we can write code like this:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>find table[xxx] _ <span style=\"color:Green\">'  comment 1</span>\r\n      key[yyy]  _ <span style=\"color:Green\">' comment 2</span>\r\n      notfound[action]\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p><br>this is one statement, split in three lines; we use, like vb, the underscore to join the lines. the statement<br>is close by the last new line.<br>we also admin comment at the end of the line, AFTER the undescore...</p>\r\n<p>First of all, I wanted to try resolving a simpler problem, so I suppose to have only statements like this:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>find table[xxx] _ \r\n      key[yyy] _ \r\n      notfound[action]\r\n</pre>\r\n</div>\r\n<p>where I remove the comments.</p>\r\n<p>I made a litte reserch on internet and i found that some parsers permit to express whitespace with <br>regular expression:</p>\r\n<p>Whitespace&nbsp;&nbsp;&nbsp;&nbsp; = {WS}+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | '_' {WS}* {CR}? {LF}?</p>\r\n<p>with this little &quot;trick&quot; they manage continuation line char easily.</p>\r\n<p>How can rappresent this construct with irony?</p>\r\n<p>Is there any plan to specify WhiteSpaceChar as regex?</p>\r\n<p>TIA</p>",
+    "PostedDate": "2010-02-25T13:32:22.087-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "407059",
+    "ThreadId": "198158",
+    "Html": "<p>I think you can use CommentTerminal to express this, but you have to hack it. You need to make it &quot;eat&quot; the newLine symbol. Look inside the CommentTerminal.CompleteMatch method, around line 102. It &quot;eats&quot; the end symbol only if it is NOT newLine. Make an extra public bool property &quot;ConsumeEndSymbol&quot;, default true, and use it in the &quot;if&quot; condition there. Add extra constructor parameter for this value.</p>\r\n<p>Now you can use it: start symbol would be &quot;_&quot;, and end symbol &quot;\\r\\n&quot;, with ConsumeEndSymbol = true&nbsp;</p>\r\n<p>Note that you still need other CommentTerminal for comments starting with quotes - for these set ConsumeEndSymbol to false.&nbsp;</p>\r\n<p>I will do the changes it in the next code drop, for now just hack it yourself.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-02-25T16:22:49.473-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "413203",
+    "ThreadId": "198158",
+    "Html": "<p>Hi Roman,</p>\r\n<p>thank you for the hint, it works very well: the continuation lines can be treated as a &quot;comment block&quot; that start with &quot;_&quot; and ends with \\n.</p>\r\n<p>I think that this kind of solution is so valid for continuation line char that it would be useful to implement a specific Terminal (in the standard).</p>\r\n<p>I also understand the role of NonGrammarTerminals: you can manage paricular situation without complicate the grammar.</p>\r\n<p>Again, thank you!</p>",
+    "PostedDate": "2010-03-02T07:27:45.043-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "413285",
+    "ThreadId": "198158",
+    "Html": "<p>I'm glad it works but there's one trouble - if you have identifiers that start with &quot;_&quot;, like &quot;_myField&quot; then this continuation/comment literal will catch it and interpret as continuation symbol. There must be a little more analysis there, and so I agree this must be a specialized terminal.</p>",
+    "PostedDate": "2010-03-02T10:20:26.823-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "413288",
+    "ThreadId": "198158",
+    "Html": "<p>One more thing - it might seem like this trouble with identifiers starting with underscores can be avoided by assigning lower priority to continuation terminal. However, I'm now changing the way NonGrammarTerminals work (for different reasons, but important enough case), so NonGrammarTerminals will always be the first to try by scanner. So playing with priority wouldn't work at all in the future. I will put this new continuation terminal on my to-do list - which keeps growing and growing :(&nbsp;</p>",
+    "PostedDate": "2010-03-02T10:25:17.34-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "572407",
+    "ThreadId": "198158",
+    "Html": "<p>Is the new continuation terminal available yet?</p>\r\n<p>I have a similar issue, except that the grammar expresses the continuation as a single&nbsp;\"&amp;\" at the start of the next line.&nbsp;</p>\r\n<p>eg:</p>\r\n<p>if x = 0 then (<br />&amp;&nbsp; set y = 0)</p>\r\n<p>Any ideas?</p>",
+    "PostedDate": "2011-02-25T17:34:41.477-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "574519",
+    "ThreadId": "198158",
+    "Html": "<p>sorry for long delay in reply. No, things are the same, did not get to it. Try hacking something yourself, let me know how it goes</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-03-02T09:25:57.517-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "574569",
+    "ThreadId": "198158",
+    "Html": "<div>\n<p><span style=\"font-size: 11pt;\">Thanks for the reply.</span></p>\n<p><span style=\"font-size: 11pt;\">&nbsp;</span></p>\n<p><span style=\"font-size: 11pt;\">I have managed to create the following hack:</span></p>\n<p><span style=\"font-size: 11pt;\">&nbsp;</span></p>\n<p><span style=\"font-size: 11pt;\">&nbsp;</span><span style=\"font-family: Consolas; color: blue; font-size: 9.5pt;\">var</span><span style=\"font-family: Consolas; font-size: 9.5pt;\"> lineContinuation = <span style=\"color: blue;\">new</span> <span style=\"color: #2b91af;\">CommentTerminal</span>(<span style=\"color: #a31515;\">\"line_continuation\"</span>, <span style=\"color: #a31515;\">\"\\n&amp;\"</span>, <span style=\"color: #a31515;\">\" \"</span>);</span></p>\n<p><span style=\"font-size: 11pt;\">&nbsp;</span></p>\n<p><span style=\"font-size: 11pt;\">It sort of relies on the assumption that the programmer having indented the continuation lines with spaces. Luckily that does appear to have been the case so far, but that isn't guaranteed. It is only a matter of time before I hit code that is in itself a hack and isn't properly indented.</span></p>\n<p><span style=\"font-size: 11pt;\">I have gone from zero (yes, totally zero) to a fully working complex grammar in three days so I have to congratulate you on a fantastic piece of software.</span></p>\n<p><span style=\"font-size: 11pt;\">&nbsp;</span></p>\n<p><span style=\"font-size: 11pt;\">I intend to have a look at hacking together a special terminal because I know I will need it in two further grammars and those wont be quite so well structured with indentation (or even a space for that matter) </span></p>\n<p><span style=\"font-size: 11pt;\">So I think I will have a few questions shortly. I hope you don't mind.</span></p>\n<p><span style=\"font-size: 11pt;\">Will.</span></p>\n</div>",
+    "PostedDate": "2011-03-02T11:19:09.067-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

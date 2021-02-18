@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "927690",
+    "ThreadId": "399664",
+    "Html": "\r\n<p>Given the following very simple grammar</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> expression = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;&lt;expression&gt;&quot;</span>);\n<span style=\"color:blue\">var</span> nature = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;&lt;nature&gt;&quot;</span>);\n<span style=\"color:blue\">var</span> cake = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;&lt;cake&gt;&quot;</span>);\n<span style=\"color:blue\">var</span> drink = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;&lt;drink&gt;&quot;</span>);\n\n<span style=\"color:blue\">this</span>.Root = expression;\n\nexpression.Rule = Symbol(<span style=\"color:#a31515\">&quot;I&quot;</span>) &#43; nature &#43; cake &#43; <span style=\"color:#a31515\">&quot;and&quot;</span> &#43; drink;\nnature.Rule = Symbol(<span style=\"color:#a31515\">&quot;need&quot;</span>) | <span style=\"color:#a31515\">&quot;want&quot;</span>;\ncake.Rule = (Symbol(<span style=\"color:#a31515\">&quot;chocolate&quot;</span>) | <span style=\"color:#a31515\">&quot;white chocolate&quot;</span> | <span style=\"color:#a31515\">&quot;wedding&quot;</span> | <span style=\"color:#a31515\">&quot;fruit&quot;</span> | <span style=\"color:#a31515\">&quot;carrot&quot;</span>) &#43; <span style=\"color:#a31515\">&quot;cake&quot;</span>;\ndrink.Rule = (Symbol(<span style=\"color:#a31515\">&quot;coke&quot;</span>) | <span style=\"color:#a31515\">&quot;pepsi&quot;</span> | <span style=\"color:#a31515\">&quot;soda&quot;</span> | <span style=\"color:#a31515\">&quot;water&quot;</span> | <span style=\"color:#a31515\">&quot;beer&quot;</span>) &#43; Empty;\n</pre>\r\n</div>\r\n<p>And parsing the following string <em>&quot;I want chocolate cake and coke&quot;</em></p>\r\n<p>I get the following child nodes in the AST</p>\r\n<pre>I [Symbol]\nwant [Symbol]\n&lt;cake&gt;\nand [Symbol]\ncoke [Symbol]</pre>\r\n<p>It recognised the cake rule, however not anything else. I presume because cake is actually a NonTerminal unlike the simple drink rules.</p>\r\n<p>How do I get the AST to reveal the name of the&nbsp;<em>drinks</em>, and <em>nature</em> rules?</p>\r\n",
+    "PostedDate": "2012-10-16T15:30:33.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927695",
+    "ThreadId": "399664",
+    "Html": "<p>Have you defined <em>Symbol </em>somewhere?&nbsp; It parses fine when I change <em>Symbol </em>to <em>ToTerm</em>(...).</p>",
+    "PostedDate": "2012-10-16T15:50:32.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927739",
+    "ThreadId": "399664",
+    "Html": "\r\n<p>I was using <em>Irony.Compiler</em>&nbsp;from <a href=\"http://www.codeproject.com/Articles/26975/Writing-Your-First-Domain-Specific-Language-Part-1\">\r\nthis CodeProject example</a>.</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> grammar = <span style=\"color:blue\">new</span> MyGrammar();\n<span style=\"color:blue\">var</span> compiler = <span style=\"color:blue\">new</span> LanguageCompiler(grammar);\n<span style=\"color:blue\">var</span> expression = compiler.Parse(source);</pre>\r\n</div>\r\n<p>I see that to use <em>ToTerm( )</em>, I need to use <em>Irony.Parsing</em>&nbsp;instead.</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> grammar = <span style=\"color:blue\">new</span> MyGrammar();\n<span style=\"color:blue\">var</span> language = <span style=\"color:blue\">new</span> LanguageData(grammar);\n<span style=\"color:blue\">var</span> parser = <span style=\"color:blue\">new</span> Parser(language);\nparser.Parse(source);\n<span style=\"color:blue\">var</span> parseTree = parser.Context.CurrentParseTree;</pre>\r\n</div>\r\n<p>So that works just great, thank you for that <a href=\"http://www.codeplex.com/site/users/view/pgeerkens\">\r\n@pgeerkins</a>!</p>\r\n<p>Is there a reason <em>Compiler</em>&nbsp;behaves differently to <em>Parsing</em>?</p>\r\n",
+    "PostedDate": "2012-10-16T17:20:05.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927742",
+    "ThreadId": "399664",
+    "Html": "<p>Besides the fact that <em>Compiler </em>is 3 1/2 years old; probably not much.</p>\r\n<p>;-)</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-10-16T17:22:44.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "945053",
+    "ThreadId": "399664",
+    "Html": "\r\n<p>I've tried this grammar in &quot;GrammarExplorer&quot;.&nbsp; At the beginning it worked fine and the syntax highlighting worked. But as soon as i finish my sentence it throws an exception.</p>\r\n<p>What is wrong with the grammar?</p>\r\n<p>edit:</p>\r\n<p>adding the following Line will fix the problem.</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>LanguageFlags = LanguageFlags.NewLineBeforeEOF;\n</pre>\r\n</div>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>\n</pre>\r\n</div>\r\n",
+    "PostedDate": "2012-11-21T03:17:39.307-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "981705",
+    "ThreadId": "399664",
+    "Html": "\r\n<p>Then has nothing drastically changed in the code base during the Sept 30th 2012 release?</p>\r\n<p>&nbsp;</p>\r\n<p>Did *exactly* the above steps, and it's failing on:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>      <span style=\"color:green\">//create the node</span>\r\n      <span style=\"color:green\">//We know that either NodeCreator or DefaultNodeCreator is set; VerifyAstData create the DefaultNodeCreator</span>\r\n      <span style=\"color:blue\">var</span> config = term.AstConfig;\r\n      <span style=\"color:blue\">if</span> (config.NodeCreator != <span style=\"color:blue\">null</span>) {\r\n        config.NodeCreator(Context, parseNode);\r\n        <span style=\"color:green\">// We assume that Node creator method creates node and initializes it, so parser does not need to call </span>\r\n        <span style=\"color:green\">// IAstNodeInit.Init() method on node object. But we do call AstNodeCreated custom event on term.</span>\r\n      } <span style=\"color:blue\">else</span> {\r\n        <span style=\"color:green\">//Invoke the default creator compiled when we verified the data</span>\r\n        parseNode.AstNode = config.DefaultNodeCreator();\r\n        <span style=\"color:green\">//Initialize node</span>\r\n        <span style=\"color:blue\">var</span> iInit = parseNode.AstNode <span style=\"color:blue\">as</span> IAstNodeInit;\r\n        <span style=\"color:blue\">if</span> (iInit != <span style=\"color:blue\">null</span>)\r\n          iInit.Init(Context, parseNode);\r\n      }\r\n      <span style=\"color:green\">//Invoke the event on term</span>\r\n      term.OnAstNodeCreated(parseNode);\r\n\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>Thanks. Banging head on wall.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-12-29T20:36:19.233-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

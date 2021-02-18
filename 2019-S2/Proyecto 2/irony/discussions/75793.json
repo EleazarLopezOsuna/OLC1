@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "259302",
+    "ThreadId": "75793",
+    "Html": "<p>Hello,</p>\r\n<p>i need some help.</p>\r\n<p>i would parse this structur:</p>\r\n<p>&nbsp;</p>\r\n<pre>class test\r\n{\r\nContent\r\n}<br><br>Content is free text.<br><br>I do it with this definition:<br><br><div style=\"color:Black;background-color:White\"><pre><span style=\"color:Blue\">var</span> compilation_unit = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;compilation_unit&quot;</span>);\r\n<span style=\"color:Blue\">var</span> class_declaration = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;class_declaration&quot;</span>);\r\n<span style=\"color:Blue\">var</span> class_body = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;class_body&quot;</span>);\r\n<span style=\"color:Blue\">var</span> freeTextLiteral = <span style=\"color:Blue\">new</span> FreeTextLiteral(<span style=\"color:#A31515\">&quot;freeTextLiteral&quot;</span>, <span style=\"color:#A31515\">&quot;\\n&quot;</span>, <span style=\"color:#A31515\">&quot;\\r&quot;</span>, Environment.NewLine);\r\n<span style=\"color:Blue\">var</span> description = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;description&quot;</span>);\r\nIdentifierTerminal identifier = TerminalFactory.CreateCSharpIdentifier(<span style=\"color:#A31515\">&quot;Identifier&quot;</span>);\r\n\r\nKeyTerm Lbr = ToTerm(<span style=\"color:#A31515\">&quot;{&quot;</span>);\r\nKeyTerm Rbr = ToTerm(<span style=\"color:#A31515\">&quot;}&quot;</span>);\r\n\r\n<span style=\"color:Blue\">this</span>.Root = compilation_unit;\r\ncompilation_unit.Rule=  class_declaration;\r\nclass_declaration.Rule = <span style=\"color:#A31515\">&quot;class&quot;</span> + identifier + Lbr +  class_body + Rbr;\r\nclass_body.Rule = description;\r\ndescription.Rule = Empty | freeTextLiteral;<br><br>But it doesnt work. <br>The error is: &quot;Syntax error, expected: freeTextLiteral. }&quot;<br><br>The Testdata is:<br>class test<br>{<br>dsfsdfsdf<br>}<br><br>Can someone help me?</pre>\r\n</div>\r\n<br></pre>",
+    "PostedDate": "2009-11-21T03:29:33.923-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "259442",
+    "ThreadId": "75793",
+    "Html": "<p>Try with the latest source version, I've fixed some bugs related to FreeTextLiteral</p>\r\n<p>Also look at this thread:</p>\r\n<p><a href=\"http://irony.codeplex.com/Thread/View.aspx?ThreadId=75375\">http://irony.codeplex.com/Thread/View.aspx?ThreadId=75375</a></p>\r\n<p>Follow the example at the end.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-21T18:01:27.91-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

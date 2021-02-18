@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1477905",
+    "ThreadId": "656068",
+    "Html": "Is there a way to use RegEx with parsing a custom scruipt sysntax?<br />\n<br />\nBasically I want to parst (x:y) # %variable standards fr <a href=\"http://dreammakersguild.com/?page=basic_ds\" rel=\"nofollow\">DragonSpeak</a><br />\n<br />\nI'm using Fast Colored Text Box control with Irony... For the FCTB I have a Custom systax reader but I want to update to a more modern version as the code I have is 4 years old<br />\n",
+    "PostedDate": "2016-07-01T16:08:17.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1477923",
+    "ThreadId": "656068",
+    "Html": "there is RegExBasedTerminal that seems like what you need<br />\n",
+    "PostedDate": "2016-07-02T00:38:01.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

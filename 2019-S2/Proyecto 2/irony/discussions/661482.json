@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1493013",
+    "ThreadId": "661482",
+    "Html": "Any chance of Irony ever running on .NET Standard?\r<br />\n<br />\nPS: I haven't tested whether it does already, but I assume it doesn't.<br />\n",
+    "PostedDate": "2017-02-21T01:42:01.683-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1493096",
+    "ThreadId": "661482",
+    "Html": "I'm asking because, in <a href=\"http://github.com/ClosedXML/ClosedXML\" rel=\"nofollow\">ClosedXML</a> we're considering using <a href=\"http://github.com/spreadsheetlab/XLParser\" rel=\"nofollow\">XLParser</a> to help with the formula parsing and XLParser has a dependency on Irony. An often requested feature for ClosedXML is .NET Standard support ( <a href=\"https://github.com/ClosedXML/ClosedXML/issues/101\" rel=\"nofollow\">https://github.com/ClosedXML/ClosedXML/issues/101</a> ).<br />\n",
+    "PostedDate": "2017-02-22T07:17:56.42-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1494694",
+    "ThreadId": "661482",
+    "Html": "I assume that your asking means that it wouldn't compile. Is there a dependency that is not present in .NET Standard?<br />\n",
+    "PostedDate": "2017-03-26T15:01:26.663-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1495334",
+    "ThreadId": "661482",
+    "Html": "No, it doesn't compile at the moment. There are a few things that are missing. Examples:<br />\n<ul>\n<li>InvariantCultureIgnoreCase, which could possibly be replaced with OrdinalIgnoreCase</li>\n<li>Reflection methods regarding custom attributes</li>\n<li><code>char.GetUnicodeCategory</code> missing, but apparently planned for .NET Standard 2.0</li>\n<li>\n... maybe more issues<br />\n</li>\n</ul>\nI didn't try to find all the issues. I will try to create a PR once .NEt Standard 2.0 preview is released and if Irony is migrated to GitHub (since Codeplex is shutting down soon anyway).\r<br />\n<br />\nI guess that I'm actually asking is whether this project is still maintained and welcomes PRs.<br />\n",
+    "PostedDate": "2017-04-10T01:25:29.617-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1495946",
+    "ThreadId": "661482",
+    "Html": "1) char.GetUnicodeCategory =&gt; CharUnicodeInfo.GetUnicodeCategory(char)\r<br />\n<br />\n2) .NET Standard been done: <a href=\"https://github.com/daxnet/irony\" rel=\"nofollow\">https://github.com/daxnet/irony</a><br />\n",
+    "PostedDate": "2017-04-30T07:22:11.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1496249",
+    "ThreadId": "661482",
+    "Html": "Thanks, <a href=\"mailto:@MikeNET\" rel=\"nofollow\">@MikeNET</a>. I can't dictate to the XLParser community that they should switch to a different fork. So I'm really wishing that .NET Standard support will be included in the official release one day. Else I guess I could maintain my own builds of XLParser and Irony ... on top of maintaining ClosedXML. But that's overkill for a single developer.<br />\n",
+    "PostedDate": "2017-05-10T03:31:04.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

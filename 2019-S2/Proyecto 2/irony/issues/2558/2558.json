@@ -1,0 +1,70 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "resolved",
+    "ClosedDate": "2010-03-26T11:44:34.757-07:00",
+    "CommentCount": 6,
+    "Custom": "",
+    "Description": "There are 2 bugs in RegExTerminal:\n\nThe RegExBasedTerminal class is performing a search, rather than a match at the specified postion, because RegEx.Match() actually performs a search rather than a match. The MSDN doco indicates that \"\\G\" should lead the expression, but this seems to cause matching problems at later stages of the parser. A better solution is to just check the position at which the match occurred.\n\nA successful match is advancing the scanner position by 1-too-many characters.\n\nHere is a diff that fixes both these issues:\n\n     public override Token TryMatch(CompilerContext context, ISourceStream source) {\n       Match m = _expression.Match(source.Text, source.Position);\n-      if (!m.Success) \n+      if (!m.Success || (m.Index != source.Position)) // match must begin at source.Position\n         return null;\n-      source.Position += m.Length + 1;\n+      source.Position += m.Length;\n       string text = source.GetLexeme();\n       return Token.Create(this, context, source.TokenStart, text);\n     }\n\nIt's based on revision 10146 (the last revision to support 2.0!), though a quick check seems to indicate it applies to the latest revision also.",
+    "LastUpdatedDate": "2010-03-26T11:44:34.757-07:00",
+    "PlannedForRelease": "BETA release",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2008-08-10T17:38:39.83-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Bugs in RegExBasedTerminal",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 2558
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Thank you for the post! This class is a never-tried draft, as the comment on top clearly says. \r\nSo hopefully this change would turn it into something that can really work. I have just one question. You say that the regex actually performs a search, and after the successful match you additionallly check the Index of the found match. Is there any way to restrict the matching to \"just this position\"? Seems like it will be wasting a lot of processor time in each failed match by trying to scan the source up to the end. You mention that using \"\\G\" switch causes other problems - what problems? I would prefer this approach, so lets investigate it.\r\nthanks again",
+      "PostedDate": "2008-08-11T12:44:08.38-07:00",
+      "Id": 29081
+    },
+    {
+      "Message": "Well i can't reproduce the \\G problems i was having earlier, so i assume it was a problem with the way i was defining the grammar :)\r\n\r\nIt looks like \\G does in fact work as advertised, and would be more efficient than my original proposal, so a suitable patch for this class would be:\r\n\r\n- _expression = new Regex(pattern);\r\n+ _expression = new Regex(@\"\\G\"+pattern);\r\n\r\n- source.Position += m.Length + 1;\r\n+ source.Position += m.Length;\r\n",
+      "PostedDate": "2008-08-11T20:11:58.067-07:00",
+      "Id": 29082
+    },
+    {
+      "Message": "this works better. I think we need to add a check if \"\\G\" is already there, and add it only if it is not. \r\nWill be there in the next code drop - thank you\r\nRoman\r\n",
+      "PostedDate": "2008-08-12T11:06:33.173-07:00",
+      "Id": 29083
+    },
+    {
+      "Message": "I just realised brackets are needed! ie\r\n\r\n_expression = new Regex(@\"\\G(\"+pattern+\")\");\r\n\r\notherwise eg pattern=\"a|b\" would become \"\\Ga|b\" which is equivalent to \"(\\Ga)|b\".",
+      "PostedDate": "2008-08-13T05:51:24.32-07:00",
+      "Id": 29084
+    },
+    {
+      "Message": "Also, currently RegexBasedTerminal ignores the grammar's CaseSensitive property. I found that adding the following method to the class seems to work:\r\n\r\n    // If the grammar is defined as not case sensitive, we need to reconstruct our regex.\r\n    public override void Init(Grammar grammar) {\r\n      if(!grammar.CaseSensitive)\r\n        _expression = new Regex(_expression.ToString(), RegexOptions.IgnoreCase);\r\n    }\r\n\r\nI'm not particularly familiar with the internals of the framework, so this suggestion is probably a huge hack! I'd be interested to know if there is a more elegant way of achieving the same thing.",
+      "PostedDate": "2008-08-21T21:15:41.373-07:00",
+      "Id": 29085
+    },
+    {
+      "Message": "All suggested stuff is in version 12333\r\nthanks!\r\nRoman",
+      "PostedDate": "2008-09-01T01:38:01.05-07:00",
+      "Id": 29086
+    }
+  ]
+}

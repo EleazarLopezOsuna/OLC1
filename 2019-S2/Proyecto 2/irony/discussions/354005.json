@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "830125",
+    "ThreadId": "354005",
+    "Html": "\r\n<p>Currently, as far as I can see, the SourceSpan construct has a location consisting of index, line and column, but the end-location is only the index. Would it be possible to extend SourceSpan so it stores line and column for end-position too?</p>\r\n",
+    "PostedDate": "2012-04-30T04:01:47.64-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "830462",
+    "ThreadId": "354005",
+    "Html": "<p>may i ask - what for?</p>",
+    "PostedDate": "2012-04-30T20:50:08.847-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "831014",
+    "ThreadId": "354005",
+    "Html": "<p>Sure, it's to convert it into Microsoft.Scripting.SourceSpan (if I remembered the namespace correctly) and working with the DLR.</p>",
+    "PostedDate": "2012-05-02T02:49:12.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "832281",
+    "ThreadId": "354005",
+    "Html": "<p>Seriously?! are you digging DLR for real, or just trying it? If it is \"just try\", then my sincere advice - don't. All you'll get is headache. If it is for DLR, I would not bother doing any modifications in Irony. DLR is a dead mess. If you still insist, then this information can be easily derived from start col/pos and token text - just count new lines inside text.</p>",
+    "PostedDate": "2012-05-04T10:18:08-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "833001",
+    "ThreadId": "354005",
+    "Html": "<p>I am not a big DLR fan either, but I do want to point out that the CodePlex project (<a title=\"link\" href=\"http://dlr.codeplex.com/\" target=\"_blank\">link</a>) has not been touched in two years.</p>\n<p>If you are going to use it, I would advise grabbing the code from the IronLanguages project on GitHub (<a title=\"link\" href=\"https://github.com/IronLanguages/\" target=\"_blank\">link</a>).&nbsp; This is the current project for IronRuby and IronPython, and at least there is some movement to better the DLR here.&nbsp; Microsoft has dropped it's support toward the project, so now it's completely community supported.</p>\n<p>-MindCore</p>",
+    "PostedDate": "2012-05-07T08:56:25.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "839313",
+    "ThreadId": "354005",
+    "Html": "<p>Yeah, I know, and I'm using the one from the ironlanguages. And I agree with you rivantsov; it's a pain, but it's also quite fun trying to learn. I've been reading ironruby's source-code (the ironpython was way over and about my comprehention at the time, but now that I've got a better understanding of the basics I'm considering going back). What I like is the interoperability of things, and the ability to handle a MyLanguage-object in C# simply by denoting it as \"dynamic\". Though, there's still a lot I don't understand (and a serious lack of documentation), so it'll probably end up&nbsp;being&nbsp;even more pain than it already is xD. Hopefully, though, I come out a better programmer :). And I only mentioned this here cause I figured it'd be a really simple thing to implement into irony, while if I wan't to implement it \"outside\" of irony, I have to maintain a string-representation in memory to count newlines as you suggested.</p>",
+    "PostedDate": "2012-05-22T04:08:16.707-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "498139",
+    "ThreadId": "228490",
+    "Html": "<p>I'm working on a Language Service, and I'd like to tag things are methods and members and their definitions so I can later in my resolver return them as such for intellisense. How would I go about that?</p>\r\n<p>&nbsp;</p>\r\n<p>Regards,</p>\r\n<p>Colin</p>",
+    "PostedDate": "2010-09-24T09:23:38.393-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "498151",
+    "ThreadId": "228490",
+    "Html": "<p>Well, if you work with ParseTree/ParseTreeNode objects, then there's no extra &quot;tag&quot; field or dictionary there; maybe it's worth adding it, I'll think about it. For now you can use ParseTreeNode.AstNode field (it is object type) to store your tagging object.</p>",
+    "PostedDate": "2010-09-24T09:51:02.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "504523",
+    "ThreadId": "228490",
+    "Html": "<p>I've got the AST building now, but I was wondering if there was a way to get the grammar match and it's text, as well as it's row/col data. I can't figure out how to grab method names for doing intelisence goto.</p>\r\n<p>&nbsp;</p>\r\n<p>Any help would be much appreciated.</p>",
+    "PostedDate": "2010-10-08T14:01:19.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "506414",
+    "ThreadId": "228490",
+    "Html": "<p>Are you producing AST or ParseTree only? if it is ParseTree, then there's Span property (which includes Location and length of the source fragment); you can then get the full source fragment from source text using these;&nbsp;</p>\r\n<p>Method names - my guess is you have to search parse/AST tree for specific &quot;FunctionDef&quot; nodes, then extract function name from it (it's one of its children I guess).</p>\r\n<p>AST nodes also have references to source locations, but this depends on your AST model.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-12T22:50:23.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

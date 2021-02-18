@@ -1,0 +1,21 @@
+digraph{
+rankdir = LR;
+S3 -> S4[label="simbolos"];
+S3 -> S0[label="relacionales"];
+S3[shape=doublecircle];
+S4 -> S5[label="minusculas"];
+S0 -> S4[label="simbolos"];
+S0 -> S1[label="operadores"];
+S0 -> S3[label="digitos"];
+S0 -> S0[label="relacionales"];
+S0[shape=doublecircle];
+S5 -> S6[label=" "];
+S1 -> S4[label="simbolos"];
+S1 -> S1[label="operadores"];
+S1 -> S0[label="relacionales"];
+S1[shape=doublecircle];
+S3 -> S4[label="simbolos"];
+S3 -> S0[label="relacionales"];
+S3[shape=doublecircle];
+S6 -> S3[label="TEXTO"];
+}

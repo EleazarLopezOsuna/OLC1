@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "There is the excellent Sandcastle project that reads in the XML comments from source code and generates help files in a variety of formats.  XML Comments also have the benefit of showing up as ToolTips in the Source Code editor of Visual Studio.  Having either of these would be of great assistance to someone (like myself) trying to learn how to use the project.",
+    "LastUpdatedDate": "2013-11-27T04:16:52.883-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2010-11-13T06:37:28.487-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Create Documentation using XML Comments",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 6,
+    "Id": 9860
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Well, man, I know about these tools.. the problem is - I barely have time to fix bugs, or do enhancements. No time for any documentation. Another problem is that Irony's code keeps changing, formally we're at Alpha state. At BETA (with featureset complete) we can start documenting the code and APIs.",
+      "PostedDate": "2010-11-14T09:19:16-08:00",
+      "Id": 29173
+    },
+    {
+      "Message": "Of course, and I appreciate the effort you are putting in!  I only entered them because I was going to take a crack at it myself though (or in case someone else had time).  I could at least get the process in place to build the documentation from the XML comments, even if none are there yet.   I'll even go through and try to document some of the more important classes as best I can (it would be a good way to learn!).  ",
+      "PostedDate": "2010-11-15T09:01:27.923-08:00",
+      "Id": 29174
+    },
+    {
+      "Message": "Without getting as far as building a documentation from Sandcastle, just adding a few dozens of XML comments on well-targeted objects (AstNode, Parser, Grammer, NonTerminal, etc) would already be very helpful just through VS Intellisense.",
+      "PostedDate": "2013-10-10T05:50:41.797-07:00",
+      "Id": 118030
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+digraph{
+node[shape=record];
+Nodo_0[label="1 | {<lH>F|{<lL>.}} | 8"];
+Nodo_0:lL -> Nodo_1:lH;
+Nodo_0:lL -> Nodo_17:lH;
+Nodo_1[label="1 | {<lH>F|{<lL>.}} | 1, 2, 4, 7"];
+Nodo_1:lL -> Nodo_2:lH;
+Nodo_1:lL -> Nodo_3:lH;
+Nodo_2[label="1 | {<lH>F|{vocales_min}|{<lL>1}} | 1"];
+Nodo_3[label="2, 3, 5, 6 | {<lH>V|{<lL>*}} | 2, 4, 7"];
+Nodo_3:lL -> Nodo_4:lH;
+Nodo_4[label="2, 3, 5, 6 | {<lH>V|{<lL>.}} | 2, 4, 7"];
+Nodo_4:lL -> Nodo_5:lH;
+Nodo_4:lL -> Nodo_11:lH;
+Nodo_5[label="2, 3 | {<lH>V|{<lL>\|}} | 2, 4"];
+Nodo_5:lL -> Nodo_6:lH;
+Nodo_5:lL -> Nodo_8:lH;
+Nodo_6[label="2 | {<lH>V|{<lL>?}} | 2"];
+Nodo_6:lL -> Nodo_7:lH;
+Nodo_7[label="2 | {<lH>F|{vocales_may}|{<lL>2}} | 2"];
+Nodo_8[label="3 | {<lH>F|{<lL>.}} | 4"];
+Nodo_8:lL -> Nodo_9:lH;
+Nodo_8:lL -> Nodo_10:lH;
+Nodo_9[label="3 | {<lH>F|{minusculas}|{<lL>3}} | 3"];
+Nodo_10[label="4 | {<lH>F|{mayusculas}|{<lL>4}} | 4"];
+Nodo_11[label="5, 6 | {<lH>V|{<lL>*}} | 7"];
+Nodo_11:lL -> Nodo_12:lH;
+Nodo_12[label="5, 6 | {<lH>F|{<lL>.}} | 7"];
+Nodo_12:lL -> Nodo_13:lH;
+Nodo_12:lL -> Nodo_16:lH;
+Nodo_13[label="5, 6 | {<lH>F|{<lL>\|}} | 5, 6"];
+Nodo_13:lL -> Nodo_14:lH;
+Nodo_13:lL -> Nodo_15:lH;
+Nodo_14[label="5 | {<lH>F|{logicos}|{<lL>5}} | 5"];
+Nodo_15[label="6 | {<lH>F|{ }|{<lL>6}} | 6"];
+Nodo_16[label="7 | {<lH>F|{relacionales}|{<lL>7}} | 7"];
+Nodo_17[label="8 | {<lH>F|{#}|{<lL>8}} | 8"];
+}

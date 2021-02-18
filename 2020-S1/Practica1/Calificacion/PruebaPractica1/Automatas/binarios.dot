@@ -1,0 +1,21 @@
+digraph{
+rankdir = LR;
+S0 -> S4[label="si"];
+S4 -> S5[label="binario"];
+S5 -> S5[label="binario"];
+S5 -> S6[label="="];
+S6 -> S7[label="num"];
+S7 -> S8[label="abcd"];
+S7 -> S8[label="_"];
+S8 -> S9[label="binario"];
+S8 -> S8[label="abcd"];
+S8 -> S8[label="_"];
+S9 -> S9[label="binario"];
+S9 -> S2[label="abcd"];
+S2 -> S1[label="num"];
+S2 -> S2[label="abcd"];
+S2 -> S3[label="?"];
+S1 -> S1[label="num"];
+S1[shape=doublecircle];
+S3[shape=doublecircle];
+}

@@ -1,0 +1,186 @@
+[
+  {
+    "Id": "1022151",
+    "ThreadId": "438247",
+    "Html": "I have a few small changes to Irony that I have found useful. You may want to pick them up.<br />\n\r<br />\nThey are available at <a href=\"https://hg.codeplex.com/forks/jaybazuzi/irony\" rel=\"nofollow\">https://hg.codeplex.com/forks/jaybazuzi/irony</a>.<br />\n<ul>\n<li>\n<a href=\"http://irony.codeplex.com/SourceControl/network/forks/JayBazuzi/Irony/changeset/02fde6f8e13b\" rel=\"nofollow\">http://irony.codeplex.com/SourceControl/network/forks/JayBazuzi/Irony/changeset/02fde6f8e13b</a><br />\n</li>\n</ul>\nIn GrammarExplorer, when looking at a parse tree, if you expand a node with only one child, expand the child, too. This makes drilling in to parse trees much faster.<br />\n<ul>\n<li>\n<a href=\"http://irony.codeplex.com/SourceControl/network/forks/JayBazuzi/Irony/changeset/6923570d7c6e\" rel=\"nofollow\">http://irony.codeplex.com/SourceControl/network/forks/JayBazuzi/Irony/changeset/6923570d7c6e</a><br />\n</li>\n</ul>\nIrony generates &quot;Unnamed&quot; NonTerminals in these cases:<br />\n<pre><code>Foo.Rule = A + (B | C);   // `B|C` becomes `UnnamedX`.</code></pre>\n\nWhen you see them in Grammar Explorer, it's hard to know what you're looking at. So I put the rule in to the Name field, which makes it visible in Grammar Explorer. (I think it's fair to assume that no code is depending on the value of Name for Unnamed NonTerminals, because the name is not stable.)<br />\n<ul>\n<li>\n<a href=\"http://irony.codeplex.com/SourceControl/network/forks/JayBazuzi/Irony/changeset/e2342ab467a0\" rel=\"nofollow\">http://irony.codeplex.com/SourceControl/network/forks/JayBazuzi/Irony/changeset/e2342ab467a0</a><br />\n</li>\n</ul>\nThis makes it easier to understand the LogMessage in the debugger. <br />\n<ul>\n<li>\n<a href=\"http://irony.codeplex.com/SourceControl/network/forks/JayBazuzi/Irony/changeset/f025c1cd4a95\" rel=\"nofollow\">http://irony.codeplex.com/SourceControl/network/forks/JayBazuzi/Irony/changeset/f025c1cd4a95</a><br />\n</li>\n</ul>\nI wanted this for PowerShell's syntax, which recognizes backtick+CR+LF as a\r<br />\nsingle whitespace. <br />\n<ul>\n<li>\n<a href=\"http://irony.codeplex.com/SourceControl/network/forks/JayBazuzi/Irony/changeset/ba65334acf29\" rel=\"nofollow\">http://irony.codeplex.com/SourceControl/network/forks/JayBazuzi/Irony/changeset/ba65334acf29</a><br />\n</li>\n</ul>\nremove <code>client</code> from target framework, to ease building with MonoDevelop on Linux<br />\n",
+    "PostedDate": "2013-03-27T16:58:32.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1022191",
+    "ThreadId": "438247",
+    "Html": "thank you! I'll have a look\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-03-27T19:45:29.64-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1024591",
+    "ThreadId": "438247",
+    "Html": "Here's another, in Irony/Parsing/Grammar/Grammar.cs:<br />\n<pre><code>@@ -89,10 +89,10 @@\n     #region Reserved words handling\n     //Reserved words handling\n     public void MarkReservedWords(params string[] reservedWords) {\n-      foreach (var word in reservedWords) {\n-        var wdTerm = ToTerminal(word);\n-        wdTerm.SetFlag(TermFlags.IsReservedWord);\n-      }\n+      MarkReservedWords(reservedWords.Select(ToTerm).ToArray());\n+    }\n+    public void MarkReservedWords(params KeyTerm[] reservedWords) {\n+      Array.ForEach(reservedWords, wdTerm =&gt; wdTerm.SetFlag(TermFlags.IsReservedWord));\n     }\n     #endregion</code></pre>\n\nThis allows you to use <code>MarkReservedWords</code> in a typesafe manner.\r<br />\n<br />\nI know that Pull Requests are probably a better way to send these, but (for better or worse) I have learned GIT and am clumsy in Mercurial. <br />\n",
+    "PostedDate": "2013-04-02T20:17:07.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026386",
+    "ThreadId": "438247",
+    "Html": "I see you are using <code>event</code>s in a few places, like this:<br />\n<pre><code>    public event EventHandler&lt;ParsingEventArgs&gt; TokenCreated;\n\n    internal void OnTokenCreated() {\n      if (TokenCreated != null)\n        TokenCreated(this, SharedParsingEventArgs);\n    }</code></pre>\n\nIt's possible to eliminate the <code>null</code> check like this:<br />\n<pre><code>    public event EventHandler&lt;ParsingEventArgs&gt; TokenCreated = delegate {};\n\n    internal void OnTokenCreated() {\n      TokenCreated(this, SharedParsingEventArgs);\n    }</code></pre>\n\nThat even makes it feasible to remove the <code>On...()</code> method, if you like.<br />\n",
+    "PostedDate": "2013-04-05T16:19:56.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026393",
+    "ThreadId": "438247",
+    "Html": "About the last suggestion - the point of the check is to not fire event if nobody listens. In your version event is invoked, and inside multicast it discovers that there are no handlers, so it returns. My version is a bit more efficient I guess. Using &quot;On...&quot; methods is a kinda recommended, pretty standard practice, although I violate all standard practices everywhere, I admit.<br />\n",
+    "PostedDate": "2013-04-05T16:52:59.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026397",
+    "ThreadId": "438247",
+    "Html": "It's largely a matter of taste - take it or leave it.\r<br />\n<br />\nThe standard practice is actually even more complex:<br />\n<pre><code>protected virtual void OnSomethingHappened(EventArgs e) \n{\n    EventHandler handler = SomethingHappened;\n    # Possible race here\n    if (handler != null) \n    {\n        handler(this, e);\n    }\n}</code></pre>\n\nThat's because there's a race condition if the only handler of the event unsubscribes on another thread at the wrong time - the event will go to <code>null</code> and then throw when you try to invoke it. That's why I like the <code>= delegate {}</code> approach - all this mess just goes away.\r<br />\n<br />\nAs for performance, this is the kind of micro-optimization that rarely produces any benefit for the user.\r<br />\n<br />\nSo, pick the flavor you like, and go with it.<br />\n",
+    "PostedDate": "2013-04-05T17:00:54.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026398",
+    "ThreadId": "438247",
+    "Html": "Here's another code offering, in <code>ValidateTokenEventArgs</code>:<br />\n<pre><code>    /// &lt;summary&gt;\n    /// Replace the current token with a token based on &lt;paramref name=&quot;newTerminal&quot;/&gt;, while keeping everything else \n    /// the same as the current token.\n    /// &lt;/summary&gt;\n    /// &lt;param name=&quot;newTerminal&quot;&gt;&lt;/param&gt;\n    public void ReplaceToken(Terminal newTerminal) {\n      ReplaceToken(new Token(newTerminal, Context.CurrentToken.Location, Context.CurrentToken.Text, Context.CurrentToken.Value));\n    }</code></pre>\n\nIt lets the client code be slightly cleaner.<br />\n",
+    "PostedDate": "2013-04-05T17:02:00.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026620",
+    "ThreadId": "438247",
+    "Html": "about the 'delegate()' thing.. one thing to keep in mind when writing a fwk like Irony - need to reduce extra cognitive overload. There's a lot of things in Irony already to wrap your mind around, coming purely from algorithmic/LALR parsing roots, so adding these little 'tricks', as nice as they are in a proprietary, private code, might be sort of harmful in public code bases, especially if they have little to do with the main theme. So I would be very careful in adding any kind of niceties that can cause extra stop and question 'what the heck is that?', even if momentarily<br />\n",
+    "PostedDate": "2013-04-06T11:23:53.623-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026622",
+    "ThreadId": "438247",
+    "Html": "That empty delegate pattern is quite widespread, it shouldn't cause WTF question even for 6 months junior developer.<br />\n",
+    "PostedDate": "2013-04-06T11:40:42.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026624",
+    "ThreadId": "438247",
+    "Html": "widespread is not the same as 'everybody knows'. It was new for me - and I'm not newbie in c#, although not an active explorer of new tricks<br />\n",
+    "PostedDate": "2013-04-06T11:45:45.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026635",
+    "ThreadId": "438247",
+    "Html": "I want to remind everyone that Roman doesn't have to convince us -- we have to convince him. \r<br />\n<br />\nThe trick is old now - I have been using it since the beta of C# 2.0 / VS2005. But I love learning new tricks, and Roman isn't me.\r<br />\n<br />\nI don't like the suggestion that Roman doesn't mean your expectations for a &quot;6 months junior developer&quot;. Every developer learns their craft in different ways. His coding style is quite different than mine, but that doesn't mean he's doing it wrong. Roman has demonstrated his ability merely by creating this wonderful parsing engine that is so useful for us. <br />\n",
+    "PostedDate": "2013-04-06T12:51:57.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026647",
+    "ThreadId": "438247",
+    "Html": "The pattern of adding a NOP to avoid the check.\r<br />\n<br />\nThe delegate sample.\r<br />\n<br />\nI have seen multiple forms of it.\r<br />\n<br />\n&quot;where 1=1 &quot; &amp; vbStringOfCondition\r<br />\nor\r<br />\nvar s=&quot;&quot;; if (string.IsNullOrEmpty(s))\r<br />\n<br />\nThis is an anti-pattern because mixes the concept of lack of assignment with emptiness.\r<br />\n<br />\nI know that is easy, but is not simpler because it produces an entanglement of concepts (easy=near, simple=untangled).\r<br />\n<br />\nAnd yes, a 6 month programer will easily understand and produce this anti-pattern, a 20 years developer knows better.\r<br />\n<br />\nand btw, there is a huge difference between 10 years of experience and 1 year of experience 10 times.\r<br />\n<br />\nI side with roman on this. The day that a 6 month programmer can produce a lexer and a parser of the quality of Irony maybe this kind of arrogant suggestions have a place<br />\n",
+    "PostedDate": "2013-04-06T14:09:14.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026677",
+    "ThreadId": "438247",
+    "Html": "guys, take it easy, I don't think Eugene's post was questioning mine or anybody's expertise, so we're cool<br />\nhere's my 5 cents. First, I was always a bit puzzled by this obvious inconsistency of event fields. When you sign-up (add handler) you don't need to check anything, compiler or system creates multicast delegate instance if it does not exist. But on invoke, you have to check explicitly. Kinda strange. <br />\nSecondly, here's the suggested workaround again:<br />\n<pre><code>public event EventHandler&lt;ParsingEventArgs&gt; TokenCreated = delegate {};</code></pre>\n\nDo you understand what exactly happens here? I don't. First of all, syntax - quite a puzzle. What is this, call to constructor? There's no 'new' keyword. 'delegate' is a keyword, mentioned in c# manual in quite different context. Quite strange construct for regular c# guy, and this is the 'WTF' situation I'm talking about.<br />\nSecondly, delegate instances (multicast delegates) are supposed to be strongly typed objects. When adding handlers or invoking it, you must strictly comply with delegate's declaration pattern. If you don't, compiler rejects it. Then what kind of instance is is created here and put into the field?! <br />\nAs far as I can see, the delegate instance in fact is not generic, one 'untyped' class is used for everything, and compiler type checking is pure compiler-added trick. <br />\nBut this magic-ry, relying on c# underlying secrets - and strange syntactic constructs - kinda goes against my strongly typed mindset. It maybe exposes 'how things really work underneath', but obviously breaks the illusion of strongly-typed events. So I prefer to live under illusion. And not disillusion others if I can :)))<br />\nhave a nice weekend guys!!!<br />\nStop staring at the computer, it's Saturday, GO OUTSIDE, there's nature and all kind of fun there! <br />\nRoman<br />\n<br />\n(Edited)<br />\n",
+    "PostedDate": "2013-04-06T16:55:47.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027025",
+    "ThreadId": "438247",
+    "Html": "First of all, I'm actually didn't questioning anybody's expertise. My only concern is code readability, that is very important for open source projects. I know that Roman is trying to get maximum performance from Irony, but I'm not sure that fractions of percent are worth clogging code with null-checks. IIRC, calling empty delegate is only 2 times slower than null-check.<br />\n<br />\nEmpty delegate pattern is not anti-pattern at all. It's implementation of Null Object pattern, that developer with 20 years experience should know.<br />\n<blockquote>\nDo you understand what exactly happens here? I don't. First of all, syntax - quite a puzzle. <br />\n</blockquote>\nMaybe following syntax is more clear?<br />\n<pre><code>public event EventHandler&lt;ParsingEventArgs&gt; TokenCreated = new EventHandler&lt;ParsingEventArgs&gt;(delegate {});</code></pre>\n\nAnother option is to use helper method &quot;Raise&quot; that will encapsulate null-checks. This approach has another plus that we can easily update event-raising code to avoid race-conditions in multi-threaded environment. Not sure if multi-threading parsing is on Irony's roadmap though.<br />\n",
+    "PostedDate": "2013-04-08T00:25:09.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027418",
+    "ThreadId": "438247",
+    "Html": "nope, that does not make it more clear. TokenCreated field is a MultiCastDelegate - a container for a list of listeners, handlers. What you assign is an empty handler. Makes much sense? Nope. What you're doing is singing up an empty delegate to non-initialized 'container'. Makes sense only if you know that underneath the compiler injects the code that checks the field for NULL and automatically initializes it. For me, it is quite 'wtf' situation. Just for avoiding simple 'if(TokenCreated!=nul)..' ?!!! \r<br />\nMy point is that 'if(TokenCreated!=null)' is really a common, basic, everywhere-in-MSDN thing (hate the word pattern), so using it has no chance of 'whats that?' mental stop. Anything else - not worth any potential gains, and nano-second perf differences are irrelevant - agree on that. That's for readability. \r<br />\n'Raise' method - recommended is OnXXX protected method, like OnTokenCreated. I sometimes skip it if event is raised from one place only. Multi-threading - any race is possible only at parser construction time, when handlers signup from the grammar - this is single-threaded process by definition. For runtime, parsing time, your are free to use parallel parsers using shared ParserDAta instance (not contexts); the handlers are only invoked, and it is safe to do from multiple threads. <br />\n",
+    "PostedDate": "2013-04-08T11:51:09.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027433",
+    "ThreadId": "438247",
+    "Html": "Multi-threaded <strong>parsing</strong> is irrelevant: if the parser is running on one thread, and I remove my last listener on another thread, at just the right time, it will crash. Irony is still single-threaded.\r<br />\n<br />\nThe multi-threading concern is very small, because the chances of someone removing the last listener on one thread, while it's firing on another thread, are almost 0. People usually don't remove listeners at all, so they never go to <code>null</code> throughout the lifetime of the program.\r<br />\n<br />\nHowever, race conditions, when they do arise, can be extremely difficult to diagnose - a crash report from a user that only appears 1 time in a 1000, so no one gets you a callstack. Instead of asking myself &quot;for this event handler, is it important to make a local copy before I fire it?&quot;, and just write <code>= delegate {}</code> and I'm done.\r<br />\n<br />\nIt has been a long time since I analyzed why this trick works, but I think it's not because of a compiler-generated null-check, but because all delegates are multicast. Consider:<br />\n<pre><code>            Action x = delegate { Console.WriteLine(&quot;hi&quot;); };\n            x += delegate { Console.WriteLine(&quot;bye&quot;); };\n            x();\n\n            x = delegate { Console.WriteLine(&quot;no!&quot;); };\n            x();</code></pre>\n\nproduces<br />\n<blockquote>\nhi<br />\nbye<br />\nno!<br />\n</blockquote>\nThe fact that this is &quot;WTF&quot; for Roman is a good reason for him not to use it. Every developer has their own taste for learning new language tricks.\r<br />\n<br />\nI still think there's value in this pattern:<br />\n<ul>\n<li>No need to write <code>null</code> check</li>\n<li>No worries about multi-threading</li>\n<li>The <code>= delegagate { };</code> is much less code</li>\n<li>No need to write a special <code>Fire...</code> method, just skip it</li>\n<li>It just works</li>\n<li>\nIt's just an implementation detail - whatever approach you choose doesn't affect consumers of your code.<br />\n</li>\n</ul>\nSo I hope that everyone else reading this thread will think &quot;oh, I'm going to use that from now on!&quot;, even if Roman doesn't.<br />\n",
+    "PostedDate": "2013-04-08T12:07:58.21-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027503",
+    "ThreadId": "438247",
+    "Html": "I love this debate, so I thought I would chime in.<br />\n<br />\nHere is a great Stack Overflow response to a similar topic: <a href=\"http://stackoverflow.com/a/292840\" rel=\"nofollow\">http://stackoverflow.com/a/292840</a><br />\n<br />\nI wanted to offer up a solution that addresses the redundant null checks, yet keeps them intact.<br />\n<br />\nWhat if an extension method is added to do the null check?<br />\n<pre><code>// non-generic\n[MethodImpl(MethodImplOptions.NoInlining)]\npublic static void Raise(this EventHandler handler, object sender, EventArgs e)\n{\n    if(handler != null)\n        handler(sender, e);\n}\n\n// generic\n[MethodImpl(MethodImplOptions.NoInlining)]\npublic static void Raise&lt;T&gt;(this EventHandler&lt;T&gt; handler, object sender, T e)\nwhere T : EventArgs\n{\n    if(handler != null)\n        handler(sender, e);\n}\n</code></pre>\n\n<em>sorry, I haven't tested these, but you should get the idea.</em><br />\n<br />\n<br />\nThis will remove the redundant logic, which I believe was the point of the original concern, and should be simple to implement.<br />\n<br />\n-Kevin<br />\n",
+    "PostedDate": "2013-04-08T14:04:54.23-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027557",
+    "ThreadId": "438247",
+    "Html": "extension method wouldn't work. Simply because of 'event' keyword - it prohibits raising event from outside the class instance - read about 'event' in MSDN, this is in fact my favorite question on job interviews - what's the difference with and without 'event' keyword in delegate field declaration<br />\n",
+    "PostedDate": "2013-04-08T16:07:40.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027560",
+    "ThreadId": "438247",
+    "Html": "Jay,\r<br />\nIrony is multi-threaded - provide a single restriction is met - ParserData is readonly. Adding/removing event handlers to terminals or grammar or whatever - it is modifying grammar data. And it seems to me quite unreasonable thing to do, during parsing. You should setup everything, including event handlers, at parser construction time - when you build ParserData. Once ParserData is built, you can share it between a hundred parsers running in parallel. \r<br />\nAnother thing, about the trick with assigning to local variable before invoking the event. I don't think it solves anything. It might matter in case of 0 or 1 handlers signed up, but it will definitely crash if you have 4 handlers signed up, one thread is adding hander #5, and another thread is invoking event. The whole thing will crash, as expected - as any normal list/collection crashes if you read it while another thread modifies it. Assigning to local variable does not change anything, delegates are not value types, it's the same object with list of handlers inside.<br />\n",
+    "PostedDate": "2013-04-08T16:14:35.753-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027563",
+    "ThreadId": "438247",
+    "Html": "Jay, and in your last post statement 'No worries about multi-threading' when using this delegate thing - no, multi-threading is still an issue in this case, as I explained in previous post, same stuff applies. <br />\n",
+    "PostedDate": "2013-04-08T16:20:10.677-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027569",
+    "ThreadId": "438247",
+    "Html": "<strong>rivantsov wrote:</strong><br />\n<blockquote>\nAnother thing, about the trick with assigning to local variable before invoking the event. I don't think it solves anything. It might matter in case of 0 or 1 handlers signed up, but it will definitely crash if you have 4 handlers signed up, one thread is adding hander #5, and another thread is invoking event. The whole thing will crash, as expected - as any normal list/collection crashes if you read it while another thread modifies it. Assigning to local variable does not change anything, delegates are not value types, it's the same object with list of handlers inside.<br />\n</blockquote>\nIf I'm reading this correctly, you seem to be saying that multicast delegates are inherently unsafe across threads - that they can't tolerate mutation while being fired.\r<br />\n<br />\nI was surprised, so went Googling, and found this: <a href=\"http://blogs.msdn.com/b/ericlippert/archive/2009/04/29/events-and-races.aspx\" rel=\"nofollow\">http://blogs.msdn.com/b/ericlippert/archive/2009/04/29/events-and-races.aspx</a><br />\n<blockquote>\nRemember, multi-cast delegates are immutable; when you add or remove a handler, you replace the existing multi-cast delegate object with a different delegate object that has different behaviour.<br />\n</blockquote>\nSo, if someone (un)subscribes to your event while it is firing, it will not crash the event.\r<br />\n<br />\nThat article covers a separate race condition, that if you unsubscribe from an event, your handler might still get fired for a short time afterwards, which is a problem if you destroy state you need to correctly handle the event. But that's an entirely separate issue, and not the responsibility of the code firing the event.<br />\n",
+    "PostedDate": "2013-04-08T16:36:59.113-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027589",
+    "ThreadId": "438247",
+    "Html": "Roman,\r<br />\n<br />\nI have read the msdn event keyword <a href=\"http://msdn.microsoft.com/en-us/library/8627sbea(v=vs.100).aspx\" rel=\"nofollow\">article</a> again, and I see what you are referring to.\r<br />\n<br />\n&quot;Events are a special kind of multicast delegate that can only be invoked from within the class or struct where they are declared (the publisher class).&quot; \r<br />\n<br />\nHowever, if you take a look at the first paragraph of the extension method <a href=\"http://msdn.microsoft.com/en-us/library/vstudio/bb383977.aspx\" rel=\"nofollow\">article</a> you will see that it is a special static method that executes the call as if was an instance of the class. It's special <em>this</em> syntax and the fact that it's static allow it to overcome the hurdle you are referring.\r<br />\n<br />\nGive it a try, I have found several threads that illustrate this approach and I have even used this approach. Here are a few links. In the comments of the first, you will see the explanation of the attributes, and the third shows some illustrative performance differences between all 3 methods. However, performance in a real world app should be irrelevant because it is so small.\r<br />\n<br />\n<a href=\"http://stackoverflow.com/questions/231525/raising-c-sharp-events-with-an-extension-method-is-it-bad\" rel=\"nofollow\"> http://stackoverflow.com/questions/231525/raising-c-sharp-events-with-an-extension-method-is-it-bad </a>\r<br />\n<br />\n<a href=\"http://www.dailycoding.com/Posts/top_5_small_but_must_have_extension_methods.aspx\" rel=\"nofollow\"> http://www.dailycoding.com/Posts/top_5_small_but_must_have_extension_methods.aspx </a>\r<br />\n<br />\n<a href=\"http://blog.drorhelper.com/2009/02/three-different-ways-to-throw-events-in.html\" rel=\"nofollow\"> http://blog.drorhelper.com/2009/02/three-different-ways-to-throw-events-in.html </a>\r<br />\n<br />\nKevin<br />\n",
+    "PostedDate": "2013-04-08T17:44:58.473-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027644",
+    "ThreadId": "438247",
+    "Html": "wow... you guys keep surprising me - and I thought I knew c#. I need to try it myself, \r<br />\nthanks!\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-04-08T21:34:48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

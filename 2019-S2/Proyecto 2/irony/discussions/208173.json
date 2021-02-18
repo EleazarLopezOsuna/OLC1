@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "426868",
+    "ThreadId": "208173",
+    "Html": "<p>The Codeplex site and the top level folder of the source code download both have the MIT license, but inside the &quot;Irony&quot; source code folder, there is a &quot;MS-PubLicense.Rtf&quot; file.</p>\r\n<p>Which license applies? The MIT license or the Microsoft Public License, or both? I realize they are quite similar, but I just want to be clear.</p>",
+    "PostedDate": "2010-04-02T09:42:43.64-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "426874",
+    "ThreadId": "208173",
+    "Html": "<p>Irony's license is MIT. I have borrowed several files from MS DLR projects, they are under Irony.Microsoft folder. The license header in these files requires that MS public license file (which applies to them) must be distributed with the source code, so thats why I put it in Irony's folder</p>",
+    "PostedDate": "2010-04-02T10:04:59.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "426875",
+    "ThreadId": "208173",
+    "Html": "<p>Thank you.</p>",
+    "PostedDate": "2010-04-02T10:06:20.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

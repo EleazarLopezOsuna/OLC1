@@ -1,0 +1,228 @@
+import "./src/venta/venta.css";
+/*int x, int y, int width, int height */
+
+var tituloMenu = "Detalle de ventas";
+
+//1765
+var temp1 = 10+45*78/2;
+//80
+var temp2 = 0+(10*8);
+//9
+var temp3 =  (8-7+2 pow (3));
+
+//112
+var temp4 = 15*7-2/2-8*(5-6);
+//143
+var temp5 =  (0+(10*8)-18 + 3 pow (4));
+//14
+var temp6 =  ((8-7+2 pow (3)/3)*4);
+
+
+var mensaje1 = "Básica 1: 1765 == " + temp1;
+var mensaje2 = "Básica 2: 80 == " + temp2;
+var mensaje3 = "Básica 3: 9 == " + temp3;
+var mensaje4 = "Avanzada 1: 112 =="+ temp4;
+var mensaje5 = "Avanzada 2: 143 =="+ temp5;
+//var mensaje5 = "Avanzada 3: 14 =="+ temp6;
+var salida =100 ;
+var mensaje6 = "Relacional basica 1: true == " + (salida < 10); 
+var mensaje7 = "Relacional basica 2: false == " + (salida > 10); 
+var mensaje8 = "Relacional avanzada 3: true  == " + ((10-15 >= 0) && ((15+8 == 22-10+5*3-4) && (10 != 11-2)) ); 
+var verdadero = true;
+var falso = false;
+var mensaje9 = "Lógica basica 1: True :::" + ((!(verdadero ^ verdadero) && (verdadero ^ falso)) OR (1 > 10) && !(!(verdadero) ^ verdadero));
+var mensaje10 = "Lógica avanzada 1: True::" + ((15 == 14) OR (((15*2 >= 15) && (12 < 24))OR((98/2 == 15)OR(!(15 != 6-1)))));
+
+
+component panelVenta()
+{
+	imprimir("1) Operaciones Aritmeticas Basicas");
+	var texto = "1.1) ";
+	imprimir(texto + ": " + temp1);
+	texto = "1.2) ";
+	imprimir(texto + ": " + temp2);
+	texto = "1.3) ";
+	imprimir(texto + ": " + temp3);
+	imprimir("2) Operaciones Aritmeticas Avanzadas");
+	texto = "2.1) ";
+	imprimir(texto + " : " + temp4);
+	texto = "2.2) ";
+	imprimir(texto + " : " + temp5);
+	texto = "2.3) ";
+	imprimir(texto + " : " + temp6);
+
+	imprimir(mensaje1);
+	imprimir(mensaje2);
+	imprimir(mensaje3);
+	imprimir(mensaje4);
+	imprimir(mensaje5);
+	imprimir(mensaje6);
+	imprimir(mensaje7);
+	imprimir(mensaje8);
+	imprimir(mensaje9);
+	imprimir(mensaje10);
+     si(1 == 1){
+          return 
+          (
+               <Panel id= panel2 x = 0 y = 190  width = 980 height = 510 classname="panel principal">
+                    <text x = 250 y = 10  width = 310 height = 27 classname="text Titulo">
+                         {tituloMenu}
+                    </text>                  
+                    <panel id = panelFinal x = 10 y = 440 width = 950 height = 60 className = "panel Detalle">
+               <button x = 630 y = 10 height = 100 width = 75 onclick = "Básica 1: 1765 == 1765">Total</button> 
+               <button x = 690 y = 10 height = 100 width = 75 onclick = "Básica 2: 80 == 80">Q10400.72</button> 
+               <button x = 250 y = 10 height = 150 width = 400 onclick = "Básica 3: 9 == 9">Cerrar Venta</button> 
+          </panel>
+          <panel id = panelD x = 10 y = 50 width = 950 height = 380 className = "panel Detalle">
+               <text x = 20 y = 10  width = 60 height = 30 classname="text Todo">Código</text>
+               <text x = 90 y = 10  width = 80 height = 30 classname="text Todo">Cantidad</text>
+               <text x = 200 y = 10  width = 220 height = 30 classname="text Todo">Descripción</text>
+               <text x = 480 y = 10  width = 110 height = 30 classname="text Todo">Precio Unitario</text>
+               <text x = 650 y = 10  width = 80 height = 30 classname="text Todo">Total</text>               
+
+               <text x = 20 y = 50  width = 60 height = 30 classname="text Todo">LG2020</text>
+               <text x = 90 y = 50  width = 80 height = 30 classname="text Todo">22</text>
+               <text x = 200 y = 50  width = 220 height = 30 classname="text Todo">Luces LED Xenón</text>
+               <text x = 480 y = 50  width = 110 height = 30 classname="text Todo">Q22.50</text>
+               <text x = 650 y = 50  width = 80 height = 30 classname="text Todo">Q495.00</text>
+               <button x = 740 y = 50 height = 70 width = 75 onclick = "Básica 1: 1765 == 1765">Editar</button>               
+               <button x = 820 y = 50 height = 30 width = 75 onclick = "Básica 2: 80 == 80">X</button>               
+
+               <text x = 20 y = 90  width = 60 height = 30 classname="text Todo">ELE022</text>
+               <text x = 90 y = 90  width = 80 height = 30 classname="text Todo">10</text>
+               <text x = 200 y = 90  width = 220 height = 30 classname="text Todo">Mt Cable Calibre 24</text>
+               <text x = 480 y = 90  width = 110 height = 30 classname="text Todo">Q11.75</text>
+               <text x = 650 y = 90  width = 80 height = 30 classname="text Todo">Q117.50</text>
+               <button x = 740 y = 90 height = 70 width = 75 onclick = "Básica 3: 9 == 9">Editar</button>               
+               <button x = 820 y = 90 height = 30 width = 75 onclick = "Avanzada 1: 112 ==112">X</button>               
+
+
+               <text x = 20 y = 130  width = 60 height = 30 classname="text Todo">ELE023</text>
+               <text x = 90 y = 130  width = 80 height = 30 classname="text Todo">20</text>
+               <text x = 200 y = 130  width = 220 height = 30 classname="text Todo">Faroles Tamaño 22 pies</text>
+               <text x = 480 y = 130  width = 110 height = 30 classname="text Todo">Q156.00</text>
+               <text x = 650 y = 130  width = 80 height = 30 classname="text Todo">Q3120.00</text>
+               <button x = 740 y = 130 height = 70 width = 75 onclick = "Avanzada 2: 143 ==143">Editar</button>               
+               <button x = 820 y = 130 height = 30 width = 75 onclick = "Relacional basica 1: true == false">X</button>               
+
+
+               <text x = 20 y = 170  width = 60 height = 30 classname="text Todo">ELE024</text>
+               <text x = 90 y = 170  width = 80 height = 30 classname="text Todo">30</text>
+               <text x = 200 y = 170  width = 220 height = 30 classname="text Todo">Baterias AA Duracell</text>
+               <text x = 480 y = 170  width = 110 height = 30 classname="text Todo">Q3.33</text>
+               <text x = 650 y = 170  width = 80 height = 30 classname="text Todo">Q99.90</text>
+               <button x = 740 y = 170 height = 70 width = 75 onclick = "Relacional basica 2: false == true">Editar</button>               
+               <button x = 820 y = 170 height = 30 width = 75 onclick = "Relacional avanzada 3: true  == false">X</button>                              
+
+               <text x = 20 y = 210  width = 60 height = 30 classname="text Todo">ELE025</text>
+               <text x = 90 y = 210  width = 80 height = 30 classname="text Todo">3</text>
+               <text x = 200 y = 210  width = 220 height = 30 classname="text Todo">BALASTRO PARA LAMPARA</text>
+               <text x = 480 y = 210  width = 110 height = 30 classname="text Todo">Q852.75</text>
+               <text x = 650 y = 210  width = 80 height = 30 classname="text Todo">Q2558.25</text>
+               <button x = 740 y = 210 height = 70 width = 75 onclick = "Básica 1: 1765 == 1765">Editar</button>               
+               <button x = 820 y = 210 height = 30 width = 75 onclick = "Básica 2: 80 == 80">X</button>                              
+
+               <text x = 20 y = 250  width = 60 height = 30 classname="text Todo">ELE026</text>
+               <text x = 90 y = 250  width = 80 height = 30 classname="text Todo">666</text>
+               <text x = 200 y = 250  width = 220 height = 30 classname="text Todo">BASE PARA LAMPARA RS PIN-RIEL</text>
+               <text x = 480 y = 250  width = 110 height = 30 classname="text Todo">Q3.77</text>
+               <text x = 650 y = 250  width = 80 height = 30 classname="text Todo">Q2510.82</text>
+               <button x = 740 y = 250 height = 70 width = 75 onclick = "Lógica basica 1: True :::true">Editar</button>               
+               <button x = 820 y = 250 height = 30 width = 75 onclick = "Lógica avanzada 1: True :::true">X</button>               
+
+               <text x = 20 y = 290  width = 60 height = 30 classname="text Todo">ELE027</text>
+               <text x = 90 y = 290  width = 80 height = 30 classname="text Todo">75</text>
+               <text x = 200 y = 290  width = 220 height = 30 classname="text Todo">BASE PARA REFLECTOR DE INTEMPERIE</text>
+               <text x = 480 y = 290  width = 110 height = 30 classname="text Todo">Q19.49</text>
+               <text x = 650 y = 290  width = 80 height = 30 classname="text Todo">Q1499.25</text>               
+               <button x = 740 y = 290 height = 70 width = 75 onclick = "Lógica basica 1: True :::true">Editar</button>               
+               <button x = 820 y = 290 height = 30 width = 75 onclick = "Lógica avanzada 1: True :::true">X</button>                   
+               <textfield x =20  y = 350 width = 100 height = 30 className = "text Todo">Add</textfield>           
+          </panel>
+               </panel>
+          );
+     }sino si(1 == 1){
+          return 
+          (
+               <Panel id= panel2 x = 0 y = 190  width = 980 height = 510 classname="panel principal">
+                    <text x = 250 y = 10  width = 310 height = 27 classname="text Titulo">
+                         Tengo puntos menos
+                    </text>                  
+                    <panel id = panelFinal x = 10 y = 440 width = 950 height = 60 className = "panel Detalle">
+               <button x = 630 y = 10 height = 100 width = 75 onclick = "Básica 1: 1765 == 1765">Total</button> 
+               <button x = 690 y = 10 height = 100 width = 75 onclick = "Básica 2: 80 == 80">Q10400.72</button> 
+               <button x = 250 y = 10 height = 150 width = 400 onclick = "Básica 3: 9 == 9">Cerrar Venta</button> 
+          </panel>
+          <panel id = panelD x = 10 y = 50 width = 950 height = 380 className = "panel Detalle">
+               <text x = 20 y = 10  width = 60 height = 30 classname="text Todo">Código</text>
+               <text x = 90 y = 10  width = 80 height = 30 classname="text Todo">Cantidad</text>
+               <text x = 200 y = 10  width = 220 height = 30 classname="text Todo">Descripción</text>
+               <text x = 480 y = 10  width = 110 height = 30 classname="text Todo">Precio Unitario</text>
+               <text x = 650 y = 10  width = 80 height = 30 classname="text Todo">Total</text>               
+
+               <text x = 20 y = 50  width = 60 height = 30 classname="text Todo">LG2020</text>
+               <text x = 90 y = 50  width = 80 height = 30 classname="text Todo">22</text>
+               <text x = 200 y = 50  width = 220 height = 30 classname="text Todo">Luces LED Xenón</text>
+               <text x = 480 y = 50  width = 110 height = 30 classname="text Todo">Q22.50</text>
+               <text x = 650 y = 50  width = 80 height = 30 classname="text Todo">Q495.00</text>
+               <button x = 740 y = 50 height = 70 width = 75 onclick = "Básica 1: 1765 == 1765">Editar</button>               
+               <button x = 820 y = 50 height = 30 width = 75 onclick = "Básica 2: 80 == 80">X</button>               
+
+               <text x = 20 y = 90  width = 60 height = 30 classname="text Todo">ELE022</text>
+               <text x = 90 y = 90  width = 80 height = 30 classname="text Todo">10</text>
+               <text x = 200 y = 90  width = 220 height = 30 classname="text Todo">Mt Cable Calibre 24</text>
+               <text x = 480 y = 90  width = 110 height = 30 classname="text Todo">Q11.75</text>
+               <text x = 650 y = 90  width = 80 height = 30 classname="text Todo">Q117.50</text>
+               <button x = 740 y = 90 height = 70 width = 75 onclick = "Básica 3: 9 == 9">Editar</button>               
+               <button x = 820 y = 90 height = 30 width = 75 onclick = "Avanzada 1: 112 ==112">X</button>               
+
+
+               <text x = 20 y = 130  width = 60 height = 30 classname="text Todo">ELE023</text>
+               <text x = 90 y = 130  width = 80 height = 30 classname="text Todo">20</text>
+               <text x = 200 y = 130  width = 220 height = 30 classname="text Todo">Faroles Tamaño 22 pies</text>
+               <text x = 480 y = 130  width = 110 height = 30 classname="text Todo">Q156.00</text>
+               <text x = 650 y = 130  width = 80 height = 30 classname="text Todo">Q3120.00</text>
+               <button x = 740 y = 130 height = 70 width = 75 onclick = "Avanzada 2: 143 ==143">Editar</button>               
+               <button x = 820 y = 130 height = 30 width = 75 onclick = "Relacional basica 1: true == false">X</button>               
+
+
+               <text x = 20 y = 170  width = 60 height = 30 classname="text Todo">ELE024</text>
+               <text x = 90 y = 170  width = 80 height = 30 classname="text Todo">30</text>
+               <text x = 200 y = 170  width = 220 height = 30 classname="text Todo">Baterias AA Duracell</text>
+               <text x = 480 y = 170  width = 110 height = 30 classname="text Todo">Q3.33</text>
+               <text x = 650 y = 170  width = 80 height = 30 classname="text Todo">Q99.90</text>
+               <button x = 740 y = 170 height = 70 width = 75 onclick = "Relacional basica 2: false == true">Editar</button>               
+               <button x = 820 y = 170 height = 30 width = 75 onclick = "Relacional avanzada 3: true  == false">X</button>                              
+
+               <text x = 20 y = 210  width = 60 height = 30 classname="text Todo">ELE025</text>
+               <text x = 90 y = 210  width = 80 height = 30 classname="text Todo">3</text>
+               <text x = 200 y = 210  width = 220 height = 30 classname="text Todo">BALASTRO PARA LAMPARA</text>
+               <text x = 480 y = 210  width = 110 height = 30 classname="text Todo">Q852.75</text>
+               <text x = 650 y = 210  width = 80 height = 30 classname="text Todo">Q2558.25</text>
+               <button x = 740 y = 210 height = 70 width = 75 onclick = "Básica 1: 1765 == 1765">Editar</button>               
+               <button x = 820 y = 210 height = 30 width = 75 onclick = "Básica 2: 80 == 80">X</button>                              
+
+               <text x = 20 y = 250  width = 60 height = 30 classname="text Todo">ELE026</text>
+               <text x = 90 y = 250  width = 80 height = 30 classname="text Todo">666</text>
+               <text x = 200 y = 250  width = 220 height = 30 classname="text Todo">BASE PARA LAMPARA RS PIN-RIEL</text>
+               <text x = 480 y = 250  width = 110 height = 30 classname="text Todo">Q3.77</text>
+               <text x = 650 y = 250  width = 80 height = 30 classname="text Todo">Q2510.82</text>
+               <button x = 740 y = 250 height = 70 width = 75 onclick = "Lógica basica 1: True :::true">Editar</button>               
+               <button x = 820 y = 250 height = 30 width = 75 onclick = "Lógica avanzada 1: True :::true">X</button>               
+
+               <text x = 20 y = 290  width = 60 height = 30 classname="text Todo">ELE027</text>
+               <text x = 90 y = 290  width = 80 height = 30 classname="text Todo">75</text>
+               <text x = 200 y = 290  width = 220 height = 30 classname="text Todo">BASE PARA REFLECTOR DE INTEMPERIE</text>
+               <text x = 480 y = 290  width = 110 height = 30 classname="text Todo">Q19.49</text>
+               <text x = 650 y = 290  width = 80 height = 30 classname="text Todo">Q1499.25</text>               
+               <button x = 740 y = 290 height = 70 width = 75 onclick = "Lógica basica 1: True :::true">Editar</button>               
+               <button x = 820 y = 290 height = 30 width = 75 onclick = "Lógica avanzada 1: True :::true">X</button>                   
+               <textfield x =20  y = 350 width = 100 height = 30 className = "text Todo">Add</textfield>           
+          </panel>
+               </panel>
+          );
+     }
+
+     
+}
+Render(</panelVenta>, cuerpo1);

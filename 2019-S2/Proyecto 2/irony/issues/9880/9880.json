@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "explained in comment",
+    "ClosedDate": "2013-04-04T23:15:12.963-07:00",
+    "CommentCount": 2,
+    "Custom": null,
+    "Description": "Is there some reason for the implementation of `Irony.Interpreter.Scope.GetParent()` starting to return null for long evaluations? I find that replacing the final `return null` with `return Creator` works fine for me. This is the _my_ workable version:\r\n\r\n```\r\nprotected Scope GetParent() {\r\n      // Walk along creators chain and find a scope with ScopeInfo matching this.ScopeInfo.Parent\r\n      var parentScopeInfo = Info.Parent;\r\n      if (parentScopeInfo == null)\r\n        return null; \r\n      var current = Creator;\r\n      while (current != null) {\r\n        if (current.Info == parentScopeInfo)\r\n          return current;\r\n        current = current.Creator; \r\n      }\r\n      return Creator;\r\n      //return null;\r\n    }// method\r\n```\r\n\r\nI am fixing or missing something here?\r\n\r\nI implemented merge sort in my lang, and for lists 1 to 4 items long works fine, for anything bigger than that, the previous function starts to return nulls. With the fix, I can sort bigger lists (I tested up to 16 elements..., gonna run more tests when I can).\r\n\r\n__Some background__\r\n\r\nMy lang (https://github.com/fabriceleal/Multitasks) executes each expression in a separate .NET-Thread (as soon as I hit this problem, I rewrote it so it now runs on a single .NET-Thread), so I create a new `ScriptThread` for the evaluation of each expression. The code I'm using for creating a new `ScriptThread` is this (am I doing this ok? I had to peek at the source, I was unable to find up-to-date info on how to do this):\r\n\r\n```\r\n// current is the current ScriptThread at the time of evaluation\r\n// _this is an AstNode\r\nvar subthread = new ScriptThread(current.App);\r\nvar localScopeInfo = new ScopeInfo(_this, true);\r\n                \r\n_this.DependentScopeInfo = localScopeInfo;\r\n                \r\nsubthread.CurrentScope = current.CurrentScope;                \r\nsubthread.PushClosureScope(localScopeInfo, subthread.CurrentScope, new object[] { });\r\nsubthread.CurrentNode = _this;\r\n            \r\nreturn subthread;\r\n```\r\n\r\nExpressions can be piped, so the environment must follow, hence the `ClosureScope ` stuff.",
+    "LastUpdatedDate": "2013-04-04T23:15:12.963-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2013-03-31T15:44:12.603-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Possible issue with Scope.GetParent()",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9880
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Nope, the ScriptThread does everything correctly. The problem is the way you create Scope/ScopeInfo. You CREATE a new scope info - this is wrong. ScopeInfo is a static (meta-data object) attached to AstNode (some ast nodes like function definition) - property DependentScopeInfo. You should use this value (from AstNode that represents the worker function of the new thread, or its parent scope - function or module that defines it)\nThat's why in your case the ScriptThread code fails to match ScopeInfo - because you create 'temp/fake' one;  ",
+      "PostedDate": "2013-04-01T22:49:11.127-07:00",
+      "Id": 95588
+    },
+    {
+      "Message": "Thanks, I'll take a look into it. I remember that I tried to mimic the behavior of the built-in FunctionDefNode - LambdaNode that are used by the mini-python demo.",
+      "PostedDate": "2013-04-02T12:38:29.503-07:00",
+      "Id": 95683
+    }
+  ]
+}

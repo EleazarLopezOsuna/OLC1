@@ -1,0 +1,61 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Fixed in Jan 24 update",
+    "ClosedDate": "2010-01-25T09:16:10.677-08:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "When multiple lines are processed by the scanner, using subsequent calls to:\n- Scanner.VsSetSource (by LineScanner.SetSource)  \n- Scanner.VsReadToken (by LineScanner.ScanTokenAndProvideInfoAboutIt)\n\nThen Context.CurrentTerminals is extended with new Terminals. These new terminals may have a higher priority than the terminals already present.\nI don't know if the CurrentTerminals should be cleared during subsequent calls to VsReadToken, so I just changed the MatchTerminals function as follows:\n\n    private void MatchTerminals() {\n      Token priorToken = null;\n      foreach (Terminal term in Context.CurrentTerminals.OrderByDescending(t => t.Priority)) {\n\nI included a patch file as well. For a test, please refer to my cuke4vs project, LineScannerTests.Should_return_scenario_and_identifier_tokens_for_scenario_line_after_other_lines\n\nHope this is correct!",
+    "LastUpdatedDate": "2010-01-25T09:16:10.677-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2010-01-12T07:14:39.38-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Scanner.MatchTerminals assumes Context.CurrentTerminals are in descending order, but they are NOT!",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 6872
+  },
+  "FileAttachments": [
+    {
+      "FileId": 210350,
+      "FileName": "scanner_match_terminals.patch",
+      "DownloadUrl": ".\\210350"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Well, to be honest, this functionality is totally screwed up currently. These methods were created a while ago for VS Integration effort by Ben M, but sinse then many things changed internally, and they no longer work properly. I'll try to get back to it and fix it when I can. Sorry for troubles. For now, use whatever workaround you can come up with. Probably in VS scanning mode the ComputeCurrentTerminals method  should just return a list for current char, without any extra work\r\n ",
+      "PostedDate": "2010-01-12T20:51:09.46-08:00",
+      "Id": 29153
+    },
+    {
+      "Message": "Should be fixed in the latest drop, if not - let me know",
+      "PostedDate": "2010-01-24T22:26:20.027-08:00",
+      "Id": 29154
+    },
+    {
+      "Message": "Fixed, thanks Roman!",
+      "PostedDate": "2010-01-25T02:00:14.847-08:00",
+      "Id": 29155
+    }
+  ]
+}

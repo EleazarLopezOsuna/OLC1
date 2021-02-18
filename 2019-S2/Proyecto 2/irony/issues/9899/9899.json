@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "Hi, \r\nIn the init() method of the Commentterminal (CommentTerminal.cs),\r\nIf one of the endsymbols contains \"\\n\", but not the first one, then:\r\n when looping over endsymbols, the flag IsMultiline will be set on the first symbol, and it will never be unset.\r\n\r\nShouldn't the line:\r\n```\r\n       if (!_isLineComment)\r\n          SetFlag(TermFlags.IsMultiline); \r\n```\r\n\r\nbe moved outside the loop ?\r\n",
+    "LastUpdatedDate": "2015-06-26T21:09:36.813-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2015-06-25T02:55:35.44-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "bug when setting CommentTerminal multiline flags?",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9899
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "at first look, you're right, it should be moved outside\n",
+      "PostedDate": "2015-06-26T21:09:36.813-07:00",
+      "Id": 185980
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "426565",
+    "ThreadId": "208083",
+    "Html": "<p>Hello. I am trying to make a CSS parser. In CSS the two selectors are completely different because of spaces between them.</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:#A31515\"><br><br>[title=&quot;my-title&quot;].my-class#my-id<br></span><span style=\"color:#A31515\">[title=&quot;my-title&quot;] .my-class #my-id</span>\r\n\r\n<br><br>The production rule is (note no spaces inside).<br><br>simple_selector\r\n  : element_name [ HASH | class | attrib | pseudo ]*\r\n  | [ HASH | class | attrib | pseudo ]+<br><br><br>My implementation is wrong because plus operator ignores whitespace. &nbsp;<div style=\"color:Black;background-color:White\"><pre>simpleSelector.Rule = (elementName + (hash | @<span style=\"color:Blue\">class</span> | attribute | pseudo).Star())\r\n| (hash | @<span style=\"color:Blue\">class</span> | attribute | pseudo).Plus();<br><br><br><br>\r\n</pre>\r\n</div>\r\n</pre>\r\n</div>\r\n<p>What is the best way to handle this case?</p>\r\n<p>Thanks.</p>",
+    "PostedDate": "2010-04-01T10:18:46.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "426632",
+    "ThreadId": "208083",
+    "Html": "<p>This reminds me of an earlier <a href=\"http://irony.codeplex.com/Thread/View.aspx?ThreadId=70460\">discussion thread</a> with Roman where I recommended the addition to Irony's parser the ability to NOT allow white-space between two terminals.  He found it to be an interesting suggestion and said that it would be done using a Grammar Hint, such as NoWhiteSpace(), and syntax sugar could be added to short hand it with something like the & character.  It's probably low on his list and I haven't had time to attempt the change.</p>\r\n<br>\r\n<p>Anyhow, as Irony lays now, I think your best bet would be to create a custom terminal that lays emphasis on the special CSS characters ( [ . # ) and white-space.  Unfortunately I don't think this would be a fun custom terminal to code, but I could be wrong.</p>\r\n<br><br>\r\n-MindCore",
+    "PostedDate": "2010-04-01T13:24:04.233-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "426656",
+    "ThreadId": "208083",
+    "Html": "<p>ye, that's true, we've already discussed the no-whitespace option, and it is still on my to-do list. But for this case, I don't see how whitespace is relevant. Your BNF expression does not indicate that spaces are involved at all. Can you please elaborate on this? I suspect you have different kind of problem.&nbsp;</p>\r\n<p>General note - don't use Plus() and Star() methods, they are obsolete, I will remove them soon; use MakePlusRule and MakeStarRule instead.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-01T14:43:17.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "435908",
+    "ThreadId": "208083",
+    "Html": "<p>Dubrovsky, I think the second example CSS selector you give is what's termed a &quot;selector&quot; in the grammar, not a &quot;simple_selector&quot;.</p>",
+    "PostedDate": "2010-04-27T05:29:56.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

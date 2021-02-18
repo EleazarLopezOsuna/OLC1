@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "484354",
+    "ThreadId": "224697",
+    "Html": "<p>How do I represent hexadecimal numbers in my language that can be bitwise OR'd like this:</p>\r\n<p>0x01|0x08|0x1</p>\r\n<p>Thanks!</p>",
+    "PostedDate": "2010-08-24T13:52:38-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "484730",
+    "ThreadId": "224697",
+    "Html": "<p>You should treat them as binary expressions, with &quot;|&quot; as binary operator. Look at ExpressionEvaluator grammar for an example</p>",
+    "PostedDate": "2010-08-25T09:17:25.643-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

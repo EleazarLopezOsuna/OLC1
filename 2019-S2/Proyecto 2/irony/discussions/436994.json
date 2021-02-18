@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1016835",
+    "ThreadId": "436994",
+    "Html": "Hi, I just learn to use irony. My grammar is modified from SQL sample as follows:<br />\n<pre><code>            var string_literal = new StringLiteral(&quot;string&quot;, &quot;\\&quot;&quot;, StringOptions.AllowsDoubledQuote);\n            var Id_simple = TerminalFactory.CreateSqlExtIdentifier(this, &quot;id_simple&quot;);\n            var GOTO = ToTerm(&quot;GOTO&quot;);\n\n            var stmt_Goto = new NonTerminal(&quot;stmt_Goto&quot;);\n\n            var def_addr = new NonTerminal(&quot;def_address&quot;);\n            var stmt = new NonTerminal(&quot;stmt&quot;);\n            var stmtLine = new NonTerminal(&quot;stmtLine&quot;);\n            var semicolon = new NonTerminal(&quot;semicolon&quot;);\n            var stmtList = new NonTerminal(&quot;stmtList&quot;);\n\n            //BNF Rules\n            this.Root = stmtList;\n\n            stmtList.Rule = MakePlusRule(stmtList, stmtLine);\n            stmtLine.Rule = stmt + semicolon;\n            semicolon.Rule = &quot;;&quot;;\n\n            stmt.Rule = stmt_Goto;\n\n            stmt_Goto.Rule = GOTO + def_addr;\n            def_addr.Rule = string_literal;</code></pre>\n\nThe problem is when I tried to parse the source, eg<br />\n<pre><code>goto &quot;somewhere&quot;;</code></pre>\n\nIt returned error message: &quot;Syntax Error, expected: string&quot;. If I change the string literal to single quote, it works. How to use double quote in string literal? Thanks<br />\n",
+    "PostedDate": "2013-03-17T21:12:43.147-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1016836",
+    "ThreadId": "436994",
+    "Html": "where's def_addr.Rule assigned?<br />\n",
+    "PostedDate": "2013-03-17T21:31:55.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1016856",
+    "ThreadId": "436994",
+    "Html": "ahhh sorry, I accidentally deleted the line... I have edit my post above. Thanks.<br />\n",
+    "PostedDate": "2013-03-17T23:58:49.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1018642",
+    "ThreadId": "436994",
+    "Html": "your problem is that string literal is ambiguous: CreateSqlExtIdentifier creates an Id that allows (according to SQL standard) identifiers enclosed in square brackets or in double quotes. So &quot;somewhere&quot; is parsed as Sql identifier, not as string_literal.<br />\n",
+    "PostedDate": "2013-03-20T20:46:14.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1018721",
+    "ThreadId": "436994",
+    "Html": "solved ! I replace it with csharpidentifier. thanks...<br />\n",
+    "PostedDate": "2013-03-21T01:42:16.72-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

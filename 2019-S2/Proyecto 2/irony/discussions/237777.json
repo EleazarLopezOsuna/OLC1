@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "533581",
+    "ThreadId": "237777",
+    "Html": "\r\n<p>Hi Roman,</p>\r\n<p>Thanks to your help (and a lot of&nbsp;perseverance&nbsp;and creativity), my Java grammar is good to go. &nbsp;The only thing that it doesn't handle are hex floats. &nbsp;I don't believe it is important for my audience (or any audience really) so I have\r\n ignored that part of the spec.</p>\r\n<p>However, everything else is excellent. &nbsp;Here's why I say that: I went over to OpenJDK and grabbed the test files they use to test the compiler (over 1500). &nbsp;I wrote a little application to try and parse every test file from there. &nbsp;With the\r\n exception of the few files that I removed because they weren't supposed to compile or I'm not supporting that feature (hex floats) or they were unicode, everything passes.</p>\r\n<p>It was long road with many bumps, but YAY, it works. &nbsp;It builds clean. &nbsp;There are no unresolved conflicts. &nbsp;It parses everything it should. &nbsp;I couldn't be happier.</p>\r\n<p>Now, as per my previous post, I'd like to donate this grammar to Irony. &nbsp;There are 3 files. &nbsp;If you would like them, where/how should I send them to you?</p>\r\n<p>Sincerely,</p>\r\n<p>Jere</p>\r\n",
+    "PostedDate": "2010-12-09T11:59:16.627-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533604",
+    "ThreadId": "237777",
+    "Html": "\r\n<p>Hey, congrats!</p>\r\n<p>Use &quot;contact user&quot; facility on this site; I will reply from my real email, then you'll send me the files</p>\r\n<p>About hex floats - can you describe the problem, maybe I can do something about it, like adding options to NumberLiteral</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2010-12-09T12:47:21.477-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

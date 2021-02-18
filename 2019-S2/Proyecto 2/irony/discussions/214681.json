@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "450454",
+    "ThreadId": "214681",
+    "Html": "Hi guys,\r\n\r\nI am thinking to enhance the current Search Grammar class for FTS by allowing the user to enter for example inurl:times as a search query. \r\nThis, obviously should not compromise the existing functionality of Search Grammar but provides additional functionality.\r\n\r\nA possible search string could be something like inurl:times -british etc...\r\n\r\nDid anyone already triy accomplish this? \r\n\r\nI would appreciate suggestions / help on how to accomplish this from you guys :)\r\n\r\nThanks and regards,\r\nJ\r\n",
+    "PostedDate": "2010-06-02T01:04:35.443-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "451904",
+    "ThreadId": "214681",
+    "Html": "<p>Hi J</p>\r\n<p>The first thing to do is define what the inurl: indicates.&nbsp; I played with the idea of using inurl: to indicate a specific table that should be queried with iFTS, so in AdventureWorks you might have something like this:</p>\r\n<p><span style=\"color:#0000ff\">Person.Address:oak</span></p>\r\n<p>Of course if might make more sense to give your inurl: a friendly name that maps to a database table:</p>\r\n<p><span style=\"color:#0000ff\">address:oak</span></p>\r\n<p>You don't have to go with this, but I couldn't think of what else the inurl: would be useful for.&nbsp; Download the sample code from the Irony site and change these lines:</p>\r\n<p><span style=\"color:#0000ff\">BinaryOp.Rule = ImpliedAnd | &quot;and&quot; | &quot;&amp;&quot; | &quot;-&quot; | &quot;or&quot; | &quot;|&quot; | &quot;:&quot;; /* Change line 41 */</span><br><span style=\"color:#0000ff\">RegisterOperators(30, &quot;:&quot;); /* Insert this between lines 58 and 60 */</span></p>\r\n<p>This will create a new &quot;:&quot; BinaryOperator with higher precedence than AND and OR.&nbsp; When you run the GrammarExplorer on it you'll see it's captured as a BinaryExpression like this:</p>\r\n<p><span style=\"color:#0000ff\">BinaryExpression</span><br><span style=\"color:#0000ff\">&nbsp;&nbsp;&nbsp;&nbsp; |</span><br><span style=\"color:#0000ff\">&nbsp;&nbsp;&nbsp;&nbsp; |---address (Term)</span><br><span style=\"color:#0000ff\">&nbsp;&nbsp;&nbsp;&nbsp; |---: (Key symbol)</span><br><span style=\"color:#0000ff\">&nbsp;&nbsp;&nbsp;&nbsp; |---oak (Term)</span></p>\r\n<p>You'll need to add the handling for the new BinaryExpression in the ConvertQuery function around line 113 or so.&nbsp; If you decide to use inurl: to select a table to query the tricky part would be&nbsp;that FTS doesn't support querying multiple tables at once, so you'd have to build out individual iFTS queries for each table and UNION them together when you run them against the server.&nbsp; This added complexity&nbsp;is the main reason I didn't add this functionality to the original search query grammar.&nbsp; Basically you'll have to build and keep track of multiple iFTS query strings simultaneously and then pull them all together at some point.&nbsp; You also have to decide what it means to retrieve results of a search like this:</p>\r\n<p><span style=\"color:#0000ff\">address:oak AND product:crankarm</span></p>\r\n<p>In this example there's no direct relationship between the two tables being queried (although you could probably use some indirect relationship through customer orders, for instance, to bring together addresses and products -- but does that make sense for your application?)&nbsp; Of course you may not want to use the inurl: to direct iFTS to search&nbsp;a table (you may have another purpose for it), so that may not be a concern&nbsp;for you.</p>\r\n<p>Thanks</p>\r\n<p>Michael Coles</p>",
+    "PostedDate": "2010-06-04T16:32:47.47-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "453492",
+    "ThreadId": "214681",
+    "Html": "<p>Hi Michael,</p>\r\n<p>I will definately give your idea a try and check out the progress. As you mentioned, I would need to inurl to directly query a particular table column. The SQL generation would also need to be modified quite a lot to make this task work.</p>\r\n<p>I will post any new developments regarding this.</p>\r\n<p>Thanks for your reply.</p>\r\n<p>Cheers,</p>\r\n<p>J</p>",
+    "PostedDate": "2010-06-09T05:26:49.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "453527",
+    "ThreadId": "214681",
+    "Html": "Hi J<br><br>Sounds good.  I'd be interested in hearing more about the AND, OR and NOT rules you decide to apply across multiple tables with the inurl: feature once you've made those decisions.<br><br>Thanks<br>Michael<p>Sent via BlackBerry from T-Mobile</p><hr><div><b>From: </b> &quot;jonimatix&quot;\r\n &lt;notifications@codeplex.com&gt;\r\n</div><div><b>Date: </b>9 Jun 2010 05:26:52 -0700</div><div><b>To: </b>&lt;admin@geocodenet.com&gt;</div><div><b>Subject: </b>Re: Search Grammar enhancement for inurl [irony:214681]</div><div><br></div> <p>From: jonimatix</p> <div id=ThreadNotificationPostBody><p>Hi Michael,</p>\r\n<p>I will definately give your idea a try and check out the progress. As you mentioned, I would need to inurl to directly query a particular table column. The SQL generation would also need to be modified quite a lot to make this task work.</p>\r\n<p>I will post any new developments regarding this.</p>\r\n<p>Thanks for your reply.</p>\r\n<p>Cheers,</p>\r\n<p>J</p></div>  ",
+    "PostedDate": "2010-06-09T06:35:51.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "455654",
+    "ThreadId": "214681",
+    "Html": "<p>Hi Michael,</p>\r\n<p>I started out with from your suggestions and it definately is the best way to go. The <span style=\"color:#0000ff\">BinaryOp.Rule = ImpliedAnd | &quot;and&quot; |  &quot;&amp;&quot; | &quot;-&quot; | &quot;or&quot; | &quot;|&quot; | &quot;:&quot; <span style=\"color:#000000\">should divide the user input string into terms and </span></span><span style=\"color:#0000ff\">RegisterOperators(30, &quot;:&quot;); <span style=\"color:#000000\">should give higher</span></span><span style=\"color:#0000ff\"><span style=\"color:#000000\"> prcedence in the AST tree. </span></span></p>\r\n<p>Taking your example, if a user searches for <span style=\"color:#0000ff\">address:oak -tree<span style=\"color:#000000\">, h</span></span>ow do you think is best to alter ConvertQuery, however? Which case for <span style=\"color:#0000ff\">node.Term.Name</span> should be altered (around line 107), since we have not created a new non-terminal?&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks for your input.</p>\r\n<p>Regards,</p>\r\n<p>J</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"color:#0000ff\"><span style=\"color:#000000\"><br></span></span></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-15T07:25:19.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "455657",
+    "ThreadId": "214681",
+    "Html": "I'll have to look at the code to give you specifics (can't acces it right now), but essentially you would be treating it like the &quot;or&quot; or &quot;and&quot; operators.  So you could model your code from them.<br><br>Thanks<br>Mike C<br>Sent via BlackBerry from T-Mobile",
+    "PostedDate": "2010-06-15T07:38:41.89-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "456006",
+    "ThreadId": "214681",
+    "Html": "<p>Hi Michael,</p>\r\n<p>Following the previous comment, I think there are 2 ways of achieving this.. Either giving the highest prioirty to the operator &quot;:&quot;, or else create a new non-terminal that would override the Root expression with the new nonterminal, like the following:</p>\r\n<p>&nbsp;&nbsp;<span style=\"color:#0000ff\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var columnLookup = new NonTerminal(&quot;columnLookup&quot;);</span><br><br><span style=\"color:#0000ff\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Root = columnLookup;</span><br><span style=\"color:#0000ff\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; columnLookup.Rule = columnLookup + &quot;:&quot; + Expression;</span></p>\r\n<p>If the path not to create a nonterminal is taken, can you give advice on how to give the highest priority, so that when user inputs <span style=\"color:#0000ff\">address:oak -tree<span style=\"color:#000000\"> it is represented as </span></span><span style=\"color:#0000ff\">address:(oak -tree</span><span style=\"color:#0000ff\"><span style=\"color:#000000\">&nbsp;</span>) <span style=\"color:#000000\">and not as currently represented </span></span><span style=\"color:#0000ff\">(address:oak) -tree</span><span style=\"color:#0000ff\"><br></span></p>\r\n<p>I appreciate you suggestions in this regard,</p>\r\n<p>Regards,</p>\r\n<p>J</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-16T00:45:00.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "456207",
+    "ThreadId": "214681",
+    "Html": "Hi J<br><br>I don't believe it it possible (or at least it will be too difficult for its value) to fulfill this requirement with the nonterminal change.  A question--do you wish to allow a user to specify more than one &quot;columnLookup&quot; per query?  If so you might be getting into some ambiguity, if not on the syntax, I think on the iFTS side.<br><br>Thanks<br>Mike C<p>Sent via BlackBerry from T-Mobile</p><hr><div><b>From: </b> &quot;jonimatix&quot;\r\n &lt;notifications@codeplex.com&gt;\r\n</div><div><b>Date: </b>16 Jun 2010 00:45:02 -0700</div><div><b>To: </b>&lt;admin@geocodenet.com&gt;</div><div><b>Subject: </b>Re: Search Grammar enhancement for inurl [irony:214681]</div><div><br></div> <p>From: jonimatix</p> <div id=ThreadNotificationPostBody><p>Hi Michael,</p>\r\n<p>Following the previous comment, I think there are 2 ways of achieving this.. Either giving the highest prioirty to the operator &quot;:&quot;, or else create a new non-terminal that would override the Root expression with the new nonterminal, like the following:</p>\r\n<p>  <span style=\"color:#0000ff\">        var columnLookup = new NonTerminal(&quot;columnLookup&quot;);</span><br><br><span style=\"color:#0000ff\">          this.Root = columnLookup;</span><br><span style=\"color:#0000ff\">          columnLookup.Rule = columnLookup + &quot;:&quot; + Expression;</span></p>\r\n<p>If the path not to create a nonterminal is taken, can you give advice on how to give the highest priority, so that when user inputs <span style=\"color:#0000ff\">address:oak -tree<span style=\"color:#000000\"> it is represented as </span></span><span style=\"color:#0000ff\">address:(oak -tree</span><span style=\"color:#0000ff\"><span style=\"color:#000000\"> </span>) <span style=\"color:#000000\">and not as currently represented </span></span><span style=\"color:#0000ff\">(address:oak) -tree</span><span style=\"color:#0000ff\"><br></span></p>\r\n<p>I appreciate you suggestions in this regard,</p>\r\n<p>Regards,</p>\r\n<p>J</p>\r\n<p> </p></div>  ",
+    "PostedDate": "2010-06-16T07:55:12.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

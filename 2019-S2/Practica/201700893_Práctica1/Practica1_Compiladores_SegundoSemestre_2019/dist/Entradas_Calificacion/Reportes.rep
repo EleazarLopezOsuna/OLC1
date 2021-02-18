@@ -1,0 +1,161 @@
+﻿/*
+
+ GENERO EL REPORTE PARA EL PRIMER ARCHIVO
+
+*/
+
+Archivo articulos = leerArchivo("C:/Users/USER/Desktop/Entradas/articulos.dat");
+Archivo archivo1 = leerArchivo("C:/Users/USER/Desktop/Entradas/Inmuebles.dat");
+
+imprimir("*************************************************************");
+imprimir("*************************************************************");
+Imprimir("********************", " CONJUNTO DE DATOS 1 ", "********************");
+imprimir("*************************************************************");
+imprimir("*************************************************************");
+
+/*
+	Creo una variable de tipo Archivo
+*/
+Imprimir(articulos);
+
+//Sumo el número de unidades en existencia
+Imprimir("SALIDA FUNCIÓN SUMAR");
+Numerico sumaUnidades = Sumar(articulos, "UnidadesEnExistencia");
+Imprimir("-->","665.0", " == ", sumaUnidades); //665.0
+
+// Veo cuántos registros tiene el archivo
+Imprimir("SALIDA FUNCIÓN CONTAR");
+Numerico numeroRegistros = Contar(articulos);
+Imprimir("-->","20", " == ", numeroRegistros); //20
+
+
+// Veo cuál es el promedio del precio por unidad
+Imprimir("SALIDA FUNCIÓN PROMEDIO");
+Numerico promedioUnidad = promedio(articulos,"PrecioUnidad");
+imprimir("-->","31.3125", " == ", promedioUnidad); //31.3125
+
+// Veo cuántos productos tienen estado SUSPENDIDO
+Imprimir("SALIDA FUNCIÓN CONTARSI");
+Numerico suspendidos = contarSi(articulos, "Suspendido", !=, "VERDADERO");
+imprimir("-->","17", " == ", suspendidos); //17
+
+// Veo cuántos productos NO tienen estado SUSPENDIDO
+Numerico noSuspendidos = contarSi(articulos, "Suspendido", ==, "NINGUNO");
+imprimir("-->","0", " == ", noSuspendidos); //0
+imprimir("");
+imprimir("");
+
+// Obtengo la información de los productos que no son de la categoría Frutas/Verduras
+Imprimir("SALIDA FUNCIÓN OBTENERSI");
+Cadena frutas_verduras = ObtenerSi(articulos, "Categoría", !=, "Frutas/Verduras");
+Imprimir("******************** NO SON Frutas/Verduras ********************");
+Imprimir(frutas_verduras);
+
+// Obtengo la información de los productos del proveedor "Tokyo Traders"
+Cadena reposteria = ObtenerSi(articulos, "Proveedor", ==, "Tokyo Traders");
+Imprimir("******************** Productos de Tokyo Traders ********************");
+Imprimir(reposteria);
+
+
+// Obtengo la información de los productos donde la existencia es mayor a 40.716
+Cadena productos = ObtenerSi(articulos, "UnidadesEnExistencia", >, 40);
+Imprimir("******************** Productos con Existencia > 40.716 ********************");
+Imprimir(productos);
+imprimir("");
+imprimir("");
+imprimir("");
+
+
+/*
+	Generación de reportes con la función Graficar
+*/
+
+Graficar("Existencia_Proveedores", "Existencia de productos por proveedor", articulos, "Proveedor", "UnidadesEnExistencia");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+ GENERO EL REPORTE PARA EL SEGUNDO ARCHIVO
+
+*/
+imprimir("*************************************************************");
+imprimir("*************************************************************");
+Imprimir("********************", " CONJUNTO DE DATOS 2 ", "********************");
+imprimir("*************************************************************");
+imprimir("*************************************************************");
+
+Imprimir(archivo1);
+
+
+// Ejecuto la función Sumar
+Imprimir("SALIDA FUNCIÓN SUMAR");
+Numerico sumar1 = Sumar(archivo1, "Superficie");
+Numerico sumar2 = Sumar(archivo1, "Precio Venta");
+Imprimir("-->","568133", " == ", sumar1);
+Imprimir("-->","4012573438", " == ", sumar2);
+Imprimir("");
+
+// Ejecuto la función Contar
+Imprimir("SALIDA FUNCIÓN CONTAR");
+Numerico contar1 = Contar(archivo1);
+Imprimir("-->","3337", " == ", contar1);
+Imprimir("");
+
+// Ejecuto la función Promedio
+Imprimir("SALIDA FUNCIÓN PROMEDIO");
+Numerico promedio1 = promedio(archivo1, "Superficie");
+Numerico promedio2 = promedio(archivo1, "Precio Venta");
+Imprimir("-->","170.2526221", " == ", promedio1);
+Imprimir("-->","1202449.337", " == ", promedio2);
+Imprimir("");
+
+// Ejecuto la función ContarSi
+Imprimir("SALIDA FUNCIÓN CONTARSI");
+Numerico contarsi1 = ContarSI(archivo1, "Operacion", ==, "Alquiler");
+Numerico contarsi2 = ContarSI(archivo1, "Provincia", !=, "Barcelona");
+Numerico contarsi3 = ContarSI(archivo1, "Superficie", <=, 154);
+Imprimir("-->","1647", " == ", contarsi1);
+Imprimir("-->","2500", " == ", contarsi2);
+Imprimir("-->","1466", " == ", contarsi3);
+Imprimir("");
+
+// Ejecuto la función ObtenerSi
+Imprimir("SALIDA FUNCIÓN OBTENERSI");
+Cadena obtenerSi1 = obtenerSi(archivo1, "Referencia", <, 6);
+Cadena obtenerSi2 = obtenerSi(archivo1, "Referencia", >, 3335);
+Cadena obtenerSi3 = obtenerSi(archivo1, "Referencia", ==, 2994);
+Imprimir(obtenerSi1);
+Imprimir("");
+Imprimir(obtenerSi2);
+Imprimir("");
+Imprimir(obtenerSi3);
+Imprimir("");
+
+// Genero la gráfica 1
+Graficar("imagen1", "Superficie por cada Provincia", archivo1, "Provincia", "Superficie");
+
+// Genero la gráfica 2
+Graficar("imagen2", "Precio de venta de cada Vendedor", archivo1, "Vendedor", "Precio Venta");
+
+
+
+

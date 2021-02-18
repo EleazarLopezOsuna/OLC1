@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "727655",
+    "ThreadId": "286695",
+    "Html": "<p>Hello,</p>\n<p>I would like to ask you. Is it possible to write some rule for list of CSS selectors? For example I have following list:</p>\n<div style=\"background-color: white; color: black;\">\n<pre>frontAdmin .menu ul.leftMenu li.pc .pageTypes .item\r\n</pre>\n</div>\n<p>each selector has to be represented by one&nbsp;node. So, I need 6 nodes. I tried to write some rules but I am not sure how to work with whitespaces between selectors. Is it not possible to write each selector on new line because we have a lot of big&nbsp;css files.</p>\n<p>Thank you very much.</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2012-01-19T08:16:39.863-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "746112",
+    "ThreadId": "286695",
+    "Html": "<p>don't quite understand what is the problem here. You should define a \"selector\" like this:</p>\r\n<p>selector.Rule = identifier | identifier + \".\" + identifier;</p>\r\n<p>selectorList.Rule = MakePlusRule(selectorList, selector);</p>\r\n<p>cssExpr.Rule = identifier + selectorList + NewLine;&nbsp;</p>\r\n<p>Whitespaces are \"swallowed\" automatically by scanner.&nbsp;I don't know much about exact CSS format, so I'm not sure if I got it right. Is Line-break a meaningful terminator in CSS?&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-02-07T16:53:54.697-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

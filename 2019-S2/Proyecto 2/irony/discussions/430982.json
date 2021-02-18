@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "992567",
+    "ThreadId": "430982",
+    "Html": "\r\n<p>I am working on my first Irony project. &nbsp;In the interests of making converting an existing BNF to Irony code easier I thought to create helper functions to handle Kleene star and plus operations as well as the optional clause. &nbsp;As a result (from\r\n the Python definition),&nbsp;</p>\r\n<p>simple_stmt: small_stmt (';' small_stmt)* [';'] NEWLINE</p>\r\n<p>becomes</p>\r\n<p>simple_stmt.Rule = small_stmt &#43; Star(&quot;;&quot; &#43; small_stmt) &#43; Optional(&quot;;&quot;) &#43; Eos;</p>\r\n<p>with, e.g.</p>\r\n<p></p>\r\n<pre>BnfExpression Star(BnfExpression expr)\r\n{\r\n    NonTerminal result = new NonTerminal(&quot;&lt;* &quot; &#43; expr.ToString() &#43; &quot;&gt;&quot;, typeof(NotSupportedNode));\r\n    result.Rule = MakeStarRule(result, expr);\r\n    return result;\r\n}\r\n</pre>\r\n<p></p>\r\n<p>I added the NotSupportedNode reference in the constructor in an attempt to get rid of the problem with the resulting non-terminal having a null DefaultNodeCreator, but now the resulting &quot;Unknown&quot; NT resulting from the addition operation has the\r\n same issue. &nbsp;I can't mark the intermediate NT as transient either.</p>\r\n<p>Has anyone tried to do this?</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2013-01-26T22:05:52.56-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "992570",
+    "ThreadId": "430982",
+    "Html": "\r\n<p>simple answer - don't do that. The simple_stmt.Rule definition you have is the style I try to discourage. Too many things are packed into one rule. It is ok for formal language definition, but not so good for parser, and especially for building interpreter.\r\n For interpreter, every NonTerminal must have AST node, and you can't assign AST node type to these 'auto' nonterminals in the middle of expression. And your troubles are just manifestation of this problem. So, no convenience methods to cut the corners, at\r\n least not this one. Unless you're building just parser, not interpreter.&nbsp;</p>\r\n<p>Question - are implementing Python with interpreter? - then you do need Ast node type or creator for each nonterminal</p>\r\n<p>&nbsp; &nbsp;- or you want to have just parser - in this case you don't need any AST nodes at all, but need to disable (skip) the flag CreateAst in LanguageFlags, so that Irony does not complain about missing AST node types</p>\r\n",
+    "PostedDate": "2013-01-26T22:51:08.267-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "992573",
+    "ThreadId": "430982",
+    "Html": "\r\n<p>I am intending to build an interpreter, but for now I am just trying to understand how Irony works. &nbsp;Creating all of the intermediate nodes from the base grammar is an additional source of error so I was hoping to avoid that. &nbsp;It also adds a lot of work\r\n when expanding the language. &nbsp;Using a processor that consumes the raw BNF to generate the Irony code seems like a reasonable step now. &nbsp;I have worked with more yacc/lex-style generators in the past so breaking down the source BNF into simple chunks is something\r\n I'd rather have the machine do.</p>\r\n",
+    "PostedDate": "2013-01-26T23:20:26.903-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "992575",
+    "ThreadId": "430982",
+    "Html": "\r\n<p>then remove LanguageFlags.CreateAst flag, and do whatever you want - Irony should be able more-less handle this. It is the interpreter/AST restriction that is the source of this recommendation</p>\r\n",
+    "PostedDate": "2013-01-26T23:27:45.98-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "992576",
+    "ThreadId": "430982",
+    "Html": "\r\n<p>Ok, thanks. &nbsp;As I said, I am still learning how the product works.</p>\r\n",
+    "PostedDate": "2013-01-26T23:30:23.293-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

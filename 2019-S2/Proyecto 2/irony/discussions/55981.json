@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "189041",
+    "ThreadId": "55981",
+    "Html": "<p>Hello,</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; I've recently finished migrating to the newest version of Irony and I'm noticing some issues concerning the TokenEditorInfo structure. &nbsp;Does it really need to exist? &nbsp;In my Lua editor implementation, I've had to modify the TokenColor enumerations to support &quot;Operators&quot; and &quot;Punctuation&quot;. &nbsp;I've also ran into an issue in which I cannot use the &quot;AutoDetectKeywords&quot; feature of the compiler while still using TokenEditorInfo (because only the flag IsKeyword is set, the TokenEditor information doesn't gets set to Keyword enumerations). &nbsp;I think ultimately I'll end up using my own variation of an EditorInfo class that is fine tuned for my own editor (since I'll be adding new styles and triggers based on some document object model).</p>\r\n<p>&nbsp;</p>\r\n<p>-Shaun</p>",
+    "PostedDate": "2009-05-11T13:47:48.597-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "189066",
+    "ThreadId": "55981",
+    "Html": "<p>No need to panic. I didn't address the VS integration functionality yet, but would be happy to do this. Can you send me your new sources integrated with latest Irony version, with the list of exact issues you're having? I will try to fix them and push the changes into the new version.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-05-11T14:55:20.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "189071",
+    "ThreadId": "55981",
+    "Html": "<p>Disregard my issue about the IsKeyword problem. &nbsp;I noticed that in my line scanner I was not using the EditorInfo in the AsSymbol member property of a token instead of the EditorInfo itself. &nbsp;Once I resolved that issue it looks great now :) &nbsp;So that means that the only current issue is the need to modify the TokenColor enumeration to support new types.</p>\r\n<p>I'll see if I can build a list of some features or tweaks that can be done to better support VS integration. &nbsp;I had to add some functionality to include support for hidden regions as well as matching multiples and not just matching braces.</p>",
+    "PostedDate": "2009-05-11T15:06:01.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

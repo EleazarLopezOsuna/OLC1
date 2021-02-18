@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1164035",
+    "ThreadId": "495738",
+    "Html": "Hello.\r<br />\n<br />\nI want to realize grammar for expression like this:<br />\n<pre><code>A and B and C and D or Z</code></pre>\n\nIf I use general recommendation about binary operations I got <br />\n<pre><code>(((A and B) AND C) AND D) or Z</code></pre>\n\nActually I need a way to treat sequence of &quot;AND&quot; like multiple argument function<br />\n<pre><code>AND(A,B,C,D) or Z</code></pre>\n\nAny ideas?<br />\n",
+    "PostedDate": "2014-01-13T23:44:30.057-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1165835",
+    "ThreadId": "495738",
+    "Html": "try defining AND operator as List (with MakePlusRule) and 'AND' as delimiter. But then you might have problem with a single identifier - the parser may try to interpret it as AND-list with a single element.\r<br />\nAlternative is to parse as you have now, and then transform the result parse tree using a tree visitor - I would recommend doing this\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-01-14T10:40:38.67-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1167627",
+    "ThreadId": "495738",
+    "Html": "Hi. I tried to MakePlusRule but it has lot's of side effects.\r<br />\nSo I think that AST transformation is a good options. Could you please point me to any example? <br />\n",
+    "PostedDate": "2014-01-14T21:54:38.893-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1191407",
+    "ThreadId": "495738",
+    "Html": "I would recommend transforming parse tree, not AST tree. Examples - do not have any, just build a tree visitor/rewriter, that finds certain node patterns (nested AND expressions) and replaces them with a combined node representing AND function over multiple arguments.<br />\n",
+    "PostedDate": "2014-01-22T10:45:01.417-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

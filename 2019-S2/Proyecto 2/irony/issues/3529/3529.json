@@ -1,0 +1,65 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T11:42:24.367-07:00",
+    "CommentCount": 5,
+    "Custom": "",
+    "Description": "In case-insensitive grammars like SQL, operator precedence does not work correctly for operators with letters (AND, OR).\n\nAfter doing RegisterOperators(4, \"AND\") in SQL grammar, I can see the following in the debug window:\nIrony.Compiler.SymbolTerminal.GetSymbol(\"AND\").Precedence == 0\nIrony.Compiler.SymbolTerminal.GetSymbol(\"and\").Precedence == 6\nand query containing \"AND\" (or \"and\") does not use the correct precedence (I have not looked into details on why).\n\nMaybe it would make sense to have SymbolTerminalTable pass StringComparer.InvariantCultureIgnoreCase as KeyComparer to base dictionary for case-insensitive grammars?",
+    "LastUpdatedDate": "2010-03-26T11:42:24.367-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2008-12-26T13:55:00.067-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Operator precedence does not seem to work correctly for case-insensitive grammars",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 3529
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "As a workaround, I changed symbol definitions in grammar to be lower-case, which solved the problem.",
+      "PostedDate": "2008-12-27T02:50:08.68-08:00",
+      "Id": 29101
+    },
+    {
+      "Message": "Just noticed I have an error in the issue description, it should obviously be\r\nIrony.Compiler.SymbolTerminal.GetSymbol(\"AND\").Precedence == 0\r\nIrony.Compiler.SymbolTerminal.GetSymbol(\"and\").Precedence == 4\r\nsince AND was registered with 4.\r\n\r\nSorry for confusion.",
+      "PostedDate": "2008-12-27T02:51:21.477-08:00",
+      "Id": 29102
+    },
+    {
+      "Message": "I will try to fix this and other problems in next code drop; the whole thing needs considerate refactoring. ",
+      "PostedDate": "2008-12-29T12:10:56.643-08:00",
+      "Id": 29103
+    },
+    {
+      "Message": "Something like this happens to me too. If I just replace the text for the operator \"=\" for the word \"is\", the whole precedence begins to fail horribly. When I change it back to \"=\" everything works as it should. I'm still looking into it, but I'm pretty new to Irony so some assistance would be greatly appreciated.",
+      "PostedDate": "2009-04-15T05:17:26.433-07:00",
+      "Id": 29104
+    },
+    {
+      "Message": "04/23 - uploaded code, now precedence working in this case",
+      "PostedDate": "2009-04-23T23:07:12.663-07:00",
+      "Id": 29105
+    }
+  ]
+}

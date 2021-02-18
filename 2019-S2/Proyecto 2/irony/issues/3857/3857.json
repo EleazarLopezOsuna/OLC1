@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T11:41:39.79-07:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "I have a small collection of extension methods that I use to make my actual grammars more terse, and I currently re-implement these just so I can use them the same way I use .Empty, etc.",
+    "LastUpdatedDate": "2010-03-26T11:41:39.79-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-02-26T08:57:46.667-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Should make Grammar.MakeStarRule and Grammar.MakePlusRule static members.",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 3857
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "that makes sense. Let me think about this\r\nthanks!\r\n",
+      "PostedDate": "2009-02-26T21:20:10.43-08:00",
+      "Id": 29113
+    },
+    {
+      "Message": "changed to static",
+      "PostedDate": "2009-04-26T19:09:28.723-07:00",
+      "Id": 29114
+    }
+  ]
+}

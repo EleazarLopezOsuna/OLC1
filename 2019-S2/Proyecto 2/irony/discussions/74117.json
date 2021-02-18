@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "253510",
+    "ThreadId": "74117",
+    "Html": "<p>I am trying to get a GWBasicGrammar script running, but am getting as exception due to a null AST. I can't figure out how to fix this. I've looked at The ExpresionEvaluatorGrammar and the MiniPython and they seem similar, but something is different.</p>\r\n<p>&nbsp;</p>\r\n<p>The code I'm using to create the grammer is this:</p>\r\n<p>&nbsp;</p>\r\n<pre>GWBasicGrammar grammar = new GWBasicGrammar();\r\nScriptInterpreter interpreter = new ScriptInterpreter(grammar);\r\nParseTree parseTree = interpreter.Parser.Parse(&quot;1 H=10&quot;);\r\n\r\nstring lastResult = grammar.RunSample(parseTree);</pre>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>When calling RunSample I am getting an exception in the Evaluate method of ScriptInerpreter:</p>\r\n<p>\r\n<pre>    public void Evaluate(ParseTree parsedScript) {\r\n      int start = Environment.TickCount;\r\n      try {\r\n        ParsedScript = parsedScript;\r\n        Check(ParsedScript != null, &quot;Parsed tree is null, cannot evaluate.&quot;);\r\n        UpdateStatusFromParseStatus();\r\n        if (Status != InterpreterStatus.Evaluating) return;\r\n        Check(ParsedScript.Root != null, &quot;Parse tree root is null, cannot evaluate.&quot;);\r\n        var astNode = ParsedScript.Root.AstNode;\r\n        Check(astNode != null, &quot;Root AST node is null, cannot evaluate.&quot;);</pre>\r\n</p>\r\n<p>The AstNode is null.</p>\r\n<p>&nbsp;</p>\r\n<p>Any help on how to work around that would be great.</p>",
+    "PostedDate": "2009-11-04T15:30:57.17-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "253521",
+    "ThreadId": "74117",
+    "Html": "<p>Have you tried setting adding Parsing.LanguageFlags.CreateAst to the LanguageFlags in the grammar? Like so:</p>\r\n<p>\r\n<pre>this.LanguageFlags = LanguageFlags.NewLineBeforeEOF | Parsing.LanguageFlags.CanRunSample | Parsing.LanguageFlags.CreateAst;</pre>\r\n</p>\r\n<p>I did that and it worked.</p>\r\n<p>Good luck!</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-04T15:47:53.753-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "253571",
+    "ThreadId": "74117",
+    "Html": "<p>hm... are u talking to yourself, or&nbsp;there's somebody else in the room? :)</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-04T19:18:49.74-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

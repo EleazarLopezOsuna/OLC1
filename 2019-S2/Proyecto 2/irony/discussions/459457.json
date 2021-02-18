@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1100102",
+    "ThreadId": "459457",
+    "Html": "\\Irony\\Parsing_new\\NewScanner\\SourceSegments.cs' could not be opened ('Unspecified error ')\r<br />\n\\Irony\\Parsing_new\\NewScanner\\NewScanner.cs' could not be opened ('Unspecified error ')\r<br />\n\\Irony\\Parsing_new\\NewScanner\\TerminalLookupByPrefix.cs' could not be opened ('Unspecified error ')\r<br />\n\\Irony\\Parsing_new\\NewScanner_partialDefs.cs' could not be opened ('Unspecified error ')\r<br />\n\\Irony\\Parsing_new\\GlrParser.cs' could not be opened ('Unspecified error ')\r<br />\n<br />\nare those autocreated somehow, or am I missing something? Should I make those files myself?<br />\n",
+    "PostedDate": "2013-09-27T06:12:34.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1100122",
+    "ThreadId": "459457",
+    "Html": "which project are you loading? i've just removed all this stuff and uploaded the solution.\r<br />\nanyway, just remove these files from project<br />\n",
+    "PostedDate": "2013-09-27T07:21:36.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1100360",
+    "ThreadId": "459457",
+    "Html": "i excluded the folder Parsing_new from the project  010.Irony.2010   bez it's empty , and compiled, and every thing is good :)<br />\n",
+    "PostedDate": "2013-09-28T00:36:36.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

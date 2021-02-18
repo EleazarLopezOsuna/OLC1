@@ -1,0 +1,61 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T11:41:21.867-07:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "NumberLiteral with NumberFlags.AllowSign crashes when encounters + or - that are not followed by a number.\nThe reason is that it creates an empty Body and then crashes when trying to convert it to a number.\n\nI'll upload a patch with test cases to the Source Code section.",
+    "LastUpdatedDate": "2010-03-26T11:41:21.867-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-01-11T09:57:17.497-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Signed NumberLiteral crashes on '-' and '+' operators",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 3600
+  },
+  "FileAttachments": [
+    {
+      "FileId": 210347,
+      "FileName": "NumberLiteral.patch",
+      "DownloadUrl": ".\\210347"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "It seems that Patches do not support Subversion-style patches, so I'll add it here.",
+      "PostedDate": "2009-01-11T10:05:15.043-08:00",
+      "Id": 29106
+    },
+    {
+      "Message": "good catch, thanks! will fix it in the next code drop",
+      "PostedDate": "2009-01-12T09:26:25.037-08:00",
+      "Id": 29107
+    },
+    {
+      "Message": "applied the patch, now fixed",
+      "PostedDate": "2009-04-26T19:10:27.797-07:00",
+      "Id": 29108
+    }
+  ]
+}

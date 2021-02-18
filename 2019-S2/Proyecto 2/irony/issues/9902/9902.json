@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Attached only modification as in the above example where all the code sent, not seen as there is a character limit.\r\n\r\nvar T_NOT=ToTerm(\"NOT\"); //Added\r\nvar NT_BETWEEN=new NonTerminal(\"NT_BETWEEN\");//Added\r\n\r\nexpression.Rule = term | unExpr | binExpr | betweenExpr; \r\nbetweenExpr.Rule=expression+NT_BETWEEN+term+\"AND\"+term;//added by ECF\r\nNT_BETWEEN.Rule=ToTerm(\"BETWEEN\")|T_NOT+\"BETWEEN\";     //added by ECF\r\n\r\n\r\nRegisterOperators(8,\"=\",\">\",\"<\",\">=\",\"<=\",\"<>\",\"!=\",\"!<\",\"!>\",\"LIKE\",\"IN\",\"BETWEEN\");//Added",
+    "LastUpdatedDate": "2016-02-22T02:31:38.213-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2016-02-22T02:31:38.213-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Add \"Between\" in the SQL grammar Example 89",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9902
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

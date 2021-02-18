@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "275128",
+    "ThreadId": "80276",
+    "Html": "<p>Hello,</p>\r\n<p>I have a proprietary language I'm creating a grammar for which has commands in the following form:</p>\r\n<p><strong>someCommand &lt;flags&gt; &lt;arguments&gt;</strong></p>\r\n<p>Flags are in the form of <strong>-someFlag</strong></p>\r\n<p>Arguments are any literal, so <strong>numbers</strong>, <strong>strings</strong>, <strong>true</strong>, and <strong>false </strong>are valid values.</p>\r\n<p>Here is an example command:</p>\r\n<p><strong>someCommand -someFlag -someOtherFlag 5 true false 6 -7 &quot;string&quot; &quot;another string&quot;;</strong></p>\r\n<p>A problem occurs though when using a unary operator on a numerical argument immediately after the flags. This statement fails to parse correctly, but it is valid syntax:</p>\r\n<p><strong>someCommand -someFlag -someOtherFlag -5 true false 6 -7 &quot;string&quot; &quot;another string&quot;;</strong></p>\r\n<p>The issue seems to be that the parser is in the command flags state, so it hits the <strong>-5</strong> and gags because it wants an <strong>Identifier</strong>, not a <strong>Number</strong>. I had hoped it would just leave the state when it hit something that didn't match. If that were the case, the <strong>-5</strong> would be picked up properly by the arguments rule.</p>\r\n<p>Any suggestions for how to make this work would be greatly appreciated.</p>\r\n<p>Thanks!</p>\r\n<p>-Matt</p>\r\n<p>&nbsp;</p>\r\n<p><strong>Grammar code:</strong></p>\r\n<p><strong>&nbsp;</strong></p>\r\n<p><strong>CommandStatement.Rule = Identifier + CommandFlags_opt + CommandArgs_opt + SemiColon;<br>CommandFlags_opt.Rule = MakeStarRule(CommandFlags_opt, CommandFlag);<br>CommandFlag.Rule = ToTerm(&quot;-&quot;) + Identifier;<br>CommandArgs_opt.Rule = MakeStarRule(CommandArgs_opt,&nbsp; Literal);<br></strong><strong>Literal.Rule = UnaryOperator_opt + Number | String | ToTerm(&quot;true&quot;) | &quot;false&quot;;<br>UnaryOperator.Rule = ToTerm(&quot;+&quot;) | &quot;-&quot;;</strong></p>\r\n<p><strong><br></strong></p>",
+    "PostedDate": "2010-01-09T06:01:19.497-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "275188",
+    "ThreadId": "80276",
+    "Html": "<p>Try the following: Remove UnaryOperator non-terminal and add flag AllowSign to Number</p>",
+    "PostedDate": "2010-01-09T10:04:56.727-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "275191",
+    "ThreadId": "80276",
+    "Html": "<p>Thank you a ton! That solved the problem :)</p>\r\n<p>I really appreciate you taking your time to help me solve my problem.</p>\r\n<p>-Matt Kerchmar</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-09T10:27:42.8-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

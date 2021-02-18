@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "543015",
+    "ThreadId": "240228",
+    "Html": "\r\n<p>Hello All,</p>\r\n<p>I have a grammar put together and I'm trying to test it in Grammar Explorer.&nbsp; GE keeps giving me this error:</p>\r\n<p><span style=\"color:#ff0000\">Non-terminal TemplateIdentifier has uninitialized Rule property</span></p>\r\n<p>...'TemplateIdentifier' is defined earlier in the code like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> TemplateIdentifier = <span style=\"color:blue\">new</span> <span style=\"color:#008080\">NonTerminal</span>(<span style=\"color:#a31515\">&quot;TemplateIdentifier&quot;</span>);\r\n</pre>\r\n</div>\r\n<p>...'identifier' is defined earlier in the code like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:#008080\">IdentifierTerminal</span> identifier = <span style=\"color:blue\">new</span> <span style=\"color:#008080\">IdentifierTerminal</span>(<span style=\"color:#a31515\">&quot;identifier&quot;</span>);\r\n</pre>\r\n</div>\r\n<p>...and my Rule is defined like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>TemplateIdentifier.Rule = identifier;\r\n</pre>\r\n</div>\r\n<p>...what am I doing wrong?</p>\r\n",
+    "PostedDate": "2011-01-02T19:34:20.82-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "543852",
+    "ThreadId": "240228",
+    "Html": "\r\n<p>what this error means is that non-terminal has its Rule property set to null. You might be resetting it somewhere. Step through the grammar constructor with debugger and try to identify where it happens. Specifically, check that TemplateIdentifier.Rule !=\r\n null on constructor exit.&nbsp;</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2011-01-04T10:55:01.447-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "543875",
+    "ThreadId": "240228",
+    "Html": "\r\n<p>Nope, it gets through the constructor with a value and continues into Grammar Explorer with a value (identifier, which is also not null).</p>\r\n<p>Can I email you this grammar and you can take a look?...for laughs if nothing else? :)</p>\r\n<p>Dave</p>\r\n",
+    "PostedDate": "2011-01-04T11:35:39.237-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "543965",
+    "ThreadId": "240228",
+    "Html": "\r\n<p>sure, send it, I'll have a look</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-04T14:20:27.24-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "544002",
+    "ThreadId": "240228",
+    "Html": "\r\n<p>oh man, that's really funny... if you read carefully the error message, it says:</p>\r\n<table>\r\n<tbody>\r\n<tr>\r\n<td>Non-terminal TemplateIdentifer has uninitialized Rule property.</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p>Notice misspelled name, &quot;...fer&quot; instead of &quot;fier&quot;. You actually have a different thing there with this misspelled name, a few lines below the commented out and correctly named one. You apparently (just as I did a few times) was doing search on the correctly\r\n named element, trying to find all its occurrences, and not hitting the troubled one...&nbsp;</p>\r\n<p>I think you can take it from here</p>\r\n<p>good luck</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-04T15:48:47.827-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "544037",
+    "ThreadId": "240228",
+    "Html": "\r\n<p>Oh man&hellip;maybe I need to increase the font size on my screen :)</p>\r\n<p>That&rsquo;s what I did, I even got rid of &lsquo;TemplateIdentifier&rsquo; totally and still the error was there and I was thinking &lsquo;is it being cached somewhere?&rsquo; and doing &lsquo;clean project, clean project&rsquo; and making sure the files\r\n were gone.</p>\r\n<p>Duh.</p>\r\n<p>Thanks for pointing it out, Roman&hellip;I can now move on to some new errors :)</p>\r\n<p>Dave</p>\r\n",
+    "PostedDate": "2011-01-04T16:43:22.977-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

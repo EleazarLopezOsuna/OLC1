@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "When trying to recover from an error token when at the end of file, a call to Scanner.Recover will increment the PreviewPosition before first checking if it is at EOF. In some use cases it will cause an error later on.\r\n\r\nInstead, the following could be used. I deleted the \"src.PreviewPosition++;\" that was outside the while loop and moved the one from the bottom of the loop to the top of the loop. I tested this to work at the end of a file and somewhere in the middle.\r\n\r\n    //Simply skip until whitespace or delimiter character\r\n    private bool Recover() {\r\n      var src = Context.Source;\r\n      while (!Context.Source.EOF()) {\r\n        src.PreviewPosition++;\r\n        if(_grammar.IsWhitespaceOrDelimiter(src.PreviewChar)) {\r\n          src.Position = src.PreviewPosition;\r\n          return true;\r\n        }\r\n      }\r\n      return false; \r\n    }\r\n",
+    "LastUpdatedDate": "2012-12-17T09:31:40.003-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2012-12-14T08:36:04.44-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Scanner.Recover Causes IndexOutOfRange (with fix)",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9877
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "thank you, will look into this\nRoman",
+      "PostedDate": "2012-12-17T09:31:40.003-08:00",
+      "Id": 84416
+    }
+  ]
+}

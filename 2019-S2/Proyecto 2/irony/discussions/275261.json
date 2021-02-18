@@ -1,0 +1,106 @@
+[
+  {
+    "Id": "681823",
+    "ThreadId": "275261",
+    "Html": "<p>For a DSL that I am working on, I need to get a block of data between&nbsp;VAR and END_VAR. Whatever is there in between these tokens, I have to capture - but there is not particular rule to parse the content. It may be free text flow.</p>\n<pre>VAR\nthis is a multi-line free flow text; ....... @$#!#QWEQ ajkadkfjlj-((((((((\n,,,,,,,,,,,~~ end of rubbish\nEND_VAR\n</pre>\n<p>A C# regular expression might be: @\"\\bVAR\\b.*?\\bEND_VAR\\b\".&nbsp;But I cannot find a way to capture the content between the keywords VAR and END_VAR using Irony.</p>\n<p>Can anyone suggest please?</p>",
+    "PostedDate": "2011-10-09T10:19:57.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "681824",
+    "ThreadId": "275261",
+    "Html": "<p>The terminal for catching this free-form text until some end keyword is FreeTextLiteral.</p>",
+    "PostedDate": "2011-10-09T10:23:26.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "681827",
+    "ThreadId": "275261",
+    "Html": "<p>Oh! Can I get a small example here please?</p>",
+    "PostedDate": "2011-10-09T10:25:15.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "681834",
+    "ThreadId": "275261",
+    "Html": "<p>Look at FreeTextLiteralTests.cs in test project. You can have escaped chars inside the text, and the test code shows how to do this.&nbsp;</p>\r\n<p>basically all you need to do is create freeTextLiteral that will grab everything until END_VAR</p>\r\n<p>var varContent = new FreeTextLiteral(\"varContent\", \"END_VAR\");</p>\r\n<p>&nbsp;</p>\r\n<p>varDecl.Rule = \"VAR\" + NewLine + varContent;&nbsp;</p>",
+    "PostedDate": "2011-10-09T10:47:52.393-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "681853",
+    "ThreadId": "275261",
+    "Html": "<p>Thanks Roman for providing example here! I also had a look at the file.</p>\r\n<p>I'll work it out from here.</p>\r\n<p>Regards</p>",
+    "PostedDate": "2011-10-09T11:56:05.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "681859",
+    "ThreadId": "275261",
+    "Html": "<p>OK... so there is a problem - the rule makes its go into a forever loop.</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">var</span> varContent = <span style=\"color: blue;\">new</span> FreeTextLiteral(<span style=\"color: #a31515;\">\"varContent\"</span>, <span style=\"color: #a31515;\">\"END_VAR\"</span>);\n<span style=\"color: blue;\">var</span> var_block = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"var_block\"</span>, <span style=\"color: #a31515;\">\"VAR\"</span> + NewLine + varContent);\n\n</pre>\n</div>\n<p>Here, newPos always stays same:&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">override</span> Token TryMatch(ParsingContext context, ISourceStream source)\n        {\n            <span style=\"color: blue;\">string</span> tokenText = <span style=\"color: blue;\">string</span>.Empty;\n            <span style=\"color: blue;\">while</span> (<span style=\"color: blue;\">true</span>)\n            {\n                <span style=\"color: green;\">//Find next position</span>\n                <span style=\"color: blue;\">var</span> newPos = source.Text.IndexOfAny(_stopChars, source.PreviewPosition);\n                <span style=\"color: blue;\">if</span> (newPos == -1)\n                {\n                    <span style=\"color: blue;\">if</span> (IsSet(FreeTextOptions.AllowEof))\n                    {\n                        source.PreviewPosition = source.Text.Length;\n                        <span style=\"color: blue;\">return</span> source.CreateToken(<span style=\"color: blue;\">this</span>.OutputTerminal);\n                    }\n                    <span style=\"color: blue;\">else</span>\n                        <span style=\"color: blue;\">return</span> <span style=\"color: blue;\">null</span>;\n                }\n                tokenText += source.Text.Substring(source.PreviewPosition, newPos - source.PreviewPosition);\n                source.PreviewPosition = newPos;\n                <span style=\"color: green;\">//if it is escape, add escaped text and continue search</span>\n                <span style=\"color: blue;\">if</span> (CheckEscape(source, <span style=\"color: blue;\">ref</span> tokenText))\n                    <span style=\"color: blue;\">continue</span>;\n                <span style=\"color: green;\">//check terminators</span>\n                <span style=\"color: blue;\">if</span> (CheckTerminators(source, <span style=\"color: blue;\">ref</span> tokenText))\n                    <span style=\"color: blue;\">break</span>; <span style=\"color: green;\">//from while (true)        </span>\n            }\n            <span style=\"color: blue;\">return</span> source.CreateToken(<span style=\"color: blue;\">this</span>.OutputTerminal, tokenText);\n        }\n</pre>\n</div>\n<p>Input is:</p>\n<pre>VAR\nMESSAGE:STRING80;\n(*_ORError Message*)\nEND_VAR\n</pre>\n<p>&nbsp;</p>\n<p>Problem seems to be the stop character 'E' which is part of \"<strong>E</strong>ND_VAR\" and also \"M<strong>E</strong>SSAGE\".</p>\n<p>Till I figure it out, I am sharing this problem here.</p>",
+    "PostedDate": "2011-10-09T12:18:54.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "681902",
+    "ThreadId": "275261",
+    "Html": "<p>try adding an option ConsumeTerminator:</p>\r\n<p>&nbsp;</p>\r\n<p>var varContent = new FreeTextLiteral(\"varContent\", FreeTextOptions.ConsumeTerminator, \"VAR_END\");</p>",
+    "PostedDate": "2011-10-09T15:47:57.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "681925",
+    "ThreadId": "275261",
+    "Html": "<p>No difference. Still stuck in forever loop for the same reason. :(</p>",
+    "PostedDate": "2011-10-09T20:19:32.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "681931",
+    "ThreadId": "275261",
+    "Html": "<p>This has fixed it.. but I don't know if it works for all cases.</p>\n<p>In function FreeTextLiteral.<span style=\"font-family: Consolas, 'Courier New', Courier, monospace; white-space: pre;\">TryMatch<span style=\"font-family: 'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif; white-space: normal;\">, change this line to:</span></span></p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: green;\">//Find next position</span>\n<span style=\"color: blue;\">var</span> newPos = source.Text.IndexOfAny(_stopChars, source.PreviewPosition + 1);\n</pre>\nAnd the usage is:</div>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">var</span> varContent = <span style=\"color: blue;\">new</span> FreeTextLiteral(<span style=\"color: #a31515;\">\"varContent\"</span>, FreeTextOptions.ConsumeTerminator, <span style=\"color: #a31515;\">\"END_VAR\"</span>);\n<span style=\"color: blue;\">var</span> var_block = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"var_block\"</span>, <span style=\"color: #a31515;\">\"VAR\"</span> + NewLine + varContent + NewLinePlus);\n\n</pre>\n</div>",
+    "PostedDate": "2011-10-09T21:46:28.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "681939",
+    "ThreadId": "275261",
+    "Html": "<p>yes, looks like you hit on a bug. My apologies. Not sure what's the proper way to fix it yet, the way you suggest it it won't correctly grab \"empty\" free text literal. Let me think a bit.&nbsp;</p>",
+    "PostedDate": "2011-10-09T22:16:13.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "682138",
+    "ThreadId": "275261",
+    "Html": "<p>Yes, you are right. This test fails after my changes:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">var</span> term = <span style=\"color: blue;\">new</span> FreeTextLiteral(<span style=\"color: #a31515;\">\"FreeText\"</span>, <span style=\"color: #a31515;\">\",\"</span>, <span style=\"color: #a31515;\">\")\"</span>);\r\nterm.Escapes.Add(<span style=\"color: #a31515;\">@\"\\\\\"</span>, <span style=\"color: #a31515;\">@\"\\\"</span>);\r\nterm.Escapes.Add(<span style=\"color: #a31515;\">@\"\\,\"</span>, <span style=\"color: #a31515;\">@\",\"</span>);\r\nterm.Escapes.Add(<span style=\"color: #a31515;\">@\"\\)\"</span>, <span style=\"color: #a31515;\">@\")\"</span>); \r\n\r\nSetTerminal(term);\r\nTryMatch(<span style=\"color: #a31515;\">@\"abc\\\\de\\,\\)fg,\"</span>);\r\nAssert.IsNotNull(_token, <span style=\"color: #a31515;\">\"Failed to produce a token on valid string.\"</span>);\r\nAssert.AreEqual(term, _token.Terminal, <span style=\"color: #a31515;\">\"Failed to scan a string - invalid Terminal in the returned token.\"</span>);\r\nAssert.AreEqual(_token.Value.ToString(), <span style=\"color: #a31515;\">@\"abc\\de,)fg\"</span>, <span style=\"color: #a31515;\">\"Failed to scan a string\"</span>);  &lt;-------------------------------- Fail\r\n</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2011-10-10T08:25:24.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "682153",
+    "ThreadId": "275261",
+    "Html": "<p>Will this be helpful?</p>\n<div style=\"color: black; background-color: white;\">\n<pre>        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">override</span> Token TryMatch(ParsingContext context, ISourceStream source)\n        {\n            <span style=\"color: blue;\">string</span> tokenText = <span style=\"color: blue;\">string</span>.Empty;\n            <span style=\"color: blue;\">while</span> (<span style=\"color: blue;\">true</span>)\n            {\n                <span style=\"color: green;\">//Find next position</span>\n                <span style=\"color: blue;\">var</span> newPos = source.Text.IndexOfAny(_stopChars, source.PreviewPosition);<span style=\"color: green;\">&nbsp;</span>\n                <span style=\"color: blue;\">if</span> (newPos == -1)\n                {\n                    <span style=\"color: blue;\">if</span> (IsSet(FreeTextOptions.AllowEof))\n                    {\n                        source.PreviewPosition = source.Text.Length;\n                        <span style=\"color: blue;\">return</span> source.CreateToken(<span style=\"color: blue;\">this</span>.OutputTerminal);\n                    }\n                    <span style=\"color: blue;\">else</span>\n                        <span style=\"color: blue;\">return</span> <span style=\"color: blue;\">null</span>;\n                }\n                tokenText += source.Text.Substring(source.PreviewPosition, newPos - source.PreviewPosition);\n                source.PreviewPosition = newPos;\n                <span style=\"color: green;\">//if it is escape, add escaped text and continue search</span>\n                <span style=\"color: blue;\">if</span> (!CheckEscape(source, <span style=\"color: blue;\">ref</span> tokenText))\n                    <span style=\"color: green;\">//check terminators</span>\n                    <span style=\"color: blue;\">if</span> (CheckTerminators(source, <span style=\"color: blue;\">ref</span> tokenText))\n                        <span style=\"color: blue;\">break</span>; <span style=\"color: green;\">//from while (true)</span>\n                    <span style=\"color: blue;\">else</span>\n                        tokenText += source.Text[source.PreviewPosition++];\n            }\n            <span style=\"color: blue;\">return</span> source.CreateToken(<span style=\"color: blue;\">this</span>.OutputTerminal, tokenText);\n        }\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>To test it, the tests are:</p>\n<div style=\"color: black; background-color: white;\">\n<pre>        [TestMethod]\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> TestFreeTextLiteral()\n        {\n            <span style=\"color: green;\">//VAR</span>\n            <span style=\"color: green;\">//MESSAGE:STRING80;</span>\n            <span style=\"color: green;\">//(*_ORError Message*)</span>\n            <span style=\"color: green;\">//END_VAR</span>\n            <span style=\"color: blue;\">var</span> term = <span style=\"color: blue;\">new</span> FreeTextLiteral(<span style=\"color: #a31515;\">\"varContent\"</span>, <span style=\"color: #a31515;\">\"END_VAR\"</span>);\n            SetTerminal(term);\n            TryMatch(<span style=\"color: #a31515;\">\"VAR\\r\\nMESSAGE:STRING80;\\r\\n(*_ORError Message*)\\r\\nEND_VAR\"</span>);\n            Assert.IsNotNull(_token, <span style=\"color: #a31515;\">\"Failed to produce a token on valid string.\"</span>);\n            Assert.AreEqual(term, _token.Terminal, <span style=\"color: #a31515;\">\"Failed to scan a string - invalid Terminal in the returned token.\"</span>);\n            Assert.AreEqual(_token.Value.ToString(), <span style=\"color: #a31515;\">\"VAR\\r\\nMESSAGE:STRING80;\\r\\n(*_ORError Message*)\\r\\n\"</span>, <span style=\"color: #a31515;\">\"Failed to scan a string\"</span>);\n\n            term = <span style=\"color: blue;\">new</span> FreeTextLiteral(<span style=\"color: #a31515;\">\"blank_test\"</span>, FreeTextOptions.AllowEof);\n            SetTerminal(term);\n            TryMatch(<span style=\"color: blue;\">string</span>.Empty);\n            Assert.IsNotNull(_token, <span style=\"color: #a31515;\">\"Failed to produce a token on valid string.\"</span>);\n            Assert.AreEqual(term, _token.Terminal, <span style=\"color: #a31515;\">\"Failed to scan a string - invalid Terminal in the returned token.\"</span>);\n            Assert.AreEqual(_token.Value.ToString(), <span style=\"color: blue;\">string</span>.Empty, <span style=\"color: #a31515;\">\"Failed to scan a string\"</span>);\n        }\n\n</pre>\n</div>\n<p>Will this work? :)</p>",
+    "PostedDate": "2011-10-10T08:56:55.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "682606",
+    "ThreadId": "275261",
+    "Html": "<p>yeah, smth like this. Just the method seems becoming a bit bloated and inefficient, and i'm thinking about refactoring it a bit. thanks!</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-10-11T07:35:34.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

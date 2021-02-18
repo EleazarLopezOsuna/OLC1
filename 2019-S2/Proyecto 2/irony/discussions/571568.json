@@ -1,0 +1,106 @@
+[
+  {
+    "Id": "1320215",
+    "ThreadId": "571568",
+    "Html": "I'm trying to create a grammar file for SQLite. I'm following the syntax diagram that they provide. <a href=\"https://www.sqlite.org/syntaxdiagrams.html\" rel=\"nofollow\">https://www.sqlite.org/syntaxdiagrams.html</a>\r<br />\n<br />\nI'm getting 57 conflicts. I'll paste the grammar file here so you can run it yourself and see.\r<br />\n<br />\nI honestly don't understand the errors and have no clue where to start on fixing them. I can click the error to see the Parser States, but I don't understand what it's saying.\r<br />\n<br />\nThere are basically 2 errors: reduce-reduce and shift-reduce. If I can understand what's going on and how to fix one of each, hopefully I can go through the rest by myself.\r<br />\n<br />\nThe grammar file is actually too large to paste here, so I made a gist for it. <a href=\"https://gist.github.com/JoshClose/b1635db1ba55129e0a29\" rel=\"nofollow\">https://gist.github.com/JoshClose/b1635db1ba55129e0a29</a><br />\n",
+    "PostedDate": "2014-11-07T23:26:18.673-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1321379",
+    "ThreadId": "571568",
+    "Html": "You have to understand that formal grammar description for a language is a BNF for explaining the language to humans; however, to parse it, it usually should be organized differently. Note that a single language can be described by multiple grammars, differently structured. Different parsing methods (LR, LL, LALR) require different types of grammar, and in most cases the human-readable description grammar is not usable by parse engine. \r<br />\nSo you should not expect that direct translation of these diagrams into Irony's grammar class results in workable grammar. The good thing is that Irony gives you detailed description and locations of things it does not like/accept.\r<br />\nGoogle/bing LR/LALR, parsing conflicts, Reduce/Reduce and Shift/Reduce conflicts in particular, and how to fix them - ie how to reorganize non-terminal rules. There's plenty of info out there. Or, if you're new to this field, start with a good book (&quot;Parsing Techniques&quot; is the best IMO), you have to get a good knowledge of how LARL parsing works before you can use Irony. Sorry, no easy workaround.\r<br />\nGood luck\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-11-12T11:16:34.847-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1321409",
+    "ThreadId": "571568",
+    "Html": "Hi Roman. \r<br />\n<br />\nI figured there wasn't an easy fix; I just had no idea where to go with this. I will do some more reading and search for the topics you mentioned. I will probably pick up the book too because I know little to nothing about this, but want to learn.\r<br />\n<br />\nI just need Irony for doing code completion, so I'm hoping I will be able to write a small simple grammar that recognizes a few things. Basically, the completion window would need to pop after a few keywords, such as &quot;.&quot;, &quot;from&quot;, etc. At that point, I need to know where they are in the syntax tree to determine the completion list to give the user based on the context. i.e. Show table names, column names, functions, etc. I figured since they have a diagram of the whole language, why not create a grammar for the whole thing. I did notice the SQL 89 grammar was a lot smaller than the one I was coming up with. The SQLite grammar can't be too far off of SQL 89.\r<br />\n<br />\nThanks again for the direction. I'm sure I'll have more questions in the future.\r<br />\n<br />\nJosh<br />\n",
+    "PostedDate": "2014-11-12T11:59:26.807-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1321458",
+    "ThreadId": "571568",
+    "Html": "Roman, I just found the BNF for SQLite. I should be able to port this directly to Irony grammar, correct? <a href=\"http://www.sqlite.org/docsrc/doc/trunk/art/syntax/all-bnf.html\" rel=\"nofollow\">http://www.sqlite.org/docsrc/doc/trunk/art/syntax/all-bnf.html</a><br />\n",
+    "PostedDate": "2014-11-12T13:47:11.733-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1321508",
+    "ThreadId": "571568",
+    "Html": "again, you can port it as-is, but it might need to be modified for LALR method (most likely)<br />\n",
+    "PostedDate": "2014-11-12T17:55:20.823-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1321543",
+    "ThreadId": "571568",
+    "Html": "Thanks again. I will read up on the LALR method and parsing in general.<br />\n",
+    "PostedDate": "2014-11-12T22:06:17.43-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1322745",
+    "ThreadId": "571568",
+    "Html": "I read through how LALR works and shift/reduce and reduce/reduce conflicts. I have a better understanding of things, so I will have some specific questions along the way...\r<br />\n<br />\nThe BNF states (slimmed down)<br />\n<pre><code>expr    ::= [ [ database-name . ] table-name . ] column-name\nexpr    ::= &lt;expr&gt; binary-operator &lt;expr&gt;</code></pre>\n\nI interpreted it as this (slimmed down):<br />\n<pre><code>var OR = ToTerm( &quot;||&quot; );\n\nvar idSimple = TerminalFactory.CreateSqlExtIdentifier( this, &quot;idSimple&quot; );\nvar expr = new NonTerminal( &quot;expr&quot; );\nvar binaryOperator = new NonTerminal( &quot;binaryOperator&quot; );\n\nRoot = expr;\n\nbinaryOperator.Rule = OR;\nexpr.Rule = idSimple\n            | expr + binaryOperator + expr;\n</code></pre>\n\nI get a shift/reduce error here. <code>Shift-reduce conflict. State S6, lookaheads [||]. Selected shift as preferred action.</code><br />\n<pre><code>State S6 (Inadequate)\n  Shift-reduce conflicts on inputs: ||\n  Shift items:\n    expr -&gt; expr ·binaryOperator expr \n    binaryOperator -&gt; ·|| \n  Reduce items:\n    expr -&gt; expr binaryOperator expr · [EOF ||]\n  Transitions: binaryOperator-&gt;S4, ||-&gt;S5</code></pre>\n\nI can solve this by adding <code>ReduceHere()</code>.<br />\n<pre><code>var OR = ToTerm( &quot;||&quot; );\n\nvar idSimple = TerminalFactory.CreateSqlExtIdentifier( this, &quot;idSimple&quot; );\nvar expr = new NonTerminal( &quot;expr&quot; );\nvar binaryOperator = new NonTerminal( &quot;binaryOperator&quot; );\n\nRoot = expr;\n\nbinaryOperator.Rule = OR;\nexpr.Rule = idSimple\n            | expr + binaryOperator + expr + ReduceHere();</code></pre>\n\nMy question is, is this the right thing to do here? I'm trying to further my understanding of this.\r<br />\n<br />\nMy thought is when it sees the binary operator <code>||</code> on a look ahead, it doesn't know if it should shift, meaning it sees it as a <code>||</code> or if it should reduce, meaning it sees the beginning of another expression. Is that correct thinking?\r<br />\n<br />\nWhen putting the <code>ReduceHere()</code> at the end, what is that saying?<br />\n",
+    "PostedDate": "2014-11-16T12:24:44.797-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1324085",
+    "ThreadId": "571568",
+    "Html": "Did you set operator precedence for binary operators? (and associativity) Looks like you didn't, that the cause of the conflict. Using ReduceHere hint is a wrong thing to do, definitely<br />\n",
+    "PostedDate": "2014-11-19T23:03:35.737-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1325098",
+    "ThreadId": "571568",
+    "Html": "Thanks. Setting the preference worked, along with a couple other things. I'm using the supplied SqlGrammar to help.\r<br />\n<br />\nI'm adding in COLLATE, which is a postfix unary operator.<br />\n<pre><code>var dot = ToTerm( &quot;.&quot; );\nvar IS = ToTerm( &quot;IS&quot; );\nvar NOT = ToTerm( &quot;NOT&quot; );\nvar IN = ToTerm( &quot;IN&quot; );\nvar LIKE = ToTerm( &quot;LIKE&quot; );\nvar GLOB = ToTerm( &quot;GLOB&quot; );\nvar MATCH = ToTerm( &quot;MATCH&quot; );\nvar REGEXP = ToTerm( &quot;REGEXP&quot; );\nvar AND = ToTerm( &quot;AND&quot; );\nvar OR = ToTerm( &quot;OR&quot; );\nvar COLLATE = ToTerm( &quot;COLLATE&quot; );\n\nvar idSimple = TerminalFactory.CreateSqlExtIdentifier( this, &quot;idSimple&quot; );\nvar id = new NonTerminal( &quot;id&quot; );\nvar expr = new NonTerminal( &quot;expr&quot; );\nvar binaryOperator = new NonTerminal( &quot;binaryOperator&quot; );\nvar unaryOperator = new NonTerminal( &quot;unaryOperator&quot; );\nvar binaryExpression = new NonTerminal( &quot;binaryExpression&quot; );\nvar unaryExpression = new NonTerminal( &quot;unaryExpression&quot; );\nvar collateExpression = new NonTerminal( &quot;collateExpression&quot; );\n\nRoot = expr;\n\nid.Rule = MakePlusRule( id, dot, idSimple );\nunaryOperator.Rule = ToTerm( &quot;-&quot; ) | &quot;+&quot; | &quot;~&quot; | &quot;NOT&quot;;\nbinaryOperator.Rule = ToTerm( &quot;||&quot; ) | &quot;*&quot; | &quot;/&quot; | &quot;%&quot; | &quot;+&quot; | &quot;-&quot; | &quot;&lt;&lt;&quot; | &quot;&gt;&gt;&quot; | &quot;&amp;&quot; | &quot;|&quot; | &quot;&lt;&quot; | &quot;&lt;=&quot; | &quot;&gt;&quot; | &quot;&gt;=&quot; | &quot;=&quot; | &quot;==&quot; | &quot;!=&quot; | &quot;&lt;&gt;&quot;\n    | IS | /*IS + NOT |*/ IN | LIKE | GLOB | MATCH | REGEXP | AND | OR;\n\nunaryExpression.Rule = unaryOperator + expr;\n\nbinaryExpression.Rule = expr + binaryOperator + expr;\n\ncollateExpression.Rule = expr + COLLATE + idSimple;\n\nexpr.Rule = id\n            | unaryExpression\n            | binaryExpression\n            | collateExpression\n    ;\n\nRegisterOperators( 10, &quot;||&quot; );\nRegisterOperators( 9, &quot;*&quot;, &quot;/&quot;, &quot;%&quot; );\nRegisterOperators( 8, &quot;+&quot;, &quot;-&quot; );\nRegisterOperators( 7, &quot;&lt;&lt;&quot;, &quot;&gt;&gt;&quot;, &quot;&amp;&quot;, &quot;|&quot; );\nRegisterOperators( 6, &quot;&lt;&quot;, &quot;&lt;=&quot;, &quot;&gt;&quot;, &quot;&gt;=&quot; );\nRegisterOperators( 5, &quot;=&quot;, &quot;==&quot;, &quot;!=&quot;, &quot;&lt;&gt;&quot; );\nRegisterOperators( 5, IS, /*IS + NOT,*/ IN, LIKE, GLOB, MATCH, REGEXP );\nRegisterOperators( 4, &quot;AND&quot; );\nRegisterOperators( 3, &quot;OR&quot; );\n\nMarkTransient( unaryOperator );\nbinaryOperator.SetFlag( TermFlags.InheritPrecedence );</code></pre>\n\nI then get a conflict <code>Shift-reduce conflict. State S42, lookaheads [COLLATE]. Selected shift as preferred action.</code>\r<br />\n<br />\nI solved this by putting a <code>PreferShiftHere()</code>.<br />\n<pre><code>collateExpression.Rule = expr + PreferShiftHere() + COLLATE + idSimple;</code></pre>\n\nThis seems like what I would want to do. Is that correct? To me it looks like if it's at <code>expr</code> and does a look ahead and sees <code>COLLATE</code> that is should prefer doing a shift at this point.\r<br />\n<br />\nI'm going to keep all my questions in this thread since they're all about the same grammar, if that's ok with you.<br />\n",
+    "PostedDate": "2014-11-22T13:05:43.693-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1325578",
+    "ThreadId": "571568",
+    "Html": "I started over from scratch again (3rd time). I took a different approach this time. I'm going to work on the parts I want working first, and little by little add things in. Every step of the way I am running examples in the tool and looking at the tree too.\r<br />\n<br />\nI learned something while doing things this way. I now understand what you mean by the BNF needs to be changed to work with LALR. There are several places I could just omit rules because they were already covered by another rule. Restating them in the BNF makes it more clear for a human when reading, but doesn't make sense in the grammar. I have found that if I run into a reduce/reduce error, I more than likely screwed something up majorly and probably have some duplication.\r<br />\n<br />\nIt's really hard to describe what all that means without doing it yourself, or going through a fairly large example. I haven't found anything on the web that has done a good job of this, unfortunately.\r<br />\n<br />\nThings are looking up. I completed with &quot;select-core&quot; fully with no conflicts, and am able to run a bunch of tests and it seems to parse as expected.\r<br />\n<br />\nThis is all assuming my previous question (affirmation) is correct.\r<br />\n<br />\nThanks again for the help.<br />\n",
+    "PostedDate": "2014-11-24T08:37:27.193-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1325671",
+    "ThreadId": "571568",
+    "Html": "well, happy for you, good luck in your quest. \r<br />\nAnswering your question, about use of PreferShiftHere. Be very careful with this 'fixer' for conflicts. I can think about only ONE legitimate case for using it - 'dangling else' case. This hint is a way to tell parser that the conflict it sees in grammar is in fact language ambiguity, and there is an extra RULE in the language stating that 'else' always applies to the closest open 'if' statement \r<br />\n(like 'if ... then if ... then ... else...' - the  'else' applies to second if; this is ambiguity of the language itself (!) resolved by an extra rule)\r<br />\n<br />\nAnd PreferShiftHere is an instruction expressing this non-BNF rule in the language.\r<br />\nYou see what I mean? Use PreferShiftHere to express some clear non-BNF rule 'of thumb' in the language that is hard or impossible to express in BNF. But do NOT use it to fix grammar ambiguities - that most likely are result of bad BNF composition, and not essential ambiguity in the language\r<br />\n<br />\nRoman<br />\n",
+    "PostedDate": "2014-11-24T11:18:11.043-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1325682",
+    "ThreadId": "571568",
+    "Html": "Great, thanks for the info! I will have to dig into the 'dangling else' case a little more so I can understand it better, and see if I'm running into that. For the most part, a shift/reduce conflict has shown me there is an issue with the grammar, and more than likely, the scenario is already accounted for.\r<br />\n<br />\nI currently have <code>PreferShiftHere()</code> in 2 spots. I believe one is hard to express, and the other is a grammar ambiguity. I will have work through it and see if it's grammar or language ambiguity, and if I can remove it.\r<br />\n<br />\nI updated the gist with the current state, if you want to take a look. I'm sure you'll be able to tell right away if either of the uses are appropriate.\r<br />\n<br />\n<a href=\"https://gist.github.com/JoshClose/b1635db1ba55129e0a29\" rel=\"nofollow\">https://gist.github.com/JoshClose/b1635db1ba55129e0a29</a><br />\n",
+    "PostedDate": "2014-11-24T11:44:21.19-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1327154",
+    "ThreadId": "571568",
+    "Html": "I was able to remove that second <code>PreferShiftHere()</code> and it didn't break the rule. Again, it pointed out duplicate rules. :)<br />\n",
+    "PostedDate": "2014-11-28T22:08:30.027-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

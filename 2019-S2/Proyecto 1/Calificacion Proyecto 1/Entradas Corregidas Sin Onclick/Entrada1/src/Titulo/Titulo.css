@@ -1,0 +1,33 @@
+panel /*Estilo general para los paneles.*/
+{
+     border: true;
+     border-color: yellow;
+     border-width: 3;
+     width: 1000;
+     height: 100;
+}
+.principal /*Sub estilo 2*/
+{
+     background: rgb(204, 255, 204);
+     border-width: 3;
+     width: 980;
+     height: 100;     
+}
+
+text
+{
+     font : 'Consolas';
+     align : left;     
+}
+.Mayor
+{
+     font-size : 29;     
+}
+.Intermedio
+{
+     font-size : 18;     
+}
+.Menor
+{
+     font-size : 11;     
+}

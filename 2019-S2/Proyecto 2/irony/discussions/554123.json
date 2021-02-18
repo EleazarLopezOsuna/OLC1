@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1277610",
+    "ThreadId": "554123",
+    "Html": "I'm trying to use Irony as i think it's a great kit but i can't find any documentation for it\r<br />\nall i found are the included samples\r<br />\nIs there any PDF or CHM book describes its content ?\r<br />\nIMHO, a project like that must have a full documentation...<br />\n",
+    "PostedDate": "2014-07-25T01:16:42.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1277735",
+    "ThreadId": "554123",
+    "Html": "I couldn't find also, but the best advice I can give you is, hands on the <strong>SampleExpressionEvaluatorGrammar</strong> it has almost everything you need. Not difficult at all. <br />\n",
+    "PostedDate": "2014-07-25T07:55:11.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1278135",
+    "ThreadId": "554123",
+    "Html": "As i can see, Irony is a very rich kit and samples are not enough to make it clear\r<br />\nThere are too many things in Irony that need documentation or you need more samples to cover the full features of Irony.<br />\n<ul>\n<li>How to create interpreted language (sample)</li>\n<li>MarkXXX methods</li>\n<li>How to create AST and why Start-List items doesn't create AstNode\r<br />\nand many other things that need to be clarified.</li>\n</ul>\n",
+    "PostedDate": "2014-07-27T07:25:21.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1278480",
+    "ThreadId": "554123",
+    "Html": "I share your pain...\r<br />\n<br />\nI tried to cover much of that in the blog entry I wrote about using Irony:\r<br />\n<br />\n<a href=\"http://honestillusion.com/blog/2013/09/12/Shakespeare-compiler-for-NET/\" rel=\"nofollow\">http://honestillusion.com/blog/2013/09/12/Shakespeare-compiler-for-NET/</a><br />\n",
+    "PostedDate": "2014-07-28T11:53:56.74-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1278695",
+    "ThreadId": "554123",
+    "Html": "<ul>\n<li>Inherit from <strong>InterpretedLanguageGrammar</strong> then your grammar will Build Ast Nodes when you evaluate.</li>\n<li>\nTo create AstNode just inherit from AstNode then implement Init and DoEvaluate methods, try debugging one already created to see how nice they behave :)\r<br />\nwhat you mean with MarkXXX methods?\r<br />\nwhat you mean with Start-List doesn't create AstNode ? (in fact list shouldn't create AstNode, but the items must have astNode to evaluate items in the list)<br />\n</li>\n</ul>\nhope this helps.<br />\n",
+    "PostedDate": "2014-07-29T04:48:49.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

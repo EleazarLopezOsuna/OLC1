@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1025315",
+    "ThreadId": "439075",
+    "Html": "Hi there,\r<br />\n<br />\nI'm new to Irony and am trying to create a relatively simple BASIC interpreter/parser but have run into a block.\r<br />\n<br />\nHow can I make sure that CLS2 is rejected as an identifier, and instead, the parser finds the cls_stmt which consists of &quot;cls&quot; + number?\r<br />\n<br />\nI've tried a few random things but they haven't worked so I'm hoping for a point in the right direction.\r<br />\n<br />\nMany thanks.<br />\n",
+    "PostedDate": "2013-04-04T03:59:12.033-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025357",
+    "ThreadId": "439075",
+    "Html": "Seem to be making progress by using a RegexBasedTerminal to define 'CLS'. Not sure if this is the based way of doing it but right now it looks successful...<br />\n",
+    "PostedDate": "2013-04-04T05:44:37.597-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025377",
+    "ThreadId": "439075",
+    "Html": "Hey Rinkwraith,<br />\n<br />\nIf you could provide a small sample of your grammar, it would help out with determining the problem.<br />\n<br />\nFrom what you described, it appears that you have a couple of rules where a Non-Terminal and an Identifier are similar and the Identifier is returned when you are expecting the Non-Terminal.<br />\n<br />\nIn this situation, it's best to simplify the rules further and possibly use hints or token priority so that the parser knows which path to take.  The RegExBasedTerminal will work, but this should be used as a last resort due to performance.<br />\n<br />\nRegards,<br />\nKevin<br />\n",
+    "PostedDate": "2013-04-04T06:40:52.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025385",
+    "ThreadId": "439075",
+    "Html": "Sure thing. Here's what I've been working on - it only supports very simple assignment statements and the CLS instruction at present.\r<br />\n<br />\nUsing the RegexBasedTerminals - which seems to be working ok at present (I used the same option to deal with the optional space after a linenumber too):<br />\n<pre><code>using System;\nusing Irony.Parsing;\n\nnamespace xBASIC\n{\n    [Language(&quot;xBASIC&quot;, &quot;1.0&quot;, &quot;&quot;)]\n    public class XBASIC : Grammar\n    {\n        public XBASIC()\n            : base(false)\n        {\n            this.GrammarComments = &quot;&quot;;\n\n            var CLS_KW = new RegexBasedTerminal(&quot;cls&quot;);\n            CLS_KW.Name = &quot;KEYWORD&quot;;\n\n            // Terminals\n            var lineNumber = new RegexBasedTerminal(&quot;[0-9]+&quot;);\n            lineNumber.Name = &quot;LINE_NUMBER&quot;;\n\n            var number = new NumberLiteral(&quot;NUMBER&quot;, NumberOptions.IntOnly);\n            var variable = new IdentifierTerminal(&quot;Identifier&quot;);\n            variable.ValidateToken += new EventHandler&lt;ValidateTokenEventArgs&gt;(variable_ValidateToken);\n\n            var stringLiteral = new StringLiteral(&quot;STRING&quot;, &quot;\\&quot;&quot;, StringOptions.None);\n            var userFunctionName = variable;\n            var comment = new CommentTerminal(&quot;Comment&quot;, &quot;REM&quot;, &quot;\\n&quot;);\n            var short_comment = new CommentTerminal(&quot;ShortComment&quot;, &quot;'&quot;, &quot;\\n&quot;);\n            var comma = ToTerm(&quot;,&quot;, &quot;comma&quot;);\n            var colon = ToTerm(&quot;:&quot;, &quot;colon&quot;);\n\n            // Non-terminals\n            var ASSIGN_STMT = new NonTerminal(&quot;ASSIGN_STMT&quot;);\n            var CLS_STMT = new NonTerminal(&quot;CLS_STMT&quot;);\n\n            var COMMENT_OPT = new NonTerminal(&quot;COMMENT_OPT&quot;);\n            var EXPR = new NonTerminal(&quot;EXPRESSION&quot;);\n            var EXPR_LIST = new NonTerminal(&quot;EXPRESSION_LIST&quot;);\n            var LINE = new NonTerminal(&quot;LINE&quot;);           \n            var PROGRAM = new NonTerminal(&quot;PROGRAM&quot;);\n            var STATEMENT_LIST = new NonTerminal(&quot;STATEMENT_LIST&quot;);\n            var STATEMENT = new NonTerminal(&quot;STATEMENT&quot;);\n\n            // set the PROGRAM to be the root node of BASIC programs.\n            this.Root = PROGRAM;\n\n            // BNF Rules\n            PROGRAM.Rule = MakePlusRule(PROGRAM, LINE);\n\n            LINE.Rule = NewLine | lineNumber + COMMENT_OPT + NewLine | lineNumber + STATEMENT_LIST + NewLine | lineNumber + STATEMENT_LIST + COMMENT_OPT + NewLine | SyntaxError + NewLine;\n            LINE.NodeCaptionTemplate = &quot;Line #{0}&quot;;\n\n            STATEMENT_LIST.Rule = MakePlusRule(STATEMENT_LIST, colon, STATEMENT);\n            COMMENT_OPT.Rule = short_comment | comment | Empty;\n\n            STATEMENT.Rule = CLS_STMT | ASSIGN_STMT;\n            ASSIGN_STMT.Rule = (Empty | &quot;let&quot;) + variable + &quot;=&quot; + EXPR;\n            CLS_STMT.Rule = CLS_KW + PreferShiftHere() + (Empty | number);\n\n            EXPR.Rule = number | variable | stringLiteral;\n        }\n\n        void variable_ValidateToken(object sender, ValidateTokenEventArgs e)\n        {\n            if (e.Context.CurrentToken.ValueString.StartsWith(&quot;cls&quot;))\n            {\n                e.RejectToken();\n            }\n        }\n\n    }\n}</code></pre>\n\nAnd this is how it was when I first posted - i.e. a grammar that detects CLS5 as an identifier and then fails expecting an = sign in an assignment statement.<br />\n<pre><code>using System;\nusing Irony.Parsing;\n\nnamespace xBASIC\n{\n    [Language(&quot;XBASIC&quot;, &quot;1.0&quot;, &quot;&quot;)]\n    public class XBASIC : Grammar\n    {\n        public XBASIC()\n            : base(false)\n        {\n            this.GrammarComments = &quot;&quot;;\n\n            // Terminals\n            var lineNumber = new NumberLiteral(&quot;LINE_NUMBER&quot;, NumberOptions.IntOnly);\n\n            var number = new NumberLiteral(&quot;NUMBER&quot;, NumberOptions.IntOnly);\n            var variable = new IdentifierTerminal(&quot;Identifier&quot;);\n\n            var stringLiteral = new StringLiteral(&quot;STRING&quot;, &quot;\\&quot;&quot;, StringOptions.None);\n            var userFunctionName = variable;\n            var comment = new CommentTerminal(&quot;Comment&quot;, &quot;REM&quot;, &quot;\\n&quot;);\n            var short_comment = new CommentTerminal(&quot;ShortComment&quot;, &quot;'&quot;, &quot;\\n&quot;);\n            var comma = ToTerm(&quot;,&quot;, &quot;comma&quot;);\n            var colon = ToTerm(&quot;:&quot;, &quot;colon&quot;);\n\n            // Non-terminals\n            var ASSIGN_STMT = new NonTerminal(&quot;ASSIGN_STMT&quot;);\n            var CLS_STMT = new NonTerminal(&quot;CLS_STMT&quot;);\n\n            var COMMENT_OPT = new NonTerminal(&quot;COMMENT_OPT&quot;);\n            var EXPR = new NonTerminal(&quot;EXPRESSION&quot;);\n            var EXPR_LIST = new NonTerminal(&quot;EXPRESSION_LIST&quot;);\n            var LINE = new NonTerminal(&quot;LINE&quot;);           \n            var PROGRAM = new NonTerminal(&quot;PROGRAM&quot;);\n            var STATEMENT_LIST = new NonTerminal(&quot;STATEMENT_LIST&quot;);\n            var STATEMENT = new NonTerminal(&quot;STATEMENT&quot;);\n\n            // set the PROGRAM to be the root node of BASIC programs.\n            this.Root = PROGRAM;\n\n            // BNF Rules\n            PROGRAM.Rule = MakePlusRule(PROGRAM, LINE);\n\n            LINE.Rule = NewLine | lineNumber + COMMENT_OPT + NewLine | lineNumber + STATEMENT_LIST + NewLine | lineNumber + STATEMENT_LIST + COMMENT_OPT + NewLine | SyntaxError + NewLine;\n            LINE.NodeCaptionTemplate = &quot;Line #{0}&quot;;\n\n            STATEMENT_LIST.Rule = MakePlusRule(STATEMENT_LIST, colon, STATEMENT);\n            COMMENT_OPT.Rule = short_comment | comment | Empty;\n\n            STATEMENT.Rule = CLS_STMT | ASSIGN_STMT;\n            ASSIGN_STMT.Rule = (Empty | &quot;let&quot;) + variable + &quot;=&quot; + EXPR;\n            CLS_STMT.Rule = &quot;cls&quot; + (Empty | number);\n\n            EXPR.Rule = number | variable | stringLiteral;\n        }\n    }\n}</code></pre>\n\nThere's still a shift-reduce warning on the LINE rule which I need to look at.<br />\n",
+    "PostedDate": "2013-04-04T06:55:03.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025491",
+    "ThreadId": "439075",
+    "Html": "I have not got to experiment any with your provided code, but the issue is with these two lines:\r<br />\n<br />\nASSIGN_STMT.Rule = (Empty | &quot;let&quot;) + variable + &quot;=&quot; + EXPR;\r<br />\nCLS_STMT.Rule = &quot;cls&quot; + (Empty | number);\r<br />\n<br />\nThe issue is the CLS_STMT can be just &quot;cls&quot; since you have &quot;cls&quot; + Empty as a path. With the terminal variable being just an open Identifier, the parser doesn't know if variable in ASSIGN_STMT should resolve to an Identifier or follow the CLS_STMT rule.\r<br />\n<br />\nI believe the quickest solution is to make &quot;cls&quot; a reserved keyword.  You do this by using the MarkReservedKeyword method (<a href=\"http://irony.codeplex.com/discussions/403654\" rel=\"nofollow\">http://irony.codeplex.com/discussions/403654</a>).  This may not give you the desired result if you want to allow for cls to be a variable name though.\r<br />\n<br />\nThe only other solution is to rewrite CLS_STMT to not have the path &quot;cls&quot; + Empty.\r<br />\n<br />\nIt's actually a good habit to Register Braces, Register Operators, and Mark Reserved Keywords to help the parser. It also helps the syntax colorization in the Grammar Explorer.\r<br />\n<br />\nI hope this helps you out.\r<br />\n<br />\nRegards,\r<br />\nKevin<br />\n",
+    "PostedDate": "2013-04-04T09:37:37.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025871",
+    "ThreadId": "439075",
+    "Html": "Unfortunately, that didn't work - but your explanation as to why there's a problem makes perfect sense, so thank you for posting. \r<br />\n<br />\nIt stops cls being used as a variable but still interprets cls5 as an identifier instead of preferring the combination cls+Number.\r<br />\n<br />\nDoes Irony have a general problem working with languages which don't have clear rules for how to divide tokens? \r<br />\n<br />\nThe regular expression approach got messy very quickly when trying to deal with other occurrences of the same issue - so I've had to abandon that. \r<br />\ne.g. 10x=5mod6\r<br />\nwhich is perfectly valid in the old BASIC interpreters - presumably because they didn't use the same kinds of parsing techniques everyone employs now. <br />\n",
+    "PostedDate": "2013-04-05T00:38:30.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026613",
+    "ThreadId": "439075",
+    "Html": "There's a flag KeyTerm.AllowAphaAfterKeyword, set it to true for 'CLS' keyword/reserved word, this would allow 'cls5' to parse as separate tokens<br />\n",
+    "PostedDate": "2013-04-06T11:10:44.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

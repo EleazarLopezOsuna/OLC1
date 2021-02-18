@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "I'm running Parser.Parse to try to parse a line of code, but getting different results on different machines. On one machine it fails all the time but another one succeeds. I traced the code on both machines to try to figure out why, the difference happens at line 81 of ScannerDataBuilder:\r\n\r\n```\r\n      if (_grammarData.NoPrefixTerminals.Count > 0) {\r\n        //copy them to Scanner data\r\n        _data.NoPrefixTerminals.AddRange(_grammarData.NoPrefixTerminals);\r\n        // Sort in reverse priority order\r\n-->    _data.NoPrefixTerminals.Sort(Terminal.ByPriorityReverse);\r\n        //Now add Fallback terminals to every list, then sort lists by reverse priority\r\n        // so that terminal with higher priority comes first in the list\r\n        foreach (TerminalList list in _data.TerminalsLookup.Values) \r\n          foreach (var ft in _data.NoPrefixTerminals)\r\n            if (!list.Contains(ft))\r\n              list.Add(ft);\r\n      }//if count > 0\r\n```\r\n\r\nFor some reason on the failed machine the DepthLimitedQuickSort was used in Array.Sort internally, but on the succeeded machine IntrospectiveSort was used.\r\n\r\nSo for the all terminals that have Priority 0, it's getting different orders for different sort methods.\r\n\r\nI peeked into ArraySortHelper:\r\n\r\n```\r\n        if (BinaryCompatibility.TargetsAtLeast_Desktop_V4_5)\r\n          ArraySortHelper<TKey, TValue>.IntrospectiveSort(keys, values, index, length, comparer);\r\n        else\r\n          ArraySortHelper<TKey, TValue>.DepthLimitedQuickSort(keys, values, index, length + index - 1, comparer, 32);\r\n```\r\n\r\nIt seems having something to do with the dotnet versions. On both failed and succeeded machines I have 4.5.1 installed and set the projects all to be built against 4.5 though. \r\n\r\nMaybe it's better to have a different solution for _data.NoPrefixTerminals.Sort? so the sorting doesn't rely on the version of dotnet.\r\n\r\nOr I don't know if there is a secret flag somewhere that I can set to make sure the sort always sort it predictably?",
+    "LastUpdatedDate": "2014-11-04T21:38:18.753-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2014-09-23T03:32:57.62-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Parsing error for different version of dotnet",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9896
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "yeah, looks like one version uses 'stable' sort, and another one not so stable (stable is when original order of 'same-key' elements is preserved). But in any way, relying on this 'stability' of sort order is a wrong thing to do, that's why you have Priority, to explicitly set order. Although I do admit that have different behavior on different versions of .NET is a wrong thing, somehow things should be 'stabilized' and be the same. Will look into this for the new version",
+      "PostedDate": "2014-11-04T21:38:18.753-08:00",
+      "Id": 163990
+    }
+  ]
+}

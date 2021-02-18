@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "894192",
+    "ThreadId": "389862",
+    "Html": "\r\n<p>For my intellisense-like operation I'm using&nbsp;ParserState.ExpectedTerminals to determine the possible options. However, in the situation where my grammar parses correctly but there are still remaining optional (.Q) terminals, is there any way to determine\r\n the left-over optional terminals?</p>\r\n",
+    "PostedDate": "2012-08-01T08:11:15.32-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "894260",
+    "ThreadId": "389862",
+    "Html": "<p>don't quite understand the question, particularly '...still remaining optional terminals.' Remaining - where? what terminals? Pls show an example</p>",
+    "PostedDate": "2012-08-01T10:47:38.173-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "894678",
+    "ThreadId": "389862",
+    "Html": "<p>To explain the question a little more, suppose this grammar:</p>\r\n<p>velocity := NumberLiteral<br />unit := ToTerm(\"mph\") | ToTerm(\"m/s\")<br />row := velocity + unit.Q()<br />row |= Empty<br />program := row*&nbsp;</p>\r\n<p>As the unit is not required, a row with a number and no unit will parse correctly. However, I want to query for the list of possible units.&nbsp;</p>",
+    "PostedDate": "2012-08-02T07:23:04.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "895845",
+    "ThreadId": "389862",
+    "Html": "<p>define unit as optional from the beginning (instead of doing unit.Q()):</p>\r\n<p>unit.Rule = ToTerm(\"mph\") | \"m/s\" | Empty;</p>\r\n<p>Then unit will always be present in parsed row, just sometimes it would have no child tokens. But you can retrieve the terminal itself and find out possible values from its Rule.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-08-05T20:26:41.753-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899319",
+    "ThreadId": "389862",
+    "Html": "<p>You say \"retrieve the terminal itself\". Given a ParseTree object, how do I know which terminal I finished at? Is it Root.ChildNodes.Last().Last().Last().... ?</p>",
+    "PostedDate": "2012-08-14T14:42:34.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899329",
+    "ThreadId": "389862",
+    "Html": "<p>what do you mean by 'finished at'?</p>\r\n<p>ParseTree.Root is the top-level ParseTreeNode, the root. Something like \"Program\" non-terminal, whatever you set to Grammar.Root.</p>\r\n<p>Any parseTreeNode has a property Term that identifies Terminal or non-terminal (grammar element) from the Grammar.</p>\r\n<p>You can traverse the tree and find all \"unit\" elements (just check the node.Term).</p>",
+    "PostedDate": "2012-08-14T15:23:00.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899335",
+    "ThreadId": "389862",
+    "Html": "<p>By \"finished at\" I mean the very last token in my parsed result. This corresponds to the very last text in the input.</p>",
+    "PostedDate": "2012-08-14T15:39:46.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899770",
+    "ThreadId": "389862",
+    "Html": "<p>if the last is last-by-position, then you can just use the search function used by Locate button in Grammar Explorer - locates nodes by position</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-08-15T21:45:52.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

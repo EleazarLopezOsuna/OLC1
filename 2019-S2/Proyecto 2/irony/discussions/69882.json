@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "237927",
+    "ThreadId": "69882",
+    "Html": "<p>I wanted to share some plans and thoughts about Irony development.</p>\r\n<p>Read it in my Irony blog:</p>\r\n<p><a href=\"http://irony-roman.blogspot.com/2009/09/time-to-talk-about-future.html\">http://irony-roman.blogspot.com/2009/09/time-to-talk-about-future.html</a></p>\r\n<p>Your feedback and comments are welcomed!</p>\r\n<p>Thank you</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-09-23T10:24:31.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "238134",
+    "ThreadId": "69882",
+    "Html": "<p>I think your roadmap is good.&nbsp; As for an exciting future enhancement, consider&nbsp;integrating Irony with SyntaxEditor from&nbsp;<a href=\"http://www.actiprosoftware.com\">http://www.actiprosoftware.com</a>.&nbsp; SyntaxEditor 5.0, currently in beta for WPF, is designed to work with MGrammar, Antlr and any other parsing engine via the IParser interface.&nbsp; There can be no better test case and adoption opportunity than something like SyntaxEditor.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-23T22:02:09.523-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "238423",
+    "ThreadId": "69882",
+    "Html": "<p>Thanks for your feedback!</p>\r\n<p>As for SyntaxEditor - not so sure... the problem is - it is propriatary control sold for price. Even if I do the integration (just as a test), I won't be able to use it in GrammarExplorer, or share it in general with other folks - running&nbsp;integrated solution&nbsp;would require having this control installed. On the other hand, seems like a good&nbsp;suggestion for ActiPro folks - to implement integration of their control with an open source solution...&nbsp; I've seen suggestions&nbsp; on their forums to look at integration with Irony - maybe they'll get to it</p>\r\n<p>Roman&nbsp;</p>",
+    "PostedDate": "2009-09-24T10:49:04.59-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1430456",
+    "ThreadId": "639971",
+    "Html": "In the Microsoft Excel formula language, a comma is both the function argument separator and a &quot;union&quot; operator.<br />\n<br />\nMy first attempt was doing this like you would normally do binops (see the PS), but this failed miserably. I tried instead with an comma-separated list between brackets because in practice brackets are nearly always needed.<br />\n<br />\nI now have a working grammar, except it has a Reduce Reduce conflict and by default chooses the wrong production. What hint do I need to resolve the conflict and select the proper rule?<br />\n<br />\nThe error is as follows:<br />\n<pre><code>State S10 (Inadequate)\n  Reduce-reduce conflicts on inputs: )\n  Shift items:\n    Reference -&gt; Reference ·: Reference \n  Reduce items:\n    Union -&gt; Reference · [) ,]\n    Formula -&gt; Reference · [)]\n  Transitions: :-&gt;S8</code></pre>\n\nExample sentence: &quot;(A1)&quot;<br />\n<br />\nThe (vastly simplified) grammar is as follows:<br />\n<pre><code>            var Reference = new NonTerminal(&quot;Reference&quot;);\n            var Union = new NonTerminal(&quot;Union&quot;);\n            var Formula = new NonTerminal(&quot;Formula&quot;);\n            var Arguments = new NonTerminal(&quot;Arguments&quot;);\n\n            var ReferenceItem = ToTerm(&quot;A1&quot;);\n            var Constant = ToTerm(&quot;1&quot;);\n\n            Reference.Rule = ReferenceItem\n                             | Reference + &quot;:&quot; + Reference\n                           //| Reference + &quot;,&quot; + Reference\n                             | &quot;(&quot; + Union + &quot;)&quot;\n                ;\n\n            Formula.Rule = Reference\n                | &quot;(&quot; + Formula + &quot;)&quot;\n                | &quot;F(&quot; + Arguments + &quot;)&quot;\n                | Constant\n                ;\n\n            Union.Rule = MakePlusRule(Union, ToTerm(&quot;,&quot;), Reference);\n            Arguments.Rule = MakeStarRule(Arguments, ToTerm(&quot;,&quot;), Formula);\n\n            RegisterOperators(1, Associativity.Left, &quot;:&quot;);\n            //RegisterOperators(1, Associativity.Left, &quot;,&quot;);\n\n            Root = Formula;</code></pre>\n\nP.S.<br />\nI first tried doing the &quot;proper&quot; thing and making the comma an operator, but that caused numerous problems, mainly because the rules with the operator were &quot;chosen&quot; above those where a comma is the argument separator while it should be the other way around. E.g. &quot;F(A1,A1,1)&quot; would not parse because &quot;1&quot; cannot be used inside an union.<br />\n<br />\nMy current approach seems to work better, and even though it's not correct in all cases it covers the vast majority of sane cases. The operator approach might me better, but then I'd need a way to &quot;favor&quot; the argument separator rules and I couldn't figure out which grammar hints to use. The commented out lines above show my original approach.<br />\n",
+    "PostedDate": "2015-06-15T09:00:20.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1430991",
+    "ThreadId": "639971",
+    "Html": "You should use ReduceHere() hint as shown below. Your trouble is expressions like '(A1)' -<br />\nwhich can be interpreted either as Union with one element, or formula (ref in parenthesis). Both interpretations are correct (!), so it's up to you, grammar writer to prefer one to another. Using the hint, you tell parser that you prefer the formula interpretation.<br />\n<pre><code>public PlaygroundExcelGrammar()\n  : base(false) {\n    var Reference = new NonTerminal(&quot;Reference&quot;);\n    var Union = new NonTerminal(&quot;Union&quot;);\n    var Formula = new NonTerminal(&quot;Formula&quot;);\n    var Arguments = new NonTerminal(&quot;Arguments&quot;);\n\n    var ReferenceItem = ToTerm(&quot;A1&quot;);\n    var Constant = ToTerm(&quot;1&quot;);\n\n    Reference.Rule = ReferenceItem\n                     | Reference + &quot;:&quot; + Reference\n      //| Reference + &quot;,&quot; + Reference\n                     | &quot;(&quot; + Union + &quot;)&quot;\n        ;\n    Formula.Rule = Reference + ReduceHere()\n        | &quot;(&quot; + Formula + &quot;)&quot;\n        | ToTerm(&quot;F&quot;) + &quot;(&quot; + Arguments + &quot;)&quot;\n        | Constant            ;\n    Union.Rule = MakePlusRule(Union, ToTerm(&quot;,&quot;), Reference);\n    Arguments.Rule = MakeStarRule(Arguments, ToTerm(&quot;,&quot;), Formula);\n    RegisterOperators(1, Associativity.Left, &quot;:&quot;);\n    //RegisterOperators(1, Associativity.Left, &quot;,&quot;);\n\n    Root = Formula;\n}</code></pre>\n\n",
+    "PostedDate": "2015-06-18T23:39:33.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431080",
+    "ThreadId": "639971",
+    "Html": "Thanks! I understood the problem and ambiguity, but didn't understand where to place the grammar hint.<br />\n",
+    "PostedDate": "2015-06-19T12:29:04.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

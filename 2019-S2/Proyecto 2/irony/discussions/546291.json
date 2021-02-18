@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "1248582",
+    "ThreadId": "546291",
+    "Html": "Hi guys,\r<br />\n<br />\nI am creating a parser for a mongo stryle query language. \r<br />\n<br />\nI have created a parser that can take an input string like this and create LINQ expressiong<br />\n<pre><code>name$eq:Roman,age$gt:10</code></pre>\n\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">public</span> MongoQueryGrammer()\n        {\n\n            <span style=\"color:Blue;\">var</span> expressionList = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;expressionList&quot;</span>);\n\n            <span style=\"color:Blue;\">var</span> identifier = TerminalFactory.CreateCSharpIdentifier(<span style=\"color:#A31515;\">&quot;identifier&quot;</span>);\n            <span style=\"color:Blue;\">var</span> value = <span style=\"color:Blue;\">new</span> DsvLiteral(<span style=\"color:#A31515;\">&quot;value&quot;</span>, TypeCode.String);\n            <span style=\"color:Blue;\">var</span> expression = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;expression&quot;</span>);\n            <span style=\"color:Blue;\">var</span> binexpr = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;binexpr&quot;</span>);\n            <span style=\"color:Blue;\">var</span> binoperator = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;binoperator&quot;</span>);\n\n            expressionList.Rule = MakePlusRule(expressionList, <span style=\"color:Blue;\">null</span>, expression);\n\n            expression.Rule = binexpr;\n            binexpr.Rule = identifier + binoperator + value;\n            binoperator.Rule = ToTerm(<span style=\"color:#A31515;\">&quot;$eq:&quot;</span>) | <span style=\"color:#A31515;\">&quot;$lt:&quot;</span> | <span style=\"color:#A31515;\">&quot;$le:&quot;</span> | <span style=\"color:#A31515;\">&quot;$gt:&quot;</span> | <span style=\"color:#A31515;\">&quot;$ge:&quot;</span>;\n            Root = expressionList;\n        }\r\n</pre></div>It interprets the commas as logical ANDs. This was fine for the first version. Now I want to add support for both AND and OR logical operators, and also parentheses to force operator affinity.\r<br />\n<br />\nSo the new input string will look like this:<br />\n<pre><code>name$eq:Roman$and:age$gt:10</code></pre>\n\nor <br />\n<pre><code>(name$eq:Roman$or:lastname$eq:Smith)$and:age$gt:10</code></pre>\n\nBut I can't really figure out how to express this in my grammar. What I have now looks like this. But using the grammar explorer, I can see that the AND and OR are not parsed correctly. I haven't even gotten to the parentheses yet.<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n    <span style=\"color:Blue;\">public</span> <span style=\"color:Blue;\">class</span> MongoQueryGrammer : Grammar\n    {\n        <span style=\"color:Blue;\">public</span> MongoQueryGrammer() : <span style=\"color:Blue;\">base</span> (<span style=\"color:Blue;\">false</span>) <span style=\"color:Green;\">//Case Insensitive</span>\n        {\n            <span style=\"color:Blue;\">var</span> expressionList = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;expressionList&quot;</span>);\n\n            <span style=\"color:Blue;\">var</span> identifier = TerminalFactory.CreateCSharpIdentifier(<span style=\"color:#A31515;\">&quot;identifier&quot;</span>);\n            <span style=\"color:Blue;\">var</span> value = <span style=\"color:Blue;\">new</span> DsvLiteral(<span style=\"color:#A31515;\">&quot;value&quot;</span>, TypeCode.String);\n            <span style=\"color:Blue;\">var</span> binexpr = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;binexpr&quot;</span>);\n            <span style=\"color:Blue;\">var</span> logicalexpr = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;logicalexpr&quot;</span>);\n            <span style=\"color:Blue;\">var</span> binoperator = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;binoperator&quot;</span>);\n            <span style=\"color:Blue;\">var</span> logicaloperator = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;logicaloperator&quot;</span>);\n\n            expressionList.Rule = logicalexpr | binexpr;\n\n            logicalexpr.Rule = binexpr + logicaloperator + binexpr;\n            logicalexpr.ErrorRule = SyntaxError + <span style=\"color:#A31515;\">&quot;;&quot;</span>;\n            binexpr.Rule = identifier + binoperator + value;\n            binexpr.ErrorRule = SyntaxError + <span style=\"color:#A31515;\">&quot;;&quot;</span>;\n            binoperator.Rule = ToTerm(<span style=\"color:#A31515;\">&quot;$eq:&quot;</span>) | <span style=\"color:#A31515;\">&quot;$lt:&quot;</span> | <span style=\"color:#A31515;\">&quot;$lte:&quot;</span> | <span style=\"color:#A31515;\">&quot;$gt:&quot;</span> | <span style=\"color:#A31515;\">&quot;$gte:&quot;</span> | <span style=\"color:#A31515;\">&quot;$ne:&quot;</span>;\n            logicaloperator.Rule = ToTerm(<span style=\"color:#A31515;\">&quot;$or:&quot;</span>) | <span style=\"color:#A31515;\">&quot;$and:&quot;</span>;\n            Root = expressionList;\n\n            RegisterOperators(1, <span style=\"color:#A31515;\">&quot;$and:&quot;</span>);\n            RegisterOperators(2, <span style=\"color:#A31515;\">&quot;$or:&quot;</span>);\n            RegisterOperators(3, <span style=\"color:#A31515;\">&quot;$eq:&quot;</span>, <span style=\"color:#A31515;\">&quot;$lt:&quot;</span>, <span style=\"color:#A31515;\">&quot;$lte:&quot;</span>, <span style=\"color:#A31515;\">&quot;$gt:&quot;</span>, <span style=\"color:#A31515;\">&quot;$gte:&quot;</span>, <span style=\"color:#A31515;\">&quot;$ne:&quot;</span>);\n        }\n    }\r\n</pre></div>What am I getting wrong here?<br />\n",
+    "PostedDate": "2014-05-22T13:24:58.917-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1248617",
+    "ThreadId": "546291",
+    "Html": "I think your problem is DsvLiteral - it should be used only in comma-separated text files, not in regular files. use identifier, and numberLiteral and stringliteral instead<br />\n",
+    "PostedDate": "2014-05-22T14:33:22.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1248621",
+    "ThreadId": "546291",
+    "Html": "That was the problem. Thanks!\r<br />\n<br />\nBut is there a way to use a stringliteral without start and end symbols? If you look at the input string it doesn't have quotes around the name. \r<br />\n<br />\nI can use TerminalFactory.CreateCSharpIdentifier, which will work for most cases, but not if there are spaces or dashes. I want the string to terminate when it encounters another operator or EOF.<br />\n",
+    "PostedDate": "2014-05-22T14:59:33.14-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1248622",
+    "ThreadId": "546291",
+    "Html": "I want to use dashes when specifying a date. e.g. 2004-04-08<br />\n",
+    "PostedDate": "2014-05-22T15:01:45.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1248624",
+    "ThreadId": "546291",
+    "Html": "you can look at FreeTextLiteral - it works like 'any symbol until you hit certain terminator char(s)'. Then hook to ValidateToken and analyze the token in code, and decide if its date literal in certain format, or identifier etc <br />\n",
+    "PostedDate": "2014-05-22T15:04:59.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1248642",
+    "ThreadId": "546291",
+    "Html": "That worked! And I can also add in parentheses.\r<br />\n<br />\nWhile the examples I have tried work, I still have two problems.\r<br />\n<br />\n1) The operator affinity for AND and OR isn't honored. Should RegisterOperator not ensure that? It just splits in the middle.\r<br />\n<br />\n2) I get a grammar conflict, even though things seem to work. &quot;Reduce-reduce conflict. State S24, lookaheads: $and: $or: EOF ). Selected reduce on first production in conflict set.&quot;<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n        <span style=\"color:Blue;\">public</span> MongoQueryGrammer() : <span style=\"color:Blue;\">base</span> (<span style=\"color:Blue;\">false</span>) <span style=\"color:Green;\">//Case Insensitive</span>\n        {\n            <span style=\"color:Blue;\">var</span> expressionList = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;expressionList&quot;</span>);\n            <span style=\"color:Blue;\">var</span> expression = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;expression&quot;</span>);\n            \n            <span style=\"color:Blue;\">var</span> identifier = TerminalFactory.CreateCSharpIdentifier(<span style=\"color:#A31515;\">&quot;identifier&quot;</span>);\n            <span style=\"color:Blue;\">var</span> binexpr = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;binexpr&quot;</span>);\n            <span style=\"color:Blue;\">var</span> logicalexpr = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;logicalexpr&quot;</span>);\n            <span style=\"color:Blue;\">var</span> binoperator = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;binoperator&quot;</span>);\n            <span style=\"color:Blue;\">var</span> logicaloperator = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;logicaloperator&quot;</span>);\n            <span style=\"color:Blue;\">var</span> parexpr = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;parexpr&quot;</span>);\n            <span style=\"color:Blue;\">var</span> value = <span style=\"color:Blue;\">new</span> FreeTextLiteral(<span style=\"color:#A31515;\">&quot;value&quot;</span>, FreeTextOptions.AllowEof, <span style=\"color:#A31515;\">&quot;$&quot;</span>, <span style=\"color:#A31515;\">&quot;)&quot;</span>);\n            value.Escapes.Add(<span style=\"color:#A31515;\">@&quot;\\\\&quot;</span>, <span style=\"color:#A31515;\">@&quot;\\&quot;</span>);\n            value.Escapes.Add(<span style=\"color:#A31515;\">@&quot;\\)&quot;</span>, <span style=\"color:#A31515;\">@&quot;)&quot;</span>);\n\n            <span style=\"color:Blue;\">this</span>.MarkPunctuation(<span style=\"color:#A31515;\">&quot;(&quot;</span>, <span style=\"color:#A31515;\">&quot;)&quot;</span>);\n\n            expressionList.Rule = MakePlusRule(expressionList, logicaloperator, expression);\n\n            expression.Rule = parexpr | logicalexpr | logicalexpr + logicaloperator + logicalexpr | logicalexpr + logicaloperator + binexpr | binexpr;\n\n            logicalexpr.Rule = binexpr + logicaloperator + binexpr;\n            logicalexpr.ErrorRule = SyntaxError + <span style=\"color:#A31515;\">&quot;;&quot;</span>;\n            binexpr.Rule = identifier + binoperator + value;\n            binexpr.ErrorRule = SyntaxError + <span style=\"color:#A31515;\">&quot;;&quot;</span>;\n            binoperator.Rule = ToTerm(<span style=\"color:#A31515;\">&quot;$eq:&quot;</span>) | <span style=\"color:#A31515;\">&quot;$lt:&quot;</span> | <span style=\"color:#A31515;\">&quot;$lte:&quot;</span> | <span style=\"color:#A31515;\">&quot;$gt:&quot;</span> | <span style=\"color:#A31515;\">&quot;$gte:&quot;</span> | <span style=\"color:#A31515;\">&quot;$ne:&quot;</span>;\n            logicaloperator.Rule = ToTerm(<span style=\"color:#A31515;\">&quot;$and:&quot;</span>) | <span style=\"color:#A31515;\">&quot;$or:&quot;</span>;\n\n            parexpr.Rule = <span style=\"color:#A31515;\">&quot;(&quot;</span> + logicalexpr + <span style=\"color:#A31515;\">&quot;)&quot;</span> | <span style=\"color:#A31515;\">&quot;(&quot;</span> + binexpr + <span style=\"color:#A31515;\">&quot;)&quot;</span>;\n\n            Root = expressionList;\n\n            RegisterOperators(3, <span style=\"color:#A31515;\">&quot;$and:&quot;</span>);\n            RegisterOperators(2, <span style=\"color:#A31515;\">&quot;$or:&quot;</span>);\n            RegisterOperators(1, <span style=\"color:#A31515;\">&quot;$eq:&quot;</span>, <span style=\"color:#A31515;\">&quot;$lt:&quot;</span>, <span style=\"color:#A31515;\">&quot;$lte:&quot;</span>, <span style=\"color:#A31515;\">&quot;$gt:&quot;</span>, <span style=\"color:#A31515;\">&quot;$gte:&quot;</span>, <span style=\"color:#A31515;\">&quot;$ne:&quot;</span>);\n\n            <span style=\"color:Blue;\">this</span>.MarkTransient(parexpr);\n        }\r\n</pre></div>",
+    "PostedDate": "2014-05-22T16:13:06.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1248671",
+    "ThreadId": "546291",
+    "Html": "Mark logicalOp and binOp as Transient, it is a bug still there - this will fix op precedence\r<br />\nas for conflict - try to look at items in the conflict state and understand why and what causes it<br />\n",
+    "PostedDate": "2014-05-22T18:59:38.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1248705",
+    "ThreadId": "546291",
+    "Html": "Marking the operators as transient makes everything look nicer, but it didn't fix the operator precedence.\r<br />\n<br />\nThe new message I get about the grammar error is this:<br />\n<pre><code>State S26 (Inadequate)\n  Reduce-reduce conflicts on inputs: $and: $or: EOF )\n  Reduce items:\n    binexpr -&gt; SYNTAX_ERROR ; · [identifier $and: $or: EOF )]\n    logicalexpr -&gt; SYNTAX_ERROR ; · [$and: $or: EOF )]\n  Transitions: </code></pre>\n\nWhich I guess means I haven't declared all possible combinations of my expressions? Is that correct?\r<br />\n<br />\nIs this also the reason why I can only use parentheses around the first part of my expression and not on later expression parts.<br />\n",
+    "PostedDate": "2014-05-22T22:47:06.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1250139",
+    "ThreadId": "546291",
+    "Html": "The problem is that you have error rule for logicalExpr and binExpr - they result in conflict. Replace both with ErrorRule on expression<br />\n",
+    "PostedDate": "2014-05-27T10:44:48.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

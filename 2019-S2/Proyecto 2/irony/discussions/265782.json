@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "644586",
+    "ThreadId": "265782",
+    "Html": "<p>(Copied from discussion on contribution items)</p>\n<p>Roman:</p>\n<p><em>Where to put lineContinuation? that's part of the task to figure it out. But it seems to me it should be Non-grammar terminal - you don't put it into production, you just let grammar know it's there (like comment terminal)</em></p>\n<p><em>thanks for coming forward with this help offer - appreciate it</em></p>\n<p>Yallie:</p>\n<p><em>Yes, that absolutely makes sense. I'll try to implement it then :)</em></p>\n<p>Roman:</p>\n<p><em>The other possibility is to add it to NewLineTerminal</em></p>\n<p><em>First test it with GwBasic grammar.&nbsp;See if it can be used with miniPython grammar - python uses '\\' symbol as line continuation</em></p>",
+    "PostedDate": "2011-07-19T12:49:38.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "644637",
+    "ThreadId": "265782",
+    "Html": "<p>Please could I just add a link back to a previous discussion on line continuation terminals.&nbsp;</p>\r\n<p><a href=\"http://irony.codeplex.com/discussions/198158\">http://irony.codeplex.com/discussions/198158</a></p>\r\n<p>Using a comment terminal is still working for me, if that is any help in working out how to approach this.&nbsp; The comment kindly&nbsp;\"eats\" the end of&nbsp;line.&nbsp; Unfortunately I am not guaranteed to have a space character to mark the end of the \"comment\", but luckily I havent yet hit any code without indentation.</p>\r\n<p>If I can help with any testing, please let me know.&nbsp; Out of the five grammars I now have written, only one so far would benefit from such a terminal but I can certainly help test it.</p>\r\n<p>Many thanks.</p>\r\n<p>Will.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-07-19T14:07:58.67-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "649257",
+    "ThreadId": "265782",
+    "Html": "<p>Hi Roman,</p>\r\n<p>&gt;<em>But it seems to me it should be Non-grammar terminal</em></p>\r\n<p>I've implemented LineContinuationTerminal this way and added unit tests for it. It seems to work well in GwBasicGrammar.</p>\r\n<p>&gt;<em>The other possibility is to add it to NewLineTerminal</em></p>\r\n<p><em></em>Although it could be a bit simpler solution, I've finally decided that a separate terminal is better.</p>\r\n<p>\r\n<hr />\r\n</p>\r\n<p>Will, thanks you for the link!</p>\r\n<p>&gt;If I can help with any testing, please let me know.&nbsp; Out of the five grammars I now have written, <br />&gt;only one so far would benefit from such a terminal but I can certainly help test it.</p>\r\n<p>I've pushed LineContinuationTerminal to my fork. The source code is available here:<br /><a href=\"http://irony.codeplex.com/SourceControl/network/Forks/yallie/IronyContrib\">http://irony.codeplex.com/SourceControl/network/Forks/yallie/IronyContrib</a>&nbsp;</p>\r\n<p>It would be great if you find the time to check out LineContinuation in your grammar.</p>\r\n<p>Regards, yallie.</p>",
+    "PostedDate": "2011-07-28T16:34:30.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "649269",
+    "ThreadId": "265782",
+    "Html": "<p>That's great news, thank you! I will merge it with my code (hacking interpreter like crazy) and push the result soon.</p>\n<p>thanks again!</p>\n<p>Roman</p>\n<p>&nbsp;</p>\n<p>Edited: about miniPython - never mind, my bad, forgot it's handled by token filter&nbsp;</p>",
+    "PostedDate": "2011-07-28T16:50:30.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

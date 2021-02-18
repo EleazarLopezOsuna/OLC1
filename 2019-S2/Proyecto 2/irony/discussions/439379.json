@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1026668",
+    "ThreadId": "439379",
+    "Html": "The PowerShell line continuation rules look like this:<br />\n<blockquote>\nUnlike some popular languages, PowerShell does not consider line-terminator characters (§2.2.2) to be white space. However, a line terminator can be treated as white space by preceding it immediately by a backtick character, ` (U+0060). This is necessary when the contents of a line are complete syntactically, yet the following line contains tokens intended to be associated with the previous line. <br />\n</blockquote>\nI tried implementing this behavior by overriding <code>SkipWhitespace</code>. If <code>source.PreviewChar</code> is backtick (``), and <code>source.NextPreviewChar</code> is <code>\\r</code> or <code>\\n</code>, then increment <code>source.PreviewPosition</code>.\r<br />\n<br />\nThat works unless the backtick is followed by <code>\\r\\n</code>. PowerShell says that those 3 characters together form one whitespace, but there is no <code>NextNextPreviewChar</code> I can examine. I tried modifying my local copy of Irony to provide such a method, and that functioned as I expected. @rivanstov, you could merge that change in to Irony and it would work for me, but maybe you think there's a better way to deal with this.\r<br />\n<br />\nI took a look at <code>Irony.Parsing.LineContinuationTerminal</code>, but it wasn't clear to me how it should work, and there are no docs or comments. \r<br />\n<br />\nAny recommendations?<br />\n",
+    "PostedDate": "2013-04-06T15:45:25.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026673",
+    "ThreadId": "439379",
+    "Html": "I think LineContinuationTerminal should work here. Look in LineContinuationTests.cs in unit tests, and it is actually used in GwBasic grammar.<br />\n",
+    "PostedDate": "2013-04-06T16:39:17.643-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026720",
+    "ThreadId": "439379",
+    "Html": "I figured it out, and it was straightforward, so I'm writing it here if anyone tries to do something similar.\r<br />\n<br />\nThere were two changes I made that are specific to my code, which most people will ignore:<br />\n<ul>\n<li>\nI had overloaded <code>SkipWhitespace</code> to handle line continuation, and I removed that code.<br />\n</li>\n<li>\nI had a very greedy token that was eating the line continuation character, so I fixed that.<br />\n</li>\n</ul>\nSo, to implement line continuation for the PowerShell grammar:<br />\n<ol>\n<li>\nCreate an instance of <code>Irony.Parsing.LineContinuationTerminal</code>, passing the line continuation character(s) to the constructor<br />\n</li>\n<li>\nSet <code>LineContinuationTerminal.LineTerminators</code> to <code>&quot;\\r\\n&quot;</code>.<br />\n</li>\n<li>\n<code>NonGrammarTerminals.Add</code> with your <code>LineContinuationTerminal</code>.<br />\n</li>\n</ol>\nNote that Irony has a special case for line continuation with <code>\\r\\n</code> together.\r<br />\n<br />\nBecause I like creating new classes, I made one for this purpose:<br />\n<pre><code>    // A non-grammar terminal that controls how the parser handles line continuation.\n    class BacktickLineContinuationTerminal : LineContinuationTerminal\n    {\n        public BacktickLineContinuationTerminal()\n            : base(typeof(BacktickLineContinuationTerminal).Name, &quot;`&quot;)\n        {\n            this.LineTerminators = &quot;\\r\\n&quot;;\n        }\n    }</code></pre>\n\nand<br />\n<pre><code>NonGrammarTerminals.Add(new BacktickLineContinuationTerminal());</code></pre>\n\n(I didn't bother saving the object in a variable, since I don't need to refer to it again.)\r<br />\n<br />\nIf you're interested in code diffs: <a href=\"https://github.com/Pash-Project/Pash/commit/2f439cf03d19f14bb19745fe07aec557fe6e8e84\" rel=\"nofollow\">https://github.com/Pash-Project/Pash/commit/2f439cf03d19f14bb19745fe07aec557fe6e8e84</a><br />\n",
+    "PostedDate": "2013-04-07T00:02:59.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

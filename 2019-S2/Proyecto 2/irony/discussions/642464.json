@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1437741",
+    "ThreadId": "642464",
+    "Html": "This is my first post, so please be gentle.\r<br />\n<br />\nI have a DSL I'm trying to define within Irony. It includes an aspect that has me puzzled. Consider this example:<br />\n&lt;table&gt;\r\n  &lt;row&gt;\r\n    &lt;cell&gt;\r\n       ...text...\r\n    &lt;/cell&gt;\r\n  &lt;/row&gt;\r\n&lt;/table&gt;\r\nit is straightforward to set up non-terminals with rules preventing text or cell or row in the wrong context. \r<br />\n<br />\nThis DSL also has a looping structure called foreach. Normally, foreach can enclose anything in the DSL, except when used this way:<br />\n&lt;table columns=&quot;2&quot;&gt;\r\n  &lt;foreach&gt;\r\n    &lt;cell&gt;\r\n       ...text...\r\n    &lt;/cell&gt;\r\n  &lt;/foreach&gt;\r\n&lt;/table&gt;\r\nWhen foreach is used within a tabular context, it is constrained to just enclose cells.\r<br />\n<br />\nMy first thought (that didn't work) was to create two non-terminals for foreach, one for each context. \r<br />\n<br />\nThis doesn't work. Grammar explorer declares a reduce-reduce error.\r<br />\n<br />\nNow it seems as if I need a single non-terminal with rules that admit either one context or the other. \r<br />\n<br />\nIs this doable in the grammar definition? \r<br />\n<br />\nOr must I catch this in a token filter?<br />\n",
+    "PostedDate": "2015-08-07T12:18:55.007-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1437758",
+    "ThreadId": "642464",
+    "Html": "At first glance this seems like a typical example of a (software) language that isn't parsable by context-free parsers like Irony. The canonical example is:<br />\n<pre><code>int function() {\n    /** **/\n    return var; // A CFG cannot enforce that var is an int\n}\n</code></pre>\n\nThe classic solution is to implement a type system. That is, you define your grammar/parser too broadly so it accepts invalid syntax (like a foreach that contains non-cells in a table) and then have your type system check the types by walking through the tree.<br />\n<br />\nVery simplified it could look something like this for you:<br />\n<pre><code>AnyTag.Rule = AnyTagOpen + TagContents + AnyTagClose\nForeach.Rule = ForeachTagOpen + AnyTag + ForeachTagClose\nTable.Rule = TableRows | Foreach\nTableRows.Rule = MakeStarRule(TableWithRows, Row,&quot;&quot;)\n</code></pre>\n\nAnd then somewhere in your type system:<br />\n<pre><code>public void TypeCheckNode(ParseTreeNode node) {\n     /* ... */\n     // Check if AnyTags opening and closing are the same tag\n     if(node.Term.Name == &quot;AnyTag&quot; &amp;&amp; TagName(node.ChildNodes[0]) != TagName(node.Childnodes[2])) {\n              throw new TypesystemException(&quot;Unmatched tags&quot;);\n     }\n     // Check if a foreach in a table only contains cells\n     if(node.Term.Name == &quot;Table&quot; &amp;&amp; node.ChildNodes[0].Term.Name == &quot;Foreach&quot;) {\n          if(TagName(node.ChildNodes[0].ChildNodes[1]) != &quot;cell&quot;) {\n              throw new TypesystemException(&quot;Foreach in table can only contain a cell&quot;);\n          }\n     }\n     /* ... */\n}</code></pre>\n\n",
+    "PostedDate": "2015-08-07T14:54:18.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

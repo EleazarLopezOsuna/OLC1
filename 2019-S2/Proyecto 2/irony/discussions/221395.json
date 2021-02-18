@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "472589",
+    "ThreadId": "221395",
+    "Html": "Hi,\r\n\r\nWhile trying to add && and || as binary operators in my language runtime, I found that InitOperatorImplementations() is overridable, but AddImplementation is private.\r\n\r\nIs this behaviour by design? If it is, then what's the recommended way of adding custom implementations of operators?\r\n",
+    "PostedDate": "2010-07-26T04:16:08.97-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "472694",
+    "ThreadId": "221395",
+    "Html": "this is overlook, just change it to protected or public, will fix that.\r\nOn general note, about && and || operators, I don't think you can use these methods for these operators, they are substantially different. All binary operators implementations imply that both operators are evaluated before the call; while in these case of these operators, we evaluate first only left operator, then operator function decides whether to evaluate the second one or not. So there must be a different approach here, a special node with a special implementation method. I'm planning to add a facility for these shortcut operators in the future\r\nRoman",
+    "PostedDate": "2010-07-26T09:04:29.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "473055",
+    "ThreadId": "221395",
+    "Html": "That's what I did. For my simple needs evaluating as a binary operator is good enough. Thanks for clearing this up.\r\nAlso, I understand the global picture now. The following is possible with special evaluation but not evaluating as a binary operator:\r\nif (variable != null && variable.property == value) { printf(&quot;evaluation from left to right allows to do checks without evaluating everything&quot;); }",
+    "PostedDate": "2010-07-27T02:16:10.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "154449",
+    "ThreadId": "46255",
+    "Html": "<div>Can somebody confirm to me that this is standard procedure to run program from source code. The thing I'm woried about about is calling AnalizeCode. Is it required? Without it I get null point exception, and I see that dispatcher is not set that dispatcher is not set in runtime object. It's probably a bit silly to ask, but what exactly AnalyzeCode for? </div><div><br></div><div><br></div><div>var grammar = new LanguageGrammar();</div><div>var compiler = new LanguageCompiler(grammar);</div><div>var tree = (ProgramNode)compiler.Parse(@&quot;a = 150 + 28&quot;);</div><div><br></div><div>compiler.AnalyzeCode(tree, new CompilerContext(compiler));</div><div><br></div><div>tree.Scope = new Scope(tree, null);</div><div>tree.Evaluate(new EvaluationContext(new LanguageRuntime(), tree));</div>",
+    "PostedDate": "2009-02-04T14:15:53.653-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "154462",
+    "ThreadId": "46255",
+    "Html": "yes, that's true, you should call AnalyzeCode before you execute it. Usually the middle phase of compiler processing is called code analysis, so here's the name. It actually does all &quot;hooking&quot; inside nodes - connect callers to target functions or operator implementations, allocates and binds variables, etc. All Interpreter part is very sketchy for now, draft, proof of concept rather than real code. It certainly needs more work, and I hope to improve it in the future... I hope... <br>\r\nRoman\r\n",
+    "PostedDate": "2009-02-04T15:09:53.007-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "154801",
+    "ThreadId": "46255",
+    "Html": "Thanks for the info.<div><br clear=all>Sergej Andrejev<br><br><br><div>On Thu, Feb 5, 2009 at 1:10 AM, rivantsov <span dir=ltr>&lt;<a href=\"mailto:notifications@codeplex.com\">notifications@codeplex.com</a>&gt;</span> wrote:<br>\r\n<blockquote style=\"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex\">   <div> <p>From: rivantsov</p> <div>yes, that's true, you should call AnalyzeCode before you execute it. Usually the middle phase of compiler processing is called code analysis, so here's the name. It actually does all &quot;hooking&quot; inside nodes - connect callers to target functions or operator implementations, allocates and binds variables, etc. All Interpreter part is very sketchy for now, draft, proof of concept rather than real code. It certainly needs more work, and I hope to improve it in the future... I hope... <br>\r\n\r\nRoman\r\n</div><div> <div> <p>Read the <a href=\"http://www.codeplex.com/irony/Thread/View.aspx?ThreadId=46255&ANCHOR#Post154462\">full discussion online</a>.</p> <p>To add a post to this discussion, reply to this email (<a href=\"mailto:irony@discussions.codeplex.com?subject=[irony:46255]\">irony@discussions.codeplex.com</a>)</p>\r\n <p>To start a new discussion for this project, email <a href=\"mailto:irony@discussions.codeplex.com\">irony@discussions.codeplex.com</a></p> <p>You are receiving this email because you subscribed to this discussion on CodePlex. You can <a href=\"http://www.codeplex.com/site/discussions/thread/unsubscribe/46255\">unsubscribe</a> on codePlex.com.</p>\r\n <p>Please note: Images and attachments will be removed from emails. Any posts to this discussion will also be available online at <a href=\"http://codeplex.com\">codeplex.com</a></p> </div> </div></div> </blockquote>\r\n</div><br></div>",
+    "PostedDate": "2009-02-05T12:12:11.787-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

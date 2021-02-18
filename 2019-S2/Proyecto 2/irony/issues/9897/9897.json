@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "When using the ExpressionEvaluator, `\"\\d\"` evaluates to `d`. However, I would expect the parser to report an error about an invalid escape sequence.\r\n\r\nProposed solution is to add a line to `StringLiteral.ConvertValue(CompoundTokenDetails)` that looks for an error after calling the `HandleSpecilEscape` method, and returns false if one is found:\r\n\r\n          if (Escapes.TryGetValue(first, out newFirst))\r\n            arr[i] = newFirst + s.Substring(1);\r\n          else {\r\n            arr[i] = HandleSpecialEscape(arr[i], details);\r\n            if (!string.IsNullOrEmpty(details.Error)) return false; // <--- ADDED THIS LINE\r\n          }//else\r\n        }//for i\r\n        value = string.Join(string.Empty, arr);\r\n      }// if EscapeEnabled \r\n\r\nAdding this line causes the parser to correctly report the \"invalid escape sequence\" error.",
+    "LastUpdatedDate": "2014-12-09T08:57:32.17-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2014-12-09T08:56:50.953-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Parser does not report invalid escape sequence (StringLiteral.cs)",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9897
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

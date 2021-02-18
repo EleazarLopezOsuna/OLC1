@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1318693",
+    "ThreadId": "571180",
+    "Html": "I have a grammar in which the LineContinuationTerminal is &quot;-&quot;. But I also have a unary operator &quot;-&quot;. After the &quot;-&quot; it expects a NewLine.\r<br />\n<br />\nCan this be done? I've tried setting Priority...<br />\n",
+    "PostedDate": "2014-11-03T11:23:31.84-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1319217",
+    "ThreadId": "571180",
+    "Html": "I don't understand - given the following:\r<br />\n<br />\na - \r<br />\n  b\r<br />\n<br />\nwhat it should be parsed as? As 'a-b' split on two lines, or as 'a b' ?\r<br />\nAny way does not seem like reasonable/logical outcome...<br />\n",
+    "PostedDate": "2014-11-04T20:36:28.303-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1319290",
+    "ThreadId": "571180",
+    "Html": "Maybe it's more clear with the following test grammar:<br />\n<pre><code>var line_continuation = new LineContinuationTerminal(&quot;&lt;line-continuation&gt;&quot;, &quot;-&quot;);\nNonGrammarTerminals.Add(line_continuation);\n\nvar program = new NonTerminal(&quot;&lt;program&gt;&quot;);\nvar stmt = new NonTerminal(&quot;&lt;stmt&gt;&quot;);\nvar sign = new NonTerminal(&quot;&lt;sign&gt;&quot;);\nprogram.Rule = MakeStarRule(program, NewLine, stmt);\nstmt.Rule = ToTerm(&quot;x&quot;) + &quot;=&quot; + sign + ToTerm(&quot;y&quot;);\nsign.Rule = ToTerm(&quot;+&quot;) | ToTerm(&quot;-&quot;) | Empty;\nthis.Root = program;</code></pre>\n\nIf the source is<br />\n<pre><code>x = y\nx = +y\nx = -y</code></pre>\n\nthe parser expects a new line symbol after the minus at the third line.<br />\n",
+    "PostedDate": "2014-11-05T02:16:20.033-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1321391",
+    "ThreadId": "571180",
+    "Html": "it does not make any more clear, and I'm not sure if this can work at all. In pure human terms, how these arrangements can work, meaning what would be the rules for the programmer that writes these statements. As for Irony's parsing, I'm not sure how it might work at all, but it all begins with human-readable definition, which you then express in Irony's BNF expressions. \r<br />\nOne thing I see - I wouldn't use the 'sign' definition this way; you should defined 'unary expr', just like in SampleExpressionGrammar, and then use it as one of expression sub-types in arithm expressions. <br />\n",
+    "PostedDate": "2014-11-12T11:32:20.707-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1322181",
+    "ThreadId": "571180",
+    "Html": "I just made this sample grammar to show my point. With a human-readable definition (using unary expr) it also doesn't work.\r<br />\n<br />\nWhen i make an new LineContinuationTerminal class that overrides the TryMatch method, it works very nice!<br />\n",
+    "PostedDate": "2014-11-14T06:05:46.433-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1324083",
+    "ThreadId": "571180",
+    "Html": "well, good for you, probably default implementation of LineContinuation term works a bit differently than you expect<br />\n",
+    "PostedDate": "2014-11-19T23:00:08.333-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

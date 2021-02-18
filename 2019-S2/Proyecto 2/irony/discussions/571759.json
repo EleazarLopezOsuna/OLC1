@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1320811",
+    "ThreadId": "571759",
+    "Html": "I'm trying to define a simplistic language using Irony. Some language usecases are<br />\n<pre><code>Dear {Name},\n</code></pre>\n\nIt is free text with therein references to fields enclosed in curly braces. a double curly brace escapes a field declaration. I came up with the following spec:<br />\n<pre><code>var orText = new FreeTextLiteral(&quot;Text&quot;, FreeTextOptions.AllowEof | FreeTextOptions.AllowEmpty);\nvar orFieldName = new FreeTextLiteral(&quot;FieldName&quot;);\n\n//Nonterminals\nvar orField = new NonTerminal(&quot;Field&quot;);\nvar orValue = new NonTerminal(&quot;Value&quot;);\n\n//Rules\norField.Rule = &quot;{&quot; + orFieldName + &quot;}&quot;;\norValue.Rule = orText | orField;\n\nRoot = orValue;\n</code></pre>\n\nHowever, the Irony GrammarExplorer only parses a Value which has a Text element. A field is not recognized. What am I missing here?<br />\n",
+    "PostedDate": "2014-11-11T01:59:25.707-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1321370",
+    "ThreadId": "571759",
+    "Html": "FreeTextLiteral is a wrong terminal for a job, and you're not configuring it properly - you should specify terminator symbol. Anyway, don't use it, it's not for situations like this.  <br />\n",
+    "PostedDate": "2014-11-12T11:07:07.537-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1321726",
+    "ThreadId": "571759",
+    "Html": "Thanks for your reply!<br />\n<br />\nI'm kinda lost in how to do implement a simple FormatString language. My approach is to first let &quot;free text&quot; parse, but I haven't succeeded on this part. Woudl the terminator symbol be an opening bracket?<br />\n<br />\nI tried<br />\n<br />\nvar text = new StringLiteral(&quot;text&quot;);<br />\nvar TextTerm = new NonTerminal(&quot;textTerminal&quot;);<br />\ntextTerm.Rule = text;<br />\nRoot = textTerm;<br />\n<br />\nHowever, the playground errs on the first fed character of a string. <br />\n",
+    "PostedDate": "2014-11-13T07:03:26.31-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1324080",
+    "ThreadId": "571759",
+    "Html": "are you feeding quoted string as an input? if yes, then look at stringLiteral constructor parameters, make sure you specify proper quoting symbols (default should be double quote). Try stepping through StringLiteral.TryMatch code, see what's wrong, should be working I think<br />\n",
+    "PostedDate": "2014-11-19T22:49:18.29-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1324081",
+    "ThreadId": "571759",
+    "Html": "is this FormatString language just an initial case to try, or for real? Simply 'language' like this better processed by specialized 'parser', not Irony or alike LALR parser for languages with regular grammars.<br />\n",
+    "PostedDate": "2014-11-19T22:51:24.057-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

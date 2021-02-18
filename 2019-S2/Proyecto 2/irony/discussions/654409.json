@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1472717",
+    "ThreadId": "654409",
+    "Html": "Hi,\r<br />\n<br />\nI try to parse sql script.there is a custom keyword like  &quot;A.B&quot;. How i can get it with single token. \r<br />\n<br />\nI'm mean Token.Text = A.B<br />\n",
+    "PostedDate": "2016-05-07T08:04:29.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1472763",
+    "ThreadId": "654409",
+    "Html": "first question is why? you can parse, then convert the parse tree (using a visitor/converter)\r<br />\nIf you absolutely need it, you can use RegexTerminal. Or FreeTextLiteral<br />\n",
+    "PostedDate": "2016-05-07T23:52:20.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1472766",
+    "ThreadId": "654409",
+    "Html": "Thank you for replay. A.B is Not a table.columnname. a.b is custom Text.  İ think textliteral works for me<br />\n",
+    "PostedDate": "2016-05-08T02:59:12.527-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

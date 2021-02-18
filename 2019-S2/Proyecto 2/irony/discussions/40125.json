@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "133148",
+    "ThreadId": "40125",
+    "Html": "I'am not a specialist so my question may be idiot. Why did you chose to implement in the future a NLALR parser instead of a GLR parser. GLR parser seems to be more general. Is it a matter of performance ?<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2008-11-17T08:31:31.723-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "133211",
+    "ThreadId": "40125",
+    "Html": "Hi<br>\r\nGood guestion. I did consider GLR, but then NLALR looked much better. The biggest limitation of LALR is its basic rule of &quot;right-most derivation&quot;, so for reductions it insists on doing left-most reduction first before proceeding with further input. In plain language it means that if you have AB non-terminal sequence in a grammar rule then A is always reduced before B, and the only information used when reducing A is a single token of B or whatever suffix may follow. This is obviously a very limiting rule, and in many real-world languages it is very hard to go around. In Scheme for examle, with its parenthesis all over the place, the lookahead token is very often a &quot;(&quot; symbol, and real contextual stuff is hidden behind it to the right, so lookahead symbol is pretty much useless. What is needed is richer context, maybe a whole construct (non-terminal) if possible; in this case we would like to first reduce &quot;B&quot;, and then decide to reduce A or something else. This is the solution of NLALR, which gives up this limitation. <br>\r\nGLR, on the contrary, tries to stick with this rule, and gets around by spawning multiple parallel parsers which continue parsing for all possible interpretations, until &quot;impossible&quot; routes are given up and you are left with a single correct version. It is a brute-force approach to ambiguity or parsing method limitation, which is not very computationally efficient. I would say GLR is not a parsing method on its own, but rather is a brute-force implementation workaround. <br>\r\nI think of NLALR as more natural for parsing, and I foresee some other benefits. First, it does not need all this lookahead propagation which cause most of the delay at startup. Secondly, I would allow cleaner error handling - when parser sees unexpected symbol in input, the list of expected things is not plain list of tens of symbols and tokens but much smaller list of more meaningful terms, which inlcudes nonterminals.<br>\r\nWill see when it's done<br>\r\nRoman<br>\r\n<br>\r\n",
+    "PostedDate": "2008-11-17T11:12:29.28-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1067885",
+    "ThreadId": "449902",
+    "Html": "hey, I'm new here and I can't even run the sample languages as I don't know how to!\r<br />\nI have the whatever.cs and included irony.dll in my project but I don't know what to do next as in how do I get the language to work. Could someone guide me step by step plz\r<br />\nthanks,\r<br />\nGabe<br />\n",
+    "PostedDate": "2013-07-13T08:31:42.167-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1067977",
+    "ThreadId": "449902",
+    "Html": "there's no compilation - only parsing + interpreter. Just launch Grammar Explorer, load sample grammars, try parsing samples, see how it's done inside GE main form\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-07-13T21:04:40.367-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "656882",
+    "ThreadId": "268779",
+    "Html": "\r\n<p>I am currently working on creating a grammar that checks logical expressions. I am having a difficult time getting the not operator (!) to work in expressions.</p>\r\n<p><strong>Here is the error message that I am getting:</strong></p>\r\n<p>Irony.Interpreter.RuntimeException : Object reference not set to an instance of an object.<br>\r\n&nbsp; ----&gt; System.NullReferenceException : Object reference not set to an instance of an object.</p>\r\n<p><strong>Here is the expression that I am using (working is a boolean value):</strong></p>\r\n<p>string expression = @&quot;!(working)&quot;;</p>\r\n<p><strong>Here is my grammar:</strong></p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.LanguageFlags |= LanguageFlags.CreateAst | LanguageFlags.CanRunSample;<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 1. Terminals<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; StringLiteral stringLiteral = TerminalFactory.CreateCSharpString(&quot;stringValue&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; StringLiteral charLiteral = TerminalFactory.CreateCSharpChar(&quot;charValue&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; NumberLiteral numberLiteral = TerminalFactory.CreateCSharpNumber(&quot;numberValue&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IdentifierTerminal variableIdentifier = TerminalFactory.CreateCSharpIdentifier(&quot;variableValue&quot;);<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 2. Non-terminals<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; NonTerminal Term = new NonTerminal(&quot;Term&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; NonTerminal Expression = new NonTerminal(&quot;Expression&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; NonTerminal BinaryExpression = new NonTerminal(&quot;BinaryExpression&quot;, typeof(BinaryOperationNode));<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; NonTerminal BinaryOperation = new NonTerminal(&quot;BinaryOperation&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; NonTerminal ParenthesesExpression = new NonTerminal(&quot;ParenthesesExpression&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; NonTerminal UnaryExpression = new NonTerminal(&quot;UnaryExpression&quot;, typeof(UnaryOperationNode));<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; NonTerminal UnaryOperator = new NonTerminal(&quot;UnaryOperator&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; NonTerminal Statement = new NonTerminal(&quot;Statement&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; NonTerminal Program = new NonTerminal(&quot;Program&quot;, typeof(StatementListNode));<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 3. Backus&ndash;Naur Form (BNF) rules<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Expression.Rule = Term | UnaryExpression | BinaryExpression;<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Term.Rule = stringLiteral | numberLiteral | charLiteral | variableIdentifier | ParenthesesExpression;<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ParenthesesExpression.Rule = &quot;(&quot; &#43; Expression &#43; &quot;)&quot;;<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; UnaryExpression.Rule = UnaryOperator &#43; Term;<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; UnaryOperator.Rule = ToTerm(&quot;!&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; BinaryExpression.Rule = Expression &#43; BinaryOperation &#43; Expression;<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; BinaryOperation.Rule = ToTerm(&quot;==&quot;) | &quot;!=&quot; | &quot;&gt;&quot; | &quot;&gt;=&quot; | &quot;&lt;&quot; | &quot;&lt;=&quot; | &quot;&amp;&amp;&quot; | &quot;||&quot;;<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Statement.Rule = Expression;<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Program.Rule = MakePlusRule(Program, NewLine, Statement);<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; this.Root = Program;<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 4. Operators precedence<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RegisterOperators(1, &quot;||&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RegisterOperators(2, &quot;&amp;&amp;&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RegisterOperators(3, &quot;!&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RegisterOperators(4, &quot;==&quot;, &quot;!=&quot;);//, &quot;??&quot;, &quot;$$&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RegisterOperators(5, &quot;&lt;&quot;, &quot;&lt;=&quot;, &quot;&gt;&quot;, &quot;&gt;=&quot;);<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 5. Punctuation and transient terms<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; MarkPunctuation(&quot;(&quot;, &quot;)&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RegisterBracePair(&quot;(&quot;, &quot;)&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; MarkTransient(Term, Expression, Statement, BinaryOperation, UnaryOperator, ParenthesesExpression);</p>\r\n<p>Any help would be very much appreciated.</p>\r\n",
+    "PostedDate": "2011-08-11T16:16:33.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "656934",
+    "ThreadId": "268779",
+    "Html": "<p>try to debug thru it and see where it happens; try to get the idea why it happens once you know what and where.&nbsp;</p>",
+    "PostedDate": "2011-08-11T20:51:17.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "657215",
+    "ThreadId": "268779",
+    "Html": "<p>Roman,</p>\r\n<p>I have been debugging this and I can't quite figure out what is going on. I have included the stack trace since I forgot it in my previous post.</p>\r\n<p><strong>Here is the stack trace:</strong></p>\r\n<p>System.NullReferenceException: Object reference not set to an instance of an object.<br />&nbsp;&nbsp;&nbsp;&nbsp; at Irony.Interpreter.Ast.UnaryOperationNode.EvaluateNot(EvaluationContext context, AstMode mode) in C:\\Irony_2011_07_05\\Irony\\Interpreter\\Ast\\Expressions\\UnaryOperationNode.cs:line 59<br />&nbsp;&nbsp;&nbsp;&nbsp; at Irony.Interpreter.Ast.AstNode.Evaluate(EvaluationContext context, AstMode mode) in C:\\ThirdParty\\Irony_2011_07_05\\Irony\\Interpreter\\Ast\\Base\\AstNode.cs:line 61</p>\r\n<p>Any help would be greatly appreciated.</p>",
+    "PostedDate": "2011-08-12T08:56:05.53-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "657453",
+    "ThreadId": "268779",
+    "Html": "<p>Well, the trouble with it - it is \"old\" interpreter you're hacking with, it's gone already (not in sources anymore) and soon will be replaced by completely rebuilt version. This old version was quick sample, not a real thing. Can it wait for a few weeks? To give you advice with old one, I'll just have to load old version from zip and debug thru it. Sorry don't have time right now, maybe in next 3-4 days.&nbsp;</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-08-12T14:55:31.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "657458",
+    "ThreadId": "268779",
+    "Html": "<p>Does the rebuilt version have support for the not operator (!)?</p>\r\n<p>I can wait 3-4 days for help.</p>",
+    "PostedDate": "2011-08-12T15:02:36.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "657460",
+    "ThreadId": "268779",
+    "Html": "<p>New version support for NOT - yes. You can try to use the latest version from sources - I believe it does not require any changes in your grammar, see if it works</p>",
+    "PostedDate": "2011-08-12T15:05:11.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

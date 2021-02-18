@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "198953",
+    "ThreadId": "58744",
+    "Html": "<p>Hello,</p>\r\n<p>when I try to load a new grammar in the GrammarExplorer, the following error occurs</p>\r\n<p>System.InvalidCastException: Das Objekt des Typs &quot;System.String&quot; kann nicht in Typ &quot;Irony.GrammarExplorer.GrammarItem&quot; umgewandelt werden.<br>&nbsp;&nbsp; bei Irony.GrammarExplorer.fmGrammarExplorer.miAdd_Click(Object sender, EventArgs e) in C:\\Users\\xxx\\Documents\\Visual Studio 2008\\Projects\\irony-25364\\Irony.GrammarExplorer\\fmGrammarExplorer.cs:Zeile 200.<br>&nbsp;&nbsp; bei System.Windows.Forms.ToolStripItem.RaiseEvent(Object key, EventArgs e)<br>&nbsp;&nbsp; bei System.Windows.Forms.ToolStripMenuItem.OnClick(EventArgs e)<br>&nbsp;&nbsp; bei System.Windows.Forms.ToolStripItem.HandleClick(EventArgs e)<br>&nbsp;&nbsp; bei System.Windows.Forms.ToolStripItem.HandleMouseUp(MouseEventArgs e)<br>&nbsp;&nbsp; bei System.Windows.Forms.ToolStrip.OnMouseUp(MouseEventArgs mea)<br>&nbsp;&nbsp; bei System.Windows.Forms.ToolStripDropDown.OnMouseUp(MouseEventArgs mea)<br>&nbsp;&nbsp; bei System.Windows.Forms.Control.WmMouseUp(Message&amp; m, MouseButtons button, Int32 clicks)<br>&nbsp;&nbsp; bei System.Windows.Forms.Control.WndProc(Message&amp; m)<br>&nbsp;&nbsp; bei System.Windows.Forms.ToolStrip.WndProc(Message&amp; m)<br>&nbsp;&nbsp; bei System.Windows.Forms.ToolStripDropDown.WndProc(Message&amp; m)<br>&nbsp;&nbsp; bei System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message&amp; m)<br>&nbsp;&nbsp; bei System.Windows.Forms.NativeWindow.Callback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)</p>\r\n<p>As you can see, I'm using the today's source code (rev. 25364) to compile the Irony.dll and the GrammarExplorer. Any hints?</p>\r\n<p>Thanks in advance =)</p>",
+    "PostedDate": "2009-06-08T03:24:06.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "199084",
+    "ThreadId": "58744",
+    "Html": "<p>Don't know how it happened, but it looks like items in grammar combo had been messed up, maybe loaded settings saved by old versions. Try selecting &quot;Remove All&quot;, clear the grammar list, and then load grammars again</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-06-08T08:40:18.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "199858",
+    "ThreadId": "58744",
+    "Html": "<p>That helped. Thanks a lot!</p>\r\n<p>Tobi</p>",
+    "PostedDate": "2009-06-10T00:47:46.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

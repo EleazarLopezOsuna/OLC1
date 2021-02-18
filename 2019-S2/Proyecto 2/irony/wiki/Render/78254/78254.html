@@ -1,0 +1,20 @@
+<div class="wikidoc"><b>Features to complete for the first release</b>
+<ol><li>Implement support for robust error reporting and recovery mechanisms in target parsers - </li>
+<li>Implement global symbol table</li>
+<li>Complete the set of standard Terminal classes for lexeme types found in popular programming languages - numbers, literals, identifiers, etc. </li>
+<li>Build a set of built-in AstNode classes for common syntax constructs</li>
+<li>Create NUnit tests for all testable units</li>
+<li>Implement interpreter mode support for simple procedural programs. Built-in AST node classes would have Evaluate method, so that the entire program can be executed by calling Evaluate on root node. The non-procedural OOP-style programs would require non-trivial Runtime infrastructure, which will be built later. </li>
+<li>Create interactive console</li></ol>
+<br /><b>Further development</b>
+<ol><li>Create introductory documentation and embedded XML documentation for major components. </li>
+<li>Provide support for LALR(1.5) parsing with extra token preview on shift. Some languages, like Scheme, seem to need this extension</li>
+<li>Implement robust support for AST tree analysis and processing. Hopefully no visitor pattern, but something like multiple-type dispatch.  </li>
+<li>Advanced AST tree analysis - type checking and inference, optimization, etc. </li>
+<li>Create core runtime infrastructure supporting dynamic object model, maybe something along these lines: <a href="http://piumarta.com/pepsi/objmodel2.pdf">http://piumarta.com/pepsi/objmodel2.pdf</a>.</li>
+<li>.NET interoperability support</li>
+<li>Build more realistic (than current samples) reference implementations for one or two programming languages</li>
+<li>AST-to-MSIL compilation support. </li>
+<li>Build <i>GrammarData</i> code serializer, so that derived grammar data doesn&#39;t need to be rebuilt from scratch each time the compiler starts. Instead, <i>GrammaData</i> object will be deserialized from code similar to .NET Windows Forms. </li>
+<li>CodeDom and Visual Studio integration support</li></ol>
+</div><div class="ClearBoth"></div>

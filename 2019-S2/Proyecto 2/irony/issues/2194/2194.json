@@ -1,0 +1,71 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Fixed in the latest code drop",
+    "ClosedDate": "2008-09-02T20:59:39.383-07:00",
+    "CommentCount": 5,
+    "Custom": "",
+    "Description": "StringLiterals incorrectly handle strings ending with two escapes:\n\n \"abc\\\\\" [incorrectly reported as an error]\n\nTwo escapes at the end of a string are treated the same as a single escape:\n\n \"abc\\\"  [correctly reported as an error]\n\nThe code searches for the end-of-string, then checks if it was preceded by an escape. If so, it skips this end-of-string, and continues searching.",
+    "LastUpdatedDate": "2008-09-02T20:59:39.383-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2008-05-17T19:22:10.877-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "\"\\\\\" parsed as \"\\\"",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 2194
+  },
+  "FileAttachments": [
+    {
+      "FileId": 210344,
+      "FileName": "new-code.txt",
+      "DownloadUrl": ".\\210344"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Patch ID 1260 has a fix for this bug.",
+      "PostedDate": "2008-05-17T19:24:00.927-07:00",
+      "Id": 29076
+    },
+    {
+      "Message": "Good catch! thanks, will fix it in the next code drop",
+      "PostedDate": "2008-05-18T08:58:03.737-07:00",
+      "Id": 29077
+    },
+    {
+      "Message": "(this is a copy of patch comment - it turns out system removes outlininng so the comment is difficult to read there)\r\n\r\nHi thanks for the fix suggestion. But I'm afraid that does not fix the issue, and here is why. You add the check that symbol before-before the endquote is not a backslash: \r\n\r\n//We found EndSymbol - check if it is escaped; if yes, skip it and continue search \r\n// if (escapeEnabled && source.Text[endPos - 1] == EscapeChar) { //old version \r\nif (escapeEnabled && source.Text[endPos - 1] == EscapeChar && source.Text[endPos - 2] != EscapeChar) { // your fix \r\n    source.Position = endPos + startS.Length; \r\n    continue; //searching for end symbol \r\n}\r\n\r\nbut then it doesn't work if this before-before symbol is escaped itself! For example, the following string: \"abc\\\\\\\"def\" We have 'abc' followed by escaped backslash followed by escaped double-quote followed by 'def'. The code in fixed version would treat double-quote inside as not escaped, while it is. ",
+      "PostedDate": "2008-05-19T09:28:10.82-07:00",
+      "Id": 29078
+    },
+    {
+      "Message": "Good point.\r\n\r\nWell... we could scan back counting the number of consecutive backslashes, and if the number is odd, then the endquote is escaped, otherwise if the backslash count is even, the endquote isn't escaped.\r\n\r\nHow about:\r\n\r\n    //We found EndSymbol - check if it is escaped; if yes, skip it and continue search\r\n    if (escapeEnabled)\r\n    {\r\n      bool endSymbolEscaped = false;\r\n      for (int i = 1; source.Text[endPos - i] == EscapeChar; i++)\r\n        endSymbolEscaped = !endSymbolEscaped;\r\n\r\n      if (endSymbolEscaped)\r\n      {\r\n        source.Position = endPos + startS.Length;\r\n        continue; //searching for end symbol\r\n      }\r\n    }\r\n\r\nInstead of:\r\n\r\n    //We found EndSymbol - check if it is escaped; if yes, skip it and continue search\r\n    if (escapeEnabled && source.Text[endPos - 1] != EscapeChar)\r\n    {\r\n      source.Position = endPos + startS.Length;\r\n      continue; //searching for end symbol\r\n    }\r\n",
+      "PostedDate": "2008-05-23T17:59:22.407-07:00",
+      "Id": 29079
+    },
+    {
+      "Message": "that certainly looks better. I'll play with it and put the fix into next code drop\r\nthanks!\r\nRoman",
+      "PostedDate": "2008-05-27T12:53:35.227-07:00",
+      "Id": 29080
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1086467",
+    "ThreadId": "454951",
+    "Html": "Hey guys. I've created a STEP file (<a href=\"http://en.wikipedia.org/wiki/ISO_10303-21\" rel=\"nofollow\">http://en.wikipedia.org/wiki/ISO_10303-21</a>) grammar with the goal of loading the data into memory for further traversal &amp; analysis. I am having some problems with very large input files and am looking for some suggestions.\r<br />\n<br />\nCurrently, I can successfully get the concrete syntax tree from my smaller input files (tested up to 25 MB, 50k lines). My plan was to traverse the syntax tree to create a lighter tree of STEP entities (hopefully smaller than the input file size), which I would keep in memory for future analysis.\r<br />\n<br />\nI have one input file which is just over 300 MB, 5 million lines. When parsing this file all at once (in my own test code, not Grammar Explorer), the memory usage edges up to 4.5 GB, at which point the memory starts doing a whole bunch of paging, and eventually the program freezes and dies (my PC has 8 GB physical ram). I believe that most of this memory is being used by the concrete syntax tree.\r<br />\n<br />\nMy current plan going forward is to read and parse the file in chunks of 100,000 or so lines. By not creating the whole syntax tree at once, I think I can keep my overall memory usage much lower. Is there a better way to do this, possibly using AST generation and disposing of concrete nodes as I go along? Should I also try to make my own line-by-line StreamReader input scanner?\r<br />\n<br />\nThanks!<br />\n",
+    "PostedDate": "2013-08-29T22:13:54.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1087795",
+    "ThreadId": "454951",
+    "Html": "hi\r<br />\nSorry for delay with response, been busy. I think your best bet is to try catch the generated 'section' node, process it (output to whatever output you do), and prevent these nodes from accumulating in ParserStack.\r<br />\nLet's say you have your grammar structured as STEP file is a collection of 'section' elements (non-terminals). So StepFile non-terminal is a collection of Section non-terminals. Parser's goal is to assemble StepFile, so it accumulates all child section in ParsingContext.ParserStack - that's what keeps growing, and what kills you. You need to hook to Section.Reduced event - this will give you just-parsed section; you process it the way you need it; you cannot tell parser to 'dispose' it right a way, but you can clear up all prevous sections; so your code should look at the ParserStack and pop all previously generated ParseTree nodes for sections. Be careful not to pop the first, bottom node - it needs to be there, it's starting state. This is a brute hack, you're trying to directly mess up the parser's internal data behind its back, hoping it wouldn't notice :) Not very nice, but that's the only option I see there. My guess that should work, try it. \r<br />\nRoman<br />\n",
+    "PostedDate": "2013-09-03T10:19:38.523-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

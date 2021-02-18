@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1248062",
+    "ThreadId": "546145",
+    "Html": "Hi<br />\n<br />\nI've a got a working Sql grammar but now need to be able to parse &quot;ambiguous&quot; expressions. So for example <br />\n<br />\nWHERE name='o'reilly'<br />\nor<br />\nWHERE name='thomas''<br />\n<br />\nI'm not sure of the approach I should be taking to implement this. I was wondering if someone could provide some general guidance. I imagine that I'd need to just accept everything that is to the right of the  &quot;=&quot; into something general which could be evaluated further down the line.<br />\n<br />\nI was thinking of producing my own Terminal to try to capture this ambiguity. Alternatively perhaps I should leave the existing grammar as unambiguous and should the parse fail then delegate to something else more general.<br />\n<br />\nAny suggestions would be gratefully received.<br />\n<br />\nS<br />\n",
+    "PostedDate": "2014-05-21T10:10:07.12-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1248095",
+    "ThreadId": "546145",
+    "Html": "sorry, don't quite get it what ambiguity you mean, and why existing SQL grammar sample does not work for you. Embedded quote? it should be doubled inside strings, according to SQL rules, and everything should work... please explain<br />\n",
+    "PostedDate": "2014-05-21T11:37:28.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1248240",
+    "ThreadId": "546145",
+    "Html": "Roman thx for replying. <br />\n<br />\nThe issue I'm facing is that the system I am working with already has data stored in the above format or permits data to be entered in that format. I need to be be able to parse the expression in order to find those area which do not meet the SQL rules. So rather than the parser throwing out the above expression it allows it to be parsed &quot;successfully&quot;(!) so that I can walk the resulting tree and find out which nodes need to be &quot;cleansed&quot; in order for proper Sql to be generated.<br />\n<br />\nPerhaps I'm not thinking about it in the right way though.<br />\n<br />\nAs I think about it, I guess what you are saying is that rather than parsing &quot;successfully&quot; and returning malformed nodes, the result of the unsuccessful parse would alert me to the ambiguity and I should deal with it at that stage so I just need to make my current parsing process a bit more interactive.<br />\n<br />\nHowever, even going down this route, I'm still a bit unsure as to the best way to to de-construct the original expression so as to find the offending part without parsing. <br />\n<br />\nThx again.<br />\n<br />\nS<br />\n",
+    "PostedDate": "2014-05-21T20:35:44.547-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1248619",
+    "ThreadId": "546145",
+    "Html": "I don't have a clear solution; the problem is the 'detection' algorithm, as in informal description of how to catch and fix these errors. Try to formulate it, and then implement as a custom string literal-like terminal<br />\n",
+    "PostedDate": "2014-05-22T14:39:01.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1248689",
+    "ThreadId": "546145",
+    "Html": "OK. Thx very much Roman<br />\n",
+    "PostedDate": "2014-05-22T20:57:52.003-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

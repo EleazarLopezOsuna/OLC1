@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1025909",
+    "ThreadId": "439201",
+    "Html": "Hello,\r<br />\n<br />\nI'm prototyping a simple DSL to parse Ms-dos like commands. Two specific requirements I want to handle are parsing URL's cases such as:\r<br />\n<br />\nopenWeb <a href=\"http://www.microsoft.com/\" rel=\"nofollow\">http://www.microsoft.com/</a>\r<br />\nopenWeb &quot;<a href=\"http://www.microsoft.com/\" rel=\"nofollow\">http://www.microsoft.com/</a>&quot;\r<br />\ndoThis folder\r<br />\ndoThis &quot;this folder&quot;\r<br />\n<br />\nand also mixed situations, such as:\r<br />\n<br />\nsomeCommand commandParam url\r<br />\nsomeCommand &quot;this command&quot; &quot;<a href=\"http://www.microsoft.com/aaa+bbb\" rel=\"nofollow\">http://www.microsoft.com/aaa+bbb</a>&quot;\r<br />\nsomeCommand a &quot;<a href=\"http://www.microsoft.com/aaa%20bbb\" rel=\"nofollow\">http://www.microsoft.com/aaa%20bbb</a>&quot;\r<br />\n<br />\nObviously, I'd like the AST not to have the strings, if present (although I can remove them while parsing it).\r<br />\n<br />\nAny ideas? note of the examples I've seen support this kind of situation.\r<br />\n<br />\nThanks in advance,\r<br />\n-jota<br />\n",
+    "PostedDate": "2013-04-05T01:15:05.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025930",
+    "ThreadId": "439201",
+    "Html": "Hello,\r<br />\n<br />\nI'm not sure that you really need any AST. For one-liners without complicated parsing rules it's usually better to use manual string parsing. Consider this option.<br />\n",
+    "PostedDate": "2013-04-05T01:54:34.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025939",
+    "ThreadId": "439201",
+    "Html": "To be fully honest, I'm not really looking forward to manually write parsing code. Been there before :)\r<br />\n<br />\nDo you know how I can support the usage of strings parameters I mentioned above? do I have to create regexes for each of the params, which support optional quotes? Is there anything other built in?<br />\n",
+    "PostedDate": "2013-04-05T02:09:50.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025951",
+    "ThreadId": "439201",
+    "Html": "I think you should use something like this:<br />\n<pre><code>parameterList.Rule = MakeStarRule(parameterList, parameter);\nparameter.Rule = StringLiteral | Identifier;</code></pre>\n\nWhere Identifier is IdentifierTerminal. Or you can create Url NonTerminal; maybe there is already something like this comes with Irony, I didn't check.\r<br />\n<br />\nWithin Init() function you can convert your parameters into any required form.<br />\n",
+    "PostedDate": "2013-04-05T02:34:00.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026214",
+    "ThreadId": "439201",
+    "Html": "as for optionally quoted strings - look at sample SQL grammar. Identifier (table or column name) may be optionally quoted in double quotes or square brackets. The trick is to use OutputTerminal property - so all three terminals output the same identifier terminal.<br />\n",
+    "PostedDate": "2013-04-05T09:40:22.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

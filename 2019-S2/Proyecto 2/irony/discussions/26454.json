@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "88489",
+    "ThreadId": "26454",
+    "Html": "\r\nHi Roman, <br /><br />Fantastic and Great project !!<br /><br />1.- Is possible build an EBNF/BNF translator, i.e. from YACC/BISON grammatica To  Rules Irony (C#) ? Exists ?<br />2.- The new DLR framework requires an Lexer/Parser , exists an example the integration with Irony ?<br />3.- an Tutorial of Irony from basic concept to advanced, where? or an reference for help me... blog?<br /><br />Thanks,<br />JM++<br />",
+    "PostedDate": "2008-04-23T06:49:55.123-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "88809",
+    "ThreadId": "26454",
+    "Html": "<i>Fantastic and Great project !!</i><br />Thanks!<br /><br /><i>1.- Is possible build an EBNF/BNF translator, i.e. from YACC/BISON grammatica To  Rules Irony (C#) ? Exists ?</i><br /><br />I guess it is possible to write a formal translator, the only question is what to do with parse actions in YACC grammars? They are kind of quite important, but Irony uses a bit different concept... Although it would be a fancy excercise to write it using Irony itself (by creating Irony grammar for YACC input files)<br /><br /><i>2.- The new DLR framework requires an Lexer/Parser , exists an example the integration with Irony ?</i><br /><br />No, no examples, but it is definitely possible.  I don't have it on my worklist though - lots of other stuff, sorry<br /><br /><i>3.- an Tutorial of Irony from basic concept to advanced, where? or an reference for help me... blog?</i><br /><br />No tutorials sorry. Only samples, and two articles on CodeProject, one is mine about Irony, and the other by D.Flower about JSBasic (there are links on project Home page). I recommend highly JSBasic articles and source - it contains a lot of explanations of some Irony's usage details. Again, my apologies, I know it suxxx - try to follow examples and read comments in source wherever they are available. <br />thanks<br />Roman<br />",
+    "PostedDate": "2008-04-24T10:19:34.64-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1328394",
+    "ThreadId": "573908",
+    "Html": "When escaping characters in string literals in the Expression Evaluator, it seems to be &quot;swallowing&quot; too many characters. Furthermore, I can't fix this by changing StringOptions for the StringLiteral.<br />\n<br />\nI am referring to the ExpressionEvaluator that is part of the dec. 2013 source code download.<br />\n<br />\n<strong>Questions:</strong><br />\n<ol>\n<li>Why does <code>&quot;\\d&quot;</code> evaluate to <code>&quot;d&quot;</code>? I would expect it to either fail or keep the backslash since <em>d</em> is not a valid character to escape.</li>\n<li>\nWhen setting <code>StringOptions</code> for the <code>StringLiteral</code> to <em>only</em> <code>AllowsDoubledQuote</code>, it still allows escaping of characters using backslash. I would have expected it to ignore backslashes in the string literal and instead <em>only</em> allow end quotes to be escaped by doubling them.<br />\n</li>\n</ol>\nIs this a bug? Or is there a simple way to change this behaviour?<br />\n",
+    "PostedDate": "2014-12-03T06:17:19.283-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1329921",
+    "ThreadId": "573908",
+    "Html": "It should, debug into StringLiteral.HandleSpecialEscape code - if there's no match for control char, it should post an error into error details of the token; see why it does not show up<br />\n",
+    "PostedDate": "2014-12-08T13:33:58.637-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1330162",
+    "ThreadId": "573908",
+    "Html": "You are right; it identifies the invalid escape sequence. It reaches the following line:<br />\n<pre><code>details.Error = string.Format(Resources.ErrInvEscape, segment);\n</code></pre>\n\nBut then it just returns, and doesn't seem to use the error details anywhere.<br />\nIf I add a line that examines the <code>Error</code> property and returns <strong>false</strong> in <code>ConvertValue</code>, it seems to fail as expected:<br />\n<pre><code>      if (Escapes.TryGetValue(first, out newFirst))\n        arr[i] = newFirst + s.Substring(1);\n      else {\n        arr[i] = HandleSpecialEscape(arr[i], details);\n        if (!string.IsNullOrEmpty(details.Error)) return false; // &lt;--- ADDED THIS LINE\n      }//else\n    }//for i\n    value = string.Join(string.Empty, arr);\n  }// if EscapeEnabled \n</code></pre>\n\nWould you consider this a correct fix?<br />\n",
+    "PostedDate": "2014-12-09T07:42:43.133-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1330175",
+    "ThreadId": "573908",
+    "Html": "Also, I see now that I misunderstood the use of <code>StringOptions</code>. I can disable backslash-escape sequences by setting <code>NoEscapes</code>. Further, I can enable doubled end quotes by setting <code>AllowsDoubledQuote</code>:<br />\n<pre><code>var stringLit = new StringLiteral(&quot;string&quot;, &quot;\\&quot;&quot;,\n    StringOptions.NoEscapes | StringOptions.AllowsDoubledQuote);\n</code></pre>\n\nThis solves my problem in my second question, and the expression <code>&quot;\\123&quot;</code> now correctly evaluates to <code>\\123</code>.<br />\n",
+    "PostedDate": "2014-12-09T08:16:05.867-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1330197",
+    "ThreadId": "573908",
+    "Html": "I have <a href=\"https://irony.codeplex.com/workitem/9897\" rel=\"nofollow\">opened an issue (#9897)</a> regarding the invalid escape sequence instead of continuing the discussion here.<br />\n",
+    "PostedDate": "2014-12-09T08:59:39.317-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

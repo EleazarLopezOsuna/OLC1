@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "414139",
+    "ThreadId": "203795",
+    "Html": "<p>I'm very interested in Irony, it looks like a really cool tool for implementing DSLs for game scripting. However, I hit a bit of a brick wall last night when testing Irony on my xbox using XNA. When I run the application on the xbox I get a TypeLoadError. I suspect this is because Irony is using something not available on the CF (although I get no build errors, so I can't offer any clues as to what)</p>\r\n<p>What are the chances Irony could be made to run on the compact framework?</p>",
+    "PostedDate": "2010-03-04T06:34:05.8-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "414684",
+    "ThreadId": "203795",
+    "Html": "<p>TypeLoadError - what type cannot be loaded?</p>\r\n<p>Is the compact framework you're talking about is the same as &quot;Silverlight&quot; framework? There's IronySilverlight project which builds special reduced version - can it be what you need?</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-03-05T09:55:15.637-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "414692",
+    "ThreadId": "203795",
+    "Html": "<p>The exact type is not specified, the most information I can give you is the error message:</p>\r\n<p>&nbsp;</p>\r\n<p>An unhandled exception of type 'System.TypeLoadException' occurred in Microsoft.Xna.Framework.Game.dll<br>Additional information: File or assembly name 'System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089', or one of its dependencies, was not found.</p>\r\n<p>&nbsp;</p>\r\n<p>I'm guessing this is because this version of System.Core is not availbe on the compact framework.</p>\r\n<p>&nbsp;</p>\r\n<p>It seems that the compact framework and the silverlight framework are slightly different, but the silverlight version may work on xbox. Unfortunately I can't load the silverlight csproj (file type not supported by this installation). I'm using vs2008 professional,so I'm not sure what that's all about :/</p>\r\n<p>&nbsp;</p>\r\n<p>EDIT:: After messing around a little, I got this to compile and run on xbox. I referenced the xbox 360 versions of System and System.Core, I had to include the HashSet and Stopwatch from the silverlight version, and then strip out everything in the microsoft namespace. I assume that all this had to be done for the silverlight equivalent too?</p>\r\n<p>Is there any chance of adding a compiler conditional XBOX, which would basically do exactly the same as the silverlight one?</p>\r\n<p>Ie, make all #if Silverlight into #if Silverlight | XBOX</p>",
+    "PostedDate": "2010-03-05T10:18:37.377-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "414711",
+    "ThreadId": "203795",
+    "Html": "<p>I think you should find out what are the proper references to system assemblies for your Xbox environment, rebuild Irony with these new references. Explore the documentation, what should be the refs. Similar to IronySL project - it references specific versions of System assembly (and others), the ones that come with Silverlight SDK.</p>",
+    "PostedDate": "2010-03-05T10:56:51.79-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "414723",
+    "ThreadId": "203795",
+    "Html": "<p>The correct references come with the XNA framework, they're not difficult to swap over. The difficult thing is ripping out all the BigNumber and ComplexNumber support, I removed all of that for testing, but of course I want to be able to update from SVN without havint to redo that every time!</p>\r\n<p>Is the stuff in the Microsoft namespace cut out the by silverlight compiler conditionals?</p>",
+    "PostedDate": "2010-03-05T11:32:08.567-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1312248",
+    "ThreadId": "203795",
+    "Html": "@martindevans\r<br />\n<br />\nDo you have a copy of your ripping out of the BigNumber and ComplexNumber support? I would love to see how you did it. I'm in process of doing this so I can use it on the Compact Framework.\r<br />\n<br />\nThanks,\r<br />\nJarvis<br />\n",
+    "PostedDate": "2014-10-10T09:45:37.123-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1312257",
+    "ThreadId": "203795",
+    "Html": "I've just searched through all my old project files but I'm afraid I can't find any old copies of Irony at all - I never pursued this as a way to add scripting to XNA/XBox360 games so it's been lost to various HDD upgrades over time :(\r<br />\n<br />\nFrom what I remember I pretty much just removed all the non CF references and added in the CF equivalents. Then it was just a case of fixing things - mostly by deleting everything to do with the Microsoft.* namespaces that don't exist on CF. Your best bet is probably to take the silverlight version and change the target to the CF, from what I remember of how the CF works that ought to get you most of the way there.<br />\n",
+    "PostedDate": "2014-10-10T10:17:51.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

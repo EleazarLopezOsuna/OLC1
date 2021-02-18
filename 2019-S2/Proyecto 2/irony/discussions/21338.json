@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "71120",
+    "ThreadId": "21338",
+    "Html": "\r\nI have 2 special situations that I am not sure how to handle in my grammer.<br /><br />1.  My grammer allows for quotes to be a part of identifiers.  Which Irony does fine with using:<br /><br /><span class=\"codeInline\" style=\"font-family:Consolas, Courier New, Courier, Monospace;\">Terminal variableName = new IdentifierTerminal(\"name\", \"'\", \"\");</span><br /><br />The problem is if I have a quoted identifier ('Test'), it seems to be treating the last quote as part of the identifier and not the closing quote.  Any ideas on what I might be doing wrong?<br /><br />2. In my grammer comments are inclosed in double quotes(e.g. \"This is a comment\").  The problem with this is strings also are in double quotes.  To determine if it is a string or comment you need to look at what is preceding it.  I am not sure how to handle this with Irony.<br /><br />Here is an example, the first quoted segment is a string and the second is a comment.<br /><br /><span class=\"codeInline\" style=\"font-family:Consolas, Courier New, Courier, Monospace;\">DEFINE U'STATUS(X) \"(*U BITSINWORD*)(REP(!X))\";     \"status to unsigned\"</span><br /><br />",
+    "PostedDate": "2008-01-31T12:24:21.167-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "72411",
+    "ThreadId": "21338",
+    "Html": "\r\nFor #1 I would suggest defining two identifier terminals: normal (IdentifierTerminal) and quoted (based on StringLiteral terminal, with quote as start/end symbols). Then define nonterminal Identifier:<br />Identifier.Rule = NormalIdentifier | QuotedIdentifier;<br /><br />#2: not clear what is the criteria to recognize the second string in your example as comment. Whatever it is, based on my quess, you could recognize all quoted strings as StringLiteral, and then in token filter recognize which are comments and filter them out (or change to comment tokens)<br />",
+    "PostedDate": "2008-02-07T10:10:42.997-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

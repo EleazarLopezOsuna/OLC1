@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1460364",
+    "ThreadId": "650399",
+    "Html": "Hi \r<br />\n<br />\nI have sql clause like &quot;Id = ? And Person.FirstName = ?&quot;\r<br />\nhow can i add ? to grammer<br />\n",
+    "PostedDate": "2016-01-23T14:09:34.957-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1460446",
+    "ThreadId": "650399",
+    "Html": "Just define a new term (ToTerm(&quot;?&quot;)) and add it to term.Rule<br />\n",
+    "PostedDate": "2016-01-24T09:08:19.617-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1460676",
+    "ThreadId": "650399",
+    "Html": "thank you worked<br />\n",
+    "PostedDate": "2016-01-26T01:45:29.21-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1466588",
+    "ThreadId": "652453",
+    "Html": "Hi,\r<br />\n<br />\nI would like to extract conditions from the expression which can be easily represented as restriction object, what would be best way of doing that.\r<br />\n<br />\nEg if age &gt; 50, then disallow, is my expression. I would like to create restriction object with property MaxAge =50 \r<br />\n<br />\nBasically have Restriction object and result object as output from Expression tree, there by giving me flexibility to play with C# object and not worry abt string\r<br />\n<br />\nThanks,\r<br />\nAkhil<br />\n",
+    "PostedDate": "2016-03-11T12:53:50.11-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

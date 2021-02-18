@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "104731",
+    "ThreadId": "31526",
+    "Html": "This is a fantastic library!<br>\r\n<br>\r\nIn CSharpGrammar.cs, in the rule for compilation_unit, it ends with&nbsp;namespace_declarations_opt, which means that the file has to contain a namespace, which isn't true of C#. Should that be&nbsp;namespace_member_declarations instead?\r\n",
+    "PostedDate": "2008-07-15T01:49:39.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "104780",
+    "ThreadId": "31526",
+    "Html": "<br>\r\n<div style=\"border-right:medium none;padding-right:0.2em;border-top:#aaa 0.1em dotted;padding-left:0.2em;padding-bottom:0.2em;margin:1em 0em 2.5em 3em;border-left:medium none;padding-top:0.2em;border-bottom:#aaa 0.1em dotted;font-style:italic\"><br>\r\ndanielearwicker wrote:<br>\r\nThis is a fantastic library!<br>\r\n<br>\r\nIn CSharpGrammar.cs, in the rule for compilation_unit, it ends with&nbsp;namespace_declarations_opt, which means that the file has to contain a namespace, which isn't true of C#. Should that be&nbsp;namespace_member_declarations instead? <br>\r\n<br>\r\n</div>\r\n<br>\r\nthe &quot;_opt&quot; suffix shows that it's optional. look at its rule:<br>\r\n&nbsp; <em>namespace_declarations_opt.Rule = MakeStarRule(namespace_declarations_opt, null, namespace_declaration);</em><br>\r\n<em>MakeStarRule(listNonTerminal, delimiter, listMember)</em> will produce a rule that allows <em>listMember</em> appear zero or more times. <br>\r\n<br>\r\n(unrelated) I think there's a problem in CSharpGrammar's rules for property. C# 3.0 has this new feature called automatically implemented properties, where all you have to write is something like:<br>\r\n<em>public SomeType SomeProperty { get; set; }<br>\r\n</em>With the following rule, the code above won't parse:<br>\r\n<em>accessor_declaration.Rule = attributes_opt + accessor_modifier_opt + accessor_name + block;</em><br>\r\nbecause the rule demands a block following &quot;get&quot; or &quot;set&quot;.<br>\r\nEven before C# 3.0, properties could be virtual, and with this rule&nbsp;those virtual properties will fail to parse too.\r\n",
+    "PostedDate": "2008-07-15T06:11:11.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "104804",
+    "ThreadId": "31526",
+    "Html": "<br>\r\n<div style=\"border-right:medium none;padding-right:0.2em;border-top:#aaa 0.1em dotted;padding-left:0.2em;padding-bottom:0.2em;margin:1em 0em 2.5em 3em;border-left:medium none;padding-top:0.2em;border-bottom:#aaa 0.1em dotted;font-style:italic\"><br>\r\nrednaxela wrote:<br>\r\n<br>\r\n<div style=\"border-right:medium none;padding-right:0.2em;border-top:#aaa 0.1em dotted;padding-left:0.2em;padding-bottom:0.2em;margin:1em 0em 2.5em 3em;border-left:medium none;padding-top:0.2em;border-bottom:#aaa 0.1em dotted;font-style:italic\"><br>\r\ndanielearwicker wrote:<br>\r\nThis is a fantastic library!<br>\r\n<br>\r\nIn CSharpGrammar.cs, in the rule for compilation_unit, it ends with&nbsp;namespace_declarations_opt, which means that the file has to contain a namespace, which isn't true of C#. Should that be&nbsp;namespace_member_declarations instead? <br>\r\n<br>\r\n</div>\r\n<br>\r\nthe &quot;_opt&quot; suffix shows that it's optional. look at its rule:<br>\r\n&nbsp; <em>namespace_declarations_opt.Rule = MakeStarRule(namespace_declarations_opt, null, namespace_declaration);</em><br>\r\n<em>MakeStarRule(listNonTerminal, delimiter, listMember)</em> will produce a rule that allows <em>listMember</em> appear zero or more times. <br>\r\n<br>\r\n<br>\r\n</div>\r\nThe problem is that CSharpGrammar accepts this as a comp. unit:<br>\r\n<br>\r\nnamespace X&nbsp;&nbsp;{ class Y { } }<br>\r\n<br>\r\nBut won't accept this (which is valid C#):<br>\r\n<br>\r\nclass Y { }<br>\r\n<br>\r\nSo&nbsp;I'm guessing that the top level of a comp. unit is like the inside of a namespace (the global namespace).<br>\r\n",
+    "PostedDate": "2008-07-15T07:44:44.87-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "104830",
+    "ThreadId": "31526",
+    "Html": "<br>\r\n<div style=\"border-right:medium none;padding-right:0.2em;border-top:#aaa 0.1em dotted;padding-left:0.2em;padding-bottom:0.2em;margin:1em 0em 2.5em 3em;border-left:medium none;padding-top:0.2em;border-bottom:#aaa 0.1em dotted;font-style:italic\"><br>\r\ndanielearwicker wrote:<br>\r\nThe problem is that CSharpGrammar accepts this as a comp. unit:<br>\r\n<br>\r\nnamespace X&nbsp;&nbsp;{ class Y { } }<br>\r\n<br>\r\nBut won't accept this (which is valid C#):<br>\r\n<br>\r\nclass Y { }<br>\r\n<br>\r\nSo&nbsp;I'm guessing that the top level of a comp. unit is like the inside of a namespace (the global namespace).<br>\r\n<br>\r\n<br>\r\n</div>\r\n<p>Ah, I get the point.<br>\r\nYep, that's a flaw in the grammar file. I noticed that too, but it was quite some time ago, and I just forgot about it.<br>\r\n<br>\r\nIn the spec, it goes like:<br>\r\n<br>\r\n<span style=\"font-size:11pt;font-family:'Times New Roman','serif'\"><strong>compilation-unit</strong>:<br>\r\n<em>extern-alias-directives&lt;SUB&gt;opt&lt;/SUB&gt;&nbsp;&nbsp; using-directives&lt;SUB&gt;opt&lt;/SUB&gt;&nbsp; global-attributes&lt;SUB&gt;opt&lt;/SUB&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; namespace-member-declarations&lt;SUB&gt;opt&lt;/SUB&gt;<br>\r\n<br>\r\n</em><strong>namespace-member-declarations</strong>:<br>\r\n<em>namespace-member-declaration<br>\r\nnamespace-member-declarations namespace-member-declaration<br>\r\n<br>\r\n</em><strong>namespace-member-declaration</strong>:<br>\r\n<em>namespace-declaration<br>\r\ntype-declaration<br>\r\n<br>\r\n</em>Compare that to the grammar file:<br>\r\n<em>&nbsp;&nbsp;&nbsp; &nbsp; compilation_unit.Rule = extern_alias_directives_opt + using_directives_opt + attributes_opt + namespace_declarations_opt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; namespace_declaration.Rule = &quot;namespace&quot; + qualified_identifier + namespace_body + semi_opt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; namespace_member_declaration.Rule = namespace_declaration | type_declaration;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; namespace_member_declarations.Rule = MakePlusRule(namespace_member_declarations, null, namespace_member_declaration);</em><br>\r\n<br>\r\nSo, I think the solution would be&nbsp;modifying&nbsp;<em>namespace_declarations_opt.Rule</em> to have <em>namespace_member_declarations</em> as the third argument to the call to MakeStarRule(), and then renaming&nbsp;<em>namespace_declarations_opt</em> to&nbsp;<em>namespace_member_declarations_opt</em>.<br>\r\n<br>\r\nWell, that introduces a few more S-R conflicts, though.</span></p>\r\n",
+    "PostedDate": "2008-07-15T09:21:04.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "104852",
+    "ThreadId": "31526",
+    "Html": "<p>Hi</p>\r\n<p>Thanks for the comments - these are all valid points.&nbsp;Remember that this grammar is just a sample. Care to make it real? You're welcome to do it!</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2008-07-15T10:36:05.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

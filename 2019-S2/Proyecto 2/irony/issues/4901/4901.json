@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "No longer happens after refactoring",
+    "ClosedDate": "2009-11-08T23:05:34.44-08:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "When evaluating unary operators the second argument in the context should be set to null.\n\nI declared a call dispatcher for a unary operator \"not\" just for booleans and I kept getting that it was not defined for System.String because there was a reminder string in the second argument from the context from the previous evaluation.",
+    "LastUpdatedDate": "2009-11-08T23:05:34.44-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-07-09T08:14:19.553-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Unary operator evaluation",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 4901
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "*remainder",
+      "PostedDate": "2009-07-09T08:15:25.46-07:00",
+      "Id": 29131
+    },
+    {
+      "Message": "Will look into this. thanks for catching and reporting. Will fix it when I come to reimplementing runtime in latest source version. ",
+      "PostedDate": "2009-07-09T16:14:20.58-07:00",
+      "Id": 29132
+    }
+  ]
+}

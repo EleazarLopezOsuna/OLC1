@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1105934",
+    "ThreadId": "461759",
+    "Html": "Hi there,\r<br />\n<br />\nI am using SQLGrammar to parse sql statements. My goal is to add where clauses to the original statement. After parsing successfully the original sql, how can i add new parsetree nodes?\r<br />\n<br />\nRegards,\r<br />\nc3f8<br />\n",
+    "PostedDate": "2013-10-10T04:04:17.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1106091",
+    "ThreadId": "461759",
+    "Html": "you just take the result parse tree, search for &quot;WHERE&quot; node and modify the tree (add/remove children) the way you want. Look at the code that 'displays' the tree in the treeView in Grammar Explorer - it is very simple to iterate; and to modify it is not a problem - all child lists are open for add/remove<br />\n",
+    "PostedDate": "2013-10-10T09:56:30.47-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1106095",
+    "ThreadId": "461759",
+    "Html": "Thanks for the help.\r<br />\n<br />\nRegards.<br />\n",
+    "PostedDate": "2013-10-10T10:01:27.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1106336",
+    "ThreadId": "461759",
+    "Html": "Hi again,\r<br />\n<br />\nIs there any tutorial for the operation i want to do?\r<br />\n<br />\nMy problem now is what i need to create, a new Token?\r<br />\n<br />\nCan you please tell me where i can search for &quot;examples&quot;? \r<br />\n<br />\nRegards<br />\n",
+    "PostedDate": "2013-10-11T02:30:35.033-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1107792",
+    "ThreadId": "461759",
+    "Html": "I don't think there're any examples or tutorials, but basically, you're free to do what you want, construct nodes with terminals/nonterminals inside, using available constructors. Once parsing is done, Irony parser produces the tree and you can do whatever you want there. <br />\n",
+    "PostedDate": "2013-10-15T10:12:47.243-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

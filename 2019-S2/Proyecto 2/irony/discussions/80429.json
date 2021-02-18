@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "275675",
+    "ThreadId": "80429",
+    "Html": "<p>Hi,</p>\r\n<p>I am new to Irony, and I am working on an Irony-aware syntaxs coloring text editor for the target language. Is it possible to have better error desriptions when the parser finds an unexpected token? I would like if the error tells not only that an unexpected token was found, but also what tokens are acceptable at the errors place.</p>\r\n<p>Jorge</p>",
+    "PostedDate": "2010-01-11T06:22:38.333-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "275791",
+    "ThreadId": "80429",
+    "Html": "<p>Do you mean &quot;Unexpected symbol&quot; error - when SCANNER cannot produce token? Because for &quot;unexpected token&quot; error (when token is there but it is not expected),&nbsp;the parser does show&nbsp;the list of expected tokens. If yes, that's what you mean - good point, I'll put it on my to-do list and try to put it into the next code drop</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-01-11T10:35:56.847-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "275912",
+    "ThreadId": "80429",
+    "Html": "<p>I stand corrected. I mean &quot;Unexpected symbol&quot;.</p>\r\n<p>The parser is so fast, that it made sense in the editor to put a timer that every couple of seconds parse the text and push a display of the parseTree. But if the programmer is in the middle of typing, then the scanner will not be able to produce a token. I will be helpful to tell back the list of possible tokens.</p>\r\n<p>By the way, another question. How stable do you feel is the API?</p>\r\n<p>Jorge.</p>",
+    "PostedDate": "2010-01-11T15:12:05.173-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277230",
+    "ThreadId": "80429",
+    "Html": "<p>The API for parser&nbsp;is relatively&nbsp;stable, I would try to change it only by adding overloads or extras so it won't break old code. But there are a few breaking changes coming in the next code drop. The API interpreter and runtime will change for sure</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-14T10:12:11.757-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277283",
+    "ThreadId": "80429",
+    "Html": "<p>Cool.</p>\r\n<p>Another question... Are the interpreter, runtime and parser in separate dlls? I have not check, and it does not makes sense to have to use a dll that contains things that are not being used.</p>\r\n<p>&nbsp;</p>\r\n<p>BTW. Thank you for such great product, I feel that it really pushes the edge in parser technology. I can only imagine the amount of time and dedication that this project takes.</p>\r\n<p>Jorge.</p>",
+    "PostedDate": "2010-01-14T12:12:48.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277345",
+    "ThreadId": "80429",
+    "Html": "<p>Thanks!</p>\r\n<p>answering&nbsp;the question - it's all in one DLL</p>",
+    "PostedDate": "2010-01-14T14:27:07.857-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

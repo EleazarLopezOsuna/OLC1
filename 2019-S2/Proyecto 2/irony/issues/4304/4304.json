@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T11:42:46.85-07:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "Hello!\n\nI like debugging, and went thru your code.. and what this?\n\n        [global::System.Configuration.DefaultSettingValueAttribute(\"<Grammars><Grammar Caption=\\\"Scheme\\\" Location=\\\"C:\\\\Users\\\\v-roivan\\\\_Irony\\\\Source_onC\" +\n            \"odePlex\\\\Irony.Samples\\\\bin\\\\Debug\\\\Irony.Samples.dll\\\" TypeName=\\\"Irony.Samples.Schem\" +\n            \"e.SchemeGrammar\\\"/></Grammars>\")]\n\noops, your user name :P\nIt's making an exception in line 64 of GrammarItemList.cs\n\nWhat were you intending with this setting?, I bet it's for debbugin so I wrapped public Grammar CreateGrammar() with a try catch but your user name is not beuty there, still the try catch is needed, I made it return null in case of catching and added if (grammar == null) return; on fmGrammarExplorer.cs line 242.\n\nThat's all at the moment [I set 001 in the title for a reason]\n\nAlfonso J. Ramos",
+    "LastUpdatedDate": "2010-03-26T11:42:46.85-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-04-24T01:02:39.377-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Code in PREVIEW 001",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 4304
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Added [DebuggerStepThrough()] to line 172 of RichTextBoxHighlighter.cs, you'll know why when you see where is that :P",
+      "PostedDate": "2009-04-24T01:26:53.123-07:00",
+      "Id": 29119
+    },
+    {
+      "Message": "To Theraot - looks like this WndProc override is not needed, just commented it out, everything works fine without it",
+      "PostedDate": "2009-04-24T06:54:39.35-07:00",
+      "Id": 29120
+    },
+    {
+      "Message": "Also cleaned up this DefaultSetting value, it's not needed",
+      "PostedDate": "2009-04-24T06:55:31.023-07:00",
+      "Id": 29121
+    }
+  ]
+}

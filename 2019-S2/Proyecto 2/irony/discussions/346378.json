@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "801893",
+    "ThreadId": "346378",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>with this grammar</p>\r\n<p>this.Root = program;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>program.Rule = declarations &#43; blocks&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>|declarations&#43;operations;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>declarations.Rule = MakePlusRule(declarations, declaration);&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>declaration.Rule = declarationArray|declarationVariable;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>declarationVariable.Rule = identifier &#43; ToTerm(&quot;:&quot;) &#43; variableType &#43; semi;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>declarationArray.Rule = identifier &#43; &quot;:&quot; &#43; &quot;an&quot; &#43; &quot;array&quot; &#43; &quot;of&quot; &#43; identifier &#43; semi; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>variableType.Rule = number;</p>\r\n<p>I get an error in the class AstBuilder in the function&nbsp;public virtual void BuildAst(ParseTreeNode parseNode) in line 96</p>\r\n",
+    "PostedDate": "2012-02-27T03:17:07.747-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "802104",
+    "ThreadId": "346378",
+    "Html": "<p>read the last few posts in this thread:</p>\r\n<p><a href=\"http://irony.codeplex.com/discussions/297918\">http://irony.codeplex.com/discussions/297918</a></p>\r\n<p>I think you have the same problem</p>",
+    "PostedDate": "2012-02-27T09:22:00.033-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

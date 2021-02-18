@@ -1,0 +1,23 @@
+<div class="wikidoc"><b>Demo instructions</b>
+<ul><li>If you are interested in Silverlight version of Irony, make sure you install Silverlight tools before you open Irony solution - see instructions below.</li>
+<li>Open Irony_All.sln solution file in Visual Studio.</li>
+<li>If you are not interested in Silverlight development, remove the project &quot;100.IronySilverlight&quot; from the solution. </li>
+<li>Right-click on the project &quot;030.Irony.GrammarExplorer&quot; and select &quot;Set as StartUp project&quot; from the context menu.</li>
+<li>Click Run button on toolbar (F5). Grammar Explorer Window opens.</li>
+<li><b>Important: if you are launching the Grammar Explorer for the first time after downloading Irony and if you see that Grammars combobox is not empty, then clear it: click on the button next to the combobox and select &quot;Remove all&quot;</b></li>
+<li>If the Grammar combobox on top is empty, click on the button next to it (or right-click the combobox) and select &quot;Add grammar&quot; command. In the file-open window that appears, navigate to (root)\Irony.Samples\bin\debug folder and select Irony.Samples.dll. Application will popup a small window with a list of grammars in selected assembly. Leave all lines checked and click &quot;OK&quot;. The newly added grammars will appear in the grammar combobox.  </li>
+<li>Select a grammar (language) in top combo-box. If you see exception window with error popping up, then go back to previous step and remove all old grammars by selecting &quot;Remove all&quot; command.</li>
+<li>Browse form tabs to see grammar data. </li>
+<li>To parse source code sample, switch to &quot;Test&quot; tab. Click &quot;Load...&quot; button on top of the form. Open file dialog opens.</li>
+<li>Navigate to &lt;root&gt;\Irony.Samples\SourceSamples folder. Select source file appropriate for currently selected grammar. </li>
+<li>Source file contents are loaded into text area in the form. Click Parse button on top of the form. </li>
+<li>The Output Syntax Tree control on the right (in Results tab in the right tab control) would contain a parsed syntax tree.</li>
+<li>If button &quot;Run&quot; is enabled, click it to execute the code. The results are shown in the Output window at the bottom of the form. For Expression Evaluator grammar, the output is the result of the last expression or assignment. Interpreter for Scheme can execute more complex programs found in SourceSamples\Scheme subfolder.  </li>
+<li>Alternatively you can paste or type your own sample program into source text area. </li>
+<li>Repeat for other selections in the Grammar combobox.</li></ul>
+Note that Grammar Explorer restores your last language selection and source sample after you close/restart the form. <br /><br /><b>Installing Silverlight tools</b>
+<ul><li>If you are going to use Team Foundation Server Client, install it from here: </li></ul>
+  http://www.microsoft.com/downloads/details.aspx?displaylang=en&amp;FamilyID=0ed12659-3d41-4420-bbb0-a46e51bfca86
+<ul><li>Install Visual Studio 2010</li>
+<li>Install Silverlight 4 Tools (from <a href="http://www.microsoft.com/download/en/details.aspx?id=18149">http://www.microsoft.com/download/en/details.aspx?id=18149</a>)</li></ul>
+<br /><br /></div><div class="ClearBoth"></div>

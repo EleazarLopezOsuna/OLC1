@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1076240",
+    "ThreadId": "452296",
+    "Html": "Is it possible to match a range of numbers. Currently, I am doing it like a NonTerminal where I am matching it using a string. But a number literal would be really convenient to use.<br />\n",
+    "PostedDate": "2013-08-02T23:46:41.363-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1076250",
+    "ThreadId": "452296",
+    "Html": "hook to ValidateToken event and check the value - if out of range, add error to output (there's method in parsing context/even args)<br />\n",
+    "PostedDate": "2013-08-03T00:25:20.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1076251",
+    "ThreadId": "452296",
+    "Html": "Thanks :)<br />\n",
+    "PostedDate": "2013-08-03T00:32:04.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

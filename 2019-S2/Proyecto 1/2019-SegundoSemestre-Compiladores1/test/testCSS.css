@@ -1,0 +1,23 @@
+panel
+{
+ border: true;
+ border-color: rgb(#333333, green, blue);
+ border-width: 2;
+ font: 'Arial';
+ font-size: 10;
+ font-color: #451248;
+ hight: 50;
+ width: 80;
+}
+.panelInput /*Sub estilo 1*/
+{
+ background: blue;
+}
+.panelOutput /*Sub estilo 2*/
+{
+ background: rgb(red, green, blue);
+}
+.Auxiliar //Sub estilo 3
+{
+ background: #ff7709;
+}

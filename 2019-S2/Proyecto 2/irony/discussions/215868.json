@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "454953",
+    "ThreadId": "215868",
+    "Html": "<p>I just found this project and downloaded it.&nbsp; One glance through the source code and I am immediately impressed.&nbsp; I've been looking for something like this for years.&nbsp; I've also been looking at the Gardens Point Parser Generator, but I really love the idea of being able to build the grammar directly in C#.&nbsp; The generic, grammar-independent ScriptInterpreter class is also a much welcomed part of the toolkit that you typically don't find in other compiler construction frameworks.&nbsp; I'm looking to add some runtime scripting capabilities to my app, and this project looks like just the ticket to do it with.&nbsp; And then there's the Grammar Explorer.&nbsp; Awesome.</p>",
+    "PostedDate": "2010-06-13T10:36:32.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

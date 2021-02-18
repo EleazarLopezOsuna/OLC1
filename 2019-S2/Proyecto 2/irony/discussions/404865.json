@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "948250",
+    "ThreadId": "404865",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>&nbsp;</p>\r\n<p>I need a hint how to manage what is known as &quot;typedef parsing&quot; problem.</p>\r\n<p>I write a grammar for c language, only for the declaration part. I found this</p>\r\n<p>grammar:</p>\r\n<p>http://www.lysator.liu.se/c/ANSI-C-grammar-y.html</p>\r\n<p>&nbsp;</p>\r\n<p>for lex/yacc and I traslate for Irony.</p>\r\n<p>&nbsp;</p>\r\n<p>The problem is with the non terminal type_specifier</p>\r\n<p>&nbsp;</p>\r\n<p>type_specifier</p>\r\n<p style=\"padding-left:90px\">: VOID</p>\r\n<p style=\"padding-left:90px\">| CHAR</p>\r\n<p style=\"padding-left:90px\">| SHORT</p>\r\n<p style=\"padding-left:90px\">| INT</p>\r\n<p style=\"padding-left:90px\">| LONG</p>\r\n<p style=\"padding-left:90px\">| FLOAT</p>\r\n<p style=\"padding-left:90px\">| DOUBLE</p>\r\n<p style=\"padding-left:90px\">| SIGNED</p>\r\n<p style=\"padding-left:90px\">| UNSIGNED</p>\r\n<p style=\"padding-left:90px\">| struct_or_union_specifier</p>\r\n<p style=\"padding-left:90px\">| enum_specifier</p>\r\n<p style=\"padding-left:90px\">| <strong>TYPE_NAME</strong></p>\r\n<p style=\"padding-left:90px\">&nbsp;</p>\r\n<p>&nbsp;the last token TYPE_NAMEis managed in yacc with a little c function:</p>\r\n<p>&nbsp;</p>\r\n<p>int check_type()</p>\r\n<p>{</p>\r\n<p>/*</p>\r\n<p>* pseudo code --- this is what it should check</p>\r\n<p>*</p>\r\n<p>* if (yytext == type_name)</p>\r\n<p>* return(TYPE_NAME);</p>\r\n<p>*</p>\r\n<p>* return(IDENTIFIER);</p>\r\n<p>*/</p>\r\n<p>&nbsp;</p>\r\n<p>/*</p>\r\n<p>* it actually will only return IDENTIFIER</p>\r\n<p>*/</p>\r\n<p>&nbsp;</p>\r\n<p>return(IDENTIFIER);</p>\r\n<p>}</p>\r\n<p>&nbsp;the function return that an identifier is a type_name if it is found in a symbol table.</p>\r\n<p>&nbsp;</p>\r\n<p>So, my question is:</p>\r\n<p>&nbsp;</p>\r\n<p>- What is the best way to manage in Irony the population of a symbol table during parsing?</p>\r\n<p>- How can i use that symbol table to &quot;trasform&quot; a token from identifier to type_name ?</p>\r\n<p>&nbsp;For sake of clarity: sample code c</p>\r\n<p>&nbsp;</p>\r\n<p>typedef int MYINT; // here MYINT is an identifier; after I put it in the symbol table</p>\r\n<p>void f( MYINT aa); // here MYINT is a type_name; i have to translate a identifier token to type_name</p>\r\n<p>&nbsp;</p>\r\n<p>TIA</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p><br>\r\n<br>\r\n</p>\r\n",
+    "PostedDate": "2012-11-28T04:24:52.463-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "949115",
+    "ThreadId": "404865",
+    "Html": "\r\n<p>I would advise not to do this - do not try to catch typename/identifier difference during parsing. Recognizing certain names as types vs functions or structs or variable - this is in fact semantics of the language, the product of semantic analysis, and parser\r\n is doing syntax. This better be done after you parsed the file and have all program elements available in the parse tree.</p>\r\n<p>Historically, for c and alike languages, the compilers were built in single-pass manner, because machines in 70s did not have enough memory to retain parse tree/AST tree in memory along with other stuff, so they had to do everything in one pass.&nbsp;This is\r\n quite a challenge, and it will add significantly to complexity of your solution, reducing maintainability. There is no need to do this anymore. So treat everything as identifier, produce the parse tree, then work with parse tree (using visitor/iterator) and\r\n build all the symbol tables.</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2012-11-29T09:29:47.017-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "949367",
+    "ThreadId": "404865",
+    "Html": "\r\n<p>Thank you Roman,&nbsp;</p>\r\n<p>I try to apply your advice. I think I have to modify the grammar I found.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-11-29T23:28:06.33-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

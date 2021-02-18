@@ -1,0 +1,67 @@
+
+/*
+	Defino las claves que va a tener el archivo de datos
+*/
+claves = [
+			"IdProducto" // Tipo = Numerico
+			,"NombreProducto"	// Tipo = Cadena
+			,"Proveedor"	// Tipo = Cadena
+			,"Categoría"	// Tipo = Cadena
+			,"CantidadPorUnidad"	// Tipo = Cadena
+			,"PrecioUnidad"	// Tipo = Numerico
+			,"UnidadesEnExistencia"	// Tipo = Numerico
+			,"Suspendido"	// Tipo = Cadena
+		]
+
+
+/*
+	Defino todos los registros que va a tener el archivo de datos
+*/
+
+registros = 
+
+[
+
+{ 1, "Té Dharamsala", "Exotic Liquids", "Bebidas", "10 cajas x 20 bolsas", 18,39, "FALSO" }
+
+{ 2, "Cerveza tibetana Barley", "Exotic Liquids", "Bebidas", "24 - bot. 12 l", 19,17, "FALSO" }
+
+{ 3, "Sirope de regaliz", "Exotic Liquids", "Condimentos", "12 - bot. 550 ml", 10,13, "FALSO" }
+
+{ 4, "Especias Cajun del chef Anton", "New Orleans Cajun Delights", "Condimentos", "48 - frascos 6 l", 22,53, "FALSO" }
+
+{ 5, "Mezcla Gumbo del chef Anton", "New Orleans Cajun Delights", "Condimentos", "36 cajas", 21.35,0, "VERDADERO" }
+
+{ 6, "Mermelada de grosellas de la abuela", "Grandma Kelly's Homestead", "Condimentos", "12 - frascos 8 l", 25,120, "FALSO" }
+
+{ 7, "Peras secas orgánicas del tío Bob", "Grandma Kelly's Homestead", "Frutas/Verduras", "12 - paq. 1 kg", 30,15, "FALSO" }
+
+{ 8, "Salsa de arándanos Northwoods", "Grandma Kelly's Homestead", "Condimentos", "12 - frascos 12 l", 40,6, "FALSO" }
+
+{ 9, "Buey Mishi Kobe", "Tokyo Traders", "Carnes", "18 - paq. 500 g", 97,29, "VERDADERO" }
+
+{ 10, "Pez espada", "Tokyo Traders", "Pescado/Marisco", "12 - frascos 200 ml", 31,31, "FALSO" }
+
+{ 11, "Queso Cabrales", "Cooperativa de Quesos 'Las Cabras'", "Lácteos", "paq. 1 kg", 21,22, "FALSO" }
+
+{ 12, "Queso Manchego La Pastora", "Cooperativa de Quesos 'Las Cabras'", "Lácteos", "10 - paq. 500 g", 38,86, "FALSO" }
+
+{ 13, "Algas Konbu", "Mayumi's", "Pescado/Marisco", "caja 2 kg", 6,24, "FALSO" }
+
+{ 14, "Cuajada de judías", "Mayumi's", "Frutas/Verduras", "40 - paq. 100 g", 23.25,35, "FALSO" }
+
+{ 15, "Salsa de soja baja en sodio", "Mayumi's", "Condimentos", "24 - bot. 250 ml", 15.5,39, "FALSO" }
+
+{ 16, "Postre de merengue Pavlova", "Pavlova, Ltd.", "Repostería", "32 - cajas 500 g", 17.45,29, "FALSO" }
+
+{ 17, "Cordero Alice Springs", "Pavlova, Ltd.", "Carnes", "20 - latas 1 kg", 39,0, "VERDADERO" }
+
+{ 18, "Langostinos tigre Carnarvon", "Pavlova, Ltd.", "Pescado/Marisco", "paq. 16 kg", 62.5,42, "FALSO" }
+
+{ 19, "Pastas de té de chocolate", "Specialty Biscuits, Ltd.", "Repostería", "10 cajas x 12 piezas", 9.2,25, "FALSO" }
+
+{ 20, "Mermelada de Sir Rodney's", "Specialty Biscuits, Ltd.", "Repostería", "30 cajas regalo", 81,40, "FALSO" }
+
+
+
+]

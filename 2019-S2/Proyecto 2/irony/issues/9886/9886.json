@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2013-09-24T13:33:39.99-07:00",
+    "CommentCount": 3,
+    "Custom": null,
+    "Description": "\r\nI just downloaded 'Irony_2013_09_03'  and it seem it is missing the files under: \r\nIrony\\Parsing\\_new\\NewScanner (_parrialDefs.cs, NewScanner.cs, SourceSegments.cs and TerminalLookupByPrefix.cs), also GlrParser.cs at the same level of the NewScanner folder.\r\n\r\nAm I the only one with this problem?\r\n\r\nThanks,\r\n\r\nArmando ",
+    "LastUpdatedDate": "2013-09-24T13:33:39.99-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2013-09-24T12:40:52.893-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "'Irony_2013_09_03' Missing files in 'NewScanner' directory",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9886
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "oh, shoot.. these are new, research/design phase things, they are not supposed to be there. Just delete the whole _new folder, it should compile without it.\nSorry for trouble, I will fix the zip asap\n",
+      "PostedDate": "2013-09-24T13:18:58.813-07:00",
+      "Id": 115532
+    },
+    {
+      "Message": "Indeed, I compared the vs2010 solution with the vs2012 and I noticed that the _new folder was not in there so I removed it and things look better. \n\nThanks for the prompt reply!",
+      "PostedDate": "2013-09-24T13:25:05.85-07:00",
+      "Id": 115533
+    },
+    {
+      "Message": "fixed",
+      "PostedDate": "2013-09-24T13:33:28.587-07:00",
+      "Id": 115534
+    }
+  ]
+}

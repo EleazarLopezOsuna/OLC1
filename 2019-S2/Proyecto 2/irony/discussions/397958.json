@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "921562",
+    "ThreadId": "397958",
+    "Html": "\r\n<p>Is the Parser caching terminals of an Enum type? I have two of these that occur frequently, and their position is always reported at the end fo the file. As well, they all report their value as the last occurrence of their type when building the AST tree.</p>\r\n",
+    "PostedDate": "2012-10-03T15:39:35.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "921628",
+    "ThreadId": "397958",
+    "Html": "\r\n<p>I got it!</p>\r\n<p>My AstNodeCreator was passing the same parent in for each child type, instead of for each child instance.</p>\r\n",
+    "PostedDate": "2012-10-03T20:29:09.37-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

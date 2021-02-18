@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "456848",
+    "ThreadId": "216412",
+    "Html": "<p>New to Irony. I hope this will be an easy one for veterans to answer.</p>\r\n<p>My grammar looks like this:</p>\r\n<pre>            var questionnaire = new NonTerminal(&quot;questionnaire&quot;);\r\n            var questions = new NonTerminal(&quot;questions&quot;);\r\n            var question = new NonTerminal(&quot;question&quot;);\r\n            var text = new NonTerminal(&quot;text&quot;);\r\n            var type = new NonTerminal(&quot;type&quot;);\r\n            var choices = new NonTerminal(&quot;choices&quot;);\r\n            var choiceList = new NonTerminal(&quot;choicelist&quot;);\r\n            var choice = new NonTerminal(&quot;choice&quot;);\r\n\r\n            var id = new IdentifierTerminal(&quot;id&quot;, &quot; &quot;, &quot;0123456789&quot;);\r\n            var value = new IdentifierTerminal(&quot;value&quot;, &quot; ?!&amp;(),.&quot;, &quot;0123456789&quot;);\r\n\r\n            var startQuestionnaire = ToTerm(&quot;Questionnaire:&quot;);\r\n            var startQuestion = ToTerm(&quot;Question:&quot;);\r\n            var startText = ToTerm(&quot;Text:&quot;);\r\n            var startType = ToTerm(&quot;Type:&quot;);\r\n            var startChoices = ToTerm(&quot;Choices:&quot;);\r\n            var separator = ToTerm(&quot;:&quot;);\r\n\r\n            startQuestion.Priority = 100;\r\n\r\n            questionnaire.Rule = startQuestionnaire + id + questions;\r\n            questions.Rule = MakeStarRule(questions, question);\r\n\r\n            question.Rule = startQuestion + id + text + type + choices;\r\n            text.Rule = startText + value;\r\n            type.Rule = startType + value;\r\n\r\n            choices.Rule = (startChoices + choiceList) | Empty;\r\n            choiceList.Rule = MakePlusRule(choiceList, null, choice);\r\n            choice.Rule = id + separator + value;\r\n<br>Example input...</pre>\r\n<p>Questionnaire: Holy Grail</p>\r\n<pre> Question: Your Name<br>  Text: What is your name?<br>  Type: Text<br><br> Question: Favourite Colour<br>  Text: What is your favourite colour?<br>  Type: Radio<br>  Choices:<br>   FF0000: Red<br>   FFFF00: Yellow<br>   0000FF: Red! No! Blue!<br><br> Question: Air Speed<br>  Text: What is the air speed of an unladen swallow?<br>  Type: Number<br><br></pre>\r\n<p>My problem is that the choice rule is matching more than it should, so my parser thinks that &quot;Question: Air Speed&quot; is a choice when it should actually be a new question.<br>I have tried every permutation of raising and lowering priorities and precedences that I can think of.</p>\r\n<p>&nbsp;</p>\r\n<p>What am I missing?</p>\r\n<p>Thanks in advance,</p>\r\n<p>Kevin</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-17T10:38:10.21-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "456856",
+    "ThreadId": "216412",
+    "Html": "<p>Setting priorities on keywords (created by ToTerm) &nbsp;does not work currently, it is a bug, will be fixed. So instead lower the priority of &quot;id&quot; element:</p>\r\n<p>id.Priority = Terminal.LowestPriority;</p>\r\n<p>On another note: do not use IdentifierTerminal for &quot;value&quot;, this is a bit improper use, use FreeTextLiteral instead. Use NewLine terminal explicitly as list separator in MakePlus/StarRule calls.&nbsp;</p>",
+    "PostedDate": "2010-06-17T10:52:47.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "456863",
+    "ThreadId": "216412",
+    "Html": "<p>another suggestion - do not declare all these keyword terms explicitly with ToTerm(), use string literals in grammar rules directly. That makes grammar shorter and in fact easier to read. It's worth doing it only when you use a keyword in multiple places</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-17T11:08:32.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "456915",
+    "ThreadId": "216412",
+    "Html": "<p>That worked! Thanks!</p>\r\n<p>I added all the ToTerm() calls when I was trying to mess with the priority. I can back them out now. Thanks for the pointer on the FreeTextLiteral - I had not seen that.</p>\r\n<p>I am loving Irony so far. It's a joy to use.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-17T13:10:52.06-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

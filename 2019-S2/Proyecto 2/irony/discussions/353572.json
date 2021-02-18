@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "828513",
+    "ThreadId": "353572",
+    "Html": "\r\n<p>I'm developing a game on xbox 360 using xna. I would like to use Irony but I'm running into problems because the&nbsp;.NET Compact Framework for Xbox 360 doesn't support the&nbsp;System.Numerics namespace. Is there anyway to work around this issue?</p>\r\n",
+    "PostedDate": "2012-04-25T10:07:05.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "828982",
+    "ThreadId": "353572",
+    "Html": "<p>that shouldn't be that hard, Numerics are used only for BigIntegers, so just carefully remove all references to this class (in your custom build)</p>",
+    "PostedDate": "2012-04-26T09:28:26.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "829020",
+    "ThreadId": "353572",
+    "Html": "<p>Another suggestion is to create a custom Compiler Directive. Then with this directive, if it's to be compiled for the Compact Framework, you could use the Mono implementation of the System.Numerics assembly or a custom built one, else use System.Numerics from the .NET Framework.</p>\r\n<p>Just a thought - as I've seen this approach taken for other projects targeting things such as SilverLight.</p>",
+    "PostedDate": "2012-04-26T10:57:30.443-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "829403",
+    "ThreadId": "353572",
+    "Html": "<blockquote style=\"border: solid .1em #ccc; font-style: italic; margin: .25em 1em 0 1em; padding: 0 .25em 0 .25em;\"><strong>rivantsov wrote:</strong><br />\r\n<p>that shouldn't be that hard, Numerics are used only for BigIntegers, so just carefully remove all references to this class (in your custom build)</p>\r\n</blockquote>\r\n<p>Thanks, I'll try this first. I really don't need BigIntegers. Hopefully I won't blow up anything...</p>",
+    "PostedDate": "2012-04-27T08:15:16.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1312249",
+    "ThreadId": "353572",
+    "Html": "@clashfan, How did you fare? I'm attempting to remove the support for BigIntegers and Complex numbers...\r<br />\n<br />\nThough I might look into a silverlight project to see how they did what @MindCore suggested.\r<br />\n<br />\nThanks,\r<br />\nJarvis<br />\n",
+    "PostedDate": "2014-10-10T09:47:46.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

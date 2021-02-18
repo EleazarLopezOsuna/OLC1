@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1135397",
+    "ThreadId": "473469",
+    "Html": "Hi,\r<br />\n<br />\nI am trying to get a small grammar syntax working:<br />\n<pre><code>RegexBasedTerminal ruleStringLiteral = new RegexBasedTerminal(&quot;RuleString&quot;, &quot;'[A-Z]+'&quot;);\n            RegexBasedTerminal rulePropertyLiteral = new RegexBasedTerminal(&quot;RuleProperty&quot;, &quot;^(_Prop_)[A-Z]+&quot;);\n\n            NonTerminal Rule = new NonTerminal(&quot;Rule&quot;);\n            NonTerminal Expr = new NonTerminal(&quot;Expr&quot;);\n            NonTerminal LSubExpr = new NonTerminal(&quot;LSubExpr&quot;);\n            NonTerminal RSubExpr = new NonTerminal(&quot;RSubExpr&quot;);\n            NonTerminal Lookup = new NonTerminal(&quot;lookup&quot;);\n            NonTerminal RuleProperty = new NonTerminal(&quot;RuleProperty&quot;);\n            NonTerminal RuleString = new NonTerminal(&quot;RuleString&quot;);\n\n            Rule.Rule = Expr;\n            Expr.Rule = LSubExpr + &quot;=&quot; + RSubExpr;\n            LSubExpr.Rule = RuleProperty;\n            RSubExpr.Rule = Lookup | RuleString;\n            Lookup.Rule = ToTerm(&quot;lookup&quot;) + &quot;(&quot; + RuleProperty + &quot;,&quot; + RuleString + &quot;)&quot;;\n            //Lookup.Rule = ToTerm(&quot;lookup&quot;) + &quot;(&quot; + RuleString + &quot;,&quot; + RuleString + &quot;)&quot;;\n            RuleProperty.Rule = rulePropertyLiteral;\n            RuleString.Rule = ruleStringLiteral;\n\n            this.Root = Rule;\n            MarkPunctuation(&quot;(&quot;, &quot;)&quot;, &quot;,&quot;);</code></pre>\n\nWhen I comment out the Lookup.Rule line and uncomment the the line after it it works with the following source code:<br />\n<pre><code>string another = &quot;_Prop_COUNTRYOFINCORPORATION = lookup('COUNTRYOFINCORPORATION','DATALISTCOUNTRIES')&quot;;</code></pre>\n\nHowever I need to get the following to work with the original Lookup.Rule line:<br />\n<pre><code>string another = &quot;_Prop_COUNTRYOFINCORPORATION = lookup(_Prop_COUNTRYOFINCORPORATION,'DATALISTCOUNTRIES')&quot;;</code></pre>\n\nI think it is something to do with the regular expressions because although the first example works, when I do this:<br />\n<pre><code>string another = &quot;_Prop_COUNTRYOFINCORPORATION = lookup('_Prop_COUNTRYOFINCORPORATION','DATALISTCOUNTRIES')&quot;;</code></pre>\n\n(Note the <em>Prop</em> at the beginning of the string) it doesn't work.\r<br />\n<br />\nI am pretty new to this grammar thing - so I am sure I have not understood something properly. Also my regex knowledge sucks.\r<br />\n<br />\nAny help would be appreciated!\r<br />\n<br />\ncheers,\r<br />\n<br />\nthornza<br />\n",
+    "PostedDate": "2013-12-13T01:03:29.363-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1135492",
+    "ThreadId": "473469",
+    "Html": "rather than doing a regex as a terminal for ruleproperty why don't you break it down, since PROP is always the same followed by a normal string.<br />\n<pre><code>IdentifierTerminal Rule= new IdentifierTerminal(&quot;Rule&quot;);\n\nKeyTerm PROP= ToTerm(&quot;_Prop_&quot;);\n\nNonTerminal RuleProperty = new NonTerminal(&quot;RuleProperty&quot;);\n\nRuleProperty.Rule = PROP + Rule;</code></pre>\n\nI'm also new to this, but i found breaking down every expression to its most granular form seems to be best.<br />\n",
+    "PostedDate": "2013-12-13T06:19:39.823-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1137809",
+    "ThreadId": "473469",
+    "Html": "I agree, get rid of regex-es, use these only if you don't have any other choice for some really tricky expression/token type; and only after you debug your language with simplified version that does not use regex terminal.\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-12-18T13:14:05.423-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

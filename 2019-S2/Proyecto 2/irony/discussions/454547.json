@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1084935",
+    "ThreadId": "454547",
+    "Html": "Hi All,\r<br />\n<br />\nIs there a way to construct a collection of non-terminals such that each terminal can appear in any order but can only appear once?\r<br />\n<br />\nThanks!<br />\n",
+    "PostedDate": "2013-08-26T07:09:09.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1085027",
+    "ThreadId": "454547",
+    "Html": "there's no such facility out of the box, but I admit I'been thinking it might be useful. But what's stopping me there is the consideration that often this 'unique' constraint is paired with resrtictions on order - like in c# 'partial' should be the last attr, immediately before 'class' keyword; plus some attrs are mutually incompatible - so it would be nice to come up with some way of specifying all such restrictions in grammar, without adding custom code.\r<br />\nAnd with custom code - you can hook to Reduced event of non-terminal and run validation routine <br />\n",
+    "PostedDate": "2013-08-26T11:08:34.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

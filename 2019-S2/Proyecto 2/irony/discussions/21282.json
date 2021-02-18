@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "70865",
+    "ThreadId": "21282",
+    "Html": "\r\nNow that I have a grammar complete, I'm turning my attention to the grammar errors reported on the grammar error tab.  Could you help me interpret these messages?  I don't know if I should be concerned.<br /><br />Here's one:<br /><br />Reduce-reduce conflict in state S53 in productions: array<i>element</i>list -&gt; primitive<i>list?  ; primitive</i>list? -&gt; primitive_list?  on inputs: } <br /><br />and here is the S53 parser state:<br /><br />State S53<br />    array<i>element</i>list -&gt; primitive_list? ·  LOOKAHEADS: }<br />    primitive<i>list? -&gt; primitive</i>list? ·  LOOKAHEADS: }<br />      TRANSITIONS: <br /><br />The parser state corresponds to these three grammar statements:<br /><br />CONST_ARRAY.Rule = Symbol(\") + ARRAY_ELEMENT_LIST + \";<br />ARRAY<i>ELEMENT</i>LIST.Rule = PRIMITIVE.Star(\",\");<br />PRIMITIVE.Rule = FLOAT | BOOLEAN | STRING | ERRORS;<br /><br />If I take replace the PRIMITIVE.Star(\",\") with PRIMITIVE the message goes away.<br />",
+    "PostedDate": "2008-01-30T10:33:18.147-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "71098",
+    "ThreadId": "21282",
+    "Html": "\r\nlooks like you used somewhere else expression Primitive.Star(\",\"), and Irony thinks these are two different terminals. A little deficiency - Irony does not detect such cases automatically. Will probably supply such mechanism in the future. Nevertheless, need to see entire grammar - can you pls send it to me? On a separate note, it would probably help if you take a crash course on shift-reduce parser and methods of removing conflicts in grammar. I'm away from my office/home, may not reply in the next few days. Will continue next week. thanks<br />",
+    "PostedDate": "2008-01-31T10:51:44.08-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "71143",
+    "ThreadId": "21282",
+    "Html": "\r\nIn general I'm OK with the parser concepts and I've not used the PRIMITIVE.Star() construct elsewhere.  But here's the thing, take the line in the original post.  Here it is in a complete (but simple) grammar that (for me) causes a conflict:<br /><br />{<br />StringLiteral STRING = new StringLiteral(\"string\", \"\\\"\", \"\\\"\");<br />NumberTerminal NUMBER = new NumberTerminal(\"number\");<br /><br />// 2. Non-terminals<br /><br />NonTerminal FORMULA = new NonTerminal(\"formula\");<br />NonTerminal PRIMITIVE = new NonTerminal(\"primitive\");<br /><br />// 3. BNF rules<br />FORMULA.Rule = Symbol(\"=\") + Symbol(\"{{\") + PRIMITIVE.Star(\",\") + \"}\";}<br />PRIMITIVE.Rule = NUMBER | STRING;<br /><br />this.Root = FORMULA; // Set grammar root<br />}<br /><br />[NOTE: I've added an extra brace to the first symbol declaration so that the braces show at all]<br /><br />If I change the FORMULA rule to:<br /><br />FORMULA.Rule = Symbol(\"=\") + Symbol(\"{\") + PRIMITIVE | WithStar(\",\" + PRIMITIVE) + \"}\";<br /><br />there are no conflicts.  I don't have time to learn the code well enough to understand which constructs will lead to conflicts and which will not so it will be great to get some advice on the likely causes.<br />",
+    "PostedDate": "2008-01-31T15:03:40.24-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "71145",
+    "ThreadId": "21282",
+    "Html": "\r\nthe second, no-conflict case, shouldn't it be:<br />FORMULA.Rule = Symbol(\"=\") + Symbol(\") + (PRIMITIVE | WithStar(\",\" + PRIMITIVE)) + }\";<br /><br />(added a pair of parens). Otherwise it is completely different rule from first version, and that's why there's no conflict.<br />But this is just typo, and doesn't asnwer why there's conflict. Let me investigate and I will post results<br /><br /><br /><br />",
+    "PostedDate": "2008-01-31T15:26:12.547-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "71147",
+    "ThreadId": "21282",
+    "Html": "\r\n&lt;&lt;the second, no-conflict case, shouldn't it be&gt;&gt;<br /><br />Yes!  What a muppet I am.  I was simplifying for the example.  In the actual case the no-conflict example is assigned to an intermediary NT called ARGUMENT_LIST and neglected to use the <br /><br />By the way one class of problem I encountered occurred because I'd used the same name twice in different terminal.  In my naive way I'd assumed these names are for documentation purpose only and that the classname ( .GetType().Name) would be used to distinguish the terminal and non-terminal instances.  Of course with only just a few moments of thought its clear that wouldn't work because the same class will be used multiple times.  But because its not obvious to the newbie it might worth including the comments.<br />",
+    "PostedDate": "2008-01-31T15:50:37.5-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "71304",
+    "ThreadId": "21282",
+    "Html": "\r\nIn few spare moments today I've looked at the conflicts and the working of the CheckActionConflicts() method.  Conflicts like the one above, occur because the method is expecting to find an operator.  Adding a close brace symbol to the list of registered operators prevents the conflict error occurring.  But in this context should close brace be an operator?  It's not like it should expect any operands.  In this respect its more like punctuation but adding it to the punctuation set had no effect.<br /><br />Anyway, I've been able to clear all the errors but by doing a couple of things I don't understand.  The first is that I've had to add several comma terminals.  Comma in Excel formulas can be regarded as ambiguous in one context.  A function has a list of arguments separated by comma.  One of the arguments might be a union of ranges expressed as RANGE1,RANGE2 so there's a second comma instance that could lead to ambiguity but, of course, the union comma is associated with the union.  The grammar I am using seems to work and doesn't generate errors with multiple comma defintions.  Not sure why.<br />",
+    "PostedDate": "2008-02-01T15:53:02.753-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "72268",
+    "ThreadId": "21282",
+    "Html": "\r\nRegistering \"brace\" symbol as an operator does not fix the conflict - it hides it. \"Operators\" are symbols for which you tell the system not to worry about shift/reduce conflicts because (!!!) the conflicts are resolved at runtime using the precedence and associativity values of current input (operator symbol) and symbols already in the stack. Close brace does not have precedence in mathematical sense, so even if grammar explorer does not show conflict, at runtime parser will simply make unpredictable moves based on meaningles information.<br />Anyway, one of the reason for conflicts you see (and I see in your grammar) is \"too many non-terminals\". It is quite unlike structured programming where you can declare extra methods or break existing method into several just for code clarity sake. In grammar, you should have only non-terminals that are absolutely necessary and are completely distinct in internal structure. You should not have arrangements like the following (taken from your grammar):<br /><br />ARRAY_ELEMENT.Rule = PRIMITIVE;<br /><br />What you say is that ARRAY<i>ELEMENT is identical to PRIMITIVE. It may add clarity to human reading the grammar, but confuses parser - when it has PRIMITIVE on the stack, it does not know whether to transform it into ARRAY</i>ELEMENT or not. Making up several comma terminals does not actually help - you create artificial distinction between commas, but this distinction is never realized in parsing - all input commas are encoded as one and the same terminal (the one that happens to be the first in the lookup list for comma character).  The real solution is to get rid of ARRAY_ELEMENT and use PRIMITIVE instead everywhere. <br />You should do the same for every conflict you see - in fact, the conflict is an indication that somehow you have a \"useless non-terminal\" situation, so you should fix it by getting rid of this  non-terminal. So I advise you to go through grammar rules and try to find all other not-so-needed elements.<br />Roman<br />",
+    "PostedDate": "2008-02-06T22:07:26.43-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

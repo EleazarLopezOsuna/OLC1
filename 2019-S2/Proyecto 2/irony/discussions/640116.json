@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1430924",
+    "ThreadId": "640116",
+    "Html": "I'm using Irony framework and I have:<br />\n<br />\nIdentifierTerminal variable = new IdentifierTerminal(&quot;variable&quot;);<br />\na terminal for identifying an entry terminal.<br />\n<br />\nThis &quot;variable&quot; terminal can hold any string, except for a predefined list of reserved strings. This identifier does not start or any with quotes or double quotes.<br />\n<br />\nI want something like:<br />\n<br />\nIdentifierTerminal variable = any contiguos string EXCEPT &quot;event&quot;, &quot;delegate&quot;;<br />\n<br />\nHow can I enforce this rule for this &quot;variable&quot; terminal?<br />\n<br />\nNOTE: this is linked to <a href=\"http://stackoverflow.com/questions/30898786/identifier-terminal-except-certain-keywords\" rel=\"nofollow\">this SO question</a><br />\n",
+    "PostedDate": "2015-06-18T11:40:45.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1430929",
+    "ThreadId": "640116",
+    "Html": "Why would you want this?\r<br />\nYou can/should just give the reserved word terminals a higher priority than the variable terminal.<br />\n",
+    "PostedDate": "2015-06-18T12:22:38.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1430931",
+    "ThreadId": "640116",
+    "Html": "use MarkReservedWords method to identify reserved words that cannot be identifiers<br />\n",
+    "PostedDate": "2015-06-18T12:37:51.707-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1430937",
+    "ThreadId": "640116",
+    "Html": "The thing is that I have something like this:\r<br />\n<br />\nIdentifierTerminal variable = new IdentifierTerminal(&quot;variable&quot;);\r<br />\nKeyTerm CONTAINS = new ToTerm(&quot;contains&quot;, &quot;Contains&quot;);\r<br />\n<br />\nI want to restrict variable of being identified with &quot;contains&quot;: that is I know the variable will never have the value &quot;contains&quot; (and a list of other predefined terms).\r<br />\n<br />\nCan I just CONTAINS.Priority = 10 and know that CONTAINS will be preferred to variable?<br />\n",
+    "PostedDate": "2015-06-18T12:45:55.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

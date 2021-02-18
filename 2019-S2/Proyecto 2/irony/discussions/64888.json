@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "220969",
+    "ThreadId": "64888",
+    "Html": "<p>Hello,</p>\r\n<p>&nbsp;</p>\r\n<p>I am trying to open the Irony project alpha release in VS2008 SP1. I'm geeting a series of source control errors, culminating in an error referencing vapifunctionwrapper.cpp. None of the projects are available.</p>\r\n<p>Please advise.</p>\r\n<p>&nbsp;</p>\r\n<p>-Chris</p>",
+    "PostedDate": "2009-08-07T16:06:23.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "220977",
+    "ThreadId": "64888",
+    "Html": "<p>you should remove source control binding on first start; see &quot;Use Irony on Mono&quot; discussion thread, just a little ago.</p>",
+    "PostedDate": "2009-08-07T16:29:32.523-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "220981",
+    "ThreadId": "64888",
+    "Html": "<p>Sorry, it is in other discussion:</p>\r\n<p><a href=\"http://irony.codeplex.com/Thread/View.aspx?ThreadId=61812\">http://irony.codeplex.com/Thread/View.aspx?ThreadId=61812</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-07T16:36:01.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

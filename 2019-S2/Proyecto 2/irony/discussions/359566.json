@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "848857",
+    "ThreadId": "359566",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I want to &nbsp;integrate my language into visual studio, i used lua as <a href=\"http://vslua.codeplex.com\">\r\nexemple</a>.</p>\r\n<p>I've got a problem with it. Using VsReadToken with the scanner.</p>\r\n<p>I've got in my language a freetextliteral that bypass all stringliterals when browsing tokens.</p>\r\n<p>so when in my language i've got &quot;text&quot;, it returns a freetextliteral token instead of string.</p>\r\n<p>When i parse the whole document, &quot;text&quot; is recognize as a string literal.</p>\r\n<p>Any idea ?</p>\r\n<p>Thanks</p>\r\n",
+    "PostedDate": "2012-06-14T02:30:31.313-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "849129",
+    "ThreadId": "359566",
+    "Html": "<p>don't quite understand what's going on. Do you mean that Vs scan/parse works differently from \"normal\" parse? that can happen I guess, VS scan mode is quite limited, because it sees one line at a time. Try playing with terminal priorities.</p>",
+    "PostedDate": "2012-06-14T10:04:40.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "849212",
+    "ThreadId": "359566",
+    "Html": "<p>Yes that's it, it is the VS scan mode. And it is really different from normal parse.</p>\r\n<p>FreeTextLiteral was already with low priority, i tried with high priority on string literals, but nothing has changed.</p>\r\n<p>But, i think the problem is from my language, i'm not familiar to syntax/language processing, so i tried to use Irony. I have a lot of non terminals really few terminals. So maybe i'm doing something wrong, because when trying to set NonScanner flag on freetextliteral, i have only keyterms and identifiers, so it's really hard to determine what's currently parse.</p>\r\n<p>But thanks for your reply</p>",
+    "PostedDate": "2012-06-14T12:46:51.073-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "850201",
+    "ThreadId": "359566",
+    "Html": "\r\n<p>I've got a new question. I'm using irony to parse whole document. The problem is irony doesn't care about tabulations, irony transforms tabulations with 4 white spaces, so parsing returns wrong locations. Is there a way to control that ?</p>\r\n<p>Thanks</p>\r\n<p>EDIT 3 : I don't understand why irony doesn't build the parse tree when error is at the end of the file. Because it works pretty good when error is between correct statements</p>\r\n<p>EDIT 2 : i noticed that it only appears when end of file. Working on it. So don't take care of EDIT1</p>\r\n<p>EDIT 1 &nbsp;: few days ago, before i modified my grammar, irony grammar explorer returned an incomplete parse tree when there was an error (incomplete is normal because of the error), but now it doesn't return a tree. What can cause that behavior, or How\r\n can i tell irony that i want to get all correct statements and errors. Thx</p>\r\n",
+    "PostedDate": "2012-06-18T00:42:34.21-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "853578",
+    "ThreadId": "359566",
+    "Html": "<p>about tabs - there's a setting TabCount or smth like this, i think in ParsingContext, to change the \"width\" of tabs. You can also play with overwriting Grammar.SkipWhitespace method to treat tabs as non-whitespace or smth. All I can say - tabs are basically treated as \"bunch of spaces\"; there's a way to override it to some extent, you'll have to experiment with SkipWhitespace and similar methods</p>",
+    "PostedDate": "2012-06-25T22:56:01.633-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1229809",
+    "ThreadId": "359566",
+    "Html": "I too am facing problem with Irony tab handling and Visual Studio.<br />\n<br />\nIn VS2012 it seems that they have eliminated the need to keep TabWidth &quot;synchronized&quot; with editors option. What I am essentially saying that TabWIdth=1 is always the right option, for &gt;=VS2012. However, there is a little problem, Irony does not allow this.<br />\n<br />\n<br />\nNamely the line in SourceStream.cs:<br />\n<pre><code>      if (_tabWidth &lt;= 1) \n        _tabWidth = 8;</code></pre>\n\nchange to<br />\n<pre><code>      if (_tabWidth &lt; 1) \n        _tabWidth = 8;</code></pre>\n\nand it will be okay(also TabWidth=1;). Though, I did not implement LanguageService, but &quot;Classifier&quot;, which might or might not act the same as LanguageService with Spans. [Download Microsofdt VisualStudio 2010 SDK samples, and see IronPython.IsolatedShell) to see how the classifier is implemented. <br />\n<br />\n<br />\nTo actually &quot;tokenize&quot; the shizzle, <br />\n<pre><code>        public IEnumerable&lt;Token&gt; Tokenize(string scriptLogic)\n        {\n            var parseTree = _parser.Parse(scriptLogic);\n\n            foreach (var token in parseTree.Tokens)\n                yield return token;\n        }</code></pre>\n\nand the GetClassificationSpans:<br />\n<pre><code>        IList&lt;ClassificationSpan&gt; IClassifier.GetClassificationSpans(SnapshotSpan span)\n        {\n            var classifications = new List&lt;ClassificationSpan&gt;();\n\n            int state = 0;\n            int startIndex;\n            int endIndex;\n\n            // todo; perhap's we should split the line into tokens, and see what token do we have.\n            foreach (var token in _codeService.Tokenize(span.GetText()))\n            {\n                var startLine = token.Location.Line;\n                var startOffset = token.Location.Column;\n                var endOffset = startOffset + token.Length;\n\n                var line = span.Snapshot.GetLineFromLineNumber(startLine + span.Start.GetContainingLine().LineNumber);\n\n                startIndex = line.Start.Position + startOffset;\n                endIndex = line.Start.Position + endOffset;\n\n                if (endIndex &gt; span.Snapshot.GetText().Length)\n                    endIndex = span.Snapshot.GetText().Length;\n\n                if (endIndex &gt; startIndex)\n                {\n\n                    var type = _classificationRegistryService.GetClassificationType(GetClassificationType(token));\n                    classifications.Add(\n                        new ClassificationSpan(new SnapshotSpan(span.Snapshot, startIndex, endIndex - startIndex), type));\n                }\n            }\n\n            return classifications;\n        }</code></pre>\n\n",
+    "PostedDate": "2014-04-03T02:20:53.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": null,
+    "Description": "What does this error \"Transient non-terminal must have zero or one non-punctuation child nodes; non-terminals: PAREN_EXPR ASSIGN_DATAREF_STMT setExpressionRecursiveStmt.\" in languagedata of Irony",
+    "LastUpdatedDate": "2017-06-19T23:16:20.44-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2017-06-19T06:06:45.313-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "What does this error \"Transient non-terminal must have zero or one non-punctuation child nodes; non-terminals: PAREN_EXPR ASSIGN_DATAREF_STMT setExpressionRecursiveStmt.\"",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9908
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Ok, here's quick explanation. \nTransient nodes are those that can/should be removed from the result Parse tree, to make it less littered with useless nodes.\nFor example, here's expression grammar:\n\nexpr -> number | variable | binExpr\nbinExpr -> expr + \"+\" + expr\n\nafter parsing expression: \nx + 3\n\nthe result is : expr(binExpr, expr(variable), \"+\", expr(number))\n\n - a tree ,  X(Y) means Y is a direct child of X\n\nNow, looking at this tree, it's obvious that 'expr' nodes are not meaningful, we can simplify it to \n\nbinExpr(variable, \"+\", number)\n\nIrony parser can do it automatically if you mark expr as Transient - meaning that remove it from output tree, it is NonTerminal used in clearer grammar rules definition, but not actually needed in the output. \nTransient node must be a pipe (OR, |) of one or more other terms, so it can be removed and its single child can be put directly under its parent. \n",
+      "PostedDate": "2017-06-19T10:17:14.013-07:00",
+      "Id": 208596
+    },
+    {
+      "Message": "Thank you Ivan . I will try it :)",
+      "PostedDate": "2017-06-19T23:16:20.44-07:00",
+      "Id": 208600
+    }
+  ]
+}

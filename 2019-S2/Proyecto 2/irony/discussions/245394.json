@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "563748",
+    "ThreadId": "245394",
+    "Html": "\r\n<p>&nbsp;&nbsp; Hi all! First of all I wanted to thank Roman for creating such a wonderful kit as Irony is. I know my question may sound stupid but I am not that good at formal languages. I've looked through the forum but haven't found a definite answer to\r\n my problem.</p>\r\n<p>&nbsp; &nbsp;I am planning to implement an algorithm of finding code clones and I need AST tree as an input. As I've mentioned I am not that good at formal languages. I've read source code &nbsp;and I've found something like that:</p>\r\n<p>&nbsp;public LanguageFlags LanguageFlags = LanguageFlags.CreateAst;</p>\r\n<p>&nbsp;</p>\r\n<p>Anyhow, I've intuitively understood that &nbsp;the grammar should be written in a way to support AST. I'm not capable of rewriting it with my current knowledge. Can you either correct my reasonings or recommend my further actions as 1) Some existant AST\r\n building grammars, 2) The best way to learn the knowledge to write my own grammar, 3) Some other tools/kits.</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you for reading my post</p>\r\n",
+    "PostedDate": "2011-02-09T22:55:04.1-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "564105",
+    "ThreadId": "245394",
+    "Html": "\r\n<p>Thanks! AST - first of all I would advise to read a bit, some intro articles into what AST is - wikipedia would be a good start.&nbsp;</p>\r\n<p>Irony provides facilities for building AST trees, one example is expression evaluator. It also well explained and illustrated here:</p>\r\n<p><a href=\"http://intellect.dk/post/Writing-a-calculator-in-C-using-Irony.aspx\">http://intellect.dk/post/Writing-a-calculator-in-C-using-Irony.aspx</a></p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2011-02-10T10:31:16.733-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "564833",
+    "ThreadId": "245394",
+    "Html": "<p>Thanks for your reply. I've read the article, I've analized it. I've tried to build a sample project trying to get AST tree in it. But as far as I've understood there is no possibility of creating ASTtree without modifying the grammar provided in&nbsp;020.Irony.Samples.2010. So I want to make sure there is no problem about such code if the grammar supports AST tree creation:</p>\r\n<p>CSharpGrammar g = new CSharpGrammar();<br /> Parser p = new Parser(g);<br /> ParseTree t = p.Parse(textBox1.Text);<br /> var astnode = (AstNode)t.Root.AstNode;   <br /> astnode.AcceptVisitor(new PrintVisitor());</p>\r\n<p>Is there any C# grammar supporting AST trees?</p>",
+    "PostedDate": "2011-02-11T11:42:57.1-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "564867",
+    "ThreadId": "245394",
+    "Html": "<p>First of all, are you sure you need AST tree? maybe Parse Tree (that Irony produces first) is enough for you?</p>\r\n<p>For AST tree you have to create custom AST node classes for every grammar construct you have in the language; Irony-provided AST classes cover only expression evaluator language; for c# you have a lot of work to do, yourself. Have a second look at what is your goal, maybe parse tree is enough.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-02-11T12:36:58.23-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "565163",
+    "ThreadId": "245394",
+    "Html": "<p>Thank you for explanations! I've finally understood my future tasks. Go on with your project, Roman, I really admire such individual projects which grow to become massive.</p>",
+    "PostedDate": "2011-02-12T09:05:53.843-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "71805",
+    "ThreadId": "21546",
+    "Html": "\r\nHello all!<br /><br />First of all, kudo for the nice work on Irony...<br /><br />I'm trying to implement the parser for a little home-made langage. Among other things, I would like to define a new Terminal for boolean litterals (TRUE or FALSE). I've tried several approaches, but non is really satisfying (Note : in the following, I'll speak about \"TRUE\" recognition, but the same holds for \"FALSE\" of course) : <br /><br />- Define BoolLiteral as an non-terminal :<br />   NonTerminal BoolLiteral = new NonTerminal(\"BoolLiteral\");<br />   BoolLiteral.Rule = Symbol(\"TRUE\") | \"FALSE\";<br />   This one works, but it makes walking the tree painfull, since bool literal are not leaves on the tree, which makes semantic analysis, interpretation or code generation quite painful, and is not consistent with NumberTerminal or StringLiteral<br /><br />- Define my own BoolLiteral terminal class, either by writing it directly, either by using a ConstantSetTerminal instance. This would look more familiar, but it doesn't work because, in the scanner terminals lookup table (_data.TerminalLookup), I then have 2  entries for \"T\" prefix (\"T\" like \"TRUE\"). Those 2 entries are IdentifierTerminal, then my BoolLiteral terminal IN THAT ORDER. Since terminals are evaluated in that order, and that both terminals match the same string, of the same length (\"TRUE \"), the token is therefore interpreted as an Identifier, not as a BoolLiteral.<br />Adding \"TRUE\" or \"FALSE\" to the ReserverdWords property of IdentifierTerminal doesn't help because in that case, IdentifierTerminal emit a ReservedWord token, and I do not know what to do with it.<br />One solution is to set the Priority of my BoolLiteral to something greater than 0, but I found it is a rather fragile approach (maintaining such priorities among numerous terminals would be tedious and error prone).<br /><br />Is the Priority setting the right solution indeed? In that case, shouldn't IdentifierTerminal have it's Priority set to something very low (Int32.MinValue) by default, so that Identifiers are always the \"last match\" among various terminals??<br />",
+    "PostedDate": "2008-02-05T07:00:09.64-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "72262",
+    "ThreadId": "21546",
+    "Html": "\r\nhi<br />Generally, boolean constants are global predeclared readonly boolean variables, so that's the way you should recognize them - as normal variables. It is after parsing, when you analyze variables scope and definition location (local/parameter/global), you would recognize that this TRUE variable is a global variable with value \"true\" predefined by runtime. So let it be treated as normal identifier at time of scanning/parsing. Sorry, after-parse processing is not there yet, so you'll have to do it yourself, until next code drop from me at least. See also other discussion about processing AST trees. <br />Roman <br />",
+    "PostedDate": "2008-02-06T21:17:03.763-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

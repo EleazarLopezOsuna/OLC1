@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "810923",
+    "ThreadId": "348758",
+    "Html": "\r\n<p>Hi there,</p>\r\n<p>I got a quite simple grammar that looks like this:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> DslGrammar : Grammar\r\n{\r\n\t<span style=\"color:blue\">public</span> DslGrammar()\r\n\t{\r\n\t\t<span style=\"color:blue\">var</span> identifier = <span style=\"color:blue\">new</span> IdentifierTerminal(<span style=\"color:#a31515\">&quot;Identifier&quot;</span>);\r\n\t\t<span style=\"color:blue\">var</span> argDeclaration = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;ArgDeclaration&quot;</span>);\r\n\t\t<span style=\"color:blue\">var</span> stmtList = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;StmtList&quot;</span>);\r\n\t\t<span style=\"color:blue\">var</span> functionDef = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;FunctionDef&quot;</span>);\r\n\t\t<span style=\"color:blue\">var</span> paramList = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;ParamList&quot;</span>);\r\n\r\n\t\targDeclaration.Rule = identifier &#43; identifier;\r\n\t\tparamList.Rule = MakeListRule(paramList, ToTerm(<span style=\"color:#a31515\">&quot;,&quot;</span>), argDeclaration, TermListOptions.StarList);\r\n\t\tfunctionDef.Rule = (identifier | Empty) &#43; identifier &#43; <span style=\"color:#a31515\">&quot;(&quot;</span> &#43; paramList &#43; <span style=\"color:#a31515\">&quot;)&quot;</span> &#43; Eos;\r\n\t\tstmtList.Rule = MakeListRule(stmtList, <span style=\"color:blue\">null</span>, functionDef, TermListOptions.StarList);\r\n\r\n\t\tRoot = stmtList;\r\n\t}\r\n\r\n\t<span style=\"color:blue\">public</span> <span style=\"color:blue\">override</span> <span style=\"color:blue\">void</span> CreateTokenFilters(LanguageData language, TokenFilterList filters)\r\n\t{\r\n\t\t<span style=\"color:blue\">var</span> outlineFilter = <span style=\"color:blue\">new</span> CodeOutlineFilter(\r\n\t\t\tlanguage.GrammarData,\r\n\t\t\tOutlineOptions.ProduceIndents,\r\n\t\t\t<span style=\"color:blue\">null</span>); <span style=\"color:green\">// &quot;\\&quot; is continuation symbol</span>\r\n\t\tfilters.Add(outlineFilter);\r\n\t}\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>When I test it with the following code, it works fine:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>void DoIt(int x)\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>Now, when I change the code to</p>\r\n<pre>DoIt(int x)</pre>\r\n<p>it dowsn't work anymore. The parser has an error which says that after &quot;DoIt&quot;, another identifier is expected. But when you look at the functionDef rule, the first element can be an identifier OR Empty, so IMHO, it should work...</p>\r\n<p>Can you tell me what's wrong?</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you very much :)</p>\r\n",
+    "PostedDate": "2012-03-15T08:55:55.033-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "810938",
+    "ThreadId": "348758",
+    "Html": "<p>When you load the grammar into Grammar explorer, does it show any conflicts in grammar errors page? it should show shift/reduce. One way to go would be to declare the second identifier optional, not the first one</p>",
+    "PostedDate": "2012-03-15T09:21:21.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "810958",
+    "ThreadId": "348758",
+    "Html": "<p>Your suggestion works - thank you very much :)</p>",
+    "PostedDate": "2012-03-15T09:48:51.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

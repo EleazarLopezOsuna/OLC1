@@ -1,0 +1,306 @@
+[
+  {
+    "Id": "70467",
+    "ThreadId": "21176",
+    "Html": "\r\nHas anyone tried creating a Managed Language Service using Irony?  <br /><br />My experience in this field is limited but recently I started integrating a language using Managed Babel.  It uses Lex-like and Yacc-like syntax to create the parser and scanner files.  However, I quickly relized that the Yacc file will become difficult to maintain and debug so started looking at alternatives.  Using Irony might be the answer, but with Managed Babel everything was already set up for me.  So I am struggling a little trying to figure out how to link my Irony grammer to a language service.    <br />",
+    "PostedDate": "2008-01-28T14:26:37.363-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "70505",
+    "ThreadId": "21176",
+    "Html": "\r\nHi<br />I'm afraid there are no such examples - remember, the project is just 2 months old, it haven't been officially released yet.<br />I will definitely be looking into VS integration support; if you want a working example right now - look at IronPython integration example in VStudio SDK. For Irony specifically - nothing for now; sorry. The problem is that this integration involves quite a lot of code, implementing zillion of classes and interfaces required by VS. Will be great if somebody starts looking into this (for Irony) - wanna try?! I will provide all help I can, while I'm working on completing featureset for 1.0 release<br />thanks again<br />Roman<br /><br />",
+    "PostedDate": "2008-01-28T21:31:29.37-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "70639",
+    "ThreadId": "21176",
+    "Html": "\r\nSure, I can give it a shot.  I plan on starting with the scanner that is required by a language service.<br /><br /><span class=\"codeInline\" style=\"font-family:Consolas, Courier New, Courier, Monospace;\">public override IScanner GetScanner(Microsoft.VisualStudio.TextManager.Interop.IVsTextLines buffer)</span><br /><br />Should I modify the existing scanner class for the compiler and create a new scanner class that implements IScanner?  Or just create an entirely new class from scratch?<br /><br />My plan is to modify the current scanner class in the compiler so that it has methods for reading tokens one at a time.  Much like the tokenizer class works in IronPython's compiler. <br />",
+    "PostedDate": "2008-01-29T10:29:55.1-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "70668",
+    "ThreadId": "21176",
+    "Html": "\r\nI think a good place to start is to implement Babel's grammar in Irony and make sure it parses correctly. As for where to place IScanner implementation - I wouldn't mind extending Scanner class with requiered methods, except one thing - making Irony's Scanner implement VS IScanner would require Irony assembly to directly reference VS integration assemblies, which are not part of .NET framework and standard .NET installation. So to compile Irony dev has to install VS SDK - which is not good. Instead, let's create integration assembly (Irony.Integration), define IScanner implementation class there - just some bridge class - that will redirect all calls to Irony's scanner. While you do Babel grammer, I'll take a close look at VS IScanner and come up with more details how we can proceed. <br />thanks again and good luck<br />",
+    "PostedDate": "2008-01-29T12:36:11.613-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "70689",
+    "ThreadId": "21176",
+    "Html": "\r\nGood we are on the same page.   Good idea on just using the Managed Babel Framework as a starting point.  I have color highlighting working now.  When I am finished modifying the framework to work with Irony what should I do with the code?<br /><br />Just for your info I had to add the following methods to the scanner class:<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\n \r\n      public void SetSource(CompilerContext context, SourceFile source)\r\n      {\r\n          _context = context;\r\n          _source = source;\r\n          _source.Reset();\r\n      }\r\n \r\n      public Token GetNext(ref int state, out int start, out int end)\r\n      {\r\n          start = _source.Position;\r\n          Token token = ReadToken();\r\n          end = _source.Position;\r\n \r\n          return token;\r\n      }\r\n \r\n</pre><br />I can include my modified scanner class with the rest of the code once I finish.<br />",
+    "PostedDate": "2008-01-29T14:52:18.077-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "70733",
+    "ThreadId": "21176",
+    "Html": "\r\nHi again<br />I admit, I got totally confused - I thought Babel is a language you try to implement/integrate (I think I heard about smth like that), but it turns out it is the name of the framework for VS integration - now I get it. Then what is the language you implement? Did you get its grammar in Irony format/class? \"color highlighting working\" - you mean with Lex-style grammar following Babel guidelines? or already in Irony? If it's not a big secret, can you pls share what you have, even if it's not working yet? I have some trouble figuring out Babel stuff, so if you have something that would be a good place to start. <br />Note about the code you added. I think GetNext should be implemented as follows:<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\npublic Token GetNext(ref int state, out int start, out int end)\r\n      {\r\n          Token token = ReadToken();\r\n          if (token == null) return null; //just in case; should never happen\r\n          start = token.Location.Position; \r\n          end = _source.Position - 1;  \r\n          return token;\r\n      }\r\n</pre><br />Note that between ReadToken calls current position is just after the end of the previous token; hence \"-1\" for end parameter. Also, there may be whitespace at this position which ReadToken will skip before starting actually constructing token, so start parameter should be calculated from token, not from source position before ReadToken.<br />I will be away for few days, so don't get alarmed if nobody answers for some time - I will be back. Send me stuff whenever you have something to rivantsov at gmail . In the meantime I will try to look at IScanne and how it should work. I think we will need to use/set the <i>state</i> parameter of GetNext as well. <br />good luck<br /><br /><br /><br /><br />",
+    "PostedDate": "2008-01-29T22:32:14.45-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "70803",
+    "ThreadId": "21176",
+    "Html": "\r\nActually the language I am integrating isn't very interesting because it is an older language that isn't very popular.  It is called JOVIAL.  <br /><br />I will make the changes to GetNext().  Thanks for the feedback.  Also, I agree about the state parameter.  I am still unsure about its usage right now and that is why it is being ignored.  <br /><br />Basically the modifications that I have to do to the Managed Babel Framework are very minor, but I will email you what I have so far.  It is very basic and doesn't really achieve anything yet but it lets me know that I am on the right track.<br />",
+    "PostedDate": "2008-01-30T06:02:14.323-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "70914",
+    "ThreadId": "21176",
+    "Html": "\r\nI now have colorizing and syntax highlighting working.<br /><br />Now I plan to do brace matching.  The managed framework list two separate types: MatchDouble (e.g. { and }) and MatchTriple(e.g. foreach, {, and }).  MatchDouble can be handled using the BraceMatchingFilter, but can it handle MatchTriple?<br /><br />Also, I don't think it is currently possible to extract the brace locations after a parse is performed.  Any suggestions on how I should modify the code to achieve this?  I know the functionality already exists in BracematchingFilter.cs.  The locations just need to be stored somewhere.<br />",
+    "PostedDate": "2008-01-30T16:05:43.617-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "71164",
+    "ThreadId": "21176",
+    "Html": "\r\nActually I think I got confused on the purpose of the BraceMatchingFilter.  I wonder to achieve this functionality if a Match method should be added to the NonTerminal.  So it would be defined something like this:<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\nNonTerminal CodeBlock = new NonTerminal(\"CodeBlock\");\r\nCodeBlock.Rule = Function + \"{\" + BlockContent + \"}\";\r\nCodeBlock.Match(2, 4);  //Match Double\r\nCodeBlock.Match(1,2,4); //Match Triple\r\n</pre><br />",
+    "PostedDate": "2008-01-31T19:59:11.847-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "72460",
+    "ThreadId": "21176",
+    "Html": "\r\nI am having a hard time figuring out how to modify the code in Irony to include what I need to do for brace matching.<br /><br />My plan resembles how it is handled in Yacc.  So for the following rule in Yacc:<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\n \r\nBlock\r\n    : OpenBlock CloseBlock                   { Match(@1, @2); }\r\n    | OpenBlock BlockContent CloseBlock      { Match(@1, @3); }\r\n    | OpenBlock BlockContent error           { CallHdlr(\"missing '}'\", @3); }\r\n    | OpenBlock error CloseBlock             { Match(@1, @3); }\r\n    ;\r\n</pre><br />I would like to do in Irony this way:<br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\nNonTerminal Block = new NonTerminal(\"block\");\r\nBlock.Rule\r\n   = OpenBlock + CloseBlock\r\n   | OpenBlock + BlockContent + CloseBlock;\r\nBlock.Match(0, 0, 1);\r\nBlock.Match(1, 0, 2);\r\n</pre><br />So I thought I would add this code to the NonTerminal class:<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\n      private List&lt;int[]&gt; matches = null;\r\n      public void Match(int ruleIndex, params int[] elementIndexes)\r\n      {\r\n          if (matches == null)\r\n          {\r\n              matches = new List&lt;int[]&gt;();\r\n          }\r\n          matches.Insert(ruleIndex, elementIndexes);\r\n      }\r\n \r\n      public List&lt;int[]&gt; Matches\r\n      {\r\n          get { return matches; }\r\n      }\r\n</pre><br />Then when I parse a file I will need the parser to build an array of Tokens containing the matched braces.  The BraceMatchingFilter almost does this and could with a little modification. From your comments I gathered this class should only be used for languages that allow alternate braces to be used.  So I am not sure how to modify the compiler to make this happen.  Any help would be appreciated.<br />",
+    "PostedDate": "2008-02-07T14:25:09.34-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "72470",
+    "ThreadId": "21176",
+    "Html": "\r\nWhat exactly do you need? what kind of method that is called by Babel that returns info about braces? I understand you need some kind of tracking of braces inside parser/scanner, but how this information will be exposed and accessed by Babel integration code?<br /><br />Without knowing this \"purpose\", just guessing that you need the list of unclosed braces, we can look at Parser Stack (data buffer inside parser) - it contains all unclosed braces that were not yet reduced into higher-level structures.<br />",
+    "PostedDate": "2008-02-07T15:38:21.877-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "72477",
+    "ThreadId": "21176",
+    "Html": "\r\nSorry I guess if I should have mentioned that.  Here is what Babel needs:<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\nIList&lt;TextSpan[]&gt; Braces;\r\n \r\npublic struct TextSpan\r\n{\r\n  public int iEndIndex;\r\n  public int iEndLine;  \r\n  public int iStartIndex;\r\n  public int iStartLine;\r\n}\r\n</pre><br />So for MatchDouble the array would contain two TextSpans and three for MatchTriple.  TextSpan is in the VisualStudio namespace so I am not expecting to use that, something similar will do.<br />",
+    "PostedDate": "2008-02-07T16:15:44.133-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "72485",
+    "ThreadId": "21176",
+    "Html": "\r\nok, I get it. Braces property should be exposed by Parser and contain a list of all matching pairs after parsing a source file. <br />I will put this stuff into parser in the next code drop; for now add some workaround in Parser.<br />",
+    "PostedDate": "2008-02-07T16:44:07.333-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "72579",
+    "ThreadId": "21176",
+    "Html": "\r\nThanks.  With this and some AST traversal methods (needed for Intellisense) I should be in good shape.<br />",
+    "PostedDate": "2008-02-08T05:40:20.603-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "116472",
+    "ThreadId": "21176",
+    "Html": "Hey, guys, nice work on Irony. I have been using it for about two weeks and I easily built up a DSL for internal use within my organization. Love it. I am after a VS Language Service as well and would like to know where you guys are with your efforts to simplify the integration of Irony with a Language Service. Can I get an update? Can I help contribute?<br>\r\n<br>\r\n",
+    "PostedDate": "2008-09-05T20:05:52.35-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "116910",
+    "ThreadId": "21176",
+    "Html": "Hi<br>\r\nThat had been a long time ago; bmorrison actually succeeded and sent me his code for language service. It was implemented as a separate assembly, with minimal support from Irony.&nbsp;I&nbsp;would like to give it another try,&nbsp;now with more built-in support in Irony's core classes. I think I have&nbsp;some idea about what is needed. Let's do it, contact me directly, we'll try to cook something&nbsp;quickly.<br>\r\nRoman&nbsp;&nbsp;\r\n",
+    "PostedDate": "2008-09-08T08:59:16.607-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "134658",
+    "ThreadId": "21176",
+    "Html": "I am starting to work with Irony again and noticed the new EditorInfo property for tokens.  This will make integrating Irony with a language service very easy and was a great addition.  The problem I am currently having is I can't figure out how to get the TokenTriggers property to work for brace matching.  My grammer uses begin and end symbols instead of curly braces.  Because of this they are parsed as identifiers and not symbols.  This causes their TokenTriggers property to be set to none because it is not seeing the term options set for the symbol.  Is it possible to get Irony to parse begin or end as a symbol?\r\n",
+    "PostedDate": "2008-11-23T19:31:26.557-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "134661",
+    "ThreadId": "21176",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:11pt;color:#1f497d;font-family:'calibri','sans-serif'\">As a quick fix that might work, try registering begin and end as keywords. Not sure but might work. I’ll have to look closer then</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:11pt;color:#1f497d;font-family:'calibri','sans-serif'\">Roman</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:11pt;color:#1f497d;font-family:'calibri','sans-serif'\"> </span></p>\r\n",
+    "PostedDate": "2008-11-23T19:49:34.283-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "134662",
+    "ThreadId": "21176",
+    "Html": "I tried that and it shows up as a keyword, but no luck on having the TokenTriggers set properly.\r\n",
+    "PostedDate": "2008-11-23T20:34:04.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "134665",
+    "ThreadId": "21176",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:11pt;color:#1f497d;font-family:'calibri','sans-serif'\">Try another thing – set Priority property on “begin” and “end” to 1 (higher than default 0):</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:11pt;color:#1f497d;font-family:'calibri','sans-serif'\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:11pt;color:#1f497d;font-family:'calibri','sans-serif'\">Symbol(“begin”).Priority =1;</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:11pt;color:#1f497d;font-family:'calibri','sans-serif'\">Symbol(“end”).Priority = 1;<br>\r\n</span></p>\r\n",
+    "PostedDate": "2008-11-23T20:49:10.867-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "134675",
+    "ThreadId": "21176",
+    "Html": "Ok that did it.  Thanks!  Care to explain why that worked?  Also, is there a way to get alll matched braces from parser now?\r\n",
+    "PostedDate": "2008-11-23T22:30:07.603-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "134754",
+    "ThreadId": "21176",
+    "Html": "About getting all matched braces. Currently Irony does not maintain any list of brace pairs. Brace pairs are identified by internal properties of symbol terminals themselves.<br>\r\nYou can deduce it by running through Grammar.Terminals list and checking each element's brace-related options and properties (see Grammar.RegisterBracePair method for more info).<br>\r\nWhy setting Priority helped in your case... Will try a short explanation. When Scanner looks at the next symbol in input - let's say it is &quot;b&quot;, it looks up a list of terminals that can be candidates for matching the input for this symbol. In your case, that would be 2 terminals: Identifier, and &quot;begin&quot; symbol (which is a terminal as well). The scanner then runs through the list and tries to match the input - the first terminal that produces a token wins, and Scanner returns this token. For our two terminals, both can produce a valid token. By the way, for parser it does not matter which - it will match grammar rule correctly in either case. So which token will be produces depends on the ordering of terminals in the looked up list, and this is where Priority property is used. By default, all literal symbols in grammar rules (like &quot;begin&quot; in your case) get the lowest priority, so they are always the last in the list. This is why you were getting Identifier token previously. This rule makes sense as by default we allow &quot;begin&quot; to be an identifier - Parser will decide what it is later. When we changed the priority, we forced the &quot;begin&quot; terminal to come first in the list, so it will generate a &quot;symbol&quot; token which inherits all brace-related flags from the terminal.<br>\r\nHope this gives some idea why it happens...<br>\r\n <br>\r\n",
+    "PostedDate": "2008-11-24T06:09:27.147-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "135138",
+    "ThreadId": "21176",
+    "Html": "Thanks for the explanation, it all makes sense now.  As for braces, we had a small discussion back on this in February and it seemed you were working on something to make this easier.  The terminal list doesn't give me the location of the braces in a parsed file, unless I am missing something.  If you look at my comment from February 7, that is what I would need.  \r\n",
+    "PostedDate": "2008-11-25T07:46:29.97-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "135181",
+    "ThreadId": "21176",
+    "Html": "I see your problem. Let me think about this, and I'll try to come up with quick solution. Most likely it would be using BraceMatchFilter, only the filter should do some extra work like putting into each opening brace token a link to matching closing brace token, and vice versa. Then you can quickly scan the token list (now available directly in Compiler) and get the matching pairs - we can even put such method into Compiler. I'll get back to you soon<br>\r\n",
+    "PostedDate": "2008-11-25T09:17:30.077-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "135274",
+    "ThreadId": "21176",
+    "Html": "Actually you really can use the BraceMatchingFilter as is already - just add it in Grammar's constructor and save ref to it in some public field. Then after you parse you can get the list of brace pairs from it. It's a bit ugly now, will try to improve it soon.\r\n",
+    "PostedDate": "2008-11-25T13:18:07.173-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "135315",
+    "ThreadId": "21176",
+    "Html": "Just checked in an updated version with a bit improved support for brace-pairs lists (changeset 19018). Look at the commented code under Parse button -click handler in Grammar Explorer - it is a sample of how you can get the brace list after parsing. It is a list of open-brace tokens, but you can get matching closing brace from Token.OtherBrace property. <br>\r\nHope this is what you need. \r\n",
+    "PostedDate": "2008-11-25T15:11:20.14-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "135910",
+    "ThreadId": "21176",
+    "Html": "Thanks for your help and the update.  That did the trick.  I have it working with my language service now.  \r\n",
+    "PostedDate": "2008-11-27T10:14:50.103-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "147185",
+    "ThreadId": "21176",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:10pt;font-family:arial\">Roman,</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:10pt;font-family:arial\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:10pt;font-family:arial\">In my grammar, I need certain symbols to have their EditorInfo.Triggers property to include MemberSelect.  Currently, I don’t think this is possible looking at the source code.  I accomplished this by creating a TermOption called MemberSelect and this set EditorInfo appropriately.  Can you please include something to this effect in the official version?<br>\r\n<br>\r\nBen</span></p>\r\n",
+    "PostedDate": "2009-01-14T14:44:24.303-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "147406",
+    "ThreadId": "21176",
+    "Html": "No problem, will add it.\r\n",
+    "PostedDate": "2009-01-15T08:24:50.587-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "147483",
+    "ThreadId": "21176",
+    "Html": "I also have another issue.  All symbols that I have defined with term options, I have also placed their priority to 1 so that they will be scanned as symbols not identifiers by the scanner.  The problem with this is if you have an identifier that begins with the symbol it will reduce the symbol first even though the identifier doesn't contain any spaces.  For example, if I have the symbol &quot;END&quot; and the language file contains an identifier ENDTest.  The scanner will produce an &quot;END&quot; symbol token and a &quot;Test&quot; identifier token.  If I don't change the priority all is well.  I think this might be a bug.\r\n",
+    "PostedDate": "2009-01-15T13:32:55.19-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "147739",
+    "ThreadId": "21176",
+    "Html": "Hi<br>\r\nI'm aware of the problem, and it already surfaced in other discussions. The proper solution should be actually to patch the token when it is matched &quot;by value&quot; by changing its term from identifier to Symbol. Here is the code of Parser.GetCurrentAction method:<br>\r\n<br>\r\n    private ActionRecord GetCurrentAction() {<br>\r\n      ActionRecord action = null;<br>\r\n      if (_currentToken.MatchByValue) {<br>\r\n        string key = CurrentToken.Text;<br>\r\n        if (!_caseSensitive)<br>\r\n          key = key.ToLower();<br>\r\n        if (_currentState.Actions.TryGetValue(key, out action)) {<br>\r\n          _currentToken.SetTerm(SymbolTerminal.GetSymbol(key)); //new code<br>\r\n          return action;<br>\r\n        }<br>\r\n      }<br>\r\n      if (_currentToken.MatchByType &amp;&amp; _currentState.Actions.TryGetValue(_currentToken.Terminal.Key, out action))<br>\r\n        return action;<br>\r\n      return null; //action not found<br>\r\n    }<br>\r\n<br>\r\nIn this case, when parser recognizes that token is in fact a special symbol, not identifier, it paches it, so all symbol's attibutes will get in place.<br>\r\ntry using this version for now, I will post fixed version soon; i'm in the middle of big code refactoring right now. <br>\r\nSorry for the trouble.<br>\r\n <span id=UniqueID1232124560810> </span>\r\n",
+    "PostedDate": "2009-01-16T08:52:40.59-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "147790",
+    "ThreadId": "21176",
+    "Html": "No problem I can apply the fix.  However, I need the code for SetTerm as well.  It isn't in the current version.  Thanks!\r\n",
+    "PostedDate": "2009-01-16T10:49:56.537-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "147796",
+    "ThreadId": "21176",
+    "Html": "oopss, sorry, thought I had it there already<br>\r\n<br>\r\n    //Method used for backpatching symbol terminals; they are initially recognized as identifiers by scanner, <br>\r\n    // but if parser matches token value to literal symbol in grammar, it changes it to SymbolTerminal<br>\r\n    public virtual void SetTerm(BnfTerm value) {<br>\r\n      _term = value;<br>\r\n      Precedence = Term.Precedence;<br>\r\n    }<br>\r\n<br>\r\nYou might want to add some more copying code here, like some node flags. Not sure, I'm guessing here, I don't have the code working now<br>\r\n",
+    "PostedDate": "2009-01-16T11:08:03.103-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "150283",
+    "ThreadId": "21176",
+    "Html": "I needed the symbol to be found by the scanner so I modified the ReadToken method as follows in bold:<br>\r\n<br>\r\n//If we have normal token then return it <br>\r\nif (result != null &amp;&amp; !result.IsError()) {    <br>\r\n  //restore position to point after the result token    <br>\r\n  _source.Position = _source.TokenStart.Position + result.Length;    <br>\r\n  <strong>result.SetTerm(SymbolTerminal.GetSymbol(result.Text));</strong>    <br>\r\n  return result; <br>\r\n} <br>\r\n<br>\r\nDo you see any issues with this?  Could this be added to the configured version?\r\n",
+    "PostedDate": "2009-01-23T08:24:35.53-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "150321",
+    "ThreadId": "21176",
+    "Html": "That would be completely wrong thing to do. Look - you are making ALL tokens to be symbols, even Identifiers and numbers, and string literals! The trouble is that GetSymbol either returns existing symbol, or creates new one if it doesn't exist. <br>\r\n<br>\r\nI understand that there's a lot of confusion already with this issue, it's my fault no doubt, and I will try to improve things in the future. Here's a quick summary of things how they should be. <br>\r\nA language may have a list of Keywords that are used as special tokens inside the language: begin, end, void, for etc. These keywords are usually highlighted in smart editors. In some cases some of these kewords may be RESERVED - meaning that they cannot be used as variable names (identifiers). Other, non-reserved symbols CAN be used as identifiers. So scanner can reliably recognize only reserved words, and change token's term to symbol from identifier. But non-reserved words can be recognized as keyword/identifier only by Parser using the surrounding context. <br>\r\nIn Irony currently we have only Keywords which is kinda both, and this is the source of troubles. I'm still thinking about how to fix it properly, most likely to introduce two collections for keywords and reserved words, and to fix reserved ones in scanner. <br>\r\nThat's what you can do for now. In the code you suggest, you should probably match token text against reserved words, and change token's term to symbol only if it reserved word.<br>\r\n",
+    "PostedDate": "2009-01-23T10:22:42.723-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "150353",
+    "ThreadId": "21176",
+    "Html": "I think I understand.  I added a reserved stringset along side of the keywords stringset in the grammar class.  So my change in the scanner now looks this way.<br>\r\n<br>\r\n//If we have normal token then return it <br>\r\nif (result != null &amp;&amp; !result.IsError()) {    <br>\r\n  //restore position to point after the result token    <br>\r\n  _source.Position = _source.TokenStart.Position + result.Length;    <br>\r\n  <strong>if(Data.Grammar.Reserved.Contains(result.Text))<br>\r\n  {<br>\r\n</strong>    <strong>result.SetTerm(SymbolTerminal.GetSymbol(result.Text));</strong>    <br>\r\n  <strong>}<br>\r\n</strong>  return result; <br>\r\n} \r\n",
+    "PostedDate": "2009-01-23T11:38:22.037-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "156391",
+    "ThreadId": "21176",
+    "Html": "I have posted an article on <a href=\"http://www.codeproject.com\">Code Project</a> titled <a href=\"http://www.codeproject.com/KB/recipes/VSLanguageService.aspx\">Writing your first Visual Studio Language Service</a>.  It covers the basics of what I have been able to accomplish in integrating Irony and Visual Studio.  I will try and do a part 2 that will cover advanced intellisense(user defined types, referenced libraries, etc.) and traversing the AST.\r\n",
+    "PostedDate": "2009-02-10T12:46:16.883-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "156741",
+    "ThreadId": "21176",
+    "Html": "This is great news! Thank you for sharing this!\r\n",
+    "PostedDate": "2009-02-11T10:53:21.537-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

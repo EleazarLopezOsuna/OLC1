@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "258974",
+    "ThreadId": "75687",
+    "Html": "<p>Hi</p>\r\n<p>First sorry for the simple question. I am new to Irony and i want to build a parser for ASL(ACPI Source Language).</p>\r\n<p>Here is a snippet of ASL name and pathname terms definition.</p>\r\n<p>LeadNameChar := &lsquo;A&rsquo;-&lsquo;Z&rsquo; | &lsquo;a&rsquo;-&lsquo;z&rsquo; | &lsquo;_&rsquo; <br>DigitChar := &lsquo;0&rsquo;-&lsquo;9&rsquo; <br>NameChar := DigitChar | LeadNameChar <br>RootChar := &lsquo;\\&rsquo; <br>ParentPrefixChar := &lsquo;^&rsquo; <br>PathSeparatorChar := &lsquo;.&rsquo; <br>CommaChar := &lsquo;,&rsquo; <br>SemicolonDelimiter := Nothing | &lsquo;;&rsquo;</p>\r\n<p>NameSeg := &lt;LeadNameChar&gt; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| &lt;LeadNameChar NameChar&gt; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| &lt;LeadNameChar NameChar NameChar&gt; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| &lt;LeadNameChar NameChar NameChar NameChar&gt; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>NameString := &lt;RootChar NamePath&gt; | &lt;ParentPrefixChar PrefixPath NamePath&gt; | NonEmptyNamePath <br>NamePath := Nothing | &lt;NameSeg NamePathTail&gt; <br>NamePathTail := Nothing | &lt;PathSeparatorChar NameSeg NamePathTail&gt; <br>NonEmptyNamePath := NameSeg | &lt;NameSeg NamePathTail&gt; <br>PrefixPath := Nothing | &lt;ParentPrefixChar PrefixPath&gt;</p>\r\n<p>I defines the rootchar,commachar and etc as:<br>KeyTerm commaChar = ToTerm(&quot;,&quot;, &quot;commaChar&quot;);<br>KeyTerm parentPrefixChar = ToTerm(&quot;^&quot;, &quot;parentPrefixChar&quot;);<br>KeyTerm pathSeperateorChar = ToTerm(&quot;.&quot;, &quot;pathSeperateorChar&quot;);<br>KeyTerm rootChar = ToTerm(&quot;<a>\\\\&quot;,&quot;rootChar</a>&quot;);</p>\r\n<p>Am i right? And i don't know how to define LeadNameChar and DigitChar and so as NameSeg, Will anybody help me?</p>",
+    "PostedDate": "2009-11-19T23:32:58.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "259150",
+    "ThreadId": "75687",
+    "Html": "<p>Well, you should first be aware of two-step parsing process:</p>\r\n<p>1. Scanning - recognizing chunks of chars like numbers, identifiers, keywords and combining them into tokens. This is also called lexical analysis, and rules for this operation are lexical rules.</p>\r\n<p>2. Parsing itself - reading token stream from scanner and recognizing language constructs like expressions, statements, etc.&nbsp; This is syntax analysis.</p>\r\n<p>When defining a grammar for a language, language spec often describes both lexical rules and syntax rules in the same manner. However, for language impelementor it is important to separate these, and identify which are lexical rules and what are syntax rules (rules over tokens). It is true for any compiler tool, and important for Irony because lexical rules are supported internally in&nbsp;different way.&nbsp;What you listed are lexical rules, rules over chars for combining them into tokens. These rules are&nbsp;implemented in Irony through predefined Terminal classes. So what you need to do is identify appropriate&nbsp;terminal classes (IdentifierTerminal, NumberLiteral, etc), instantiate them as&nbsp;local variables and set various options on them that&nbsp;match your lexical rules.</p>\r\n<p>I see that you probably would need&nbsp;IdentifierTerminal, NumberLiteral, maybe some others.</p>\r\n<p>Try&nbsp;to understand what are restrictions on&nbsp;terminals expressed by&nbsp;your lexical rules and set the options of Irony terminals appropriately. Follow the examples in Irony.Samples grammar, and also in TerminalFactory methods</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-20T10:09:06.05-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "261072",
+    "ThreadId": "75687",
+    "Html": "<p>Hi Roman</p>\r\n<p>Thanks for guide.</p>\r\n<p>I check IdentifierTerminal sourcecode and also some examples , but I still don't know how to define NameSeg.&nbsp; It should works like c# identifier but has limited length (max 4 chars).&nbsp; Then I find the RegexBasedTerminal class and define NameSeg as below</p>\r\n<p>RegexBasedTerminal NameSeg = new RegexBasedTerminal(&quot;<a>\\\\b[a-zA-Z_][\\\\w_]{0,3}\\\\b</a>&quot;,&quot;&quot;);</p>\r\n<p>It compiles well. However, when I use my grammer to parse some asl files in the grammarexplorer, the explorer keeps consuming memory until&nbsp;halt my&nbsp;PC&nbsp;and can't generate the parse tree. So, it there any bug in RegexBasedTerminal?</p>\r\n<p>If I use c# identifier as NameSeg</p>\r\n<p>var NameSeg = TerminalFactory.CreateCSharpIdentifier(&quot;NameSeg&quot;);</p>\r\n<p>My grammar works fine and can generate the right parse tree for right asl file. However, it can not find error&nbsp;Namesegs with more then 4 chars.</p>\r\n<p>Need your advise on how to fix my problem. Thanks.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-27T00:45:21.473-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "261623",
+    "ThreadId": "75687",
+    "Html": "<p>I think you should go with IdentifierTerminal. To reject names with length &gt; 4, you should use ValidateToken event. If the name is invalid, put the error token in place of current token.</p>\r\n<p>Like this:</p>\r\n<p>&nbsp;</p>\r\n<pre>//inside constructor </pre>\r\n<pre>identifier.ValidateToken += identifier_ValidateToken;\r\n...</pre>\r\n<pre>\r\n private void identifier_ValidateToken(object sender, ParsingEventArgs e) {\r\n   if (e.Context.CurrentToken.ValueString.Length &gt; 4)\r\n  e.Context.CurrentToken = e.Context.Source.CreateErrorToken(&quot;Identifier cannot be longer than 4 characters&quot;); \r\n }</pre>",
+    "PostedDate": "2009-11-29T11:01:36.357-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "262643",
+    "ThreadId": "75687",
+    "Html": "<p>Hi Roman,</p>\r\n<p>Sorry that I still can't work with your code. Looks like there is no definition of &quot;ParsingEventArgs&quot; .</p>\r\n<p>If I changed it with ValidateTokenEventArgs, then there is no CurrentToken definition.</p>\r\n<p>Need your kindly advise. Thanks.</p>\r\n<p>Ak</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-02T01:48:40.397-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "262798",
+    "ThreadId": "75687",
+    "Html": "<p>Looks like you need to take the latest source version from Sources page.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-12-02T08:49:28.797-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "830028",
+    "ThreadId": "353977",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>This&nbsp;should a very simple one, but I couldn't figure out how.</p>\r\n<p>What I am trying to achieve is a custom SQL parser, I started from the SQL sample from the kit. I added support for LIMIT and OFFSET in the select statement. However, the LIMIT option and OFFSET option can appear before GROUP BY or after GROUP BY.</p>\r\n<p>Currently I have the following rule, which reports &quot;Shift-reduce conflict&quot; error.</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>selectStmt.Rule = SELECT &#43; columnItemList &#43; FROM &#43; fromItem &#43; whereClauseOpt &#43;\r\n                              limitOpt &#43; offsetOpt &#43;\r\n                              groupClauseOpt &#43; havingClauseOpt &#43; orderClauseOpt &#43;\r\n                              limitOpt &#43; offsetOpt;\r\n\r\n</pre>\r\n</div>\r\n<p>As you can see, my rule has limitOpt and offsetOpt twice, which would be the cause of compilation error.</p>\r\n<p>How should I fix this error?</p>\r\n<p>Thanks in advance!</p>\r\n",
+    "PostedDate": "2012-04-29T19:58:31.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "830031",
+    "ThreadId": "353977",
+    "Html": "<p>create an extra non-terminal ExtraClause and ExtraClauseList - as a general term for clauses that might appear after WHERE</p>\r\n<p>ExtraClauseList.Rule = MakeStarList(ExtraClauseList, ExtraClause);</p>\r\n<p>ExtraClause.Rule = GroupClause | HavingClause | OrderByClause | LimitClause | Offset;</p>\r\n<p>selectStmt.Rule = SELECT + columnItemList + FROM &nbsp;+ fromItem + whereClauseOpt + ExtraClauseList;</p>\r\n<p>Note that all elements in ExtraClause are NOT optional; you get optionality by using StarList</p>\r\n<p>Restrictions on order of clauses, and one-only restriction - should be checked after parsing by traversing the parse tree. Alternatively you can do it immediately when SelectStmt is reduced - hook to Reduced event on non-terminal</p>",
+    "PostedDate": "2012-04-29T20:12:51.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "830037",
+    "ThreadId": "353977",
+    "Html": "<p>That was quick. It's much appreciated.</p>\n<p>I am getting the following two errors after making the changes.</p>\n<ul>\n<li>Shift-reduce conflict. State S86, lookaheads [LIMIT OFFSET GROUP HAVING ORDER]. Selected shift as preferred action. (S86) </li>\n<li>Reduce-reduce conflict. State S86, lookaheads: EOF ). Selected reduce on first production in conflict set. (S86) </li>\n</ul>\n<p>Here is my latest code.</p>\n<pre><span style=\"color: blue;\">var</span> extraClause = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"extraClause\"</span>);\r\n<span style=\"color: blue;\">var</span> extraClauseList = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"extraClauseList\"</span>);\r\n\r\nextraClauseList.Rule = MakeStarRule(extraClauseList, extraClause);\r\nextraClause.Rule = limitOpt | offsetOpt | groupClauseOpt | havingClauseOpt | orderClauseOpt;\r\n\r\n<span style=\"color: green;\">//Select stmt</span>\r\nselectStmt.Rule = SELECT + columnItemList + FROM + fromItem + whereClauseOpt + extraClauseList;\r\n</pre>\n<p>Did I do something wrong?</p>\n<p>Thanks!</p>",
+    "PostedDate": "2012-04-29T20:36:51.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "830039",
+    "ThreadId": "353977",
+    "Html": "<p>Read my post again - these clauses must NOT be optional, you should remove \"opt\" suffix and \"|Empty\" from their rules</p>",
+    "PostedDate": "2012-04-29T20:47:43.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "830042",
+    "ThreadId": "353977",
+    "Html": "<p>Sorry for picking it up slowly.</p>\r\n<p>Problem solved after following your instructions.</p>\r\n<p>Much appreciated.</p>",
+    "PostedDate": "2012-04-29T21:55:27.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

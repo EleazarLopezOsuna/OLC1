@@ -1,0 +1,83 @@
+<div class="wikidoc"><div style="color:Black;background-color:White;"><pre>
+
+<span style="color:Blue;">using</span> System;
+<span style="color:Blue;">using</span> System.Collections.Generic;
+<span style="color:Blue;">using</span> System.Text;
+<span style="color:Blue;">using</span> Irony.Parsing;
+<span style="color:Blue;">using</span> Irony.Ast;
+
+<span style="color:Blue;">namespace</span> Irony.Samples {
+  <span style="color:Green;">// This grammar describes programs that consist of simple expressions and assignments</span>
+  <span style="color:Green;">// for ex:</span>
+  <span style="color:Green;">// x = 3</span>
+  <span style="color:Green;">// y = -x + 5</span>
+  <span style="color:Green;">//  the result of calculation is the result of last expression or assignment.</span>
+  <span style="color:Green;">//  Irony&#39;s default  runtime provides expression evaluation. </span>
+  <span style="color:Green;">//  supports inc/dec operators (++,--), both prefix and postfix,</span>
+  <span style="color:Green;">//  and combined assignment operators like +=, -=, etc.</span>
+
+  [Language(<span style="color:#A31515;">&quot;ExpressionEvaluator&quot;</span>, <span style="color:#A31515;">&quot;1.0&quot;</span>, <span style="color:#A31515;">&quot;Multi-line expression evaluator&quot;</span>)]
+  <span style="color:Blue;">public</span> <span style="color:Blue;">class</span> ExpressionEvaluatorGrammar : Irony.Parsing.Grammar {
+    <span style="color:Blue;">public</span> ExpressionEvaluatorGrammar() {
+
+      <span style="color:Green;">// 1. Terminals</span>
+      <span style="color:Blue;">var</span> number = <span style="color:Blue;">new</span> NumberLiteral(<span style="color:#A31515;">&quot;number&quot;</span>);
+      <span style="color:Green;">//Let&#39;s allow big integers (with unlimited number of digits):</span>
+      number.DefaultIntTypes = <span style="color:Blue;">new</span> TypeCode[] { TypeCode.Int32, TypeCode.Int64, NumberLiteral.TypeCodeBigInt };
+      <span style="color:Blue;">var</span> identifier = <span style="color:Blue;">new</span> IdentifierTerminal(<span style="color:#A31515;">&quot;identifier&quot;</span>);
+      <span style="color:Blue;">var</span> comment = <span style="color:Blue;">new</span> CommentTerminal(<span style="color:#A31515;">&quot;comment&quot;</span>, <span style="color:#A31515;">&quot;#&quot;</span>, <span style="color:#A31515;">&quot;\n&quot;</span>, <span style="color:#A31515;">&quot;\r&quot;</span>); 
+      <span style="color:Green;">//comment must to be added to NonGrammarTerminals list; it is not used directly in grammar rules,</span>
+      <span style="color:Green;">// so we add it to this list to let Scanner know that it is also a valid terminal. </span>
+      <span style="color:Blue;">base</span>.NonGrammarTerminals.Add(comment);
+
+      <span style="color:Green;">// 2. Non-terminals</span>
+      <span style="color:Blue;">var</span> Expr = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;Expr&quot;</span>);
+      <span style="color:Blue;">var</span> Term = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;Term&quot;</span>);
+      <span style="color:Blue;">var</span> BinExpr = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;BinExpr&quot;</span>, <span style="color:Blue;">typeof</span>(BinExprNode));
+      <span style="color:Blue;">var</span> ParExpr = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;ParExpr&quot;</span>);
+      <span style="color:Blue;">var</span> UnExpr = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;UnExpr&quot;</span>, <span style="color:Blue;">typeof</span>(UnExprNode));
+      <span style="color:Blue;">var</span> UnOp = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;UnOp&quot;</span>);
+      <span style="color:Blue;">var</span> BinOp = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;BinOp&quot;</span>, <span style="color:#A31515;">&quot;operator&quot;</span>);
+      <span style="color:Blue;">var</span> PostFixExpr = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;PostFixExpr&quot;</span>, <span style="color:Blue;">typeof</span>(UnExprNode));
+      <span style="color:Blue;">var</span> PostFixOp = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;PostFixOp&quot;</span>);
+      <span style="color:Blue;">var</span> AssignmentStmt = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;AssignmentStmt&quot;</span>, <span style="color:Blue;">typeof</span>(AssigmentNode));
+      <span style="color:Blue;">var</span> AssignmentOp = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;AssignmentOp&quot;</span>, <span style="color:#A31515;">&quot;assignment operator&quot;</span>);
+      <span style="color:Blue;">var</span> Statement = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;Statement&quot;</span>);
+      <span style="color:Blue;">var</span> ProgramLine = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;ProgramLine&quot;</span>);
+      <span style="color:Blue;">var</span> Program = <span style="color:Blue;">new</span> NonTerminal(<span style="color:#A31515;">&quot;Program&quot;</span>, <span style="color:Blue;">typeof</span>(StatementListNode));
+
+      <span style="color:Green;">// 3. BNF rules</span>
+      Expr.Rule = Term | UnExpr | BinExpr | PostFixExpr;
+      Term.Rule = number | ParExpr | identifier;
+      ParExpr.Rule = <span style="color:#A31515;">&quot;(&quot;</span> + Expr + <span style="color:#A31515;">&quot;)&quot;</span>;
+      UnExpr.Rule = UnOp + Term;
+      UnOp.Rule = ToTerm(<span style="color:#A31515;">&quot;+&quot;</span>) | <span style="color:#A31515;">&quot;-&quot;</span> | <span style="color:#A31515;">&quot;++&quot;</span> | <span style="color:#A31515;">&quot;--&quot;</span>;
+      BinExpr.Rule = Expr + BinOp + Expr;
+      BinOp.Rule = ToTerm(<span style="color:#A31515;">&quot;+&quot;</span>) | <span style="color:#A31515;">&quot;-&quot;</span> | <span style="color:#A31515;">&quot;*&quot;</span> | <span style="color:#A31515;">&quot;/&quot;</span> | <span style="color:#A31515;">&quot;**&quot;</span>;
+      PostFixExpr.Rule = Term + PostFixOp;
+      PostFixOp.Rule = ToTerm(<span style="color:#A31515;">&quot;++&quot;</span>) | <span style="color:#A31515;">&quot;--&quot;</span>;
+      AssignmentStmt.Rule = identifier + AssignmentOp + Expr;
+      AssignmentOp.Rule = ToTerm(<span style="color:#A31515;">&quot;=&quot;</span>) | <span style="color:#A31515;">&quot;+=&quot;</span> | <span style="color:#A31515;">&quot;-=&quot;</span> | <span style="color:#A31515;">&quot;*=&quot;</span> | <span style="color:#A31515;">&quot;/=&quot;</span>;
+      Statement.Rule = AssignmentStmt | Expr | Empty;
+      ProgramLine.Rule = Statement + NewLine;
+      Program.Rule = MakeStarRule(Program, ProgramLine);
+      <span style="color:Blue;">this</span>.Root = Program;       <span style="color:Green;">// Set grammar root</span>
+
+      <span style="color:Green;">// 4. Operators precedence</span>
+      RegisterOperators(1, <span style="color:#A31515;">&quot;+&quot;</span>, <span style="color:#A31515;">&quot;-&quot;</span>);
+      RegisterOperators(2, <span style="color:#A31515;">&quot;*&quot;</span>, <span style="color:#A31515;">&quot;/&quot;</span>);
+      RegisterOperators(3, Associativity.Right, <span style="color:#A31515;">&quot;**&quot;</span>);
+
+      <span style="color:Green;">// 5. Punctuation and transient terms</span>
+      RegisterPunctuation(<span style="color:#A31515;">&quot;(&quot;</span>, <span style="color:#A31515;">&quot;)&quot;</span>);
+      RegisterBracePair(<span style="color:#A31515;">&quot;(&quot;</span>, <span style="color:#A31515;">&quot;)&quot;</span>); 
+      MarkTransient(Term, Expr, Statement, BinOp, UnOp, PostFixOp, AssignmentOp, ProgramLine, ParExpr);
+
+      <span style="color:Green;">//automatically add NewLine before EOF so that our BNF rules work correctly when there&#39;s no final line break in source</span>
+      <span style="color:Blue;">this</span>.LanguageFlags = LanguageFlags.CreateAst | LanguageFlags.NewLineBeforeEOF | LanguageFlags.CanRunSample; 
+
+    }
+  }
+}<span style="color:Green;">//namespace</span>
+
+</pre></div></div><div class="ClearBoth"></div>

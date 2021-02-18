@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "240976",
+    "ThreadId": "70731",
+    "Html": "<p>Digging through Irony source, I found FreeTextLiteral, which seems what I need for the following case:</p>\r\n<pre>element type 1000 some description here\r\n{\r\n}</pre>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">var</span> number = <span style=\"color:Blue\">new</span> NumberLiteral(<span style=\"color:#A31515\">&quot;number&quot;</span>);\r\n<span style=\"color:Blue\">var</span> freeTextLiteral = <span style=\"color:Blue\">new</span> FreeTextLiteral(<span style=\"color:#A31515\">&quot;freeTextLiteral&quot;</span>, <span style=\"color:#A31515\">&quot;\\n&quot;</span>, <span style=\"color:#A31515\">&quot;\\r&quot;</span>, Environment.NewLine);\r\n<span style=\"color:Blue\">var</span> header.Rule = symbol(<span style=\"color:#A31515\">&quot;element&quot;</span>) + symbol(<span style=\"color:#A31515\">&quot;type&quot;</span>) + number + freeTextLiteral;\r\n</pre>\r\n</div>\r\n<p>I'd like to know if that's the correct way to obtain the following tokens</p>\r\n<pre>element\r\ntype\r\n1000\r\nsome description here</pre>\r\n<p>Of course I've already tried the above, but from time to time I&nbsp;get a &quot;freeTextLiteral expected&quot; compile error, especially if I add more rules to the grammar.&nbsp;</p>\r\n<p>Thanks in advance for any insight.</p>",
+    "PostedDate": "2009-10-01T09:41:05.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "241057",
+    "ThreadId": "70731",
+    "Html": "<p>Correct me if I'm wrong, but I think FreeTextLiteral is a literal that collects characters until it hits any of the provided terminating strings.&nbsp; So, I would be very careful when using this literal as you have to consider all possible scenarios.&nbsp;</p>\r\n<p>For example, is the following allowed - no description text?</p>\r\n<p>element type 1000<br> {<br> }</p>\r\n<p>If so, you could get the error you described because the absence of text isn't specified in your grammar.&nbsp; If this scenario is allowed then your grammar may look like this:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">var</span> number = <span style=\"color:Blue\">new</span> NumberLiteral(<span style=\"color:#A31515\">&quot;number&quot;</span>);\r\n<span style=\"color:Blue\">var</span> freeTextLiteral = <span style=\"color:Blue\">new</span> FreeTextLiteral(<span style=\"color:#A31515\">&quot;freeTextLiteral&quot;</span>, <span style=\"color:#A31515\">&quot;\\n&quot;</span>, <span style=\"color:#A31515\">&quot;\\r&quot;</span>, Environment.NewLine);\r\n\r\n<span style=\"color:Blue\">var</span> description = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;description&quot;</span>);\r\ndescription.Rule = Empty | freeTextLiteral;\r\n\r\n<span style=\"color:Blue\">var</span> header.Rule = symbol(<span style=\"color:#A31515\">&quot;element&quot;</span>) + symbol(<span style=\"color:#A31515\">&quot;type&quot;</span>) + number + description;\r\n\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Lastly, if the following is allowed, then you may have to consider another solution then the FreeTextLiteral.</p>\r\n<p>element type 1000 some description here {<br> }</p>\r\n<p>&nbsp;</p>\r\n<p>-mindcore</p>",
+    "PostedDate": "2009-10-01T13:50:43.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "241159",
+    "ThreadId": "70731",
+    "Html": "<p>I would agree with MindCore that &quot;no-description&quot; is a suspicioujs case - is it the case when it happens?&nbsp;In this case you should make description optional, just like Mindcore describes.</p>\r\n<p>In this case it looks like scanner passes &quot;number&quot;, then - before starting scanning description - it eats all whitespace chars, which include \\n char.&nbsp;So when it is ready to scan description it is positioned at &quot;{&quot; char - therefore the error. &nbsp;</p>",
+    "PostedDate": "2009-10-01T22:57:22.24-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "241192",
+    "ThreadId": "70731",
+    "Html": "<p>Hello, and thanks for your valuable insights.</p>\r\n<p>I have no control over the original format; I am fairly sure it hasn't changed in years and will not produce edge cases such as the one MindCore described.</p>\r\n<p>Therefore, there will always be a &quot;description&quot; before a newline.</p>\r\n<p>&nbsp;</p>\r\n<p>Blocks, defined by</p>\r\n<pre>{ }</pre>\r\n<p>symbols, may or may not have a header as described above.</p>\r\n<p>Cases are:</p>\r\n<pre>element type 1000 some description here (newline) { }\r\nelement (newline) { }\r\n{ }</pre>\r\n<p>I think I already handle other cases in the grammar. It's just the &quot;description&quot; part before the newline.</p>\r\n<p><em>In this case it looks like scanner passes &quot;number&quot;, then - before starting scanning description - it eats all whitespace chars, which include \\n char.&nbsp;So when it is ready to scan description it is positioned at &quot;{&quot; char - therefore the error.</em> &nbsp;</p>\r\n<p>I guess this is what happens. You might have suggested a solution in your answers but bear with me, I'm a curious Irony user willing to learn fast. :)</p>\r\n<p>I think I'll ask about subgrammars in another thread.</p>\r\n<p>Thank you again, your help is much appreciated.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-02T01:00:28.1-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "241498",
+    "ThreadId": "70731",
+    "Html": "<p>So, if this info does not help to solve the problem then I'm afraid I need more detailed info. Probably the&nbsp;best way would be to get the entire grammar file and some failing samples (if you can share this with me at least). Contact me directly through this site, I'll reply and then you'll send the files</p>",
+    "PostedDate": "2009-10-02T13:51:48.617-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "242285",
+    "ThreadId": "70731",
+    "Html": "<p>Thanks a lot for your help, Roman. I use a very iterative approach while building the grammar as I don't have a set of BNF rules for the language I'm trying to parse, so the grammar itself is not quite complete. This is going to be a very busy period so I'm not sure when I'll be able to contact you, but I'll be sure to do so as soon as I have some spare time in the near future.</p>",
+    "PostedDate": "2009-10-05T13:11:00.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

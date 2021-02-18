@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "665055",
+    "ThreadId": "270820",
+    "Html": "\r\n<p>I am trying to get an expression like &quot;value != null&quot; to evaluate to true. I am replacing value with the string &quot;notNull&quot;. When I run this through the parser I am getting the following error:</p>\r\n<p>myFile.myMethodl:<br>\r\nIrony.Interpreter.RuntimeException : Cannot convert value from type&nbsp; to type System.String, type converter not defined.<br>\r\n&nbsp; ----&gt; System.Exception : Cannot convert value from type&nbsp; to type System.String, type converter not defined.</p>\r\n<p>I noticed in the error message that it doesn't mention what the first type is. I am guessing that is null.</p>\r\n<p>What can I do to get this working?</p>\r\n",
+    "PostedDate": "2011-08-29T14:10:11.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "665418",
+    "ThreadId": "270820",
+    "Html": "<p>what version of interpreter are you using?&nbsp;</p>",
+    "PostedDate": "2011-08-30T11:13:06.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "665455",
+    "ThreadId": "270820",
+    "Html": "<p>The one on the download page. July 5th 2011</p>",
+    "PostedDate": "2011-08-30T12:21:20.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "665878",
+    "ThreadId": "270820",
+    "Html": "<p>I have a quick simple fix, but not sure if it would work for you. Find method InitBaseTypeList in LanguageRuntime_Init.cs file. In type list, add \"null\" as the first element, like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">virtual</span> <span style=\"color: blue;\">void</span> InitBaseTypeList() {\r\n      BaseTypeSequence.Clear(); \r\n      BaseTypeSequence.AddRange(<span style=\"color: blue;\">new</span> Type[] {<span style=\"color: blue;\">null</span>, <span style=\"color: green;\">//add this null</span>\r\n        <span style=\"color: blue;\">typeof</span>(<span style=\"color: blue;\">string</span>), <span style=\"color: blue;\">typeof</span>(Complex), <span style=\"color: blue;\">typeof</span>(Double), <span style=\"color: blue;\">typeof</span>(Single), <span style=\"color: blue;\">typeof</span>(Decimal), \r\n        <span style=\"color: blue;\">typeof</span>(BigInteger), \r\n        <span style=\"color: blue;\">typeof</span>(UInt64), <span style=\"color: blue;\">typeof</span>(Int64), <span style=\"color: blue;\">typeof</span>(UInt32), <span style=\"color: blue;\">typeof</span>(Int32), <span style=\"color: blue;\">typeof</span>(UInt16), <span style=\"color: blue;\">typeof</span>(Int16), <span style=\"color: blue;\">typeof</span>(<span style=\"color: blue;\">byte</span>), <span style=\"color: blue;\">typeof</span>(<span style=\"color: blue;\">sbyte</span>), <span style=\"color: blue;\">typeof</span>(<span style=\"color: blue;\">bool</span>) \r\n      });\r\n    }\r\n\r\n</pre>\r\n</div>\r\n</p>\r\n<p>if it does not work, I have no fix for now. You see, this \"old\" interpreter was just a quick sample, not a real thing. It has many shortcomings, and I'm working on a new, real version. I would be reluctant to spend any time on fixing this old \"sample\" like code. If you need a real interpreter/evaluator - just wait a bit for a new one - please. Or start exploring it - initial draft is in latest source drop.</p>\r\n<p>Sorry for troubles</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-08-31T10:54:03.003-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "665956",
+    "ThreadId": "270820",
+    "Html": "<p>Roman,</p>\r\n<p>We found a different solution that takes care of the problem. We made a change to LanguageRuntime.cs and LanguageRuntime_Init.cs. Our changes are in bold.</p>\r\n<p>In LanguageRuntime.cs on line 143 the following change was made:<br /><strong>//If one of the types is null, use a string to compare the 2 values</strong><br /><strong>t = null;</strong><br /><strong>if (IsOneOf(t, type1, type2)) return typeof(string);<br /></strong>//First check for boolean op; some languages allow ints to be interpreted as bools in expressions<br />t = typeof(bool);<br />if (isBoolOp || IsOneOf(t, type1, type2)) return t;</p>\r\n<p>In LanguageRuntime_Init.cs in the InitTypeCoverters method the following was added:<br /><strong>//null-&gt;string</strong><br /><strong>TypeConverters.Add(null, typeof(string), value =&gt; null);</strong></p>\r\n<p>We would also like to point out that we have found some things that we feel are errors. We can have an expression with an integer == string and that will evaluate correctly. But when we have an expression like boolean == string that will throw an exception. It seems like these 2 cases should behave in the same manor.</p>",
+    "PostedDate": "2011-08-31T13:02:23.73-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "666088",
+    "ThreadId": "270820",
+    "Html": "<p>about == inconsistency - you're right, they should behave the same. I will double-check this in new interpreter</p>\r\n<p>thanks!</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-08-31T20:20:24.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

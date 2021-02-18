@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "99327",
+    "ThreadId": "29807",
+    "Html": "<em>(this is a question from discussion post in &quot;Create your first DSL&quot; article, question posted&nbsp;by RugbyLeague)</em><br>\r\nYou might be able to point me in the right direction. My language is a bit COBOLy in that you declare files etc outside the main body of the processing code - can Irony copy with such things? I have included a small test program written in my language to show how files etc are declared.<br>\r\n<br>\r\n<br>\r\n<pre>declare<br>i_urn: Int32 <br>\ti_title: string<br>\ti_forename: string<br>\ti_surname: string<br>end<br>DelimitedTextReader<br>\tname = iDelim<br>\tpathname = &quot;c:\\demextract.txt&quot;<br>\thas header record = yes<br>\tbegin<br>\t\ti_urn<br>\t\ti_title<br>\t\ti_forename<br>\t\ti_surname<br>\tend<br>end<br>DelimitedTextWriter<br>\tname = oDelim<br>\tpathname = &quot;c:\\deleteme.csv&quot;<br>\thas header record = true<br>\tforce text qualifier = yes<br>\tdelimiter = &quot;|&quot;<br>\tbegin<br>\t\ti_urn<br>\t\ti_title<br>\t\ti_forename<br>\t\ti_surname<br>\tend<br>end<br>process<br>\topen iDelim<br>\topen oDelim<br>\tloop<br>\t\tread iDelim<br>\t\tuntil eof<br>\t\t^display i_urn, &quot; - &quot;, i_title, &quot; &quot;, i_forename, &quot; &quot;, i_surname<br>\t\twrite oDelim<br>\t\t^<br>\t\tswitch<br>\t\t\tcase i_title = &quot;Mrs&quot;<br>\t\t\t\tdisplay &quot;MRS: &quot;, i_title<br>\t\t\tcase i_title = &quot;Mr&quot;<br>\t\t\t\tdisplay &quot;MR: &quot;, i_title<br>\t\t   case i_title = &quot;Ms&quot;<br>\t\t\t\tdisplay &quot;MS: &quot;, i_title<br>\t\t\tcase i_title = &quot;Miss&quot;<br>\t\t\t\tdisplay &quot;MISS: &quot;, i_title<br>\t\t\tcase i_title = &quot;Dr&quot;<br>\t\t\t\tdisplay &quot;DR: &quot;, i_title<br>\t\t\tdefault<br>\t\t\t\tdisplay &quot;DEFAULT: &quot;, i_title<br>\t\tendswitch<br>\t\t^display &quot;hello&quot;<br>\t\t^<br>\t\t#skip<br>\t\ti_forename = &quot;1000&quot;<br>\t\tif cancast i_forename to i_urn<br>\t\t\tcast i_forename to i_urn<br>\t\t\t^display i_urn<br>\t\t\ti_urn = -198<br>\t\t\tif cancast i_urn to i_forename<br>\t\t\t\tcast i_urn to i_forename<br>\t\t\t\t^display i_forename<br>\t\t\tendif<br>\t\telse<br>\t\t\t^display &quot;Can't cast&quot;<br>\t\tendif<br>\t\t#endskip<br>\t\t^<br>\tendloop<br>\tclose oDelim<br>\tclose iDelim<br>end</pre>\r\n",
+    "PostedDate": "2008-06-17T10:20:12.053-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99332",
+    "ThreadId": "29807",
+    "Html": "<p>Questions to Rugby (original poster):</p>\r\n<p>I guess newlines and indentation&nbsp;are important. Is it so?</p>\r\n<p>If yes, you need to start with&nbsp;adding CodeOutlineFilter that will recreate indentation and newLine symbols in the input stream (the scanner completely ignores the whitespace). Just write down the grammar using the Grammar.Indent, Grammar.NewLine, Grammar.Dedent terminals in BNF expressions. Then in&nbsp;your Grammar's constructor add the following statement:&nbsp;<br>\r\n<span style=\"font-size:13px\"><br>\r\nTokenFilters.Add(</span><span style=\"font-size:13px;color:#0000ff\">new</span><span style=\"font-size:13px\"> CodeOutlineFilter(</span><span style=\"font-size:13px;color:#0000ff\">true</span><span style=\"font-size:13px\">));<br>\r\n<br>\r\nLet me know how it goes, and we'll proceed from there<br>\r\nthanks<br>\r\nRoman\r\n<p>&nbsp;</p>\r\n</span>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2008-06-17T10:47:37.843-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99720",
+    "ThreadId": "29807",
+    "Html": "<p>Hi Roman,<br>\r\n<br>\r\n(I am RugbyLeague on CP)<br>\r\n<br>\r\nThanks for the reply.</p>\r\n<p>Newlines are important but indentation isn't (except for readability)</p>\r\n<p>I am currently reworking the language grammar. The language grew over time as I added new functionality in a rather haphazard way so it borrows a lot from other languages without ever having a clear grammar of its own (an advantage and a disadvantage of hand rolling the parser etc)</p>\r\n<p>I need to get the language parser/compiler/runtime translated from C++ to C# in the next couple of weeks - I love realistic deadlines :( - so&nbsp; I am planning to carry on as I am and then start to look at rewiring everything, hopefully with Irony which looks very promising.</p>\r\n<p>Thanks<br>\r\n<br>\r\nJonathan.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2008-06-19T03:47:36.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "100820",
+    "ThreadId": "29807",
+    "Html": "<p>Hi</p>\r\n<p>good luck, and let me know if you have any questions</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2008-06-25T09:22:56.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

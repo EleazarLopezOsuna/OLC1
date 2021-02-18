@@ -1,0 +1,106 @@
+[
+  {
+    "Id": "1445326",
+    "ThreadId": "645310",
+    "Html": "I have the follow grammar/langauge example (a subset of the Informix ACE Reporting Langauage), because of the syntax of the single and multi if/else combination I'm getting conflicts.\r<br />\nCan any body help?\r<br />\n<br />\n<br />\nFORMAT_SECTION \r<br />\n<br />\n// Single Line IF\r<br />\nIF expression THEN\r<br />\n  STATEMENT\r<br />\n<br />\n// Single Line IF/ELSE\r<br />\nIF expression THEN<br />\n<pre><code>STATEMENT</code></pre>\n\nELSE<br />\n<pre><code>STATEMENT\n</code></pre>\n\n// Multi Line IF\r<br />\nIF expression THEN \r<br />\n  BEGIN<br />\n<pre><code>STATEMENT\nSTATEMENT\nSTATEMENT</code></pre>\n\nEND\r<br />\n<br />\n// Multi Line IF / Single Line Else\r<br />\nIF expression THEN \r<br />\n  BEGIN<br />\n<pre><code>STATEMENT\nSTATEMENT\nSTATEMENT</code></pre>\n\nEND\r<br />\nELSE\r<br />\n  STATEMENT\r<br />\n<br />\n// Single Line IF / Multi Line ELSE\r<br />\nIF expression THEN \r<br />\n  STATEMENT\r<br />\nELSE \r<br />\n  BEGIN<br />\n<pre><code>STATEMENT\nSTATEMENT\nSTATEMENT</code></pre>\n\nEND\r<br />\n<br />\n// Multi Line IF / Multi Line ELSE\r<br />\nIF expression THEN \r<br />\n  BEGIN<br />\n<pre><code>STATEMENT\nSTATEMENT\nSTATEMENT</code></pre>\n\nEND\r<br />\nELSE \r<br />\n  BEGIN<br />\n<pre><code>STATEMENT\nSTATEMENT\nSTATEMENT</code></pre>\n\nEND\r<br />\n<br />\n<br />\nEND // END OF FORMAT_SECTION<br />\n",
+    "PostedDate": "2015-09-22T01:27:22.33-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445346",
+    "ThreadId": "645310",
+    "Html": "Concrete help can't really be provided until you post the grammar (Irony, not the language one)<br />\n<br />\nSounds like the classic <a href=\"https://en.wikipedia.org/wiki/Dangling_else\" rel=\"nofollow\">dangling else</a> problem, which causes a shift-reduce conflict in LALR parsers like Irony. If this is the case then shift would be the correct action, so insert a <code>PreferShiftHere()</code> after the if in the if-else construct:<br />\n<pre><code>Statements.Rule = Statement | &quot;begin&quot; + StatementList + &quot;end&quot;\nifelse.Rule = &quot;if&quot; + Expr + &quot;then&quot;  + Statements + PreferShiftHere() + &quot;else&quot; + Statements + &quot;end&quot;</code></pre>\n\n",
+    "PostedDate": "2015-09-22T03:08:35.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445361",
+    "ThreadId": "645310",
+    "Html": "Ok I get the idea of your syntax but can't parse a single line if<br />\nIF EXPR THEN<br />\n   STATEMENT<br />\n<br />\n<br />\nBelow is my grammar<br />\n<pre><code>        /////////////////////////////////////////////////////////////////////////////////////////////\n\n        /////////////////////////////////////////////////////////////////////////////////////////////\n        // FORMAT SECTION\n        //\n\n        ParExprSingle.Rule = Empty |  (&quot;[&quot; + intNumber + &quot;]&quot;) | (&quot;[&quot; + intNumber +&quot;,&quot; + intNumber  + &quot;]&quot;);\n        EXPR.Rule = number | variable | FUN_CALL | stringLiteral | BINARY_EXPR | &quot;(&quot; + EXPR + &quot;)&quot; | UNARY_EXPR;\n        BINARY_EXPR.Rule = EXPR + BINARY_OP + EXPR;\n        UNARY_EXPR.Rule = SIGN + EXPR;\n        SIGN.Rule = ToTerm(&quot;-&quot;) | &quot;+&quot;;\n        ASSIGN_STMT.Rule = LET + VARIABLE_OR_FUNCTION_EXPR + &quot;=&quot; + EXPR;\n\n        FUN_CALL.Rule = variable + PreferShiftHere() + &quot;(&quot; + ARG_LIST + &quot;)&quot;;\n        VARIABLE_OR_FUNCTION_EXPR.Rule = variable | FUN_CALL;\n\n        BINARY_OP.Rule = ToTerm(&quot;+&quot;) | &quot;^&quot; | &quot;-&quot; | &quot;*&quot; | &quot;/&quot; | &quot;=&quot; | &quot;&lt;=&quot; | &quot;&gt;=&quot; | &quot;&lt;&quot; | &quot;&gt;&quot; | &quot;&lt;&gt;&quot; | &quot;and&quot; | &quot;or&quot; | &quot;matches&quot;;\n\n\n        RegisterOperators(60, &quot;^&quot;);\n        RegisterOperators(50, &quot;*&quot;, &quot;/&quot;);\n        RegisterOperators(40, &quot;+&quot;, &quot;-&quot;);\n        RegisterOperators(30, &quot;=&quot;, &quot;&lt;=&quot;, &quot;&gt;=&quot;, &quot;&lt;&quot;, &quot;&gt;&quot;, &quot;&lt;&gt;&quot;);\n        RegisterOperators(20, &quot;and&quot;, &quot;or&quot;,&quot;matches&quot;);\n\n        EXPR_LIST.Rule = MakeStarRule(EXPR_LIST, EXPR);\n\n        ARG_LIST.Rule = MakePlusRule(ARG_LIST, comma, EXPR);\n        STATEMENT_LIST.Rule = MakePlusRule(STATEMENT_LIST, STATEMENT);\n\n\n        // IF / ELSE OPTIONAL COMPOUND\n        var STATEMENTS = new NonTerminal(&quot;STATEMENTS&quot;);\n        var IFELSE = new NonTerminal(&quot;ifelse&quot;);\n        STATEMENTS.Rule = STATEMENT | &quot;begin&quot; + STATEMENT_LIST + &quot;end&quot;;\n\n\n        var ELSE = new NonTerminal(&quot;ELSE&quot;);\n        ELSE.Rule = Empty | PreferShiftHere() + &quot;else&quot; + STATEMENTS + &quot;end&quot;; \n\n\n\n        IFELSE.Rule = &quot;if&quot; + EXPR + &quot;then&quot; + STATEMENTS + ELSE;\n\n\n        // A statement can be one of a number of types\n        STATEMENT.Rule = ASSIGN_STMT | PRINT_STMT | /*FOR_STMT_MULTI |*/ NEED_STMT | SKIP_STMT | SKIP_PAGE_STMT;\n\n        NEED_STMT.Rule = ToTerm(&quot;NEED&quot;) + intNumber + &quot;Lines&quot;;\n        SKIP_STMT.Rule = ToTerm(&quot;Skip &quot;) + intNumber + &quot;Lines&quot;;\n        SKIP_PAGE_STMT.Rule = &quot;Skip&quot; + &quot;to&quot; + &quot;top&quot; + &quot;of&quot; + &quot;page&quot;;\n\n\n        PRINT_STMT.Rule = ToTerm(&quot;print&quot;) + PRINT_LIST;\n        PRINT_LIST.Rule = MakeStarRule(PRINT_LIST, null, PRINT_ARG);\n        PRINT_ARG.Rule = EXPR;\n\n        LINE_CONTENT_OPT.Rule = Empty | IFELSE | STATEMENT_LIST;\n\n        ON_EVERY_RECORD.Rule = Empty | &quot;ON EVERY RECORD&quot; + LINE_CONTENT_OPT;\n\n\n        //formatSection.Rule = &quot;FORMAT&quot; + AFTER_GROUP_OF +  ON_EVERY_RECORD + END;\n        formatSection.Rule = &quot;FORMAT&quot; +  ON_EVERY_RECORD + &quot;end&quot;;\n        //\n        /////////////////////////////////////////////////////////////////////////////////////////////</code></pre>\n\n",
+    "PostedDate": "2015-09-22T05:01:33.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445369",
+    "ThreadId": "645310",
+    "Html": "This is sample code I'm trying to parse, seems after the first  statement the parsers fails when if hits the first IF  statement.\r<br />\n<br />\nFORMAT\r<br />\n<br />\nLET conlab = &quot;N&quot;\r<br />\nIF dtunit = &quot;QUANT&quot; THEN LET conlab = &quot;Y&quot;\r<br />\nIF dtunit = &quot;QWERTY&quot; THEN LET conlab = &quot;Y&quot;\r<br />\nIF dtunit = &quot;BLUM&quot; THEN LET conlab = &quot;Y&quot;\r<br />\nIF dtunit[10] = &quot;D&quot; THEN LET conlab = &quot;Y&quot;\r<br />\nIF dtprod[1,2] = &quot;HA&quot; THEN LET conlab = &quot;Y&quot;\r<br />\n<br />\nLET dat=today\r<br />\n<br />\n<br />\nIF conlab = &quot;Y&quot; AND dtassy &lt;&gt; &quot;99999.0&quot; <br />\n<pre><code>    THEN\n    BEGIN\n  PRINT hdline01,1 SPACES,&quot;Del: &quot;,hdreqd\n  PRINT &quot;&quot;\n  PRINT &quot;Order Num.: &quot;,hdorn,2 SPACES, &quot;Prod Code.:&quot;,dtprod\n  PRINT &quot;Their Ref.: &quot;,hdcord\n  PRINT &quot;&quot;\n  PRINT &quot;Prod Desc.: &quot;,dtdesc\n  PRINT &quot;&quot;\n  PRINT &quot;Qty Ordered &quot;,dtoqty USING &quot;---&amp;&quot;,\n        &quot; Label Number 1 of 1  &quot;\n  PRINT &quot;&quot;\n  LET pflag = 1\n  END\n\n  ELSE\n\n        IF conlab = &quot;N&quot; AND dtassy &lt;&gt; &quot;999999.0&quot;\n    THEN\n    BEGIN\n    FOR lcount = 1 to dtoqty\n    DO\n    BEGIN\n  PRINT hdline01,1 SPACES,&quot;Del: &quot;,hdreqd\n  PRINT &quot;&quot;\n  PRINT &quot;Order Num.: &quot;,hdorn,2 SPACES, &quot;Prod Code.:&quot;,dtprod\n  PRINT &quot;Their Ref.: &quot;,hdcord\n  PRINT &quot;&quot;\n  PRINT &quot;Prod Desc.: &quot;,dtdesc\n  PRINT &quot;&quot;\n  PRINT &quot;Qty Ordered &quot;,dtoqty USING &quot;---&amp;&quot;,\n        &quot; Label Number   &quot;,lcount USING &quot;---&amp;&quot;,&quot;   Of &quot;,\n        dtoqty USING &quot;--&amp;&quot;\n  PRINT &quot;&quot;\n  LET pflag = 1\n    END</code></pre>\n\nEND\r<br />\n<br />\nEND<br />\n",
+    "PostedDate": "2015-09-22T06:17:13.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445370",
+    "ThreadId": "645310",
+    "Html": "I've strimmed the code done to it's basic level just to process statments and if's\r<br />\nSo even with this code I have <strong>Shift-reduce conflict. State S6, lookaheads [LET PRINT]. Selected shift as preferred action.</strong>\r<br />\nI'm at a loss it make be this because of these 2 lines to add multi code lines?<br />\n<pre><code>        var LINES = new NonTerminal(&quot;LINES&quot;);\n        LINES.Rule = MakePlusRule(LINES, LINE);</code></pre>\n\n////////////////////////////////////////////////////////////////////////////////////////////////<br />\n<pre><code>        var EXPR = new NonTerminal(&quot;EXPRESSION&quot;);\n        var number = new NumberLiteral(&quot;number&quot;);\n        var stringLiteral = new StringLiteral(&quot;String_Literal&quot;, &quot;\\&quot;&quot;, StringOptions.AllowsDoubledQuote);\n        var variable = new IdentifierTerminal(&quot;Variable&quot;);\n        var BINARY_EXPR = new NonTerminal(&quot;BINARY_EXPR&quot;);\n        var BINARY_OP = new NonTerminal(&quot;BINARY_OP&quot;, &quot;operator&quot;);\n        var UNARY_EXPR = new NonTerminal(&quot;UNARY_EXPR&quot;);\n        var SIGN = new NonTerminal(&quot;SIGN&quot;);\n        var ASSIGN_STMT = new NonTerminal(&quot;ASSIGN_STMT&quot;);\n        var STATEMENT_LIST = new NonTerminal(&quot;STATEMENT_LIST&quot;);\n        var PRINT_STMT = new NonTerminal(&quot;PRINT_STMT&quot;);\n        var PRINT_ARG = new NonTerminal(&quot;PRINT_ARG&quot;);\n        var LET = ToTerm(&quot;LET&quot;);\n        var EXPR_LIST = new NonTerminal(&quot;EXPRESSION_LIST&quot;);\n        var ARG_LIST = new NonTerminal(&quot;ARG_LIST&quot;);\n        var comma = ToTerm(&quot;,&quot;);\n        var STATEMENT = new NonTerminal(&quot;STATEMENT&quot;);\n        var PRINT_LIST = new NonTerminal(&quot;PRINT_LIST&quot;);\n        var LINE_CONTENT = new NonTerminal(&quot;LINE_CONTENT&quot;);\n        var END = ToTerm(&quot;END&quot;);\n        var STATEMENTS = new NonTerminal(&quot;STATEMENTS&quot;);\n        var IF = new NonTerminal(&quot;IF&quot;);\n        var ELSE = new NonTerminal(&quot;ELSE&quot;);\n\n\n\n        EXPR.Rule = number | variable | stringLiteral | BINARY_EXPR | &quot;(&quot; + EXPR + &quot;)&quot; | UNARY_EXPR;\n        BINARY_EXPR.Rule = EXPR + BINARY_OP + EXPR;\n        UNARY_EXPR.Rule = SIGN + EXPR;\n        SIGN.Rule = ToTerm(&quot;-&quot;) | &quot;+&quot;;\n        ASSIGN_STMT.Rule = LET + variable + &quot;=&quot; + EXPR;\n\n\n        BINARY_OP.Rule = ToTerm(&quot;+&quot;) | &quot;^&quot; | &quot;-&quot; | &quot;*&quot; | &quot;/&quot; | &quot;=&quot; | &quot;&lt;=&quot; | &quot;&gt;=&quot; | &quot;&lt;&quot; | &quot;&gt;&quot; | &quot;&lt;&gt;&quot; | &quot;and&quot; | &quot;or&quot; | &quot;matches&quot;;\n\n\n        RegisterOperators(60, &quot;^&quot;);\n        RegisterOperators(50, &quot;*&quot;, &quot;/&quot;);\n        RegisterOperators(40, &quot;+&quot;, &quot;-&quot;);\n        RegisterOperators(30, &quot;=&quot;, &quot;&lt;=&quot;, &quot;&gt;=&quot;, &quot;&lt;&quot;, &quot;&gt;&quot;, &quot;&lt;&gt;&quot;);\n        RegisterOperators(20, &quot;and&quot;, &quot;or&quot;, &quot;matches&quot;);\n\n        EXPR_LIST.Rule = MakeStarRule(EXPR_LIST, EXPR);\n\n        ARG_LIST.Rule = MakePlusRule(ARG_LIST, comma, EXPR);\n        STATEMENT_LIST.Rule = MakePlusRule(STATEMENT_LIST, STATEMENT);\n\n        // IF / ELSE OPTIONAL COMPOUND\n        STATEMENTS.Rule = STATEMENT | &quot;BEGIN&quot; + STATEMENT_LIST + &quot;END&quot;;\n\n\n\n        //ELSE.Rule = Empty | PreferShiftHere() + &quot;ELSE&quot; + STATEMENTS;\n        IF.Rule = &quot;if&quot; + EXPR + &quot;then&quot; + STATEMENTS + PreferShiftHere() + &quot;else&quot; + STATEMENTS + &quot;end&quot;;\n\n\n        // A statement can be one of a number of types\n        STATEMENT.Rule = ASSIGN_STMT | PRINT_STMT; \n\n        PRINT_STMT.Rule = ToTerm(&quot;PRINT&quot;) + PRINT_LIST;\n        PRINT_LIST.Rule = MakeStarRule(PRINT_LIST, null, PRINT_ARG);\n        PRINT_ARG.Rule = EXPR;\n\n        LINE_CONTENT.Rule = IF | STATEMENT_LIST;\n\n        var LINE = new NonTerminal(&quot;LINES&quot;);\n        LINE.Rule =  LINE_CONTENT;\n\n        var LINES = new NonTerminal(&quot;LINES&quot;);\n        LINES.Rule = MakePlusRule(LINES, LINE);\n\n        this.Root = LINES;</code></pre>\n\n",
+    "PostedDate": "2015-09-22T06:20:31.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445423",
+    "ThreadId": "645310",
+    "Html": "I don't see where are delimiters (NewLine) ? You should put them in your grammar rules, most likely as extra parameter in MakePlusRule calls for Statements, StatementList nonterminals. Another thing, might be related to conflict - LINE and LINE_CONTENT are equivalent, get rid of one of them, duplicates like these can cause conflicts<br />\n",
+    "PostedDate": "2015-09-22T11:02:09.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445501",
+    "ThreadId": "645310",
+    "Html": "Hi Roman<br />\nI forgot to mention, excellent work. Just wish there was a little more docs. :)<br />\nThis work to an extent, but I throws an error when I leave a blank line bewteen a statement?<br />\nIF slrepcode = &quot;ACB&quot; THEN <br />\n<pre><code>BEGIN\n  LET rep = &quot;ANDREW COUSENS BEDROOM SALES        &quot;\n  LET acb = stot</code></pre>\n\n!!!! &lt; BLANK LINE&gt;  !!!!<br />\n<pre><code>  LET tbs = tbs+stot\nEND  \n</code></pre>\n\nIF slrepcode = &quot;ACD&quot; THEN<br />\n   BEGIN<br />\n<pre><code>  LET rep = &quot;ANDREW COUSENS DIY SALES            &quot;\n  LET acd = stot\n  LET tds = tds+stot</code></pre>\n\nEND<br />\n<pre><code>        EXPR_LIST.Rule = MakeStarRule(EXPR_LIST, EXPR);\n        ARG_LIST.Rule = MakePlusRule(ARG_LIST, comma, EXPR);\n        ASSIGN_STMT.Rule = LET + variable + &quot;=&quot; + EXPR;\n\n        STATEMENT_LIST.Rule = MakePlusRule(STATEMENT_LIST, NewLine, STATEMENT);\n\n        STATEMENTS.Rule = STATEMENT |  &quot;BEGIN&quot; + NewLine + STATEMENT_LIST + NewLine + &quot;END&quot; + NewLine;\n\n        ELSE.Rule = Empty | PreferShiftHere() + &quot;else&quot; + NewLine + STATEMENTS;\n\n        IF.Rule = &quot;if&quot; + EXPR + optionalLF+ &quot;then&quot; + NewLine + STATEMENTS + ELSE;            \n\n        STATEMENT.Rule = ASSIGN_STMT | PRINT_STMT | IF ; \n\n        LINE_CONTENT.Rule = Empty | STATEMENT_LIST + NewLine;\n\n        var LINES = new NonTerminal(&quot;LINES&quot;);\n        LINES.Rule = MakePlusRule(LINES, NewLine,  LINE_CONTENT);\n\n\n        this.Root = LINES;</code></pre>\n\n",
+    "PostedDate": "2015-09-22T23:54:27.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445671",
+    "ThreadId": "645310",
+    "Html": "that's because STATEMENT definition does not allow an empty line as a statement. I line-based languages, an empty line is an (Empty) statement, and it should be in the rules.\r<br />\n Add it there<br />\n",
+    "PostedDate": "2015-09-24T00:07:17.23-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2015-09-24T07:14:53.97-07:00"
+  },
+  {
+    "Id": "1445732",
+    "ThreadId": "645310",
+    "Html": "Thanks Roman that worked, I've almost complete the Informix ACE Report grammer.<br />\nLast final question I have the following, I need any of theme terms in any order i'm struggle to express this in Irony. Can you advise please.<br />\n<pre><code>        ON_EVERY_RECORD.Rule = Empty | &quot;ON EVERY ROW&quot; + LINES;\n        ON_EVERY_ROW.Rule = Empty | &quot;ON EVERY ROW&quot; + LINES;\n        FIRST_PAGE_HEADER.Rule = Empty | &quot;FIRST PAGE HEADER&quot; + LINES;\n        PAGE_TRAILER.Rule = Empty | &quot;PAGE TRAILER&quot; + LINES;\n        PAGE_HEADER.Rule = Empty | &quot;PAGE HEADER&quot; + LINES;\n        ON_LAST_ROW.Rule = Empty | &quot;ON LAST ROW&quot; + LINES;\n\n        formatSubSection.Rule =    PAGE_HEADER + PAGE_TRAILER + ON_EVERY_RECORD + FIRST_PAGE_HEADER + ON_LAST_ROW;\n\n        formatSection.Rule  =  &quot;FORMAT&quot; + NewLinePlus + formatSubSection + &quot;END&quot; + NewLinePlus;</code></pre>\n\nthis.Root = formatSection;<br />\n<br />\nNow an example code syntax would be<br />\n<br />\nFORMAT &lt;- MANDATORY<br />\n<br />\nON_EVERY_RECORD<br />\nstatments....<br />\n<br />\nPAGE_HEADER.<br />\nstatments....<br />\n<br />\nEND<br />\n",
+    "PostedDate": "2015-09-24T07:15:04.313-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445761",
+    "ThreadId": "645310",
+    "Html": "It seems all these headers are just another kind of statement - just add them to Statement definition<br />\n",
+    "PostedDate": "2015-09-24T09:33:27.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445768",
+    "ThreadId": "645310",
+    "Html": "So basically the syntax for is roughly\r<br />\n<br />\nFORMAT &lt;---- Mandory\r<br />\n<br />\nON EVERY ROW &lt;---- Optional Section but only can appear once\r<br />\n  STATEMENTS\r<br />\n<br />\nPAGE HEADER &lt;---- Optional Section but only can appear once\r<br />\n STATMENTS....\r<br />\n<br />\nAFTER GROUP OF ColumnName &lt;---- Optional Section but only can appear more than once but can't have the same column name\r<br />\n STATMENTS....\r<br />\n<br />\nEND\r<br />\n<br />\nOne interesting fact is that Sections don't have and END terminator but FORMAT does. These sections can appear in any order.<br />\n",
+    "PostedDate": "2015-09-24T09:53:34.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445791",
+    "ThreadId": "645310",
+    "Html": "these kind of things (sections appearing once, etc) are actually more semantic rules - so they should be ignored in grammar rules, but later checked in code, after parsing by running thru syntax tree. <br />\n",
+    "PostedDate": "2015-09-24T12:41:51.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1448157",
+    "ThreadId": "645310",
+    "Html": "Thanks I got it working perfectly, I went back to the drawing board and examined the c# syntax closely and I finally contructed the perfect grammar for my ACE Reporting Language.<br />\n",
+    "PostedDate": "2015-10-12T03:54:10.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

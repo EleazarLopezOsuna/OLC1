@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "853125",
+    "ThreadId": "360780",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Irony is an immensely useful kit. I've modified the ExpressionEvaluatorGrammar to my needs, and so far it's working pretty good. I've added operators and type converters for\r\n<em>bool </em>and <em>DateTime.</em></p>\r\n<p>However, working with null values is a bit of a pain, and I can't figure out how to handle these properly. Irony needs the\r\n<em>NoneValue </em>of the language runtime to determine, if a variable is set to nothing (i.e. defined but has no value).</p>\r\n<p>See the following simple expression: &quot;SomeDate &lt; AnotherDate&quot;</p>\r\n<p>SomeDate is <em>null</em>, so I initialize the &quot;SomeDate&quot; global with <em>NoneValue</em>, since using\r\n<em>null </em>would cause the runtime to believe that the variable does not exist.</p>\r\n<p>Evaluation of the above expression will fail, saying that I'm missing an operator between\r\n<em>NoneClass</em> and <em>DateTime</em>. In this case, I would like it to simply return false.</p>\r\n<p>How do I accomplish this?</p>\r\n<p>I can implement operators for objects of the same type (e.g. DateTime vs. DateTime), but apparently not for two different types (e.g. DateTime vs. NoneClass). Maybe I'm going about this all wrong.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>Mikkel</p>\r\n",
+    "PostedDate": "2012-06-25T01:51:56.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "853406",
+    "ThreadId": "360780",
+    "Html": "<p>I know, NoneClass might be a pain, the reason is that it is a base class for supposedly inherited custom None's (like in Python or Ruby) that would define it's behavior. I think there are two ways to accomplish what you want:</p>\r\n<p>1. The right way, but quite complicated. Enhance operator implementation lookup mechanism. When operator handler fails to find an operator implementation or converters for a pair of types (in dictionary of implmentations), it should try to find custom operator implementation on one of the classes (the one defined in c# class using \"operator\" keyword). If it finds any, it should use this. Then you can define these implementations on None class (subclass it and add operator implementations) and return false all the time. That's the way it should be done in Irony anyway.</p>\r\n<p>2. Easier path - define converters to NoneClass, the same way Irony defines and uses converter like 'int-&gt;double' for expr involving ints and doubles. &nbsp;Add the NoneClass to 'convertables' sequence there, so Irony will know that it can convert any type to None, and add actual converters there.&nbsp;Then define operators for None class, by adding them to the dictionary of implementations.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-06-25T14:36:15.243-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "853852",
+    "ThreadId": "360780",
+    "Html": "\r\n<p>Hi Roman,</p>\r\n<p>Thank you for the swift reply! As an initial experiment,&nbsp;I've gone with the second approach: adding converters from all types to NoneClass, and adding binary operators for all operations on NoneClass. Still, however, it complains. Example:</p>\r\n<p>In <strong>InitTypeConverters</strong>:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>      <span style=\"color:green\">//-&gt;NoneClass</span>\n      targetType = <span style=\"color:blue\">typeof</span>(NoneClass);\n      AddConverter(<span style=\"color:blue\">typeof</span>(<span style=\"color:blue\">string</span>), targetType, ConvertAnyToNoneValue);\n      AddConverter(<span style=\"color:blue\">typeof</span>(<span style=\"color:blue\">short</span>), targetType, ConvertAnyToNoneValue);\n      AddConverter(<span style=\"color:blue\">typeof</span>(<span style=\"color:blue\">int</span>), targetType, ConvertAnyToNoneValue);\n      <span style=\"color:green\">// etc.</span>\n</pre>\r\n</div>\r\n<p>In&nbsp;<strong>InitBinaryOperatorImplementationsForMatchedTypes</strong>:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>     <span style=\"color:green\">// NoneClass operators</span>\n     Type none = <span style=\"color:blue\">typeof</span>(NoneClass);\n     AddBinary(ExpressionType.NotEqual, none, NoneValueBinaryOperator, BoolResultConverter);\n     AddBinary(ExpressionType.Equal, none, NoneValueBinaryOperator, BoolResultConverter);\n     AddBinary(ExpressionType.GreaterThan, none, NoneValueBinaryOperator, BoolResultConverter);\n     <span style=\"color:green\">// etc.</span>\n</pre>\r\n</div>\r\n<p><strong style=\"background-color:white\">ConvertAnyToNoneValue</strong><span style=\"background-color:white\"> always returns NullValue, and\r\n</span><strong style=\"background-color:white\">NoneValueBinaryOperator&nbsp;</strong><span style=\"background-color:white\">always returns false.</span></p>\r\n<p>The expression...</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">null</span> == 1\n</pre>\r\n</div>\r\n<p><span style=\"background-color:white\">...still gives me the same error: <span style=\"color:#800000\">\r\n&quot;Operator 'Equal' is not defined for types Irony.Interpreter.NoneClass and System.Int32. At (1:1).&quot;&nbsp;</span></span></p>\r\n<p><span style=\"background-color:white\">Shouldn't it be able to determine NoneClass as a common type in this case, convert Int32 to NoneClass, and use the operators defined for NoneClass?</span></p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"background-color:white\">Thank you,</span></p>\r\n<p>Mikkel</p>\r\n",
+    "PostedDate": "2012-06-26T08:10:13.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "853931",
+    "ThreadId": "360780",
+    "Html": "<p>there's one more thing: you should add NoneClass to the _typeSequence list in LanguageRuntime. This list defines which types can be converted to other types - earlier types in the sequence are converted to later types.</p>\r\n<p>One detail: when NonClass is one of the arguments, then other arg should be converted to NoneClass - except if other arg is string. I think the expression [\"abc\" + None ] should return \"abc\". Like in c#: [ \"abc\" + null ] returns \"abc\".&nbsp;To make it work for string and plus operator, you should put NoneClass right before the string (which is last element) in _typeSequence. You should also provide converter from None to string returning empty string.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-06-26T09:59:13.663-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "854015",
+    "ThreadId": "360780",
+    "Html": "<p>Perfect, thanks again, your help is very much appreciated! It is now working almost as expected. Comparing any value to null returns false, and adding, subtracting etc. results in an empty (NoneValue) result.</p>\r\n<p>I now realize a possible downside of this: the expressions&nbsp;<strong>null == null</strong>&nbsp;and <strong>1 != null</strong>&nbsp;both return false. This mimics the behaviour of ANSI/SQL-92 standard. In c#, however, these two expressions would return true.</p>\r\n<p>I guess the only way to handle this properly is by either somehow allowing for cross-type operators implemented directly in Irony (as opposed to only matched types), or as you suggest, using operator implementations as they are defined on types in .NET.</p>\r\n<p>Lastly, for some reason it won't compare null to strings. <strong>null == \"\" </strong>fails. I would expect it to return true, since NoneValue would be converted to an empty string.</p>",
+    "PostedDate": "2012-06-26T12:45:11.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "854027",
+    "ThreadId": "360780",
+    "Html": "<p><em>... allowing for cross-type operators implemented directly in Irony (as opposed to only matched types),</em></p>\r\n<p>Well, actually you can have cross-type operators, you can add them directly for each pair of types. The mechanism you see in default init for regular operators and types is a shortcut, when you don't have to provide handler for every op, every arg1 type and arg2 type combination. Instead, you specify handler for op and matching type, plus converters from type to type, plus conversion sequence in _typeSequence - Irony engine builds all combinations. But you can explicitly add handlers for mismatching types - try it. Use null for both arg converters.</p>\r\n<p>Roman&nbsp;</p>",
+    "PostedDate": "2012-06-26T13:11:18.67-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

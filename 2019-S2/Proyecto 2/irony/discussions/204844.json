@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "417722",
+    "ThreadId": "204844",
+    "Html": "<p>I've created a simple BNF for testing purpose:</p>\r\n<p>Expr.Rule = Term | BinExpr;</p>\r\n<p>Term.Rule = identifier | number | Expr;</p>\r\n<p>BinExpr.Rule = Expr + BinOp + Expr;</p>\r\n<p>BinOp.Rule = ToTerm(&quot;&gt;&quot;) | &quot;&lt;&quot;;</p>\r\n<p>Program.Rule = MakePlusRule(Program, NewLine, Expr);</p>\r\n<p>I have successfully parsed &quot;WIDTH &gt; HEIGHT&quot;, but how do I evaluate the Ast (with the provided tree implementations for operators etc.) ?</p>\r\n<p>I always get &quot;Unknow vairable WIDTH&quot; How do I push a symbol value name WIDTH with value to evaluation context?</p>\r\n<p>context.SetValue(context.Symbols.TextToSymbol(&quot;WIDTH&quot;), 10); &lt;--- this doesn't work,</p>\r\n<p>I'm getting error Is there something else one should do to be able to push values to context?</p>\r\n<p>BTW. Awesome project :)</p>",
+    "PostedDate": "2010-03-13T01:02:51.83-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "417775",
+    "ThreadId": "204844",
+    "Html": "<p>you're right, something is broken here, I'll look into this and will try to fix it in the next drop</p>",
+    "PostedDate": "2010-03-13T09:39:33.863-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "417863",
+    "ThreadId": "204844",
+    "Html": "<p>Ok sounds great.</p>\r\n<p>So this is the way to go then:</p>\r\n<p>context.SetValue(context.Symbols.TextToSymbol(&quot;WIDTH&quot;), 10);</p>",
+    "PostedDate": "2010-03-14T00:43:31.17-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "418070",
+    "ThreadId": "204844",
+    "Html": "<p>Fixed in latest source drop. As an example, ExprEvaluatorGrammar adds &quot;pi&quot; variable to globals:</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp;public override string RunSample(ParseTree parsedSample) {</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp; &nbsp;var interpreter = new Irony.Interpreter.ScriptInterpreter(this);</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp; &nbsp;interpreter.Globals[&quot;pi&quot;] = Math.PI;</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp; &nbsp;interpreter.Evaluate(parsedSample);</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp; &nbsp;return interpreter.GetOutput();&nbsp;</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp;}</div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<pre>&nbsp;&nbsp; &nbsp;public override string RunSample(ParseTree parsedSample) {\r\n\r\n&nbsp;&nbsp; &nbsp; &nbsp;var interpreter = new Irony.Interpreter.ScriptInterpreter(this);\r\n\r\n&nbsp;&nbsp; &nbsp; &nbsp;interpreter.Globals[&quot;pi&quot;] = Math.PI;\r\n\r\n&nbsp;&nbsp; &nbsp; &nbsp;interpreter.Evaluate(parsedSample);\r\n\r\n&nbsp;&nbsp; &nbsp; &nbsp;return interpreter.GetOutput();&nbsp;\r\n\r\n&nbsp;&nbsp; &nbsp;}</pre>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<div></div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-03-14T22:21:13.097-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

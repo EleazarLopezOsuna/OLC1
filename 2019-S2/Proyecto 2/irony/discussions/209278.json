@@ -1,0 +1,114 @@
+[
+  {
+    "Id": "430788",
+    "ThreadId": "209278",
+    "Html": "<p>Hi,</p>\r\n<p>First off, thanks for making such a useful library. I am writing my first DSL using it.</p>\r\n<p>I have a question regarding intellisense / autocomplete.</p>\r\n<p>I would like to implement autocomplete in a way that, depending on the context, correct options are shown.</p>\r\n<p>For e.g. if the grammar allows to write <strong>10 + 5, </strong>i.e. a NumberLiteral + [+|-|*|/] + NumberLiteral</p>\r\n<p>When the first NumberLiteral is typed and a space is pressed I what to show a autocomplete dropdown with + , - , * , / &nbsp;in it.</p>\r\n<p>For this I need to know what NonTerminal(s) is the parser expecting / will allow after the NumberLiteral.</p>\r\n<p>If there a way to extract this information?</p>\r\n<p>... As DSL is a new things for me and I am not able to use the right&nbsp;vocabulary to express my problem better.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-14T00:00:21.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "430908",
+    "ThreadId": "209278",
+    "Html": "<p>Well, in general, to support intellisense you need to have a parser that constantly re-parses the source text (on background thread). When parser reaches the current position (carret position), you can retrieve the currently expected set of terms by looking at current parser state's ExpectedTerms property.</p>",
+    "PostedDate": "2010-04-14T06:39:49.507-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "431091",
+    "ThreadId": "209278",
+    "Html": "<p>Roman,</p>\r\n<p>Great response to a great question!&nbsp; I've always wondered how difficult it would be to implement this and you make it sound pretty straight forward.&nbsp;</p>\r\n<p>I would assume that the best way to implement this behavior is to add an event handler to your UI control that would fire when onKeyPressed occurs.&nbsp; Then the action for the event handler would first determine the ExpectedTerms based off of the character after the last Terminal or Non-Terminal depending on whether or not the last node was a Terminal or Non-Terminal. Then, depending on the interaction of the control, return the list for a drop down or populate your initial control with the remaining characters of the first ExpectedTerms.</p>\r\n<p>I may have to play around with this in the grammar explorer.&nbsp; I think this would be something great to show everyone how powerful, yet simplistic, the Irony project is.</p>\r\n<p>-MindCore</p>",
+    "PostedDate": "2010-04-14T11:59:13.477-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "431125",
+    "ThreadId": "209278",
+    "Html": "<p>Thanks Roman.&nbsp;</p>\r\n<p>Although I must confess, I have no idea how this has to be implemented, at least I know where to begin. Will update the thread if I could get this to work.</p>\r\n<p>MindCore, in case you make any progress, please share some ideas.</p>",
+    "PostedDate": "2010-04-14T12:46:03.653-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "431148",
+    "ThreadId": "209278",
+    "Html": "<p>Playing a bit more, I see what you mean. Adding this code to the end of EditorViewAdaptor.UpdateParsedSource, gave me the expected tokens at the end of the source.</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;<span style=\"color:Blue\">if</span> (newTree.ParserMessages.Count &gt; 0)\r\n&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{\r\n&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style=\"color:Blue\">foreach</span> (<span style=\"color:Blue\">var</span> msg <span style=\"color:Blue\">in</span> newTree.ParserMessages)\r\n&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{\r\n&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style=\"color:Blue\">foreach</span> (<span style=\"color:Blue\">var</span> terminal <span style=\"color:Blue\">in</span> msg.ParserState.ExpectedTerminals)\r\n\t &nbsp; &nbsp; &nbsp; &nbsp;{\r\n&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(terminal);\t\t &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\r\n\t &nbsp; &nbsp; &nbsp; &nbsp;}\r\n&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}\r\n&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}\r\n</pre>\r\n</div>\r\n<p>Now I need to only Parse the source until the current caret position, and show the suggestion based on parsing the&nbsp;<span style=\"font-family:Consolas, 'Courier New', Courier, monospace;white-space:pre\">ExpectedTerminals.</span></p>\r\n<p>So what is left is glue code and not Irony related.</p>\r\n<p>I am correct in my understanding?</p>",
+    "PostedDate": "2010-04-14T13:18:34.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "431265",
+    "ThreadId": "209278",
+    "Html": "<p>thanks for jumping in, Mindcore! Really appreciate any help answering other people's questions. I'm not always available, so the question may stay unanswered for hours and days.</p>\r\n<p>hitezh, about your code. I don't think this is quite right approach. newTree.ParserMessages is a collection of parsing errors - from entire file. First, it won't show anything if somehow at the moment the code is correct. Second, if there are syntax errors in several places, you'll collect all these places, get parser states and bundle all expected symbols together from all places. That's much more than you might actually expect in CURRENT CURSOR position.&nbsp;</p>\r\n<p>So what you need to do is catch the moment when background parser reaches current edit position. I think you can hook into TokenCreated event, and watch the token position. Once you hit current position, you retrieve parser state and remember it somewhere. Now usually intellisense is not invoked on any keystroke in any position. In VS integration package, you specify certain chars that fire drop-down - usually it is &quot;.&quot; (dot), or space. That's when you start to check the parser state in current position that you saved from background parse, and decide what to show in dropdown.</p>\r\n<p>This is just a sketch, but gives some initial direction</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-14T22:28:06.877-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "431271",
+    "ThreadId": "209278",
+    "Html": "<p>PS Mindcore - if you can cook something like this for Grammar Explorer (what you described) - I'm all for it, and would be happy to add it</p>\r\n<p>thanks</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-04-14T22:45:49.93-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "431278",
+    "ThreadId": "209278",
+    "Html": "<p>Mindcore- Our goal is also to achieve intellisense by parsing in web application. I will be more than happy if you can share your thoughts.</p>",
+    "PostedDate": "2010-04-14T22:59:38.083-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "431638",
+    "ThreadId": "209278",
+    "Html": "<p>We are&nbsp;also interested in creating intellisense for use in a data editor for our application (for simple expressions in any of four grammars).&nbsp; I will be checking back on this thread for ideas (and hopefully to contribute if I have time!).</p>",
+    "PostedDate": "2010-04-15T13:29:25.123-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432092",
+    "ThreadId": "209278",
+    "Html": "<p>Hi Roman,</p>\r\n<p>Thanks for the direction. I missed the point, since my language can have only 1 statement per file!</p>\r\n<p>I think I know know where to get the data. As suggested I am catching the TokenCreated Event and when</p>\r\n<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">+<span style=\"white-space:pre\"> </span>(e.Context.Source).Location<span style=\"white-space:pre\"> </span>{(1:14)}<span style=\"white-space:pre\"> </span>Irony.Parsing.SourceLocation</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">+<span style=\"white-space:pre\"> </span>e.Context.CurrentParserState.ExpectedTerminals<span style=\"white-space:pre\"> </span>Count = 2<span style=\"white-space:pre\"> </span>Irony.Parsing.TerminalSet</div>\r\n<p>\r\n<p>e.Context.Source.Location &gt;= current_caret_location</p>\r\n<p>I can use the save the&nbsp;e.Context.CurrentParserState.ExpectedTerminals and use them as needed.</p>\r\n<p>Does that sound right?&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<div></div>\r\n</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-16T14:33:53.413-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432098",
+    "ThreadId": "209278",
+    "Html": "<p>Sounds right. Good luck</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-16T14:53:46.473-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432099",
+    "ThreadId": "209278",
+    "Html": "<p>Hey hitezh,</p>\r\n<p>Be careful on the comparison of the Location properties.&nbsp; There is no direct way to do a greater than or equal to against two locations unless you add it to the SourceLocation class.&nbsp; This class has two properties that identify the relevant location values for the line and the column.&nbsp; This can be a little tricky if you grammar supports terminals that span multiple lines.</p>\r\n<p>Also, your approach is sound. I believe your next step would be to set up a background thread with it's own ParsingContext.&nbsp; This ParsingContext is going to be the object you tie your TokenCreated event to.&nbsp; I've started something similar and have code in place to get the CaretLocation on the GrammarExplorer.&nbsp; Hopefully I'll have something soon.</p>\r\n<p>&nbsp;</p>\r\n<p>Roman,</p>\r\n<p>Do you have any suggestions on making this as efficient as possible?&nbsp; It appears that the background parser would have to parse the entire text up until the token before the CaretLocation.&nbsp; I see this being a performance issue as a file grows larger and larger.&nbsp; I'm still trying to work through the logic but I do have much of the UI in the Grammar Explorer done; I just have to tie it into my AutoComplete subclass.</p>\r\n<p>Thanks,</p>\r\n<p>MindCore</p>",
+    "PostedDate": "2010-04-16T14:55:44.703-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432109",
+    "ThreadId": "209278",
+    "Html": "<p>I suggest not to add an extra parser on extra thread, but to use the process that colorizes tokens, which is already there. Just add the code that saves current parser state when parser goes thru current location, so parser state will be available to intellisense code</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-16T15:29:55.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432176",
+    "ThreadId": "209278",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>mindcore wrote:</strong><br><p>This can be a little tricky if you grammar supports terminals that span multiple lines.</p>\r\n</blockquote>\r\n<p>\r\nMultiline grammars are the problem, Else it is easy enough to just send the text of the current line up to the caret location to the parser, thus improving the performance. For added performance, The call to parser should happen only on a specific keypress, like dot or space or ctrl+space. Meanwhile, my experiments were using the parser from the colorizer. I am hooking the event to that parser. \r\n</p>",
+    "PostedDate": "2010-04-16T23:02:18.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

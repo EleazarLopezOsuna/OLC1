@@ -1,0 +1,130 @@
+[
+  {
+    "Id": "853944",
+    "ThreadId": "361018",
+    "Html": "\r\n<p>Hi - I'm new to Irony and was trying to build a simple 4-function calculator grammar to see how things work. Defining the grammar and parsing a test string as input seems easy enough, but I'm a bit lost when trying to add code for processing the nodes in\r\n the parse tree. Some posts say that I should define a class derived from AstNode for each type of node in the grammar, but the AstNode class doesn't seem to exist in the latest version of Irony.dll. Is there a new way of doing this? Are there any simple example\r\n projects that show how this is done?</p>\r\n<p>Many thanks.</p>\r\n",
+    "PostedDate": "2012-06-26T10:28:05.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "853954",
+    "ThreadId": "361018",
+    "Html": "<p>man... ExpressionEvaluator in samples - did you see it?</p>",
+    "PostedDate": "2012-06-26T10:52:59.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "853972",
+    "ThreadId": "361018",
+    "Html": "<p>Yes I looked at the ExpressionEvaluator, but looking at it again, I've discovered another DLL, Irony.Interpreter.dll, that I hadn't found earlier, and it seems to have AstNode in it, so will give it another try. Thanks for your reply.</p>",
+    "PostedDate": "2012-06-26T11:17:40.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "854000",
+    "ThreadId": "361018",
+    "Html": "<p>Sorry, but I'm still unable to get it to work. I've defined the grammar as follows:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>  <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> TestGrammar : Grammar\r\n  {\r\n    <span style=\"color: blue;\">public</span> TestGrammar() : <span style=\"color: blue;\">base</span>(<span style=\"color: blue;\">false</span>)  <span style=\"color: green;\">// Set CaseSensitive to false in base class</span>\r\n    {\r\n      <span style=\"color: blue;\">var</span> number = <span style=\"color: blue;\">new</span> NumberLiteral(<span style=\"color: #a31515;\">\"number\"</span>);\r\n      <span style=\"color: blue;\">var</span> BinOp = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"BinOp\"</span>);\r\n      <span style=\"color: blue;\">var</span> Statement = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"Statement\"</span>);\r\n\r\n      Statement.Rule = number + BinOp + number;\r\n      BinOp.Rule = ToTerm(<span style=\"color: #a31515;\">\"+\"</span>) | <span style=\"color: #a31515;\">\"-\"</span>;\r\n      Root = Statement;\r\n      LanguageFlags = LanguageFlags.NewLineBeforeEOF | LanguageFlags.CreateAst;\r\n    }\r\n  }\r\n</pre>\r\n<pre><br /></pre>\r\n<pre>I use the grammar in Main as follows:<br /></pre>\r\n<pre><div style=\"color: black; background-color: white;\"><pre>  <span style=\"color: blue;\">class</span> Program\r\n  {\r\n    <span style=\"color: blue;\">static</span> <span style=\"color: blue;\">void</span> Main(<span style=\"color: blue;\">string</span>[] args)\r\n    {\r\n      TestGrammar grammar = <span style=\"color: blue;\">new</span> TestGrammar();\r\n      LanguageData language = <span style=\"color: blue;\">new</span> LanguageData(grammar);\r\n      LanguageRuntime runtime = <span style=\"color: blue;\">new</span> LanguageRuntime(language);\r\n      Parser parser = <span style=\"color: blue;\">new</span> Parser(language);\r\n      ParseTree parseTree = parser.Parse(<span style=\"color: #a31515;\">\"3+4\"</span>);\r\n      ParseTreeNode root = parseTree.Root;\r\n      dispTree(root, 0);\r\n    }\r\n\r\n     <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">static</span> <span style=\"color: blue;\">void</span> dispTree(ParseTreeNode node, <span style=\"color: blue;\">int</span> level)\r\n    {\r\n      <span style=\"color: blue;\">for</span> (<span style=\"color: blue;\">int</span> i = 0; i &lt; level; i++)\r\n        Console.Write(<span style=\"color: #a31515;\">\"  \"</span>);\r\n      Console.WriteLine(node);\r\n\r\n      <span style=\"color: blue;\">foreach</span> (ParseTreeNode child <span style=\"color: blue;\">in</span> node.ChildNodes)\r\n        dispTree(child, level + 1);\r\n    }\r\n }\r\n</pre>\r\n</div>\r\n<br /></pre>\r\n<pre>However, the program hits a NullReferenceException in AstBuilder.BuildAst when attempting to process a 'number' node,&nbsp;</pre>\r\n<pre>at the line shown:</pre>\r\n<pre><br /></pre>\r\n<pre><div style=\"color: black; background-color: white;\"><pre>      <span style=\"color: blue;\">if</span> (config.NodeCreator != <span style=\"color: blue;\">null</span>) {\r\n        config.NodeCreator(Context, parseNode);\r\n        <span style=\"color: green;\">// We assume that Node creator method creates node and initializes it, so parser does not need to call </span>\r\n        <span style=\"color: green;\">// IAstNodeInit.Init() method on node object. But we do call AstNodeCreated custom event on term.</span>\r\n      } <span style=\"color: blue;\">else</span> {\r\n        <span style=\"color: green;\">//Invoke the default creator compiled when we verified the data</span>\r\n        parseNode.AstNode = config.DefaultNodeCreator(); &lt;------ Exception at this line\r\n\r\n</pre>\r\n</div>\r\nThe problem appears to be that neither NodeCreator nor DefaultNodeCreator has been set.</pre>\r\n<pre>Thanks again.</pre>\r\n</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-06-26T12:21:46.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "854006",
+    "ThreadId": "361018",
+    "Html": "<p>Look at ExpressionEvaluatorGrammar - you have to explicitly provide AstNode type to constructors of Terminals and non-terminals</p>",
+    "PostedDate": "2012-06-26T12:26:54.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "854011",
+    "ThreadId": "361018",
+    "Html": "<p>The exception occurs on processing a node of type NumberLiteral, not a Terminal or NonTerminal. In ExpressionEvaluatorGrammar, 'number' isn't declared with an explicit type. The code in&nbsp;ExpressionEvaluatorGrammar where 'number' is declared is</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>      <span style=\"color: green;\">// 1. Terminals</span>\r\n      <span style=\"color: blue;\">var</span> number = <span style=\"color: blue;\">new</span> NumberLiteral(<span style=\"color: #a31515;\">\"number\"</span>);\r\n      <span style=\"color: green;\">//Let's allow big integers (with unlimited number of digits):</span>\r\n      number.DefaultIntTypes = <span style=\"color: blue;\">new</span> TypeCode[] { TypeCode.Int32, TypeCode.Int64, NumberLiteral.TypeCodeBigInt };\r\n\r\n</pre>\r\n</div>\r\nI tried adding the line below to my own code...</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>      number.DefaultIntTypes = <span style=\"color: blue;\">new</span> TypeCode[] { TypeCode.Int32, TypeCode.Int64, NumberLiteral.TypeCodeBigInt };\r\n\r\n</pre>\r\n</div>\r\nHowever, the exception still occurs.</p>",
+    "PostedDate": "2012-06-26T12:39:17.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "854013",
+    "ThreadId": "361018",
+    "Html": "<p>NumberLiteral IS Terminal. Just copy all from expression evaluator grammar and start changing it to what you need.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-06-26T12:41:27.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "981702",
+    "ThreadId": "361018",
+    "Html": "\r\n<p>Having same problem.</p>\r\n<p>Not to be too harsh, but a NumberLiteral might be a Terminal -- but in the Expression Evaluator sample&nbsp;there is no AstNode being set on it.&nbsp;\r\n<br>\r\nThe above lines are identical to what is in the sample.&nbsp;</p>\r\n<p>Where was growe supposed to define the typed ASTNode for the Terminal token?</p>\r\n<p>Thanks.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-12-29T19:49:59.68-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1105440",
+    "ThreadId": "361018",
+    "Html": "I am having the exact same problem. Unfortunately, the Expression Evaluator sample is of little help here.<br />\n<br />\nI finally found a solution by applying the following code:<br />\n<pre><code>var number = TerminalFactory.CreateCSharpNumber(&quot;number&quot;);\nnumber.AstConfig.NodeType = typeof (MyNumber);</code></pre>\n\nWhere <code>MyNumber</code> inherits <code>IAstNodeInit</code>, however, it's not very straightforward. <br />\n<br />\nOne approach to make it more intuitive would be to extend the method <code>CreateCSharpNumber</code> with an overload taking a <code>System.Type</code> as a second argument.<br />\n<br />\nJoannes<br />\n",
+    "PostedDate": "2013-10-09T05:54:05.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1105698",
+    "ThreadId": "361018",
+    "Html": "I dealt with things like that in my Shakespeare compiler:\r<br />\n<br />\nArticle:\r<br />\n<a href=\"http://honestillusion.com/blog/2013/09/12/Shakespeare-compiler-for-NET/\" rel=\"nofollow\">http://honestillusion.com/blog/2013/09/12/Shakespeare-compiler-for-NET/</a>\r<br />\n<br />\nSource Code:\r<br />\n<a href=\"https://github.com/jamescurran/ShakespeareCompiler\" rel=\"nofollow\">https://github.com/jamescurran/ShakespeareCompiler</a><br />\n",
+    "PostedDate": "2013-10-09T13:01:28.43-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1106094",
+    "ThreadId": "361018",
+    "Html": "for standard terminals like Number, there's a default LiteralNode AST node that interpreter uses. But you can set your own explicitly. <br />\n",
+    "PostedDate": "2013-10-10T09:59:24.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1227479",
+    "ThreadId": "361018",
+    "Html": "<strong>rivantsov wrote:</strong><br />\n<blockquote>\nNumberLiteral IS Terminal. Just copy all from expression evaluator grammar and start changing it to what you need. Roman<br />\n</blockquote>\nI'm having problems with this also.  I've taken your advice and used the ExpressionEvaluatorGrammar sample as the starting point, but that doesn't seem to help.  All the code below is based on the BETA from Tue Sep 24, 2013.\r<br />\n<br />\nI've removed everything from the ExpressionEvaluatorGrammar to give just this:<br />\n<pre><code>using Irony.Interpreter;\nusing Irony.Interpreter.Ast;\nusing Irony.Parsing;\n\nnamespace FreightLanguageCompiler\n{\n    [Language(&quot;SK-ExpressionEvaluator&quot;, &quot;1.0&quot;, &quot;Multi-line expression evaluator&quot;)]\n    public class SKExpressionEvaluatorGrammar : InterpretedLanguageGrammar\n    {\n        public SKExpressionEvaluatorGrammar()\n            : base(caseSensitive: false)\n        {\n            var number = new NumberLiteral(&quot;number&quot;);\n            var Statement = new NonTerminal(&quot;Statement&quot;);\n            var Program = new NonTerminal(&quot;Program&quot;, typeof (StatementListNode));\n\n            Statement.Rule = number;\n            Program.Rule = MakePlusRule(Program, NewLine, Statement);\n\n            Root = Program; \n            MarkTransient(Statement);\n            LanguageFlags = LanguageFlags.NewLineBeforeEOF | LanguageFlags.CreateAst | LanguageFlags.SupportsBigInt;\n        }\n    }\n}</code></pre>\n\nParsing anything then gives an NRE in AstBuilder in the line shown below as DefaultNodeCreator is not assigned when called:<br />\n<pre><code>    public virtual void BuildAst(ParseTreeNode parseNode) {\n      var term = parseNode.Term;\n      if (term.Flags.IsSet(TermFlags.NoAstNode) || parseNode.AstNode != null) return; \n      //children first\n      var processChildren = !parseNode.Term.Flags.IsSet(TermFlags.AstDelayChildren) &amp;&amp; parseNode.ChildNodes.Count &gt; 0;\n      if (processChildren) {\n        var mappedChildNodes = parseNode.GetMappedChildNodes();\n        for (int i = 0; i &lt; mappedChildNodes.Count; i++)\n          BuildAst(mappedChildNodes[i]);\n      }\n      //create the node\n      //We know that either NodeCreator or DefaultNodeCreator is set; VerifyAstData create the DefaultNodeCreator\n      var config = term.AstConfig;\n      if (config.NodeCreator != null) {\n        config.NodeCreator(Context, parseNode);\n        // We assume that Node creator method creates node and initializes it, so parser does not need to call \n        // IAstNodeInit.Init() method on node object. But we do call AstNodeCreated custom event on term.\n      } else {\n        //Invoke the default creator compiled when we verified the data\n        parseNode.AstNode = config.DefaultNodeCreator();  &lt;&lt;&lt;=== NRE HERE\n        //Initialize node\n        var iInit = parseNode.AstNode as IAstNodeInit;\n        if (iInit != null)\n          iInit.Init(Context, parseNode);\n      }\n      //Invoke the event on term\n      term.OnAstNodeCreated(parseNode);\n    }//method\n</code></pre>\n\nI've tried various combinations of advice in this thread but no avail.  If I can't fix this then I'm sadly going to have to switch from Irony, which I would really prefer not to have to do! :(<br />\n",
+    "PostedDate": "2014-03-27T10:40:52.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1227491",
+    "ThreadId": "361018",
+    "Html": "believe it or not, can't reproduce it. Just downloaded Irony zip from Download page, unzipped in temp folder, copied your grammar, ran it with '15' as an input, and it works fine\r<br />\nDid you already 'hack' something inside Irony?<br />\n",
+    "PostedDate": "2014-03-27T11:08:27.05-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1227498",
+    "ThreadId": "361018",
+    "Html": "Okay, I've zipped the solution and put it here:\r<br />\n<br />\n<a href=\"http://1drv.ms/1foo2d8\" rel=\"nofollow\">http://1drv.ms/1foo2d8</a>\r<br />\n<br />\nThe class is SKExpressionEvaluatorGrammar.  Let me know if that reproduces the behaviour.<br />\n",
+    "PostedDate": "2014-03-27T11:27:39.877-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1227506",
+    "ThreadId": "361018",
+    "Html": "weeeellll, got it. In your listing of grammar above, it is inherited from InterpretedLanguageGrammar. In your zip, it derives from Grammar. And this makes all the difference.\r<br />\nNext, it does give you an error message when you try to parse: <br />\n<pre><code>_AstNodeType or AstNodeCreator is not set on non-terminals: number. Either set Term.AstConfig.NodeType, or provide default values in AstContext._\n</code></pre>\n\nLook in InterpretedLanguageGrammar, BuildAst method, it properly sets up the AstContext (instance of interpreterAstContext) - which has this default ast node setup properly. \r<br />\nSo either use InterpretedLanguageGrammar as a base, or borrow some code from it to setup things right. Or provide AstNodeType explicitly for everything.\r<br />\n I do agree that this all is quite non-intuitive, will try to fix in the next version - I'm working on big overhaul of the entire thing. \r<br />\nSorry for trouble, and thanks for the favorable review. \r<br />\nRoman<br />\n",
+    "PostedDate": "2014-03-27T11:46:23.707-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1227511",
+    "ThreadId": "361018",
+    "Html": "Yesssss, thank you! :)  That does indeed sort it.<br />\n\r<br />\nI'd agree that this part has been a bit unintuitive, but the Irony use of syntax to build the grammar is just a joy to use and really easy to pick up.  Can't wait to see the next version.\r<br />\n<br />\nI really appreciate the help and the swift response too. :)<br />\n",
+    "PostedDate": "2014-03-27T11:54:53.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

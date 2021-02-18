@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "270135",
+    "ThreadId": "78894",
+    "Html": "<p>My current DSL requires that variables be defined in lowerCamelCase. I'm currently using IdentifierTerminal, but obviously this doesn't do the trick. Does anyone have an example of camel case in Irony?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks;</p>",
+    "PostedDate": "2009-12-22T20:30:55.773-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270145",
+    "ThreadId": "78894",
+    "Html": "<p>Use IdentifierTerminal.CaseRestriction property, set it to FirstLower. Other than that, nothing you can do. Parser cannot possibly know that &quot;lowerCamelcase&quot; is wrong, and&nbsp;&quot;lowerCaseCamel&quot; is right, simply&nbsp;because it&nbsp;cannot know all&nbsp;English words and&nbsp;spellings (so it&nbsp;would know that Case is a separate word and should be capitalized)&nbsp;- unless you add a dictionary/spellcheck service.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-12-22T21:58:05.757-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270396",
+    "ThreadId": "78894",
+    "Html": "<p>I don't require it to check for actual english words/spelling; I'm gonna go with RegexBasedTerminal for my needs. Thanks.</p>",
+    "PostedDate": "2009-12-23T12:18:45.657-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270409",
+    "ThreadId": "78894",
+    "Html": "<p>Well, I don't quite understand what extra functionality regex can give you - IdentifierTerminal&nbsp;with CaseRestriction.FirstLower will give you what you need I think. Keep in mind that regex are slower than direct scanning in specialized terminals like Identifier. Well, whatever works for you. Good luck</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-12-23T12:46:20.227-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270413",
+    "ThreadId": "78894",
+    "Html": "<p>Won't IdentifierTerminal&nbsp;with CaseRestriction.FirstLower allow all of the following?</p>\r\n<p>thisisntcamelcase</p>\r\n<p>thisIscamelCase</p>\r\n<p>thisIsCamelCase</p>\r\n<p>&nbsp;</p>\r\n<p>2 and 3 work for me, but 1 doesn't</p>",
+    "PostedDate": "2009-12-23T12:54:54.61-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270415",
+    "ThreadId": "78894",
+    "Html": "<p>well, the question is - how you distinguish #1? what if identifier is a single word, so no capital letters at all?</p>",
+    "PostedDate": "2009-12-23T13:07:12.31-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270416",
+    "ThreadId": "78894",
+    "Html": "<p>And additionally, you can handle IdentifierTerminal.ValidateToken event and reject the token if you find it invalid, giving your custom error message</p>",
+    "PostedDate": "2009-12-23T13:08:29.14-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270450",
+    "ThreadId": "78894",
+    "Html": "<p>I'll use regular expressions, that way I can distinguish all of them. I'll look into ValidateToken - thanks</p>",
+    "PostedDate": "2009-12-23T15:54:45.513-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

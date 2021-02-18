@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "648253",
+    "ThreadId": "266712",
+    "Html": "<p>Hi</p>\n<p>I am trying to parse the very simple text \"1+1=2\"!</p>\n<p>An extract from my grammar is as follows:</p>\n<p><br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; expression.Rule = term Or binaryExpression Or equalityExpression <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; term.Rule = literalExpression <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; literalExpression.Rule = number Or identifier<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binaryOperator.Rule = ToTerm(\"+\") Or \"-\" Or \"/\" Or \"*\" Or \"^\"<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binaryExpression.Rule = expression + binaryOperator + expression<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equalityOperator.Rule = ToTerm(\"=\") Or \"!=\" Or \"&lt;&gt;\" Or \"&gt;=\" Or \"&lt;=\" Or \"&gt;\" Or \"&lt;\"<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equalityExpression.Rule = expression + equalityOperator + expression<br /> <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Expression precedence<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binaryExpression.Precedence = 20<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equalityExpression.Precedence = 10<br /> <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Operator precedence&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterOperators(30, \"*\", \"/\", \"%\")<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterOperators(20, \"+\", \"-\")<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterOperators(10, \"=\", \"&gt;\", \"&lt;\", \"&gt;=\", \"&lt;=\", \"&lt;&gt;\", \"!=\")</p>\n<p>Atm, the parser is producing the following tree</p>\n<p>Root: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BinaryExpression</p>\n<p>Children: LiteralExpression&nbsp;&nbsp; EqualityExpression</p>\n<p>whereas I want it to generate</p>\n<p>Root: &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; EqualityExpression</p>\n<p>Children: BinaryExpression&nbsp;&nbsp;&nbsp; LiteralExpression</p>\n<p>&nbsp;</p>\n<p>Where am I going wrong? I tried reversing the precedence betweent the binary and equality operators and expressions and it didn't seem to make any difference, so I wondered if I have set my grammar up incorrectly</p>\n<p>Many thx in advance</p>\n<p>Simon</p>",
+    "PostedDate": "2011-07-27T05:54:44.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "648368",
+    "ThreadId": "266712",
+    "Html": "<p>Seems strange, everything looks ok, except the lines:</p>\r\n<p>&nbsp;'Expression precedence<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binaryExpression.Precedence = 20<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equalityExpression.Precedence = 10</p>\r\n<p>remove these, they are not needed, you should set precedence only on operator symbols, not on non-terminals</p>",
+    "PostedDate": "2011-07-27T09:28:59.84-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "648374",
+    "ThreadId": "266712",
+    "Html": "<p>OK, thx ... I'll post my full grammar in case there is something else conflicting. As I step the code, when, in FindActionForStateAndInput, the parser is processing the \"+\" I am surprised to see the action it chooses ({Operator, shift to S21/reduce on 'listExpression  -&gt; compoundExpression '.}) in comparison to the available actions when the \"=\" is encountered ({Shift to S27}) - but this is most likely my lack of understanding - I just couldn't see why any reference was being made to listExpression in the context.</p>\n<p>Anyway, here's my grammar</p>\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Terminals<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim number = New NumberLiteral(\"number\")<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim identifier = New IdentifierTerminal(\"identifier\")<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim quotedLiteral = New StringLiteral(\"quoted\", \"'\", StringOptions.AllowsDoubledQuote)<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim comma = ToTerm(\",\", \"comma\")<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim dataitem = New RegexBasedTerminal(\"dataitem\", \"M[1-9][0-9]{0,2}E[1-9][0-9]{0,2}I[1-9][0-9]{0,2}\\b\")<br /> <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Non-terminals<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim compoundExpression = New NonTerminal(\"compoundExpression\", GetType(ExpressionNode))<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim simpleExpression = New NonTerminal(\"simpleExpression\")<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim unaryExpression = New NonTerminal(\"unaryExpression\", GetType(UnaryExpressionNode))<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim literalExpression = New NonTerminal(\"literalExpression\", GetType(LiteralExpressionNode))<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim binaryExpression = New NonTerminal(\"binaryExpression\", GetType(BinaryExpressionNode))<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim bracketedExpression = New NonTerminal(\"bracketedExpression\", GetType(BracketedExpressionNode))<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim listExpression = New NonTerminal(\"listExpression\", GetType(ListExpressionNode))<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim functionExpression = New NonTerminal(\"functionExpression\", GetType(FunctionExpressionNode))<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim unaryOperator = New NonTerminal(\"unaryOperator\", GetType(UnaryOperationNode))<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim binaryOperator = New NonTerminal(\"binaryOperator\", GetType(BinaryOperatorNode))<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim dataitemExpression = New NonTerminal(\"dataitemExpression\", GetType(DataItemExpressionNode))<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim quotedExpression = New NonTerminal(\"quotedExpression\", GetType(QuotedExpressionNode))<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim functionNameExpression = New NonTerminal(\"functionNameExpression\", GetType(FunctionNameExpressionNode))<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim equalityExpression = New NonTerminal(\"equalityExpression\", GetType(EqualityExpressionNode))<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim equalityOperator = New NonTerminal(\"equalityOperator\", GetType(EqualityOperatorNode))<br /> <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'BNF Rules<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; compoundExpression.Rule = simpleExpression Or bracketedExpression Or functionExpression Or binaryExpression Or equalityExpression Or listExpression&nbsp; <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; simpleExpression.Rule = dataitemExpression Or literalExpression Or quotedExpression Or functionNameExpression<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; literalExpression.Rule = number Or identifier<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bracketedExpression.Rule = \"(\" + compoundExpression + \")\"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binaryOperator.Rule = ToTerm(\"+\") Or \"-\" Or \"/\" Or \"*\" Or \"^\"<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binaryExpression.Rule = compoundExpression + binaryOperator + compoundExpression<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equalityOperator.Rule = ToTerm(\"=\") Or \"!=\" Or \"&lt;&gt;\" Or \"&gt;=\" Or \"&lt;=\" Or \"&gt;\" Or \"&lt;\"<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equalityExpression.Rule = compoundExpression + equalityOperator + compoundExpression<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; functionExpression.Rule = functionNameExpression + bracketedExpression<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; listExpression.Rule = MakePlusRule(listExpression, comma, compoundExpression)<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dataitemExpression.Rule = \"[\" + dataitem + \"]\" Or dataitem<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; quotedExpression.Rule = quotedLiteral<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; functionNameExpression.Rule = FunctionNames()<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /> <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Terminal priority<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; identifier.Priority = 10<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dataitem.Priority = 20<br /> <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Operator precedence&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterOperators(10, \"*\", \"/\", \"%\")<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterOperators(9, \"+\", \"-\")<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterOperators(8, \"=\", \"&gt;\", \"&lt;\", \"&gt;=\", \"&lt;=\", \"&lt;&gt;\", \"!=\", \"!&lt;\", \"!&gt;\")<br /> <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkPunctuation(\"(\", \")\", \".\")<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkTransient(simpleExpression, compoundExpression)<br /> <br /> <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.Root = compoundExpression<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.LanguageFlags = LanguageFlags.CreateAst</p>\n<p>The other thing which may (or may not be salient) is that the&nbsp; EqualityExpressionNode is inheriting from the BinaryExpressionNode</p>\n<p>Thx very much again</p>\n<p>S</p>",
+    "PostedDate": "2011-07-27T09:47:53.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "648375",
+    "ThreadId": "266712",
+    "Html": "<p>remove setting Priority on anything (identifier, dataitem) and try again</p>",
+    "PostedDate": "2011-07-27T09:51:10.93-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "648377",
+    "ThreadId": "266712",
+    "Html": "<p>another question - when you load grammar in GrammarExplorer, does it show any conflicts in Grammar Errors page?</p>",
+    "PostedDate": "2011-07-27T09:53:50.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "648379",
+    "ThreadId": "266712",
+    "Html": "<p>Thx but unfortunately it makes no difference</p>\r\n<p>S</p>",
+    "PostedDate": "2011-07-27T09:54:21.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "648382",
+    "ThreadId": "266712",
+    "Html": "<p>Thx, yes ... there are 9 grammar conflicts. Sorry, I'd been just using the VS test tool</p>",
+    "PostedDate": "2011-07-27T10:03:16.64-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "648390",
+    "ThreadId": "266712",
+    "Html": "<p>Well, that explains it. you should NOT start parsing until you fix all conflicts. Your grammar is ambiguous, and then parser chooses an arbitrary path, out of several available, and apparently not the one you like. Fix the conflicts first! Try to understand why they happen, what's their nature, fix the grammar accordingly</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-07-27T10:08:07.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "648393",
+    "ThreadId": "266712",
+    "Html": "<p>ok... I know that they are about a different product, but they do teach the nuances of writing grammars:</p>\r\n<p><a href=\"http://vimeo.com/groups/29150/videos\">http://vimeo.com/groups/29150/videos</a></p>\r\n<p>In particular, watch video 3 on operator precedence:</p>\r\n<p><a href=\"http://vimeo.com/groups/29150/videos/8138418\">http://vimeo.com/groups/29150/videos/8138418</a></p>\r\n<p>Then it will be more clear on how to refactor the code. I have written grammars using irony, in particular to decompose sql statement, including operator precedence in the where part of the select, and it works, so I know that the product is working.</p>",
+    "PostedDate": "2011-07-27T10:10:02.547-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "648398",
+    "ThreadId": "266712",
+    "Html": "<p>Thx very much</p>\r\n<p>S</p>",
+    "PostedDate": "2011-07-27T10:21:45.53-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

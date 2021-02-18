@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "484376",
+    "ThreadId": "224699",
+    "Html": "<p>First of all, kudos to the creative break through! I was able to play with this and able to create a rudimentary address parser!</p>\r\n<p>Yet, I have a simple question being a novice in this tool.</p>\r\n<p>I am a writing an address parser that scans addresses...</p>\r\n<p>1. We may have addresses &quot;123 ABC street&quot; and &quot;123 Martin Luther King Street&quot;</p>\r\n<p>2. Mine works with first case and I am having a hard time for the second..</p>\r\n<p>Here is my simple rule:</p>\r\n<p>// street address rule<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street_addr.Rule = house_nbr + street | street;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street.Rule = street_name + hPOSTDIR_E1 | <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street_name + hPOSTDIR_E2 |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street_name + hPOSTDIR_W1 |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street_name + hPOSTDIR_W2 |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street_name + hPOSTDIR_S1 |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street_name + hPOSTDIR_S2 |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street_name + hPOSTDIR_N1 |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street_name + hPOSTDIR_N2 |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street_name + hPOSTDIR_NW |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street_name + hPOSTDIR_NE |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street_name + hPOSTDIR_SW |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street_name + hPOSTDIR_SE |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street_name<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; street_name.Rule = road_literal + myNumb | //road_literal can be ROAD, RD, AVE etc etc<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; myNumb + road_literal |<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; myStreet + road_literal;</p>\r\n<p>In the above myStreet is a freetext literal.</p>\r\n<p>How will I make myStreet literal occur many times separated by space and delimited by road literal..</p>\r\n<p>This works ok for &quot;123 abc street&quot;.</p>\r\n<p>Sorry if this is too elimentary..I am looking for some guidance..</p>\r\n<p>Thanks in advance from Venkat</p>",
+    "PostedDate": "2010-08-24T14:32:11.14-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "484887",
+    "ThreadId": "224699",
+    "Html": "<p>First of all I'd recommend simplifying the grammar; for ex, you can define a nonterminal hPostDir and merge all these permutations into it, so definition of &quot;street&quot; is much simpler.</p>\r\n<p>Overall, I don't think what you ask for is possible, or easily doable. FreeTextLiteral would swallow anything it sees, including road literal. You can try to increase the priority of road literal (or lowering another one: myStreet.Priority = -10). You should try to build inambiguous grammar, so that when you manually (mentally) map some address to your grammar, you see one, single way of mapping it to grammar expressions.</p>\r\n<p>Anyway, why you try to split street name? As far as I understand, &quot;Main St SE&quot; is one thing, that's the street name, why split it more? Same goes for Rd, Pl prefixes suffixes, etc - they are all integral part of unique street name.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-25T15:35:44.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "484889",
+    "ThreadId": "224699",
+    "Html": "<p>Thank you Roman. That was pretty quick. I will try your suggestions later in the day or tomorrow.</p>\r\n<p>regarding why the street names could be what it is :</p>\r\n<p>We can have street names like &quot; martin Luther King drive&quot; etc..Multi-word string forming street names..</p>\r\n<p>I had a grammar similar to it in yacc &amp; lex...but I am more interested in seeing it all in .NET and C#..</p>\r\n<p>Will keep you updated on my progress.</p>",
+    "PostedDate": "2010-08-25T15:47:24.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "485373",
+    "ThreadId": "224699",
+    "Html": "<p>I was just starting to write this..Hence those improvements suggested by you will definitely help as things get solidified.Thanks anyways!</p>\r\n<p>When I tried with myStreetList, myStreet_part as non literals, with the following instruction, it seems it is working!</p>\r\n<p>myStreetList.Rule = MakeStarRule(myStreetList,&nbsp; myStreet);</p>\r\n<p>BTW: What is the difference between MakeStarRule &amp; MakePlusRule?</p>",
+    "PostedDate": "2010-08-26T13:14:59.137-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "485424",
+    "ThreadId": "224699",
+    "Html": "<p>Star and Plus are Kleene operators, Star is &quot;zero or more&quot;, plus is &quot;one or more&quot;</p>",
+    "PostedDate": "2010-08-26T15:52:14.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

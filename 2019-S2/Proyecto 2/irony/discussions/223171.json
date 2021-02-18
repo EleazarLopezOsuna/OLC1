@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "478974",
+    "ThreadId": "223171",
+    "Html": "<p>Hi,</p>\r\n<p>I have been using ConstantTerminal for a new grammar and I have just noticed an undesired behavior. See the following example.</p>\r\n<p>If the constant table contains two contants &quot;Number&quot; and &quot;NumberAlpha&quot; in that specific order, whenever NumberAlpha appears in the code being parsed, it will be tokenized as Number, making the &quot;Alpha&quot; part of the code to cause a parsing error.</p>\r\n<p>The only workaround I have found for this so far is creating the constant table with sorted strings from longer to shorter in length.</p>\r\n<p>If there is any other way around this, please contribute to this discussion.</p>\r\n<p>Thanks,</p>\r\n<p>Michelangelo</p>",
+    "PostedDate": "2010-08-11T01:03:45.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "480260",
+    "ThreadId": "223171",
+    "Html": "this looks like an overlook, I should make sure this auto-sort happens automatically at scanner-construction time. You have a workaround for now, so no urgent matter. An alternative is to set the Term flag AllowAlphaNumAfter (or smth like this) that prohibits such partial scanning - it would require that recognized term is not followed by a number of letter, so it's not part of bigger term. \r\nI will have a look at this\r\n",
+    "PostedDate": "2010-08-13T09:07:03.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

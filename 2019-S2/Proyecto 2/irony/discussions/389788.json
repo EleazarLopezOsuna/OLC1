@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "893886",
+    "ThreadId": "389788",
+    "Html": "\r\n<p>I'm working on a code completion problem. I'm using the ParserState.ExpectedTerminals to fill in my code completion list. However, I have a situation where I have the same terminal text/name in two different contexts. I'd like the ability to detect this\r\n context and modify the inserted text a smidgen. It seems that if I could just look at the name of the parent NonTerminal I could determine this information.</p>\r\n",
+    "PostedDate": "2012-07-31T14:00:03.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "893900",
+    "ThreadId": "389788",
+    "Html": "<p>you can inspect ParserState.BuilderData object (ParserStateData)</p>\r\n<p>It has ShiftItems set (set of LRItem) - these are productions that may be shifted in the current state. To get to non terminal:&nbsp;</p>\r\n<p>LRItem.Core.Production.LValue &nbsp;is a non-terminal on the left of the production rule (the owner of the rule)</p>\r\n<p>&nbsp;</p>\r\n<p>Note: if ParserState.BuilderData is null - then make sure you disable clearing this field at the end of parser construction. Just find where it is set to null and disable it.</p>",
+    "PostedDate": "2012-07-31T14:37:16.32-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899333",
+    "ThreadId": "389788",
+    "Html": "<p>Unfortunately BuilderData is marked internal.</p>",
+    "PostedDate": "2012-08-14T15:38:01.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899769",
+    "ThreadId": "389788",
+    "Html": "<p>change it to Public, I will think about changing it main branch</p>",
+    "PostedDate": "2012-08-15T21:44:22.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

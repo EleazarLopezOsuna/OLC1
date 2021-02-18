@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1067979",
+    "ThreadId": "449926",
+    "Html": "I'm trying to get a new binary operator symbol to work in my grammar, when there are no spaces between a number and the character.\r<br />\n<br />\nI've already gotten it to work when spaces are present, but when the spaces are absent, it tries to parse the character into a NumberLiteral, which gives me the &quot;Number cannot be followed by a letter error&quot;.\r<br />\n<br />\nI already overrode IsWhitespaceOrDelimiter() in my grammar, by that didn't work as I expected it to.\r<br />\n<br />\nHow can I make the scanner treat this as any other symbolic operator?<br />\n",
+    "PostedDate": "2013-07-13T21:30:59.04-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1067994",
+    "ThreadId": "449926",
+    "Html": "don't quite get what the problem is, please provide some examples of expressions you try to parse\r<br />\nBtw, NumberLiteral has an option 'AllowSign' - if you have this set, then scanner maybe thinking that + or - is part of 'signed number'. Turn this flag off<br />\n",
+    "PostedDate": "2013-07-13T23:37:32.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1068197",
+    "ThreadId": "449926",
+    "Html": "I was trying to implement dice rolling notation as an operator rather than it's own node:\r<br />\n<br />\nx = 2d6\r<br />\n<br />\nMeaning two random numbers between 1 and 6 added together, as if rolling a die twice.\r<br />\n<br />\nI've been able to get this to work\r<br />\n<br />\nx = 2 d 6\r<br />\n<br />\nWith spaces, but can't find a way to allow it to work without the spaces.  I was thinking of the tokenizer, and variables in the expression though, and I'm not sure this could ever work for characters allowed in an identifier.  So I think I need to either take over a symbol that's unlikely to be used in an expression in my grammar (** perhaps) or just deal with the spaces as a requirement.<br />\n",
+    "PostedDate": "2013-07-14T21:31:05.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1068209",
+    "ThreadId": "449926",
+    "Html": "NumberLiteral has an option AllowLetterAfter - try using this\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-07-14T22:07:30.04-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1068216",
+    "ThreadId": "449926",
+    "Html": "I've tried that, but then it tries to parse the letter as part of the number literal, and not as a separate token.<br />\n",
+    "PostedDate": "2013-07-14T22:51:29.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1068218",
+    "ThreadId": "449926",
+    "Html": "also, you should set KeyTerm.AllowAlphaAfterKeyword:<br />\n<pre><code>  var number = new NumberLiteral(&quot;Number&quot;, NumberOptions.AllowLetterAfter);\n  KeyTerm dOp = ToTerm(&quot;d&quot;);\n  dOp.AllowAlphaAfterKeyword = true; \n  binOp.Rule = dOp | &quot;+&quot; | &quot;-&quot; | &quot;*&quot; | &quot;/&quot;;\n</code></pre>\n\nThen it works<br />\n",
+    "PostedDate": "2013-07-14T23:00:06.12-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1068785",
+    "ThreadId": "449926",
+    "Html": "Thanks Roman, this has got me working!\r<br />\n<br />\nI had to change some things up to use the CodeOutlineFilter, in order to handle more complicated cases that confused the tokenizer into thinking d6 was an identifier when dealing with multiline scripts, but everything is working great now.<br />\n",
+    "PostedDate": "2013-07-15T21:04:34.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

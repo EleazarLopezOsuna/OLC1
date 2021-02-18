@@ -1,0 +1,266 @@
+[
+  {
+    "Id": "228694",
+    "ThreadId": "67279",
+    "Html": "<p>Hi,</p>\r\n<p>I am having a problem getting a .dll to work properly with the newest Irony dll.</p>\r\n<p>I am using Mikes Coles SearchGrammar and ConvertQuery functions and the newest Irony dll. I am using C# in Visual Studio Pro 2008 SP1. When done this will work on .NET 3.5. There is one function which accepts a google search string and returns the FTS equivalent as a string.</p>\r\n<p>I have a test app in my C#&nbsp;project and it is returning: &quot;Error in string literal [Phrase]: No start/end symbols specified.&quot;.</p>\r\n<p>I would love an idea of what to look for.</p>\r\n<p>Here is the small app with a console app that follows&nbsp;for testing:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">using</span> System;\r\n<span style=\"color:Blue\">using</span> System.Collections.Generic;\r\n<span style=\"color:Blue\">using</span> System.Linq;\r\n<span style=\"color:Blue\">using</span> System.Text;\r\n<span style=\"color:Blue\">using</span> Irony.Compiler;\r\n\r\n<span style=\"color:Blue\">namespace</span> Search\r\n{\r\n    <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> SearchGrammar : Grammar\r\n    </span>{\r\n        SearchGrammar _grammar;\r\n        LanguageCompiler _compiler;\r\n\r\n        <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">string</span> FTS(<span style=\"color:Blue\">string</span> GQry)\r\n        {\r\n            _grammar = <span style=\"color:Blue\">new</span> SearchGrammar();\r\n            _compiler = <span style=\"color:Blue\">new</span> LanguageCompiler(_grammar);\r\n            Irony.StringSet errors = _compiler.Grammar.Errors;\r\n            <span style=\"color:Blue\">if</span> (errors.Count &gt; 0)\r\n            {\r\n                <span style=\"color:Blue\">string</span> errs = <span style=\"color:#A31515\">&quot;Startup Error for &quot;</span> + GQry + <span style=\"color:#A31515\">&quot;: &quot;</span>;\r\n                <span style=\"color:Blue\">foreach</span> (<span style=\"color:Blue\">string</span> err <span style=\"color:Blue\">in</span> _compiler.Grammar.Errors)\r\n                {\r\n                    errs += err + <span style=\"color:#A31515\">&quot;\\r\\n&quot;</span>;\r\n                }\r\n                <span style=\"color:Blue\">return</span> errs;\r\n            }\r\n\r\n            <span style=\"color:Blue\">try</span>\r\n            {\r\n                <span style=\"color:Blue\">string</span> strFTS = <span style=\"color:Blue\">null</span>;\r\n                AstNode root = _compiler.Parse(GQry.ToLower());\r\n                <span style=\"color:Blue\">if</span> (!CheckParseErrors()) <span style=\"color:Blue\">return</span> <span style=\"color:#A31515\">&quot;Parse Error for &quot;</span> + GQry;\r\n                strFTS = SearchGrammar.ConvertQuery(root, SearchGrammar.TermType.Inflectional);\r\n\r\n                <span style=\"color:Blue\">return</span> strFTS;\r\n            }\r\n            <span style=\"color:Blue\">catch</span> (Exception ex)\r\n            {\r\n                System.Diagnostics.Debug.WriteLine(ex.ToString());\r\n                <span style=\"color:Blue\">return</span> <span style=\"color:#A31515\">&quot;Parse Exception for &quot;</span> + GQry;\r\n            }\r\n\r\n        }\r\n\r\n        <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">enum</span> TermType\r\n        {\r\n            Inflectional = 1,\r\n            Thesaurus = 2,\r\n            Exact = 3\r\n        }\r\n\r\n\r\n        <span style=\"color:Blue\">public</span> SearchGrammar()\r\n        {\r\n            <span style=\"color:Green\">// Terminals</span>\r\n            <span style=\"color:Blue\">var</span> Term = <span style=\"color:Blue\">new</span> IdentifierTerminal(<span style=\"color:#A31515\">&quot;Term&quot;</span>, <span style=\"color:#A31515\">&quot;!@#$%^*_'.?&quot;</span>, <span style=\"color:#A31515\">&quot;-!@#$%^*_'.?0123456789&quot;</span>);\r\n            <span style=\"color:Green\">// The following is not very imporant, but makes scanner recognize &quot;or&quot; and &quot;and&quot; as operators, not Terms</span>\r\n            <span style=\"color:Green\">// The &quot;or&quot; and &quot;and&quot; operator symbols found in grammar get higher priority in scanning and are checked</span>\r\n            <span style=\"color:Green\">// first, before the Term terminal, so Scanner produces operator token, not Term. For our purposes it does</span>\r\n            <span style=\"color:Green\">// not matter, we get around without it. </span>\r\n<span style=\"color:Green\">//            Term.Priority = Terminal.LowestPriority;</span>\r\n            <span style=\"color:Blue\">var</span> Phrase = <span style=\"color:Blue\">new</span> StringLiteral(<span style=\"color:#A31515\">&quot;Phrase&quot;</span>);\r\n\r\n            <span style=\"color:Green\">// NonTerminals</span>\r\n            <span style=\"color:Blue\">var</span> OrExpression = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;OrExpression&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> OrOperator = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;OrOperator&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> AndExpression = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;AndExpression&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> AndOperator = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;AndOperator&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> ExcludeOperator = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;ExcludeOperator&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> PrimaryExpression = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;PrimaryExpression&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> ThesaurusExpression = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;ThesaurusExpression&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> ThesaurusOperator = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;ThesaurusOperator&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> ExactOperator = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;ExactOperator&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> ExactExpression = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;ExactExpression&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> ParenthesizedExpression = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;ParenthesizedExpression&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> ProximityExpression = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;ProximityExpression&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> ProximityList = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;ProximityList&quot;</span>);\r\n\r\n            <span style=\"color:Blue\">this</span>.Root = OrExpression;\r\n            OrExpression.Rule = AndExpression\r\n                              | OrExpression + OrOperator + AndExpression;\r\n            OrOperator.Rule = Symbol(<span style=\"color:#A31515\">&quot;or&quot;</span>) | <span style=\"color:#A31515\">&quot;|&quot;</span>;\r\n            AndExpression.Rule = PrimaryExpression\r\n                               | AndExpression + AndOperator + PrimaryExpression;\r\n            AndOperator.Rule = Empty\r\n                             | <span style=\"color:#A31515\">&quot;and&quot;</span>\r\n                             | <span style=\"color:#A31515\">&quot;&amp;&quot;</span>\r\n                             | ExcludeOperator;\r\n            ExcludeOperator.Rule = Symbol(<span style=\"color:#A31515\">&quot;-&quot;</span>);\r\n            PrimaryExpression.Rule = Term\r\n                                   | ThesaurusExpression\r\n                                   | ExactExpression\r\n                                   | ParenthesizedExpression\r\n                                   | Phrase\r\n                                   | ProximityExpression;\r\n            ThesaurusExpression.Rule = ThesaurusOperator + Term;\r\n            ThesaurusOperator.Rule = Symbol(<span style=\"color:#A31515\">&quot;~&quot;</span>);\r\n            ExactExpression.Rule = ExactOperator + Term\r\n                                 | ExactOperator + Phrase;\r\n            ExactOperator.Rule = Symbol(<span style=\"color:#A31515\">&quot;+&quot;</span>);\r\n            ParenthesizedExpression.Rule = <span style=\"color:#A31515\">&quot;(&quot;</span> + OrExpression + <span style=\"color:#A31515\">&quot;)&quot;</span>;\r\n            ProximityExpression.Rule = <span style=\"color:#A31515\">&quot;&lt;&quot;</span> + ProximityList + <span style=\"color:#A31515\">&quot;&gt;&quot;</span>;\r\n\r\n            MakePlusRule(ProximityList, Term);\r\n\r\n            RegisterPunctuation(<span style=\"color:#A31515\">&quot;&lt;&quot;</span>, <span style=\"color:#A31515\">&quot;&gt;&quot;</span>, <span style=\"color:#A31515\">&quot;(&quot;</span>, <span style=\"color:#A31515\">&quot;)&quot;</span>);\r\n\r\n        }\r\n\r\n\r\n        <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">static</span> <span style=\"color:Blue\">string</span> ConvertQuery(AstNode node, TermType type)\r\n        {\r\n            <span style=\"color:Blue\">string</span> result = <span style=\"color:#A31515\">&quot;&quot;</span>;\r\n            <span style=\"color:Green\">// Note that some NonTerminals don't actually get into the AST tree, </span>\r\n            <span style=\"color:Green\">// because of some Irony's optimizations - punctuation stripping and </span>\r\n            <span style=\"color:Green\">// node bubbling. For example, ParenthesizedExpression - parentheses </span>\r\n            <span style=\"color:Green\">// symbols get stripped off as punctuation, and child expression node </span>\r\n            <span style=\"color:Green\">// (parenthesized content) replaces the parent ParExpr node (the </span>\r\n            <span style=\"color:Green\">// child is &quot;bubbled up&quot;).</span>\r\n            <span style=\"color:Blue\">switch</span> (node.Term.Name)\r\n            {\r\n                <span style=\"color:Blue\">case</span> <span style=\"color:#A31515\">&quot;OrExpression&quot;</span>:\r\n                    result = <span style=\"color:#A31515\">&quot;(&quot;</span> + ConvertQuery(node.ChildNodes[0], type) + <span style=\"color:#A31515\">&quot; OR &quot;</span> +\r\n                        ConvertQuery(node.ChildNodes[2], type) + <span style=\"color:#A31515\">&quot;)&quot;</span>;\r\n                    <span style=\"color:Blue\">break</span>;\r\n\r\n                <span style=\"color:Blue\">case</span> <span style=\"color:#A31515\">&quot;AndExpression&quot;</span>:\r\n                    AstNode tmp2 = node.ChildNodes[1];\r\n                    <span style=\"color:Blue\">string</span> opName = tmp2.Term.Name;\r\n                    <span style=\"color:Blue\">string</span> andop = <span style=\"color:#A31515\">&quot;&quot;</span>;\r\n\r\n                    <span style=\"color:Blue\">if</span> (opName == <span style=\"color:#A31515\">&quot;-&quot;</span>)\r\n                    {\r\n                        andop += <span style=\"color:#A31515\">&quot; AND NOT &quot;</span>;\r\n                    }\r\n                    <span style=\"color:Blue\">else</span>\r\n                    {\r\n                        andop = <span style=\"color:#A31515\">&quot; AND &quot;</span>;\r\n                        type = TermType.Inflectional;\r\n                    }\r\n                    result = <span style=\"color:#A31515\">&quot;(&quot;</span> + ConvertQuery(node.ChildNodes[0], type) + andop +\r\n                        ConvertQuery(node.ChildNodes[2], type) + <span style=\"color:#A31515\">&quot;)&quot;</span>;\r\n                    type = TermType.Inflectional;\r\n                    <span style=\"color:Blue\">break</span>;\r\n\r\n                <span style=\"color:Blue\">case</span> <span style=\"color:#A31515\">&quot;PrimaryExpression&quot;</span>:\r\n                    result = <span style=\"color:#A31515\">&quot;(&quot;</span> + ConvertQuery(node.ChildNodes[0], type) + <span style=\"color:#A31515\">&quot;)&quot;</span>;\r\n                    <span style=\"color:Blue\">break</span>;\r\n\r\n                <span style=\"color:Blue\">case</span> <span style=\"color:#A31515\">&quot;ProximityList&quot;</span>:\r\n                    <span style=\"color:Blue\">string</span>[] tmp = <span style=\"color:Blue\">new</span> <span style=\"color:Blue\">string</span>[node.ChildNodes.Count];\r\n                    type = TermType.Exact;\r\n                    <span style=\"color:Blue\">for</span> (<span style=\"color:Blue\">int</span> i = 0; i &lt; node.ChildNodes.Count; i++)\r\n                    {\r\n                        tmp[i] = ConvertQuery(node.ChildNodes[i], type);\r\n                    }\r\n                    result = <span style=\"color:#A31515\">&quot;(&quot;</span> + <span style=\"color:Blue\">string</span>.Join(<span style=\"color:#A31515\">&quot; NEAR &quot;</span>, tmp) + <span style=\"color:#A31515\">&quot;)&quot;</span>;\r\n                    type = TermType.Inflectional;\r\n                    <span style=\"color:Blue\">break</span>;\r\n\r\n                <span style=\"color:Blue\">case</span> <span style=\"color:#A31515\">&quot;Phrase&quot;</span>:\r\n                    result = <span style=\"color:#A31515\">'&quot;'</span> + ((Token)node).ValueString + <span style=\"color:#A31515\">'&quot;'</span>;\r\n                    <span style=\"color:Blue\">break</span>;\r\n\r\n                <span style=\"color:Blue\">case</span> <span style=\"color:#A31515\">&quot;ThesaurusExpression&quot;</span>:\r\n                    result = <span style=\"color:#A31515\">&quot; FORMSOF (THESAURUS, &quot;</span> +\r\n                        ((Token)node.ChildNodes[1]).ValueString + <span style=\"color:#A31515\">&quot;) &quot;</span>;\r\n                    <span style=\"color:Blue\">break</span>;\r\n\r\n                <span style=\"color:Blue\">case</span> <span style=\"color:#A31515\">&quot;ExactExpression&quot;</span>:\r\n                    result = <span style=\"color:#A31515\">&quot; \\&quot;&quot;</span> + ((Token)node.ChildNodes[1]).ValueString + <span style=\"color:#A31515\">&quot;\\&quot; &quot;</span>;\r\n                    <span style=\"color:Blue\">break</span>;\r\n\r\n                <span style=\"color:Blue\">case</span> <span style=\"color:#A31515\">&quot;Term&quot;</span>:\r\n                    <span style=\"color:Blue\">switch</span> (type)\r\n                    {\r\n                        <span style=\"color:Blue\">case</span> TermType.Inflectional:\r\n                            result = ((Token)node).ValueString;\r\n                            <span style=\"color:Blue\">if</span> (result.EndsWith(<span style=\"color:#A31515\">&quot;*&quot;</span>))\r\n                                result = <span style=\"color:#A31515\">&quot;\\&quot;&quot;</span> + result + <span style=\"color:#A31515\">&quot;\\&quot;&quot;</span>;\r\n                            <span style=\"color:Blue\">else</span>\r\n                                result = <span style=\"color:#A31515\">&quot; FORMSOF (INFLECTIONAL, &quot;</span> + result + <span style=\"color:#A31515\">&quot;) &quot;</span>;\r\n                            <span style=\"color:Blue\">break</span>;\r\n                        <span style=\"color:Blue\">case</span> TermType.Exact:\r\n                            result = ((Token)node).ValueString;\r\n\r\n                            <span style=\"color:Blue\">break</span>;\r\n                    }\r\n                    <span style=\"color:Blue\">break</span>;\r\n\r\n                <span style=\"color:Green\">// This should never happen, even if input string is garbage</span>\r\n                <span style=\"color:Blue\">default</span>:\r\n                    <span style=\"color:Blue\">throw</span> <span style=\"color:Blue\">new</span> ApplicationException(<span style=\"color:#A31515\">&quot;Converter failed: unexpected term: &quot;</span> +\r\n                        node.Term.Name + <span style=\"color:#A31515\">&quot;. Please investigate.&quot;</span>);\r\n\r\n            }\r\n            <span style=\"color:Blue\">return</span> result;\r\n        }\r\n\r\n        <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">bool</span> CheckParseErrors()\r\n        {\r\n            <span style=\"color:Blue\">if</span> (_compiler.Grammar.Errors.Count == 0)\r\n                <span style=\"color:Blue\">return</span> <span style=\"color:Blue\">true</span>;\r\n\r\n            <span style=\"color:Blue\">return</span> <span style=\"color:Blue\">false</span>;\r\n        }\r\n    }\r\n}\r\n\r\nConsole App:</pre>\r\n<pre><div style=\"color:Black;background-color:White\"><pre><span style=\"color:Blue\">using</span> System;\r\n<span style=\"color:Blue\">using</span> System.Collections.Generic;\r\n<span style=\"color:Blue\">using</span> System.Linq;\r\n<span style=\"color:Blue\">using</span> System.Text;\r\n<span style=\"color:Blue\">using</span> Search;\r\n\r\n<span style=\"color:Blue\">namespace</span> ConsoleApplication1\r\n{\r\n    <span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> Program\r\n    </span>{\r\n        <span style=\"color:Gray\">///</span> <span style=\"color:Gray\">&lt;summary&gt;</span>\r\n        <span style=\"color:Gray\">///</span><span style=\"color:Green\"> The main entry point for the application.</span>\r\n        <span style=\"color:Gray\">///</span> <span style=\"color:Gray\">&lt;/summary&gt;</span>\r\n        [STAThread]\r\n        <span style=\"color:Blue\">static</span> <span style=\"color:Blue\">void</span> Main()\r\n        {\r\n            SearchGrammar cls = <span style=\"color:Blue\">new</span> SearchGrammar();\r\n            <span style=\"color:Blue\">string</span> strRes = cls.FTS(<span style=\"color:#A31515\">&quot;toast -butter&quot;</span>);\r\n            Console.WriteLine(strRes.ToString());\r\n        }\r\n    }\r\n}\r\n\r\n</pre>\r\n</div>\r\n</pre>\r\n</div>",
+    "PostedDate": "2009-08-28T06:16:25.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "228739",
+    "ThreadId": "67279",
+    "Html": "<p>These 2 are definitely out of sync. The latest source version of Irony contains&nbsp;SearchGrammar in Samples assembly&nbsp;- this is updated Mike's grammar, you should use this.</p>\r\n<p>Let me know how it works, I did not have a chance to test it with real database queries</p>",
+    "PostedDate": "2009-08-28T08:33:30.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "228758",
+    "ThreadId": "67279",
+    "Html": "Hi rivantsov,<br><br>Yes, I saw that in the discussion on the article site.<br><br>I have irony-20817 source building successfully.<br><br>But when I search the 020.Irony.Samples project, or even the whole solution, I don't see SearchGrammar.<br><br>Sorry to be thick, I'm guessing that there is something there I am missing...<br><br>Bill<br><br><table width=\"100%\"><tbody><tr><td width=5 bgcolor=blue> </td><td>\r\n\r\n<span><span></span>\r\n<p>From: rivantsov</p> <div id=ThreadNotificationPostBody>\r\n<p>These 2 are definitely out of sync. The latest source version of Irony contains SearchGrammar in Samples assembly - this is updated Mike's grammar, you should use this.</p>\r\n<p>Let me know how it works, I did not have a chance to test it with real database queries</p>\r\n</div>  \r\n</td></tr></tbody></table>",
+    "PostedDate": "2009-08-28T09:18:13.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "228767",
+    "ThreadId": "67279",
+    "Html": "<p>ah, you're talking about source attached to the article? you should go to &quot;Source code&quot; page on this site and download the latest source zip. Just checked, the search grammar is there. You can see it without downloading by simply browsing the sources in the changeset</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-28T09:37:46.6-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "228773",
+    "ThreadId": "67279",
+    "Html": "<p>correction - I understand now the source of trouble - you were trying to use not source from article but alpha-version in Downloads page on this site. This doesn't work either, use latest from Source code page</p>",
+    "PostedDate": "2009-08-28T09:59:09.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "228799",
+    "ThreadId": "67279",
+    "Html": "<p>Yes, you are correct. I am now working with irony-32357 instead of irony-20817.<br> <br> I have some small problem modifying my code to work with your newest library.<br><br> This is what I have so far, but it does not work. Can you offer insight? Also, can you tell me how best to return a simple error message from the compiler class?</p>\r\n<p>When this is done, I will post it so that others will have a working version. I will also add a comment on Mike Cole's article discussion, pointing people back here.</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>        SearchGrammar _grammar;\r\n        Compiler _compiler;\r\n        CompilerContext _compilerContext;\r\n        ParseTree _parseTree;\r\n\r\n        <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">string</span> FTS(<span style=\"color:Blue\">string</span> GQry)\r\n        {\r\n            <span style=\"color:Blue\">try</span>\r\n            {\r\n                _grammar = <span style=\"color:Blue\">new</span> SearchGrammar();\r\n                _compiler = <span style=\"color:Blue\">new</span> Compiler(_grammar);\r\n                _compilerContext = <span style=\"color:Blue\">new</span> CompilerContext(_compiler);\r\n                _parseTree = <span style=\"color:Blue\">null</span>;\r\n                <span style=\"color:Blue\">string</span> strFTS = <span style=\"color:Blue\">null</span>;\r\n                _compiler.Parse(_compilerContext, GQry.ToLower(), <span style=\"color:#A31515\">&quot;&lt;source&gt;&quot;</span>);\r\n                _parseTree = _compilerContext.CurrentParseTree;\r\n                strFTS = SearchGrammar.ConvertQuery(_parseTree.Root, SearchGrammar.TermType.Inflectional);\r\n\r\n                <span style=\"color:Blue\">return</span> strFTS;\r\n            }\r\n            <span style=\"color:Blue\">catch</span> (Exception ex)\r\n            {\r\n                System.Diagnostics.Debug.WriteLine(ex.ToString());\r\n                <span style=\"color:Blue\">return</span> <span style=\"color:#A31515\">&quot;Parse Exception for &quot;</span> + GQry;\r\n            }\r\n\r\n        }\r\n\r\n</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2009-08-28T11:23:03.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "228802",
+    "ThreadId": "67279",
+    "Html": "<p>what's the error you are getting?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-28T11:38:07.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "228805",
+    "ThreadId": "67279",
+    "Html": "Object reference not set to an instance of an object.<br><br><table width=\"100%\"><tbody><tr><td width=5 bgcolor=blue> </td><td>\r\n\r\n<span><span></span>\r\n<p>From: rivantsov</p> <div id=ThreadNotificationPostBody>\r\n<p>what's the error you are getting?</p>\r\n<p> </p>\r\n</div>  \r\n</td></tr></tbody></table>",
+    "PostedDate": "2009-08-28T11:48:33.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "228819",
+    "ThreadId": "67279",
+    "Html": "<p>Error: Object reference not set to an instance of an object.</p>\r\n<p>Here is my current code with error checking. Thanks for any suggestions.</p>\r\n<p>&nbsp;</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>        SearchGrammar _grammar;\r\n        Compiler _compiler;\r\n        CompilerContext _compilerContext;\r\n        ParseTree _parseTree;\r\n\r\n\r\n        <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">string</span> FTS(<span style=\"color:Blue\">string</span> GQry)\r\n        {\r\n            <span style=\"color:Blue\">try</span> {\r\n                _grammar = <span style=\"color:Blue\">new</span> SearchGrammar();\r\n                _compiler = <span style=\"color:Blue\">new</span> Compiler(_grammar);\r\n                _compilerContext = <span style=\"color:Blue\">new</span> CompilerContext(_compiler);\r\n                _parseTree = <span style=\"color:Blue\">null</span>;\r\n                <span style=\"color:Blue\">string</span> strFTS = <span style=\"color:Blue\">null</span>;\r\n\r\n                <span style=\"color:Blue\">try</span> {\r\n                    _compiler.Parse(_compilerContext, GQry.ToLower(), <span style=\"color:#A31515\">&quot;&lt;source&gt;&quot;</span>);\r\n                }\r\n                <span style=\"color:Blue\">catch</span> (Exception ex) {\r\n                    <span style=\"color:Blue\">throw</span> <span style=\"color:Blue\">new</span> ApplicationException(<span style=\"color:#A31515\">&quot;Parse error: &quot;</span> + ex.Message.ToString());\r\n                }\r\n                <span style=\"color:Blue\">finally</span> {\r\n                    _parseTree = _compilerContext.CurrentParseTree;\r\n                    ShowCompilerErrors();\r\n                }\r\n\r\n                strFTS = SearchGrammar.ConvertQuery(_parseTree.Root, SearchGrammar.TermType.Inflectional);\r\n\r\n                <span style=\"color:Blue\">return</span> strFTS;\r\n            }\r\n            <span style=\"color:Blue\">catch</span> (Exception ex) {\r\n                System.Diagnostics.Debug.WriteLine(ex.Message.ToString());\r\n                <span style=\"color:Blue\">return</span> <span style=\"color:#A31515\">&quot;Parse Exception for &quot;</span> + GQry + <span style=\"color:#A31515\">&quot; Error: &quot;</span> + ex.Message.ToString();\r\n            }\r\n\r\n        }\r\n\r\n        <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> ShowCompilerErrors()\r\n        {\r\n            <span style=\"color:Blue\">if</span> (_parseTree == <span style=\"color:Blue\">null</span> || _parseTree.Errors.Count == 0) <span style=\"color:Blue\">return</span>;\r\n            <span style=\"color:Blue\">string</span> errs = <span style=\"color:Blue\">null</span>;\r\n            <span style=\"color:Blue\">foreach</span> (<span style=\"color:Blue\">var</span> err <span style=\"color:Blue\">in</span> _parseTree.Errors)\r\n            {\r\n                errs = err.Location.ToString() +\r\n                       <span style=\"color:#A31515\">&quot;Error: &quot;</span> + err.ToString() +\r\n                       <span style=\"color:#A31515\">&quot;Parser State: &quot;</span> + err.ParserState.ToString();\r\n\r\n            }\r\n            <span style=\"color:Blue\">throw</span> <span style=\"color:Blue\">new</span> ApplicationException(errs);\r\n        }\r\n\r\n</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2009-08-28T12:27:54.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "228837",
+    "ThreadId": "67279",
+    "Html": "<p>For now, without running the code I see one problem: you don't check errors after calling Parse method, and this might be your problem. Parser does not throw exceptions when it sees syntax error but tries to recover and&nbsp;parse further to uncover all errors - that's the behavior you see in c# compiler for example. So even if Parse method finished without exception, you should first check for errors; if there were errors, the root node might not be created at all, and that's why it blows up later in ConvertQuery</p>\r\n<p>See if it helps; if it doesn't I wil later tonight&nbsp;try to run it, right now can't do it.</p>",
+    "PostedDate": "2009-08-28T13:20:36.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "228847",
+    "ThreadId": "67279",
+    "Html": "<p>correction: you do check for errors, as I see now, but you should also check if Root node was actually created; it might not if there are errors</p>",
+    "PostedDate": "2009-08-28T13:47:56.14-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229804",
+    "ThreadId": "67279",
+    "Html": "<p>I am also having some trouble with the updated SearchGrammar that is included in the samples of the latest source code release (32357).</p>\r\n<p>The things that are not working are:</p>\r\n<ul>\r\n<li>Proximity</li>\r\n<li>Exclusion</li>\r\n<li>Wildcard</li>\r\n</ul>\r\n<p>The source download on Michael Coles's article doesn't have these problems. It uses an older version of Irony, also.</p>\r\n<p><a href=\"http://dl.getdropbox.com/u/1563210/irony_fts_problems.zip\">Here are some screenshots of the exceptions that I receive.</a></p>\r\n<p>Can you help me determine why I am having these problems?</p>",
+    "PostedDate": "2009-09-01T10:43:00.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229812",
+    "ThreadId": "67279",
+    "Html": "<p>Ok, thank you very much, that's the feedback I needed. I will investigate asap and fix it.</p>",
+    "PostedDate": "2009-09-01T10:52:40.393-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229813",
+    "ThreadId": "67279",
+    "Html": "<br>Hi there,<br><br>I also tracked the exclusion symbol (-)  to the same place where token is null.<br><br>I notice that proximity does not work also. It DOES work if you use the NEAR keyword, but does not work if you use the * (asterisk) symbol.<br><br>I did not notice yet that wildcard didn't work. Thanks ronnieoverby! Also, very nice jpgs.<br><br>best regards,<br>Bill Clark<br><br><table width=\"100%\"><tbody><tr><td width=5 bgcolor=blue> </td><td> <p>From: rivantsov</p> <div><p>Ok, thank you very much, that's the feedback I needed. I will investigate asap and fix it.</p></div> <div> <p>Read the <a href=\"http://irony.codeplex.com/Thread/View.aspx?ThreadId=67279&ANCHOR#Post229812\">full discussion online</a>.</p> <p>To add a post to this discussion, reply to this email (<a href=\"mailto:irony@discussions.codeplex.com?subject=[irony:67279]\">irony@discussions.codeplex.com</a>)</p> <p>To start a new discussion for this project, email <a href=\"mailto:irony@discussions.codeplex.com\">irony@discussions.codeplex.com</a></p> <p>You are receiving this email because you subscribed to this discussion on CodePlex. You can <a href=\"http://www.codeplex.com/site/discussions/thread/unsubscribe/67279\">unsubscribe</a> on codePlex.com.</p> <p>Please note: Images and attachments will be removed from emails. Any posts to this discussion will also be available online at codeplex.com</p> </div>  </td></tr></tbody></table>",
+    "PostedDate": "2009-09-01T11:04:38.623-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229884",
+    "ThreadId": "67279",
+    "Html": "<p>I also notice that any punctuation in a word causes a parse error, such as a comma, period, hyphen or single quote.</p>",
+    "PostedDate": "2009-09-01T13:53:08.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230302",
+    "ThreadId": "67279",
+    "Html": "<p>Just uploaded the fixed solution. There is a small SearchGrammarTest console app now for testing this grammar. Try it, let me know if something is still broken</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-09-02T10:24:57.057-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230339",
+    "ThreadId": "67279",
+    "Html": "<p>Just a couple things:</p>\r\n<p>a dash in a word acts as&nbsp;an exclusion ie: bread-basket returns ( FORMSOF (INFLECTIONAL, bread)&nbsp; AND NOT&nbsp; FORMSOF (INFLECTIONAL, basket) )</p>\r\n<p>this may just be a bug in the console app, but bread,butter returns Error: Invalid character: ',' at 1, 6</p>\r\n<p>thanks!</p>\r\n<p>Bill</p>",
+    "PostedDate": "2009-09-02T11:25:54.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230342",
+    "ThreadId": "67279",
+    "Html": "<p>What's the correct interpretation of the comma? I don't see it handled in Mike's original grammar.</p>\r\n<p>For dash - will be looking into this...</p>",
+    "PostedDate": "2009-09-02T11:34:39.093-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230346",
+    "ThreadId": "67279",
+    "Html": "<p>For a dash, just add a dash to the second parameter in term constructor in CreateTerm method:</p>\r\n<p><span style=\"font-size:x-small\">&lt;font size=&quot;2&quot;&gt;\r\n<p>&nbsp;</p>\r\n&lt;/font&gt;</span>\r\n<p><span style=\"font-size:x-small;color:#2b91af\"><span style=\"font-size:x-small;color:#2b91af\">IdentifierTerminal</span></span><span style=\"font-size:x-small\"> term = </span><span style=\"font-size:x-small;color:#0000ff\"><span style=\"font-size:x-small;color:#0000ff\">new</span></span><span style=\"font-size:x-small\"> </span><span style=\"font-size:x-small;color:#2b91af\"><span style=\"font-size:x-small;color:#2b91af\">IdentifierTerminal</span></span><span style=\"font-size:x-small\">(name, </span><span style=\"font-size:x-small;color:#a31515\"><span style=\"font-size:x-small;color:#a31515\">&quot;!@#$%^*_'.?<strong>-</strong>&quot;</span></span><span style=\"font-size:x-small\">, </span><span style=\"font-size:x-small;color:#a31515\"><span style=\"font-size:x-small;color:#a31515\">&quot;!@#$%^*_'.?0123456789&quot;</span></span><span style=\"font-size:x-small\">);</span></p>\r\n</p>\r\n<p>I will fix it here and it will be in the next upload</p>",
+    "PostedDate": "2009-09-02T11:40:17.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230348",
+    "ThreadId": "67279",
+    "Html": "<p>I think&nbsp;punctuation inside a word&nbsp;should be treated as part of the word.</p>\r\n<p>This mostly works now:</p>\r\n<p>bread.butter returns&nbsp;FORMSOF (INFLECTIONAL, bread.butter)</p>\r\n<p>bread'butter returns FORMSOF (INFLECTIONAL, bread'butter)</p>\r\n<p>but bread,butter returns the error. Also bread&quot;butter returns a similar&nbsp;error.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-02T11:47:23.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230350",
+    "ThreadId": "67279",
+    "Html": "<p>Well, I'm not sure about this - about any punctuation inside word.</p>\r\n<p>For dash, i can see the cases when dashed word&nbsp;should be treated as&nbsp;a single word, like hyphened last names; same for apostroph (Irish last names like O'Hara)</p>\r\n<p>but for comma?</p>\r\n<p>In any case, just add extra chars you want to second parameter of IdentifierTerminal</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-02T11:51:50.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230381",
+    "ThreadId": "67279",
+    "Html": "<p>OK on punctuation inside a word.</p>\r\n<p>When I add a dash to 2nd param of IdentifierTerminal, I get this:</p>\r\n<p>Enter query&gt;smith-jones<br>Result:<br>( FORMSOF (INFLECTIONAL, smith)&nbsp; AND&nbsp; FORMSOF (INFLECTIONAL, -jones) )</p>\r\n<p>Should it return (FORMSOF(INFLECTIONAL, smith-jones)) ?</p>\r\n<p>BTW: Thanks for all your help and the excellent code!</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-02T12:50:18.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230392",
+    "ThreadId": "67279",
+    "Html": "<p>Are you sure you added dash to the second, and not third parameter (- which would be wrong)?</p>\r\n<p>it all works here...</p>",
+    "PostedDate": "2009-09-02T13:05:48.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230393",
+    "ThreadId": "67279",
+    "Html": "<p>You called it. It works when the dash is in the 2nd param (not the 3rd).</p>\r\n<p>Do you want to add a message to Michael Cole's article discussion describing the latest updates or should I?</p>\r\n<p>Thanks again for everything!</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-02T13:10:37.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230400",
+    "ThreadId": "67279",
+    "Html": "<p>Please add it to article's log. Did you try it with database? or you think&nbsp;you can be confident it would work based on&nbsp;testing with my&nbsp; console app?</p>\r\n<p>thank you - for helping me&nbsp;fix it</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-09-02T13:18:38.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230401",
+    "ThreadId": "67279",
+    "Html": "<p>BTW, it would be nice to post the update of&nbsp;entier solution, including Michael's test UI app.</p>",
+    "PostedDate": "2009-09-02T13:20:25.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230409",
+    "ThreadId": "67279",
+    "Html": "<p>Yes, I have tried it with a small dataset with 5 tables and 20 fields set up&nbsp;with fts indexes.&nbsp;It works.</p>\r\n<p>My C# solution compiles to a Search.dll that calls the Irony dll. I am calling it from an aspx page. If I can, I will&nbsp;post&nbsp;it here as a zip.</p>\r\n<p>First, I will have to confirm with my boss that it is ok for me to do that.</p>\r\n<p>Bill</p>",
+    "PostedDate": "2009-09-02T13:45:38.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230451",
+    "ThreadId": "67279",
+    "Html": "<p>One little advice, just to make sure you're aware of this.</p>\r\n<p>To avoid rebuilding parser data (LanguageData)&nbsp;on each request in web app, you should build it once and save in server-wide cache, probably Application object or whatever is there for shared object. Initial data construction takes much more time (10-s of milliseconds)&nbsp;compared to actually parsing and converting the query (microseconds). Language data is immutable (well, almost, there are some mutable but thread-safe parts), so it is safe to share it between multiple parsers running on different threads.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-02T16:59:30.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230631",
+    "ThreadId": "67279",
+    "Html": "<p>Hi Roman,</p>\r\n<p>Thanks for the tip on caching. I haven't done this lately. I am working now in .net 3.5.</p>\r\n<p>I suppose, I would split my function into 2. One function would load the grammar and parser objects.</p>\r\n<p>Then another function would call the ConvertQuery function each time a translation is required.</p>\r\n<p>I think I need to also create a signed dll so I have a Public Key token to use in web.config.</p>\r\n<p>Finally, I think I need to register the loader function in the GAL using gacutil.</p>\r\n<p>Does this seem correct?</p>\r\n<p>Bill</p>",
+    "PostedDate": "2009-09-03T04:30:51.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230818",
+    "ThreadId": "67279",
+    "Html": "<p>No, you misunderstood. The first part is correct - you split into two methods.</p>\r\n<p>You don't need signed dll or mess with GAC. I'm not talking about global assembly cache - this is for cashing assemblies. I meant to cache the object instance of LanguageData inside Web server cache.</p>\r\n<p>I think we have even easier solution. You can the following static singleton property to SearchGrammar class:</p>\r\n<p>&nbsp;&nbsp; private static LanguageData _languageInstance;</p>\r\n<p>&nbsp;&nbsp; public static LanguageData LanguageInstance {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_languageInstance == null) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lock(typeof(SearchGrammar) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_languageInstance == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _languageInstance = new LanguageData(new SearchGrammar());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }//lock</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }//if<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return _languageInstance;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }//get</p>\r\n<p>&nbsp;&nbsp; }//property</p>\r\n<p>(This double-checking for null and lock in between is a standard &quot;thread-safe singleton pattern&quot;)</p>\r\n<p>Then you can create a Parser on each request:</p>\r\n<p>&nbsp;&nbsp;&nbsp; var parser = new Parser(SearchGrammar.LanguageInstance);</p>\r\n<p>In this case you will have a shared instance of language data per app domain. ASP.NET may create several domains on one server&nbsp;(possibly, not sure) but this small duplication is OK i think. The main point I think is that ASP.NET would keep domain alive for multiple requests, so static data will remain intact, and&nbsp;LanguageData can be reused again when request is processed in the same domain.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-03T12:10:28.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230888",
+    "ThreadId": "67279",
+    "Html": "<p>Hi Roman,</p>\r\n<p>That sounds good. I will try this. But not right away. I have vacation and my kids start school next week, so I will not be at the keyboard for a couple weeks.</p>\r\n<p>best regards,</p>\r\n<p>Bill</p>",
+    "PostedDate": "2009-09-03T14:28:19.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "233890",
+    "ThreadId": "67279",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>rivantsov wrote:</strong><br>\r\n<p>No, you misunderstood. The first part is correct - you split into two methods.</p>\r\n<p>You don't need signed dll or mess with GAC. I'm not talking about global assembly cache - this is for cashing assemblies. I meant to cache the object instance of LanguageData inside Web server cache.</p>\r\n<p>I think we have even easier solution. You can the following static singleton property to SearchGrammar class:</p>\r\n<p>&nbsp;&nbsp; private static LanguageData _languageInstance;</p>\r\n<p>&nbsp;&nbsp; public static LanguageData LanguageInstance {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_languageInstance == null) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lock(typeof(SearchGrammar) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_languageInstance == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _languageInstance = new LanguageData(new SearchGrammar());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }//lock</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }//if<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return _languageInstance;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }//get</p>\r\n<p>&nbsp;&nbsp; }//property</p>\r\n<p>(This double-checking for null and lock in between is a standard &quot;thread-safe singleton pattern&quot;)</p>\r\n<p>Then you can create a Parser on each request:</p>\r\n<p>&nbsp;&nbsp;&nbsp; var parser = new Parser(SearchGrammar.LanguageInstance);</p>\r\n<p>In this case you will have a shared instance of language data per app domain. ASP.NET may create several domains on one server&nbsp;(possibly, not sure) but this small duplication is OK i think. The main point I think is that ASP.NET would keep domain alive for multiple requests, so static data will remain intact, and&nbsp;LanguageData can be reused again when request is processed in the same domain.</p>\r\n<p>&nbsp;</p>\r\n<p>===============================</p>\r\n<p>I would been wrestling with signed dll's and global assemblies and it seems there is an easier method. Could you point me in the correct direction as to how to really get this into the web server cache. I have been up and down many a path and am now clear that I don't how to get this into the web server cache.</p>\r\n<p>&nbsp;</p>\r\n<p>-Michael</p>\r\n</blockquote>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-12T09:29:34.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "234147",
+    "ThreadId": "67279",
+    "Html": "<p>I don't understand what is the problem here. Doing this web server cache thing - it is performance optimization, no more. It will still work without all this, just with tiny extra delays (few milliseconds). Can you run it as is on web page?! First make it run without optimizations, then move to use this static field for LanguageData I described</p>\r\n<p>Am i missing something?</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-09-13T19:47:18.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

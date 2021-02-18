@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "839337",
+    "ThreadId": "356680",
+    "Html": "\r\n<p>Do you mind me setting up a clone git repo of irony over at github? This will allow the user of irony as a git submodule.</p>\r\n",
+    "PostedDate": "2012-05-22T04:47:19.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "839455",
+    "ThreadId": "356680",
+    "Html": "<p>no problem</p>",
+    "PostedDate": "2012-05-22T08:52:11.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "839548",
+    "ThreadId": "356680",
+    "Html": "<p>In case anybody else is interested in this, it can be found here:&nbsp;<a href=\"https://github.com/Alxandr/Irony\">https://github.com/Alxandr/Irony</a></p>\r\n<p>I'll try to keep it up to date (it's as simple as doing \"hg pull default &amp; hg push github\").</p>",
+    "PostedDate": "2012-05-22T11:34:01.663-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

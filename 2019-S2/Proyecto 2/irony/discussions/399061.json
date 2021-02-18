@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "925624",
+    "ThreadId": "399061",
+    "Html": "\r\n<div style=\"color:black; background-color:white\">Hi, the grammar</div>\r\n<div style=\"color:black; background-color:white\">&nbsp;</div>\r\n<div style=\"color:black; background-color:white\">\r\n<div style=\"color:black; background-color:white\">\r\n<pre>    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> TestGrammar : Grammar\r\n    {\r\n        <span style=\"color:blue\">public</span> TestGrammar()\r\n        {\r\n            <span style=\"color:blue\">var</span> items = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;items&quot;</span>);\r\n            <span style=\"color:blue\">var</span> item = ToTerm(<span style=\"color:#a31515\">&quot;item&quot;</span>);\r\n            <span style=\"color:blue\">var</span> delimiter = ToTerm(<span style=\"color:#a31515\">&quot;d&quot;</span>);\r\n            items.Rule = MakePlusRule(items, delimiter, item);\r\n            <span style=\"color:blue\">this</span>.Root = items;\r\n        }\r\n    }\r\n\r\n\r\n</pre>\r\n</div>\r\n&nbsp;</div>\r\n<div style=\"color:black; background-color:white\">with input &quot;item d item&quot; generates two item ParseTreeNode, but delimiter ParseTreeNode is missing, how to generate delimiter ParseTreeNode? Thanks.</div>\r\n",
+    "PostedDate": "2012-10-11T22:03:57.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "925792",
+    "ThreadId": "399061",
+    "Html": "<p><em>MakePlusRule </em>automatically tags <em>delimiter </em>as punctuation, and omits it from the Parse tree. This behaviour seems to arise from the <em>IsList </em>flag being set on the non-terminal <em>items</em>. Why do you need other behaviour? The code below shows how I tested this.</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>   <span style=\"color: blue;\">public</span> TestGrammar() {\r\n      <span style=\"color: blue;\">var</span> items = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"items\"</span>);\r\n<span style=\"color: green;\">//    items.Flags |= TermFlags.IsList;</span>\r\n      <span style=\"color: blue;\">var</span> item = ToTerm(<span style=\"color: #a31515;\">\"item\"</span>);\r\n      <span style=\"color: blue;\">var</span> delimiter = ToTerm(<span style=\"color: #a31515;\">\"d\"</span>);\r\n<span style=\"color: green;\">//    items.Rule = MakePlusRule(items, delimiter, item);</span>\r\n      items.Rule = item | items + delimiter + item;\r\n      <span style=\"color: blue;\">this</span>.Root = items;\r\n   }\r\n\r\n</pre>\r\n</div>",
+    "PostedDate": "2012-10-12T06:20:02.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "925813",
+    "ThreadId": "399061",
+    "Html": "<p>Hi pgeerkens, I'm using Irony to create a C# parser, and create Roslyn(<a href=\"http://msdn.microsoft.com/en-US/roslyn\">http://msdn.microsoft.com/en-US/roslyn</a>) syntax tree from the parse tree. In Roslyn, every terminal is important, I need delimiter ParseTreeNode. Your way works, but result&nbsp;list is not flat...</p>\r\n<div id=\"_mcePaste\" class=\"mcePaste\" style=\"position: absolute; width: 1px; height: 1px; overflow: hidden; top: 0px; left: -10000px;\">﻿</div>",
+    "PostedDate": "2012-10-12T06:56:46.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "925824",
+    "ThreadId": "399061",
+    "Html": "\r\n<p>Perhaps you can live [edit] with the the result of this grammar:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre>   <span style=\"color:blue\">public</span> TestGrammar() {\r\n      <span style=\"color:blue\">var</span> items = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;items&quot;</span>);\r\n      <span style=\"color:blue\">var</span> itemsTail = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;items&quot;</span>);\r\n\r\n      items.Flags |= TermFlags.IsList;\r\n      <span style=\"color:blue\">var</span> item = ToTerm(<span style=\"color:#a31515\">&quot;item&quot;</span>);\r\n      <span style=\"color:blue\">var</span> delimiter = ToTerm(<span style=\"color:#a31515\">&quot;d&quot;</span>);\r\n      items.Rule = item | items &#43; itemsTail;\r\n      itemsTail.Rule\t= delimiter &#43; item;\r\n      <span style=\"color:blue\">this</span>.Root = items;\r\n   }\r\n\r\n</pre>\r\n</div>\r\n<p>Alternatively , you can dig into this routine in ReduceParserActions.cs, to achieve your desired effect:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre>  <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;summary&gt;</span><span style=\"color:green\">Reduces list created by MakePlusRule or MakeListRule methods. &lt;/summary&gt;</span>\r\n  <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> ReduceListBuilderParserAction : ReduceParserAction {\r\n    \r\n    <span style=\"color:blue\">public</span> ReduceListBuilderParserAction(Production production) : <span style=\"color:blue\">base</span>(production) { }\r\n\r\n    <span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> ParseTreeNode GetResultNode(ParsingContext context) {\r\n      <span style=\"color:blue\">int</span> childCount = Production.RValues.Count;\r\n      <span style=\"color:blue\">int</span> firstChildIndex = context.ParserStack.Count - childCount;\r\n      <span style=\"color:blue\">var</span> listNode = context.ParserStack[firstChildIndex]; <span style=\"color:green\">//get the list already created - it is the first child node</span>\r\n      listNode.Span = context.ComputeStackRangeSpan(childCount);\r\n      <span style=\"color:blue\">var</span> listMember = context.ParserStack.Top; <span style=\"color:green\">//next list member is the last child - at the top of the stack</span>\r\n      <span style=\"color:blue\">if</span> (listMember.IsPunctuationOrEmptyTransient())\r\n        <span style=\"color:blue\">return</span> listNode;\r\n      listNode.ChildNodes.Add(listMember);\r\n      <span style=\"color:blue\">return</span> listNode; \r\n    }\r\n  }<span style=\"color:green\">//class</span>\r\n\r\n</pre>\r\n</div>\r\n",
+    "PostedDate": "2012-10-12T07:28:03.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927139",
+    "ThreadId": "399061",
+    "Html": "<p>Hi Roman, could you please add a flag to TermListOptions such as EmitDelimiterParseTreeNode?</p>",
+    "PostedDate": "2012-10-15T23:53:59.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927528",
+    "ThreadId": "399061",
+    "Html": "<p>Can you please show what a Roslyn's parse tree looks like (for a list like 'enum' declaration):</p>\r\n<p>public enum Numbers { one, two, three }</p>",
+    "PostedDate": "2012-10-16T09:34:52.883-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927809",
+    "ThreadId": "399061",
+    "Html": "<p>Hi Roman, <a href=\"http://download-codeplex.sec.s-msft.com/Download?ProjectName=roslyncsderivedlan&amp;DownloadId=511564\">Here</a> is what&nbsp;Roslyn syntax tree looks like. As you can see, in Roslyn, every thing(including whitespace and comment) is important.</p>",
+    "PostedDate": "2012-10-16T21:49:43.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927811",
+    "ThreadId": "399061",
+    "Html": "<p>I see. Not sure if it's really \"important\" :) . Irony's default arrangement is to construct the tree of nodes that \"matter\". Commas and delimiters are just \"sugar\" helping parser to separate stuff. Several years and many devs working with Irony - and yours is the first request for this. Before now everybody was happy with lists handling in Irony, so I'm kinda reluctant to add support for this into the parser.&nbsp;</p>\r\n<p>As a hack, try hooking to Reduced events of the lists and see if you can recover the token and add it back to the list before the last node.&nbsp;</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-10-16T22:00:00.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

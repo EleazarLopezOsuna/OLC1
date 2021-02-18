@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "143010",
+    "ThreadId": "43027",
+    "Html": "What is the easiest way to create a syntax tree that consists of custom classes that do not derive from AstNode?<div>Right now I re-read AstNode hierarchy, but this means that I essentially create two hierarchies, which is slower.</div><div>Also re-reading iis sometimes quites complex, expecially for optional nodes.</div><div><br></div><div>I have found the NodeCreatorMethod, but it can create AstNodes only.</div>",
+    "PostedDate": "2008-12-26T02:24:54.357-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "143030",
+    "ThreadId": "43027",
+    "Html": "Assign NodeType property of NonTerminal; it can be any class having a special constructor with AstNodeArgs as argument. \r\n",
+    "PostedDate": "2008-12-26T08:50:23.207-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "143052",
+    "ThreadId": "43027",
+    "Html": "But Irony.Compiler.Lalr.Parser.CreateNode() does <span style=\"font-family:'courier new';font-size:13px;white-space:pre;color:rgb(0, 0, 255)\"></span><div><span style=\"font-family:'courier new';font-size:13px;white-space:pre\"><span style=\"color:rgb(0, 0, 255)\">return</span> (AstNode) Activator.CreateInstance(ntNodeType, nodeArgs);</span></div><div>which seems to imply that parsing will fail if result can not be cast to AstNode?</div>",
+    "PostedDate": "2008-12-26T11:05:12.223-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "143058",
+    "ThreadId": "43027",
+    "Html": "yep, that's a bug. As you see, I had your case in mind but didn't actually try it. It is in my plan to refactor this aspect, to leave only some optional interface for AST node for initialization. When this refactoring will happen - not sure, as soon as I'm finished with NLALR. For now, feel free to change the code so it can run your case. Sorry for trouble\r\n",
+    "PostedDate": "2008-12-26T11:50:54.847-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "143069",
+    "ThreadId": "43027",
+    "Html": "Ok, thanks, I think I will fix it myself if the performance improvement will seem to be worth it.",
+    "PostedDate": "2008-12-26T13:17:24.037-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

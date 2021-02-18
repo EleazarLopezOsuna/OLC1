@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "219835",
+    "ThreadId": "64583",
+    "Html": "<p>Hello,</p>\r\n<p>I am working on a source formatter for our old legacy basic language.<br>The language is not single line type like the sample GWBASIC.<br>My biggest problem for multiline statements how can I handle<br>the comments&nbsp;at some line endings. I tried two methods.</p>\r\n<p>First, I add Comments into NonTerminals, and write a TokenFilter,<br>and store every comments in a list. It works, but hard to generate<br>the source with comments in proper place.</p>\r\n<p>Second, I remove Comments from NonTerminals, it works<br>with simple line statement, but caused syntax error in multiline<br>statements.</p>\r\n<p>Is there any other possibilities?</p>\r\n<p>Another problem is the empty lines, I try to keep empty lines<br>during formatting. How can I keep them in the result tree?</p>\r\n<p>Thanks, <br>Zoltan</p>",
+    "PostedDate": "2009-08-05T09:28:10.967-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "220123",
+    "ThreadId": "64583",
+    "Html": "<p>Well, as for empty lines, you can detect them by&nbsp;tracking nodes' Span.Location property. It contains Row field which is row number in source text.</p>\r\n<p>Comments tokens are saved with all other tokens in ParseTree.Tokens list - you can scan this list for comments and match them with your statement nodes using the same Span.Location.Row property.</p>\r\n<p>I know, it&nbsp;is a bit&nbsp;painful, and you actually bring up an interesting case - pretty-printing the source from parse tree. I need to think how I can support it better, maybe directly provide this functionality, kinda out-of-the-box style.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-08-05T20:18:33.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

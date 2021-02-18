@@ -1,0 +1,114 @@
+[
+  {
+    "Id": "639912",
+    "ThreadId": "264535",
+    "Html": "<p><a href=\"http://irony.codeplex.com/wikipage?title=ContribProjects\">http://irony.codeplex.com/wikipage?title=ContribProjects</a></p>\n<p>Would appreciate any help as we move to Beta and Release!</p>\n<p>Please post links to your discussions for project items to this thread.</p>",
+    "PostedDate": "2011-07-09T11:18:54.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "644590",
+    "ThreadId": "264535",
+    "Html": "<p>P1: LineContinuation terminal discussion:&nbsp;<a href=\"http://irony.codeplex.com/discussions/265782\">http://irony.codeplex.com/discussions/265782</a></p>",
+    "PostedDate": "2011-07-19T12:50:57.097-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "644708",
+    "ThreadId": "264535",
+    "Html": "<p>P21: Implementing fast compiled delegate for creating AST nodes:&nbsp;<a href=\"http://irony.codeplex.com/discussions/265806\">http://irony.codeplex.com/discussions/265806</a></p>",
+    "PostedDate": "2011-07-19T17:00:26.64-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645227",
+    "ThreadId": "264535",
+    "Html": "<p>Important: \"Automatic conflict resolution\" page was edited. Changed implementation suggestion:</p>\r\n<p><a href=\"http://irony.codeplex.com/wikipage?title=Contrib_ConflictResolution&amp;referringTitle=ContribProjects\">http://irony.codeplex.com/wikipage?title=Contrib_ConflictResolution&amp;referringTitle=ContribProjects</a></p>",
+    "PostedDate": "2011-07-20T15:37:34.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "649262",
+    "ThreadId": "264535",
+    "Html": "<p>Hi, Roman!</p>\r\n<p>&gt;Automatic conflict resolution</p>\r\n<p>Isn't it what NLALR algorithm was supposed to do? Why did you decide to remove it?</p>",
+    "PostedDate": "2011-07-28T16:38:38.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "649275",
+    "ThreadId": "264535",
+    "Html": "<p>yes, the goal is the same, but the method is different - NLALR tries to resolve the conflict automatically (!) by extending the state set with non-canonical states. I struggled with NLALR for several months, and it never worked properly on real-world grammars. The state count exploded, parser construction time was huge, and no resolution. The trouble was that a complex grammar like c#, in initial plain version, might have lots of different LALR conflicts, of different nature - not only mentioned in this project item. When NLALR takes over, it tries to \"fight\" them all, and things get out of hand. In any case, you need a careful hand of human grammar author to guide the resolution of each type of conflict.&nbsp;</p>\r\n<p>So I abandoned NLALR.&nbsp;</p>\r\n<p>This suggested feature is not so much \"automatic resolution\", this is a bad title. User (grammar builder) provides necessary resolution algorithm (lookahead hints), and the issue is to make parser \"understand\" these hints.</p>",
+    "PostedDate": "2011-07-28T17:00:42.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "650053",
+    "ThreadId": "264535",
+    "Html": "<p>Hi, Roman!</p>\r\n<p>Thank you for the explanation. That's sad... NLALR concept looked like a silver bullet.</p>\r\n<p>&gt;not so much \"automatic resolution\", this is a bad title</p>\r\n<p>I guess it should be \"Semi-automatic resolution\" instead :)</p>\r\n<p>I'll try to look into this task if you don't mind.</p>",
+    "PostedDate": "2011-07-30T14:15:43.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "650115",
+    "ThreadId": "264535",
+    "Html": "<p>Sure, go ahead. thanks!</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-07-30T22:26:06.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661038",
+    "ThreadId": "264535",
+    "Html": "<p>P6: Heredoc terminal:&nbsp;<a href=\"http://irony.codeplex.com/discussions/269822\">http://irony.codeplex.com/discussions/269822</a></p>",
+    "PostedDate": "2011-08-20T12:33:30.883-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "820062",
+    "ThreadId": "264535",
+    "Html": "<p>Implemented P9 - support for nested comments.&nbsp; Sent pull request.</p>",
+    "PostedDate": "2012-04-04T14:16:51.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "820093",
+    "ThreadId": "264535",
+    "Html": "<p>thanks! we'll look at at it and pull it in</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-04-04T15:37:10.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "824043",
+    "ThreadId": "264535",
+    "Html": "<p>(to denito, about nested comments)</p>\r\n<p>Hi</p>\r\n<p>Looks good. Just a few notes:</p>\r\n<p>AllowNested - pls make it a public field, just to be in line with other fields in the class; and don't initialize it in constructor, .NET sets it to default value anyway</p>\r\n<p>The check you do to disallow Nested&amp;LineComment - it should be done in Init method, adding error message to grammar errors</p>\r\n<p>Please add unit tests, try to cover some valid/invalid inputs</p>\r\n<p>thanks</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-04-15T09:45:50.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "926232",
+    "ThreadId": "264535",
+    "Html": "<p>P8: Validated RegEx's:</p>\r\n<p><a href=\"http://irony.codeplex.com/discussions/399196\">http://irony.codeplex.com/discussions/399196</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-10-13T14:39:19.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927553",
+    "ThreadId": "264535",
+    "Html": "<p>That's not what I meant in P8. The idea is to enhance IdentifierTerminal with optional validation Regex, not to invent new Regexes.</p>",
+    "PostedDate": "2012-10-16T10:09:42.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

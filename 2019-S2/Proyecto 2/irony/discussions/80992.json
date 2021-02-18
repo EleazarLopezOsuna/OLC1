@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "277737",
+    "ThreadId": "80992",
+    "Html": "<p>I've done using Irony for a while, and I just started using it on a new project.&nbsp; The project is basically to parse 2Mb to 12Mb text files that are pipe delimited. Each line begins with an Identifier term and is followed by that identifier type's data.&nbsp; The next line may be a sub-identifier (i.e. a child node) or another identifier depending on what it's first term is.</p>\r\n<p>Example:</p>\r\n<p>A |&nbsp;&nbsp; ID1 | data1 | 1 | 12-31-2010</p>\r\n<p>A1 | ID1 | subAdata1 | 23.00</p>\r\n<p>B | ID1 | subBdata1 | text</p>\r\n<p>A2 | ID1 | subAdata2 | 50.00</p>\r\n<p>C | ID2 | 5 |&nbsp; text</p>\r\n<p>...</p>\r\n<p>Note that A and C are the Identifiers and A1, A2, and B are sub-identifiers of A.</p>\r\n<p>&nbsp;</p>\r\n<p>My problem is that I have created a grammar that will parse this, however on a file that is 11Mb, the Grammar Explorer hangs and it never seems to produce a resulting ParseTree.&nbsp; My grammar has around 170 states. Any ideas on what may be causing my system to hang?&nbsp; Are there performance issue with Irony if the input is a very large text file?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>MindCore</p>",
+    "PostedDate": "2010-01-15T13:45:40.087-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277784",
+    "ThreadId": "80992",
+    "Html": "<p>I'm pretty sure that this has nothing to do with Irony performance by itself (parsing), but due to excessive time it takes grammar explorer to fill in the visual control (Parse tree) - probably thousands of records. Just trace the &quot;Run&quot; button click inside Grammar Expl - you'll see it dies when it goes to update the info in&nbsp; the form</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-01-15T15:52:13.433-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277786",
+    "ThreadId": "80992",
+    "Html": "<p>So to conclude - don't use Grammar Explorer for big files, just for limited test fragments; for large files use it from you app or create small console app to do this - once you tested the grammar in Grammar Explorer</p>",
+    "PostedDate": "2010-01-15T15:58:11.267-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "278329",
+    "ThreadId": "80992",
+    "Html": "<p>Hey Roman,</p>\r\n<p>Thanks for the quick response.&nbsp;</p>\r\n<p>It appears to be an issue with my grammar and not Irony.&nbsp; I believe I have some rules set that are causing some recursion.&nbsp; I am using the fairly new DsvLiteral Terminal, which is a pretty nice, powerful feature.&nbsp; The trouble seems to root from my implementation to handle line breaks in my data versus actual line breaks.&nbsp; On a few definitions of my DsvLiterals Terminals, I have a very special set of characters,&nbsp; /n/u0003, that represents a data line break.&nbsp; So I have set my terminators for these to &quot;\\r|&quot; and included the characters \\n and \\u0003 in the grammar white-space. I believe that this should work properly, however I researched further into the construction of the NewLine Terminal and see that the character set \\r \\n is hard-wired.&nbsp; So my current approach won't work.</p>\r\n<p>I would like to know if you have any suggestions for a recommended approach?&nbsp; I believe I may need to probably create a modified version of the NewLine Terminal to only looks for the /r character or check to see if \\n or \\r are defined as white-space.&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>MindCore</p>",
+    "PostedDate": "2010-01-17T19:47:19.593-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "278533",
+    "ThreadId": "80992",
+    "Html": "<p>Roman,</p>\r\n<p>After taking another look at the NewLineTerminal I see that I am over complicating this. The NewLineTerminal only triggers when the current character is \\r and the preview character is \\n.&nbsp; This means that it will not trigger on my special character set.&nbsp; Originally, I thought that it triggered when either both or one of the characters occurred.</p>\r\n<p>Sorry for any confusion. I'll plug away at what I have and isolate my original issue; the recursion.</p>\r\n<p>Thanks,</p>\r\n<p>MindCore</p>",
+    "PostedDate": "2010-01-18T07:39:44.42-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

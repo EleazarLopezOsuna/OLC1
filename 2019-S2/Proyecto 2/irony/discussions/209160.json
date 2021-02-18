@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "430378",
+    "ThreadId": "209160",
+    "Html": "<p>Hi All!!!</p>\r\n<p>Please, i need your advice.</p>\r\n<p>I making parser for pascal-like language, and i don't&nbsp;understand&nbsp;how to choose between identificator or function call?&nbsp;</p>\r\n<p>that &nbsp;grammar&nbsp;to use?&nbsp;</p>\r\n<p>for example:</p>\r\n<p>var&nbsp;</p>\r\n<p>&nbsp;a:integer;</p>\r\n<p>function b:integer;</p>\r\n<p>begin</p>\r\n<p>&nbsp;&nbsp;return 1;</p>\r\n<p>end;</p>\r\n<p>&nbsp;</p>\r\n<p>begin</p>\r\n<p>&nbsp;&nbsp;a:=b;</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; ^---- in this place i have a problem - &nbsp;i don't know what to do...&nbsp;</p>\r\n<p>end.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-13T03:24:23.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "430748",
+    "ThreadId": "209160",
+    "Html": "<p>it is in fact not doable at parsing stage. You should differentiate between syntax analysis - what can be derived from pure phrase structure; and semantics - what follows from language rules and meaning it gives to certain constructs. In your case, &quot;a:=b&quot; would be in fact in most languages interpreted as assignment of &quot;ref to b-function&quot; to variable &quot;a&quot;, not a call to function &quot;b()&quot; and assignment of result to a; while expression like &quot;a = b()&quot; is usually interpreted as a function call. So you parse all these a's and b's as identifiers, build a parse tree/AST tree, and then at the phase of analysis (scanning AST tree) you derive more information - that &quot;b&quot; is in fact ref to function, a is a variable, etc</p>\r\n<p>You can find more on this in compiler/parsing textbooks, or even in wikipedia entries for syntax analysis and symantic analysis.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-04-13T21:55:10.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

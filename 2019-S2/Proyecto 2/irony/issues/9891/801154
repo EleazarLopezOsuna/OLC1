@@ -1,0 +1,200 @@
+//
+// core/Object
+//
+// Author:
+//   Nicholas Yearwood (nx@whoco.org)
+//
+// (C) WhoCo 2012 http://www.whoco.org
+//
+
+//
+// Copyright (C) 2012 WhoCo (http://www.whoco.org)
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+
+using System.Runtime;
+using System.Runtime.CompilerServices;
+using System.Runtime.ConstrainedExecution;
+using System.Diagnostics.Contracts;
+using System.Reflection;
+
+namespace core {
+	/// <summary>
+	/// The base class of all types.
+	/// </summary>
+	/// 
+	/// <notes who="Nx">This class intentionally does not derive from <code>IComparable&lt;object&gt; and
+	/// IEquatable&lt;T&gt;</code>. Part of me feels that since everything outside the <code>core</code> namespace
+	/// is optional (more on that later), the base should not derive from anything. Another part of me feels
+	/// that "orthogonality" and completeness are more important than simplicity.</notes>
+	/// 
+	/// <history>
+	/// <change who="Nx">Class is abstract. Constructor is protected.<reason>There is no need to create an Object.</reason></change>
+	/// 
+	/// <change who="Nx"><code>GetType()</code> Obsoleted in favor of System.Reflection.Type.GetType().
+	/// <remarks who="Nx">So I changed it back. While I still beleive the <code>GetType()</code>
+	/// method should be relocated, it was proving very complicated to do it at that time.
+	/// I should revisit this before v1.</remarks>
+	/// </change>
+	/// </history>
+	public abstract class Object /* : IComparable<object>, IEquatable<object> */ {
+		#region Construct
+
+		/// <summary>
+		/// Initializes a new instance of the object class.
+		/// </summary>
+		/// <change>This .ctor is protected. There is no need to create an underived object.</remarks>
+		[MethodImpl( MethodImplFlags.Intrinsic )]
+		[ReliabilityContract( Consistency.WillNotCorruptState, Cer.MayFail )]
+		protected extern Object();
+
+		/// <summary>
+		/// Object destructor. 
+		/// </summary>
+		[MethodImpl( MethodImplFlags.Intrinsic )]
+		[ReliabilityContract( Consistency.WillNotCorruptState, Cer.Success )]
+		extern ~Object();
+
+		#endregion
+
+		#region Properties
+
+		/// <summary>
+		/// Gets the property with the specified tag.
+		/// </summary>
+		/// <param name="tag">A (runtime) case-sensitive tag name.</param>
+		/// <remarks who="Nx">So... what, you ask, is going on here? I am toying
+		/// with an idea for dynamic properties beyond <code>dynamic</code> types.
+		/// It's not very well thought out. Please ignore for now.</remarks>
+		[Obsolete( "See <remarks>.", true )]
+		[MethodImpl( MethodImplFlags.Intrinsic )]
+		public virtual extern /* dynamic */ object this[string tag] { get; set; }
+
+		#endregion
+
+		#region Methods
+
+		#region IComparable<object>
+
+#if false
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="other"></param>
+		/// <returns></returns>
+		[MethodImpl( MethodImplFlags.Intrinsic )]
+		public virtual extern int CompareTo( object other );
+#endif
+
+		#endregion
+
+		/// <summary>
+		/// Compares this object to the specified object.
+		/// Returns true if they are equal, false otherwise.
+		/// </summary>
+		/// <remarks who="Nx">See Object.GetHashCode() &lt;remarks&lt; for possible
+		/// future breaking changes.</remarks>
+		/// <remarks who="Nx">The implementation should only call
+		/// Object.ReferenceEquals().</remarks>
+		[MethodImpl( MethodImplFlags.Intrinsic )]
+		public virtual extern bool Equals( object obj );
+
+	//	public virtual extern bool Equals<T>( T value );
+
+		/// <summary>
+		/// Compares two objects for equality.
+		/// </summary>
+		/// 
+		/// <remarks who="Nx">Only the instance version of <code>Equals( object )</code> should exist.</remarks>
+		/// <remarks who="Nx">See Object.GetHashCode() &lt;remarks&lt; for possible
+		/// future breaking changes.</remarks>
+		/// <remarks who="Nx">The implementation should only call Object.ReferenceEquals().</remarks>
+		[ObsoleteAttribute( "See <remarks> and ReferenceEquals@<todo>.", true )]
+		[MethodImpl( MethodImplFlags.Intrinsic )]
+		public static extern bool Equals( object a, object b );
+
+		/// <summary>
+		/// The Type associated with the object.
+		/// </summary>
+		[MethodImpl( MethodImplFlags.Intrinsic )]
+		public extern Type GetType();
+
+		/// <summary>
+		/// The hashcode for this object. Each derived
+		/// class should return a hash code that makes sense
+		/// for that particular implementation of the object.
+		/// </summary>
+		/// <todo who="Nx">Should this method be removed in favor of an IEqualityComparer
+		/// driven model?</todo>
+		[MethodImpl( MethodImplFlags.Intrinsic )]
+		public virtual extern int GetHashCode();
+
+		/// <summary>
+		/// Shallow copy of the object.
+		/// </summary>
+		/// <remarks who="Nx">I do not feel this method serves any purpose that a
+		/// copy constructor does not fill. IClonable could replace this and be modified
+		/// to support copy depth.</remarks>
+		[Obsolete( "See <remarks>.", true )]
+	//	[MethodImpl( MethodImplFlags.Intrinsic )]
+		protected /* virtual */ extern object MemberwiseClone();
+
+		/// <summary>
+		/// Returns a stringified representation of the object.
+		/// This is not supposed to be used for user presentation,
+		/// use Format() for that and IFormattable.
+		///
+		/// ToString is mostly used for debugging purposes. 
+		/// </summary>
+		[MethodImpl( MethodImplFlags.Intrinsic )]
+		public virtual extern string ToString();
+
+		/// <summary>
+		/// Tests whether a is equal to b.
+		/// </summary>
+		/// 
+		/// <todo who="Nx">This, along with the static form of <code>Equals( object a, object b )</code> are
+		/// language support methods and have no business being part of the class. They should be moved to the
+		/// <code>core</code> namespace or the <code>core.Extensions</code> class as extension methods.</todo>
+		[ObsoleteAttribute( "See <todo>." )]
+		[ReliabilityContract( Consistency.WillNotCorruptState, Cer.Success )]
+		[MethodImpl( MethodImplFlags.Intrinsic )]
+		public static extern bool ReferenceEquals( [NotNull] object objA, [NotNull] object objB );
+
+#if false // FieldGetter/Setter()
+
+#pragma warning disable 169
+		[Obsolete( "Why does this exist?", true )]
+		void FieldGetter( string typeName, string fieldName, ref object val ) {
+			throw new NotSupportedException();
+		}
+
+		[Obsolete( "Why does this exist?", true )]
+		void FieldSetter( string typeName, string fieldName, object val ) {
+			throw new NotSupportedException();
+		}
+#pragma warning restore 169
+
+#endif
+
+		#endregion
+	}
+}

@@ -1,0 +1,146 @@
+[
+  {
+    "Id": "938735",
+    "ThreadId": "402457",
+    "Html": "\r\n<p>Hi Roman,</p>\r\n<p>How do I get the Scanner to disambiguate tokens based on greatest matching length?</p>\r\n<p>Thanks very much.</p>\r\n<p>Pieter</p>\r\n",
+    "PostedDate": "2012-11-08T12:32:20.893-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939252",
+    "ThreadId": "402457",
+    "Html": "<p>Look at keywords handling, KeyTerm. The trick there is terminal priority that is computed by adding keyword length to base value, so longer keywords automatically get higher priority</p>",
+    "PostedDate": "2012-11-09T09:59:04.803-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939282",
+    "ThreadId": "402457",
+    "Html": "\r\n<p>Not <em>keyword</em> length, or <em>pattern</em> length. How do I disambiguate tokens based on\r\n<em>matching </em>length, as for different types of NumberLiterals? <strong>Lex </strong>\r\nalways disambiguated based on matching length, and broke&nbsp;ties based on an prioirty implied from definition order.</p>\r\n",
+    "PostedDate": "2012-11-09T11:01:57.68-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939286",
+    "ThreadId": "402457",
+    "Html": "<p>I think it is done automatically to a certain degree. Look at Scanner.MatchTerminals method. If there are more than one terminals to match with the same priority, scanner selects one with the largest length</p>",
+    "PostedDate": "2012-11-09T11:06:56.797-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939289",
+    "ThreadId": "402457",
+    "Html": "<p>Doesn't work. Consider the input</p>\r\n<p style=\"padding-left: 30px;\">a := 4 + 5.0</p>\r\n<p>in a grammar that need to define IntegerLiteral and FloatLiteral separately. If IntegerLiteral.Prioirty &gt; FloatLiteral.Prioity, then \"5\" is incorectly recognized as a token and FloatLiteral is never tested, causing a parse failure on \".\"; otherwise, \"4\" is identifed as either a FloatLiteral or an IntegerLiteral in an uncontrolled fashion.</p>",
+    "PostedDate": "2012-11-09T11:15:04.293-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939291",
+    "ThreadId": "402457",
+    "Html": "<p>yes, that's the idea - Priority comes first. Make the priority the same, then it should work</p>",
+    "PostedDate": "2012-11-09T11:16:56.597-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939296",
+    "ThreadId": "402457",
+    "Html": "<p>I attempted this:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> NumberLiteralX : NumberLiteral {\r\n   <span style=\"color: blue;\">public</span> NumberLiteralX(<span style=\"color: blue;\">string</span> name) : <span style=\"color: blue;\">base</span>(name) {}\r\n   <span style=\"color: blue;\">public</span> NumberLiteralX(<span style=\"color: blue;\">string</span> name, NumberOptions options) : <span style=\"color: blue;\">base</span>(name, options) {}\r\n   <span style=\"color: blue;\">public</span> NumberLiteralX(<span style=\"color: blue;\">string</span> name, NumberOptions options, Type astNodeType)  \r\n      : <span style=\"color: blue;\">base</span>(name, options, astNodeType) {}\r\n\r\n   <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">override</span> Token TryMatch(ParsingContext context, ISourceStream source) {\r\n      <span style=\"color: blue;\">var</span> token = <span style=\"color: blue;\">base</span>.TryMatch(context, source);\r\n      <span style=\"color: blue;\">if</span> (token != <span style=\"color: blue;\">null</span>) {\r\n         <span style=\"color: blue;\">base</span>.Priority = <span style=\"color: blue;\">this</span>.Priority + 2*token.Length;\r\n      }\r\n      <span style=\"color: blue;\">return</span> token;\r\n   }\r\n   <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">new</span> <span style=\"color: blue;\">int</span> Priority { <span style=\"color: blue;\">get</span>; <span style=\"color: blue;\">set</span>; }\r\n}\r\n\r\n</pre>\r\n</div>\r\n<p>but you have statically sorted the search list based on Priority at Init time, causing the idea to fail.</p>",
+    "PostedDate": "2012-11-09T11:20:11.293-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939297",
+    "ThreadId": "402457",
+    "Html": "\r\n<p>The whole question arose when, with prioirty left at default, I saw &quot;4&quot; consistently [edit]&nbsp;being recognized as a FloatLiteral instea of as an IntegerLiteral. If it had worked by default, there would have been no question.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-11-09T11:21:24.913-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939300",
+    "ThreadId": "402457",
+    "Html": "<blockquote style=\"padding-bottom: 0px; font-style: italic; margin: 0.25em 1em 0px; padding-left: 0.25em; padding-right: 0.25em; padding-top: 0px; border: #ccc 0.1em solid;\"><strong>rivantsov wrote:</strong><br />\r\n<p>yes, that's the idea - Priority comes first. Make the priority the same, then it should work</p>\r\n</blockquote>\r\n<p><br />Think about that statement a bit.</p>\r\n<p>If prioirty is the same, and matching length is the same, how does this provide the ability to predictably disambiguate between the two token definitions.</p>",
+    "PostedDate": "2012-11-09T11:28:53.723-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939313",
+    "ThreadId": "402457",
+    "Html": "<p>Where are you sorting the token definitions? Perhaps use of an&nbsp; unstable sort is causing the problem, since an implied prioirty based on definition order would be suitable.</p>",
+    "PostedDate": "2012-11-09T11:47:43.84-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939318",
+    "ThreadId": "402457",
+    "Html": "\r\n<p>Ah-ha!</p>\r\n<p>From the documenttion for <em><strong>List&lt;T&gt;.Sort() </strong></em>(my emphasis):</p>\r\n<p style=\"padding-left:30px\">This method uses <span><a href=\"http://msdn.microsoft.com/en-us/library/system.array.sort.aspx\">Array<span>.</span>Sort</a></span>, which uses the\r\n<em><strong>QuickSort </strong></em>algorithm. This implementation performs an <em>\r\n<strong>unstable sort</strong></em>; that is, if two elements are equal, their order might not be preserved. In contrast, a stable sort preserves the order of elements that are equal.</p>\r\n",
+    "PostedDate": "2012-11-09T12:02:51.21-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939348",
+    "ThreadId": "402457",
+    "Html": "<p>Well, the idea is that you should never do this - at least that was basic thought in Scanner design. Do not declare FloatTerminal and IntTerminal in one grammar. Use float terminal and detect improper number after parsing. One exception is when the correct choice can be helped by parser, based on current parser state. In GwBasic grammar, the Open File statement allows file number which is integer only, so I define a separate int literal for this place, and parser gives scanner a hint to use it in this place (through back link Parser-&gt;Scanner).</p>\r\n<p>Otherwise, my original thinking - do not do it. Scanner should be simple (stupid), and not have to decide about different kind of numbers you might have</p>\r\n<p>Roman</p>\r\n<p>PS one workaround is to define IntLiteral in grammar, but use only FloatLiteral in grammar rules; then hook to FloatLiteral.ValidateToken event, and for integers replace the Terminal value in the output token.&nbsp;</p>",
+    "PostedDate": "2012-11-09T12:55:49.017-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939366",
+    "ThreadId": "402457",
+    "Html": "\r\n<p>Yes, this a rare and uncommon situation for well designed grammars; but not an impossible one. I am working an a grammar that allows IntegerLiterals in a large number of places, and only in one particular construct allows either a Float or an Integer. The\r\n elegant solution for this grammar is two tokens, providing a clean, simple design. No, it is not a &quot;programming language&quot; in the sense you are used to, but that doesn't make it invalid.</p>\r\n<p>Would it be too much to ask you to use a stable sort when sorting Terminals? I found two likely candidates on the web,&nbsp; either using LINQ &quot;orderby&quot; or an Extension to the Array clas as described here:<br>\r\n<a href=\"http://stackoverflow.com/questions/148074/is-the-sorting-algorithm-used-by-nets-array-sort-method-a-stable-algorithm\">http://stackoverflow.com/questions/148074/is-the-sorting-algorithm-used-by-nets-array-sort-method-a-stable-algorithm</a></p>\r\n<p>As an additional argument, I believe it is incumbent on basic tools such as <strong>\r\nIrony.NET</strong> to internally always use deterministic algorithms when possible, which mandates a stable sort over an unstable one.</p>\r\n<p>Pieter</p>\r\n",
+    "PostedDate": "2012-11-09T13:26:46.8-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939367",
+    "ThreadId": "402457",
+    "Html": "<p>well, nonstable does not mean non-deterministic by the way.&nbsp;</p>\r\n<p>For your case, why don't you use Float in this one particular construct, and make Integer higher priority? then integers will always parse first, and in this one case parser will force to use Float</p>",
+    "PostedDate": "2012-11-09T13:30:35.143-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939374",
+    "ThreadId": "402457",
+    "Html": "\r\n<blockquote style=\"padding-bottom:0px; font-style:italic; margin:0.25em 1em 0px; padding-left:0.25em; padding-right:0.25em; padding-top:0px; border:#ccc 0.1em solid\">\r\n<strong>rivantsov wrote:</strong><br>\r\n<p>well, nonstable does not mean non-deterministic by the way.&nbsp;</p>\r\n</blockquote>\r\n<p>Are you claiming that the MSDN documentation <strong>guarantees</strong> that all DOT NET implementations of Quicksort, for all hardware and software platforms, for all versions of the DOT NET framework past, present, and future, will produce the identical\r\n sorted list when presented with a given input list with duplicates. I find it highly doubtful that guarantee exists, and even more doubtful that it would be published even if internally intended. Even if the algorithm is deterministic to someone with access\r\n to the relevant source code, when the reliability of my parser is unpredictably dependent on variables outside my control, that is effectively non-deterministic where I stand.</p>\r\n<p>As an aside: <br>\r\nFor the designer of such an elegant tool, you are strangely persistent in forcing&nbsp;your 'clients'&nbsp;to adopt inelegant usages. Domain Specific Languages have a variety&nbsp;far wider than even that encompassed by&nbsp;COBOL-Python-Ruby-APL-Prolog-Lisp.&nbsp;\r\n Being too focused on &quot;programming languages&quot; will only drive potential users back to the old Lex/Yaccc tools, which would be a shame.</p>\r\n",
+    "PostedDate": "2012-11-09T13:54:35.59-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939384",
+    "ThreadId": "402457",
+    "Html": "<p>easy man, pleaase... before accusing me of 'forcing to adopt inelegant usages', think of what you are suggesting. Here's you initial post about sorting that started this issue on stable sort:</p>\r\n<p style=\"padding-left: 30px;\"><em>Where are you sorting the token definitions? Perhaps use of an&nbsp; unstable sort is causing the problem, since an implied prioirty based on definition order would be suitable.</em></p>\r\n<p>&nbsp;</p>\r\n<p>'..based on definition order'. WHAT is definition order?! the order in source code lines that declare terminals?! This does not exist for parser builder. Parser builder collects terminals from the rules trees starting from the root. The initial order of terminal list is therefore unpredictable. To force certain order, I provide Priority property. There is no 'initial' or definition order, period. And using 'stable' sort does not have any meaning.&nbsp;</p>\r\n<p>Believe me, spent a lot of time thinking and tweaking all these issues.&nbsp;</p>\r\n<p>Regards</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-11-09T14:13:41.823-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939390",
+    "ThreadId": "402457",
+    "Html": "<p>Okay! I take your point. Nobody ever accused me of being overly passive when I think I am right. (A subtly different subset&nbsp;from when&nbsp;I am right.) I had not been able to penetrate the code to that depth yet, and all I had seen was so far was <em><strong>TerminalList.Sort().</strong></em></p>\r\n<p>I cut my teeth on Lex &amp; Yacc &gt; 20 years ago, and old thought patterns sometimes die hard.&nbsp; Let me think on it some more. I will also check out the back-link you described above.</p>\r\n<p>Thank you for taking the time to work through this with me.</p>\r\n<p>Pieter</p>",
+    "PostedDate": "2012-11-09T14:24:55.313-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939437",
+    "ThreadId": "402457",
+    "Html": "\r\n<div>\r\n<p><span style=\"font-size:11.0pt; font-family:\">Roman,</span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\"></span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\">Thank you again for your patience and thick skin this afternoon.</span></p>\r\n<p style=\"\"><span style=\"font-size:10.0pt; font-family:\">My mistake led from thinking that I needed the NonTerminal\r\n<b><i>numeric </i></b>defined as<br>\r\n<b><i>numeric.Rule = IntegerLiteral | FloatLiteral;</i></b><i><br>\r\n</i>with the situation simply growing worse as I simplified the test case to that up in the forum.</span></p>\r\n<p style=\"\"><b><span style=\"font-size:10.0pt; font-family:\">And</span></b><span style=\"font-size:10.0pt; font-family:\"> from my determination to use\r\n<b><i>NumberLiteral </i></b>instead of falling back on safe, comfortable, well understood\r\n<b><i>RegexBasedTerminal</i></b> that you keeps trying to talk me out of.<br>\r\n;-)</span></p>\r\n<p style=\"\"><span style=\"font-size:10.0pt; font-family:\">You keep wondering why I use RegexBasedTerminal so frequently and by preference; I think much of it lies in this simple ratio:<br>\r\nRegexBasedTerminal: 72 lines with 4 conditionals.<br>\r\nNumberLiteral: 540 lines with 69 conditionals (if’s and switches)</span></p>\r\n<p style=\"\"><span style=\"font-size:10.0pt; font-family:\">After a 10 or 20 minute perusal, I was completely comfortable that I know how RegexBasedTerminal worked. After a few hours of studying NumberLiteral, I still don’t understand how or why it works.</span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\">Regards,</span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\"></span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\">Pieter</span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\"></span></p>\r\n<div>\r\n<div style=\"border:none; border-top:solid #B5C4DF 1.0pt; padding:3.0pt 0in 0in 0in\">\r\n<p><b><span lang=\"EN-US\" style=\"font-size:10.0pt; font-family:\">From:</span></b><span lang=\"EN-US\" style=\"font-size:10.0pt; font-family:\"> rivantsov [email removed]\r\n<br>\r\n<b>Sent:</b> Friday, November 09, 2012 5:14 PM<br>\r\n<b>To:</b> pgeerkens@hotmail.com<br>\r\n<b>Subject:</b> Re: Disambiguating tokens [irony:402457]</span></p>\r\n</div>\r\n</div>\r\n<p></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">From: rivantsov</span></p>\r\n<div id=\"ThreadNotificationPostBody\" style=\"margin-bottom:24.0pt\">\r\n<p><span style=\"font-size:9.0pt; font-family:\">easy man, pleaase... before accusing me of 'forcing to adopt inelegant usages', think of what you are suggesting. Here's you initial post about sorting that started this issue on stable sort:</span></p>\r\n<p><em><span style=\"font-size:9.0pt; font-family:\">Where are you sorting the token definitions? Perhaps use of an unstable sort is causing the problem, since an implied prioirty based on definition order would be suitable.</span></em><span style=\"font-size:9.0pt; font-family:\"></span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\"></span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">'..based on definition order'. WHAT is definition order?! the order in source code lines that declare terminals?! This does not exist for parser builder. Parser builder collects terminals from the rules trees starting\r\n from the root. The initial order of terminal list is therefore unpredictable. To force certain order, I provide Priority property. There is no 'initial' or definition order, period. And using 'stable' sort does not have any meaning.\r\n</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">Believe me, spent a lot of time thinking and tweaking all these issues.\r\n</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">Regards</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">Roman</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\"></span></p>\r\n</div>\r\n</div>\r\n",
+    "PostedDate": "2012-11-09T16:52:53.06-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

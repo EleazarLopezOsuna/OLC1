@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "Hi, I've just downloaded the new version. I open the proyect under VS2010 and try to build just [010.Irony.2010]. It throws all this errors, because referenced files don't exist on the downloadable zip file:\r\n\r\nError\t1\tSource file '...\\Irony\\Parsing\\_new\\GlrParser.cs' could not be opened ('Unspecified error ')\t010.Irony.2010\r\nError\t2\tSource file '...\\Irony\\Parsing\\_new\\NewScanner\\NewScanner.cs' could not be opened ('Unspecified error ')\t010.Irony.2010\r\nError\t3\tSource file '...\\Irony\\Parsing\\_new\\NewScanner\\SourceSegments.cs' could not be opened ('Unspecified error ')\t010.Irony.2010\r\nError\t4\tSource file '...\\Irony\\Parsing\\_new\\NewScanner\\TerminalLookupByPrefix.cs' could not be opened ('Unspecified error ')\t010.Irony.2010\r\nError\t5\tSource file '...\\Irony\\Parsing\\_new\\NewScanner\\_partialDefs.cs' could not be opened ('Unspecified error ')\t010.Irony.2010\r\n\r\nI compared [010.Irony.2010.csproj] with the previous version and these new lines appear on the new release, which are not included in the downloadable zip file ([Parsing\\_new] directory doesn't exist):\r\n\r\n101  \r\n    <None Include=\"Parsing\\_new\\CompilerDirective\\CompilerDirectiveBase.cs\" />  \r\n  \r\n102  \r\n    <None Include=\"Parsing\\_new\\CompilerDirective\\IfDirective.cs\" />  \r\n  \r\n103  \r\n    <None Include=\"Parsing\\_new\\CompilerDirective\\IfExpressionHandler.cs\" />  \r\n  \r\n104  \r\n    <None Include=\"Parsing\\_new\\CompilerDirective\\_CompilerDirectiveTerminal.cs\" />  \r\n  \r\n105  \r\n    <None Include=\"Parsing\\_new\\CompilerDirective\\MacroDirective.cs\" />  \r\n  \r\n106  \r\n    <Compile Include=\"Parsing\\_new\\GlrParser.cs\" />  \r\n  \r\n107  \r\n    <Compile Include=\"Parsing\\_new\\NewScanner\\NewScanner.cs\" />  \r\n  \r\n108  \r\n    <Compile Include=\"Parsing\\_new\\NewScanner\\SourceSegments.cs\" />  \r\n  \r\n109  \r\n    <Compile Include=\"Parsing\\_new\\NewScanner\\TerminalLookupByPrefix.cs\" />  \r\n  \r\n110  \r\n    <Compile Include=\"Parsing\\_new\\NewScanner\\_partialDefs.cs\" />  \r\n \r\nMay be I'm missing something. Thanks in advance :)",
+    "LastUpdatedDate": "2014-02-18T11:01:33.15-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2014-01-25T15:04:35.78-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "New version missing files under VS 2010",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9890
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "It was mentioned in a separate post:\n  Remove the reference to the \"_new\" folder and its contents. The author is working on a new implementation and forgot to remove the references from the project file. It compiles cleanly after deleting the reference(s).",
+      "PostedDate": "2014-02-18T11:01:33.15-08:00",
+      "Id": 133963
+    }
+  ]
+}

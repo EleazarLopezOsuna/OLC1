@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "891133",
+    "ThreadId": "388981",
+    "Html": "\r\n<p>Hi Folks,</p>\r\n<p>I have a problem regarding the parsing of files through Irony while I tried to outsoource my parsing function to a secondary class. What I want to do is nothing very complicated, I just want to get the Parse Tree of files as a first step.</p>\r\n<p>But when I moved</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">static</span> <span style=\"color:blue\">void</span> parseFile(<span style=\"color:blue\">string</span> file, <span style=\"color:blue\">bool</span> report = <span style=\"color:blue\">true</span>)\r\n        {\r\n            Grammar g = <span style=\"color:blue\">new</span> CSharpGrammar(); <span style=\"color:green\">// full c# 3.0 grammar (w/o linq, preprocessor queries)</span>\r\n            LanguageData language = <span style=\"color:blue\">new</span> LanguageData(g);\r\n            Parser parser = <span style=\"color:blue\">new</span> Parser(language);\r\n            ParseTree parseTree = parser.Parse(file);\r\n            <span style=\"color:green\">//ParseTreeNode root = parseTree.Root;</span>\r\n            <span style=\"color:green\">//ParseRoot = null;</span>\r\n            ParseRoot = parseTree.Root;\r\n            <span style=\"color:green\">//toolStripStatusLabel1.Text = (root == null ? &quot;ERROR: Parse tree unsuccessful!&quot; : &quot;Parse tree created!&quot;);</span>\r\n            <span style=\"color:blue\">if</span> (ParseRoot == <span style=\"color:blue\">null</span>)\r\n            { <span style=\"color:green\">// root</span>\r\n                Console.Out.WriteLine(<span style=\"color:#a31515\">&quot;ERR: &quot;</span> &#43; file);\r\n                <span style=\"color:green\">//return;</span>\r\n            }\r\n            <span style=\"color:blue\">else</span>\r\n            {\r\n                <span style=\"color:green\">//mainForm.toolStripStatusLabel1.Text = &quot;test&quot;;</span>\r\n                Console.Out.WriteLine(<span style=\"color:#a31515\">&quot;SUC: &quot;</span> &#43; file);\r\n            };\r\n\r\n            Console.Out.WriteLine(ParseRoot.ChildNodes[1].ChildNodes[0].ChildNodes.Count());\r\n\r\n            <span style=\"color:blue\">if</span>(report == <span style=\"color:blue\">true</span>) mainForm.backgroundWorker2.ReportProgress(50);<span style=\"color:green\">//(100 * i) / nlc);</span>\r\n        }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>I am getting no error ,the program runs, but is not able to determine the ParseRoot, it is always &quot;null&quot;.</p>\r\n<p>Do you have an idea what I may improve to solve this problem?</p>\r\n<p>Greetz,</p>\r\n<p>Markus</p>\r\n",
+    "PostedDate": "2012-07-25T06:04:42.753-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "891254",
+    "ThreadId": "388981",
+    "Html": "<p>Before reading ParseTree.Root, check for errors in ParseTree object. With a new language grammar - always start with verifying/debugging it in grammar explorer.</p>\r\n<p>Another thing - 'language = new LanguageData(g)' - this statement create parsing automaton from grammar. This is very expensive operation, you should create languageData once and save it somewhere in global field and reuse then.</p>",
+    "PostedDate": "2012-07-25T09:55:13.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "891511",
+    "ThreadId": "388981",
+    "Html": "<p>Thanks for this hint, I fixed the bug regarding LanguageData. But my problem remains. When I do the parsing in Form1.cs, evething goes right. But when I try to call</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>ParseTree parseTree = mainForm.parser.Parse(file);\r\nParseRoot = parseTree.Root;\r\n<span style=\"color: blue;\">if</span> (ParseRoot == <span style=\"color: blue;\">null</span>)\r\n{\r\n  Console.Out.WriteLine(<span style=\"color: #a31515;\">\"ERR: \"</span> + file);\r\n}\r\n<span style=\"color: blue;\">else</span>\r\n{\r\n  Console.Out.WriteLine(<span style=\"color: #a31515;\">\"SUC: \"</span> + file);\r\n};\r\n</pre>\r\n</div>\r\n<p>from another class file, then the ParseRoot is null.</p>\r\n<p>Do you have any suggestion? How may I debug the ParseTree?</p>",
+    "PostedDate": "2012-07-26T01:02:47.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "891836",
+    "ThreadId": "388981",
+    "Html": "<p>have no idea, but it seems some simple mismatch in your code. Try to step through in debugger and see what's different in both scenarios</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-07-26T09:48:14.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

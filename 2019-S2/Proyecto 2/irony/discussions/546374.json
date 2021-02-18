@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1248909",
+    "ThreadId": "546374",
+    "Html": "I'd like to create a simple...ish... language for tag searching. I'd like it to look something like\r<br />\n&quot;basket (kitten | puppy) !( couch | spigot )&quot; (making the &quot;missing&quot; operators logical AND as it's the expected outcome when just typing tags as a list)\r<br />\n<br />\nSo far I haven't really accomplished much - I wasn't able to find much information on making the unary operator work on any expression or how to actually use MakeListRule etc. and am \r<br />\nsort of &quot;lost&quot;.\r<br />\n<br />\nHoping someone can help :)<br />\n",
+    "PostedDate": "2014-05-23T07:22:31.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1250138",
+    "ThreadId": "546374",
+    "Html": "start with FullTextSearchGrammar sample - the input query language is similar to what you have, and there's an implicit &quot;AND&quot; operator there<br />\n",
+    "PostedDate": "2014-05-27T10:42:53.833-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1250143",
+    "ThreadId": "546374",
+    "Html": "Thanks, and yeah, had a look at it. I ran into trouble with the ImpliedSymbolTerminal not having an AST node type(or something like that- it's very hard to get a decent idea of what's wrong sometimes.)\r<br />\n<br />\nMy current solution is making a &quot;list&quot; node with sub-expressions in it, which I can treat as an 'and' later on. Not sure if there are any practical differences?<br />\n",
+    "PostedDate": "2014-05-27T10:51:41.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

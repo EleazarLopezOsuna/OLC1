@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "905111",
+    "ThreadId": "393355",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I've build a language parse using Irony, based on several samples, including MiniPyhton.</p>\r\n<p>I'm encountering a problem caused (apparently) by CreateTokenFilters override. With this override, Empty statement is not recognize on the base statement Rule.</p>\r\n<p>For exemple, Root = Stmt; Stmt.Rule = something|Empty;</p>\r\n<p>In that case, parser will always says : expecting something.</p>\r\n<p>Is there any workaround to do this ?</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">override</span> <span style=\"color:blue\">void</span> CreateTokenFilters(LanguageData language, TokenFilterList filters)\n        {\n            <span style=\"color:blue\">var</span> outlineFilter = <span style=\"color:blue\">new</span> CodeOutlineFilter(language.GrammarData,\n              OutlineOptions.ProduceIndents | OutlineOptions.CheckBraces, ToTerm(<span style=\"color:#a31515\">@&quot;\\&quot;</span>)); <span style=\"color:green\">// &quot;\\&quot; is continuation symbol</span>\n            filters.Add(outlineFilter);\n        }\n</pre>\r\n</div>\r\n<p>&nbsp;PS : Same problem in MiniPython sample</p>\r\n",
+    "PostedDate": "2012-08-28T06:54:21.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "905790",
+    "ThreadId": "393355",
+    "Html": "<p>This is in fact a bug in miniPython grammar. Add the Empty term to Stmt definition:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>      Stmt.Rule = AssignmentStmt | Expr | ReturnStmt | Empty;\r\n\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Note that considering the other definitions:</p>\r\n<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ExtStmt.Rule&nbsp;=&nbsp;Stmt&nbsp;+&nbsp;Eos&nbsp;|&nbsp;FunctionDef;\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Block.Rule&nbsp;=&nbsp;Indent&nbsp;+&nbsp;StmtList&nbsp;+&nbsp;Dedent;\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StmtList.Rule&nbsp;=&nbsp;MakePlusRule(StmtList,&nbsp;ExtStmt);\r\n</pre>\r\n<pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>this</span>.Root&nbsp;=&nbsp;StmtList;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//&nbsp;Set&nbsp;grammar&nbsp;root</span>\r\n</pre>\r\n<br /></pre>\r\n<p>.. we define empty line as Empty followed by Eos (end-of-statement) symbol.</p>\r\n<p>Make similar change in your grammar.&nbsp;</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-08-29T09:51:00.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

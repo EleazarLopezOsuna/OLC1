@@ -1,0 +1,50 @@
+panel /*Estilo general para los paneles.*/
+{
+     border: true;
+     border-color: yellow;
+     border-width: 3;
+}
+.principal /*Sub estilo 2*/
+{
+     background: rgb(255, 255, 102);
+     border-width: 3;
+     width: 980;
+     height: 510;     
+}
+.Detalle
+{
+     background: rgb(255, 255, 255);
+     border-width: 1;
+     width: 980;
+     height: 380;      
+}
+
+.Final
+{
+     background: rgb(255, 255, 255);
+     border-width: 1;
+     width: 1600;
+     height: 900;      
+}
+
+Text
+{
+     font : 'Consolas';
+     align : left;     
+}
+.Titulo
+{
+     font : 'Cambria';
+     font-size : 24;     
+}
+.Todo
+{
+     font : 'Consolas';
+     font-size : 24;  
+}
+.Botones
+{
+     font: 'Comic Sans MS';
+     font-size : 11;
+}
+

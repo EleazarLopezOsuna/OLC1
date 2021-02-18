@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "191631",
+    "ThreadId": "56697",
+    "Html": "<p>\r\n<p>I think AstNodeCreator is a great thing, and it is already solving me a lot of effort.</p>\r\n<p>However, when I was only starting to use it I noticed two not-obvious thing that make it a bit harder to use than necessary:</p>\r\n<p><ol>\r\n<li>The fact that I have to do grammar.SetLanguageFlags(LanguageFlags.CreateAst, true).<br>It would be nicer to have a grammar.ShouldCreateAst property.<br>And if AstNodeCreator is set, but ShouldCreateAst is not, maybe set AstNode to some constant value containing the meaningful message (&quot;Please set&nbsp;ShouldCreateAst&nbsp;if you want AstNodes to be created&quot;)?<br></li>\r\n<li>Lambda expressions allow writing expressions inside Action delegates, so I originally wrote node creators as returning AstNodes and noticed the problem only the hard way.<br>It might be more obvious to expect a AstNode to be returnedfrom AstNodeCreator instead of relying on it to set the node.</li>\r\n</ol></p>\r\n</p>",
+    "PostedDate": "2009-05-18T13:25:01.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "191745",
+    "ThreadId": "56697",
+    "Html": "<p>hi</p>\r\n<p>First of all - thanks for finding this inconsistency with lists node creation, will fix it asap</p>\r\n<p>Now about your other &quot;troubles&quot;</p>\r\n<p>1. So, you suggest to create both boolean property and a flag in language flags, just to catch when programmer set one and forgot another? I really think that's&nbsp;would seem a bit &quot;strange&quot;. As for creating just a bool property, I would prefer to join&nbsp;all such bool props&nbsp;in this LanguageFlags set. You had trouble&nbsp;because you&nbsp;initially missed&nbsp;that you need to set this flag - so, it's one in a life-time&nbsp;trouble. It's because previously&nbsp;Irony&nbsp;was&nbsp;always creating AST tree - because it was the only output from parser; so without AST parsing was pointless. Now it changed, parser produces parse tree, and optionally AST.&nbsp;You had trouble just because of this change of behavior. If you started with Irony as it is now, that wouldn't happen - I guess.</p>\r\n<p>2. About node creators returning new nodes, instead of setting the field in ParseTreeNode - it might be more obvious, but still somebody would ask &quot;why return if I can set it right there? what you do with returned node? don't you set it? What if I set it and return?&quot; - i'm afraid it&nbsp;might&nbsp;raise questions as well. I'm saying neither way is perfect, but the current convention seems&nbsp;bares a little less risk for misunderstanding.</p>\r\n<p>thanks</p>\r\n<p>Roman&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-05-18T22:31:53.507-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "191759",
+    "ThreadId": "56697",
+    "Html": "<p>Hi,<br><ol>\r\n<li>No, I was saying to create a property that wraps the flag and sets it, just for convenience.<br>I understand that it creates two different ways to do a thing, but flags are less obvious then common properties.<br>You already have MarkTransient, for example, which also just sets a flag.<br><br>As for catching, <span style=\"color:#30332d\">it was the first time for me, but I actually had to debug into the internals of Irony to find out what's happening.<br>I think setting AstNode to something explaining why it is empty would be much better than leaving it null.<br>(Also since the explanation would be same for all nodes it would not introduce any performance loss).<br><br></span></li>\r\n<li><span style=\"color:#30332d\">Well, it is named 'Creator', so it seems logical to create a node and return it.<br>If it was 'Setter' or 'Initializer', I would expect that I have to set node, but not with 'Creator'.<br>Also it would remove the code &quot;node.AstNode =&quot; which has to be written over and over again.</span></li>\r\n</ol></p>\r\n<p><span style=\"color:#30332d\">Now, I do understand that these are first time problems and they may exist only in my mind anyway (that's why it is a discussion, not an issue).<br>But I think that any API should try to prevent common errors and reduce repetitive coding, so that's why I am bringing this up.</span></p>\r\n<p><span style=\"color:#30332d\">Andrey</span></p>",
+    "PostedDate": "2009-05-18T23:24:49.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "191981",
+    "ThreadId": "56697",
+    "Html": "<p>Hi</p>\r\n<p>1. As for MarkTransient, the main reason for it is not to duplicate a flag-setting approach, but to allow set this flag on multiple non-terminals in one statement; there's no such situation here. I do agree that currently this node-creation flag is kinda hidden and not obvious. I think that would become much better once there are XML comments, so once you start setting NodeType or NodeCreator properties, you'll eventually&nbsp;read from xml doc&nbsp;that using these properties requires setting CreateAst flag on grammar. What I can do is the following: add validation at grammar analysis - check that if any of the NodeType or NodeCreator properties are set on any of the non-terminals, but CreateAst flag is not set, then add warning to grammar errors list. Will put it on my list</p>\r\n<p>2. Yeah, it is named Creator and it might be suggesting to be a function. But from signature you see it is not a function, so it would probably lead to the question where to put the node, and eventually the programmer would find out the Node field;&nbsp;call it&nbsp;Initializer - that would be confusing: initializer does not create stuff, it initializes existing thing. Again, I do agree there maybe some confusion out in existing arrangement, but I don't think alternatives are better in this regard.</p>\r\n<p>Thanks for the input, let's continue on this path, to&nbsp;make the&nbsp;experience&nbsp;better</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-05-19T09:49:22.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "193389",
+    "ThreadId": "56697",
+    "Html": "<p>I've fixed the&nbsp;AST node creation for&nbsp;lists, added warning as I describe in #1</p>\r\n<p>Try it, let me know if it works correctly</p>\r\n<p>thanks</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-05-22T14:28:33.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "193554",
+    "ThreadId": "56697",
+    "Html": "<p>Thanks, I hope this helps people. I'll check it after I solve my other problems.</p>",
+    "PostedDate": "2009-05-23T11:10:23.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

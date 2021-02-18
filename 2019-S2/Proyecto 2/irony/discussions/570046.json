@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1314278",
+    "ThreadId": "570046",
+    "Html": "I am trying to learn Irony. But I'm getting into trouble in BNF rules structure and I didn't understand <br />\nclearly. I need to know what kind of structure in BNF rules. Can someone help me and explain me in detail with some examples pleaseeee?  <br />\n",
+    "PostedDate": "2014-10-17T03:26:01.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1314702",
+    "ThreadId": "570046",
+    "Html": "come on man, plenty of stuff on the web, just google BNF, LR parsing, LALR<br />\n",
+    "PostedDate": "2014-10-18T21:42:45.627-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "678660",
+    "ThreadId": "274379",
+    "Html": "\r\n<p>hi,</p>\r\n<p><span>I</span> <span>work on</span> <span>language translator</span><span>.</span></p>\r\n<p><span>Everything works</span> <span>perfectly.</span></p>\r\n<p><span>but I lose</span> <span>the comments&nbsp;&nbsp;in the <span>target language.</span></span></p>\r\n<p><span><span><span>you</span> <span>have</span> <span>a</span> <span>solution</span>\r\n<span>to</span> <span>have</span> A<span>stNode</span> <span>with</span> C<span>ommentTerminal?</span></span></span></p>\r\n<p><span><span>thanks a lot.</span></span></p>\r\n<p><span><span>Nicolas</span></span></p>\r\n",
+    "PostedDate": "2011-09-30T07:03:41.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "678845",
+    "ThreadId": "274379",
+    "Html": "<p>Unfortunately the answer is no, there's no built-in facility to retain comments. I think it would be easy with a custom token filter. I will look into adding this feature.</p>",
+    "PostedDate": "2011-09-30T14:52:32.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "678969",
+    "ThreadId": "274379",
+    "Html": "<p>if you can wait for a day or two - I'm preparing update, comment handling will be there. Should be able to upload it by tom (Sunday) night.</p>",
+    "PostedDate": "2011-10-01T10:46:03.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "679110",
+    "ThreadId": "274379",
+    "Html": "<p>Just submitted new version, it's there. ParseTreeNode now has Comments property - a collection of all comment tokens that precede this node</p>",
+    "PostedDate": "2011-10-02T09:03:17.677-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

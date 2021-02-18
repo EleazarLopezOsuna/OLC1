@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "897945",
+    "ThreadId": "390969",
+    "Html": "\r\n<p>Hello guys!</p>\r\n<p>I implemented some grammar and managed to get rid of all conflicts. However, up to now it seems that one problem remains (I try to narrow it down as much as possible to keep focus on the problem):</p>\r\n<p>My grammar supports characterliterals, such as 'c', and attributes, such as variableName'AttributeName. The problem now is two-fold, although I think solving one also solves the other... Consider the following simple line of code:</p>\r\n<p>&nbsp;</p>\r\n<pre>assert c='a' and c'OldVal='b'</pre>\r\n<p>&nbsp;</p>\r\n<p>(1) Whenever I want to declare an attribute (OldVal), the parser complains of a malformed string. Of course it does, There is a missing ' and OldVal is longer than one character.</p>\r\n<p>(2) Before the assignment operator &quot;=&quot;, the Grammar allows a simple identifier (&quot;c&quot; in the example) or an identifier's attribute (&quot;c'OldVal&quot;):</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre> name.Rule\n   = identifier \n   | identifier &#43; <span style=\"color:#a31515\">&quot;'&quot;</span> &#43; identifier;\n</pre>\r\n</div>\r\n<p><br>\r\nBy looking only at the next token, the parser sees a valid identifier and reduces it to name. How can I implement a more sophisticated preview mechanism that, e.g., also takes into account the token after the preview token. An identifier followed by ' would\r\n unmistakably specify an attribute.</p>\r\n<p>&nbsp;</p>\r\n<p>Note: The complete grammar is relatively complex, and ShiftIf() or ReduceIf() cannot be used - at least I wouldn't know how...</p>\r\n<p>Any help or hint in the right direction is appreciated!</p>\r\n<p>Thanks,<br>\r\nMax</p>\r\n",
+    "PostedDate": "2012-08-10T01:46:22.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "898355",
+    "ThreadId": "390969",
+    "Html": "<p>Looks like your grammar is ambiguous at character/terminal level. For an expression like this (rearranged from your example)</p>\r\n<p>assert 'a'=c and c'OldVal = b</p>\r\n<p>when scanner hits the quote char after [assert], it is unclear what the quote is - start of string literal, or delimiter inside identifier attribute.</p>\r\n<p>I think the easiest fix is the following.</p>\r\n<p>Define a separate terminal \"idWithAttr\" based on IdentifierTerminal for identifier with attribute. Add the quote symbol as allowed char inside (but not as first char) - you can do it with constructor parameter.&nbsp;Hook to this terminal's ValidateToken event. Inside the handler, verify that variable-with-attr is correct (like there's only one quote symbol inside).</p>\r\n<p>You can use this \"idWithAttr\" as is in your grammar.&nbsp;Or you can automatically convert it into the sequence of tokens \"id + quote + id\" - right inside ValidateToken handler. In this case just create multi-token and replace the current idWithAttr token (see sample code here: <a href=\"http://irony.codeplex.com/discussions/390341\">http://irony.codeplex.com/discussions/390341</a>). Note that you need to add idWithAttr to NonGrammarTerminals (just like comment terminals) in this case.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-08-11T08:21:10.87-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "898661",
+    "ThreadId": "390969",
+    "Html": "<p>Thank you very much for the quick reply, I will try your proposed solution!</p>",
+    "PostedDate": "2012-08-13T00:18:06.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

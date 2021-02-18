@@ -1,0 +1,24 @@
+digraph G {
+rankdir = LR;
+nodo_3 -> nodo_1 [label = "ε"];
+nodo_1 -> nodo_2 [label = "\\n"];
+nodo_2 -> nodo_1 [label = "ε"];
+nodo_2 -> nodo_4 [label = "ε"];
+nodo_4 -> nodo_5 [label = "ε"];
+nodo_5 -> nodo_6 [label = "\\t"];
+nodo_6 -> nodo_7 [label = "ε"];
+nodo_7 -> nodo_8 [label = "\\'"];
+nodo_8 -> nodo_9 [label = "ε"];
+nodo_9 -> nodo_10 [label = "letras"];
+nodo_3 -> nodo_4 [label = "ε"];
+nodo_3[label = "3"];
+nodo_1[label = "1"];
+nodo_2[label = "2"];
+nodo_4[label = "4"];
+nodo_5[label = "5"];
+nodo_6[label = "6"];
+nodo_7[label = "7"];
+nodo_8[label = "8"];
+nodo_9[label = "9"];
+nodo_10[label = "10"];
+}

@@ -1,0 +1,138 @@
+[
+  {
+    "Id": "163730",
+    "ThreadId": "49013",
+    "Html": "I am wondering when it happens. Speed up rivantsov!\r\n",
+    "PostedDate": "2009-03-03T00:59:32.61-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "163951",
+    "ThreadId": "49013",
+    "Html": "Well, give me some more time. It's been 3 months, I know. Still trying to nail down this new non-canonical algorithm. Also big refactoring is on the way, and fixing current LALR algorithm, and other stuff. At least two or three more weeks I think. But if I succeed with this non-canonical stuff - you guys are up for a big surprise!<br>\r\nthanks for asking<br>\r\nRoman\r\n",
+    "PostedDate": "2009-03-03T09:42:11.14-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "167554",
+    "ThreadId": "49013",
+    "Html": "Nothing takes to long when it's free. Keep up the great work\r\nrivantsov, I really appreciate what you're doing with this project. :)<br>\r\n",
+    "PostedDate": "2009-03-12T15:55:13.173-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "167630",
+    "ThreadId": "49013",
+    "Html": "Thanks !<br>\r\nJust a few days more...<br>\r\n",
+    "PostedDate": "2009-03-12T23:29:55.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "175482",
+    "ThreadId": "49013",
+    "Html": "How goes things?  Any chance we'll be seeing a new version soon?  I'm anxious to see the big surprise :)",
+    "PostedDate": "2009-04-03T14:23:19.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "175836",
+    "ThreadId": "49013",
+    "Html": "It's coming. On April 14 I'm making a presentation about Irony at Lang.Net symposium (<a href=\"http://langnetsymposium.com/\">http://langnetsymposium.com/</a>), and rain or shine, I will post update before this date, because I'm planning to talk about this newest stuff. Just a few days more, it's coming. thanks for asking, <br>\r\n<br>\r\nRoman\r\n",
+    "PostedDate": "2009-04-05T09:29:47.507-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "176178",
+    "ThreadId": "49013",
+    "Html": "This is great, thanks for the update. I'm planing to start my project in a few days and will wait until the new Irony version comes out. This weekend I played a lot with ANTLR and I think it is a great tool, but Irony is even better and easier for a C# Programmer like I am :)<br>\r\n",
+    "PostedDate": "2009-04-06T09:03:23.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "178674",
+    "ThreadId": "49013",
+    "Html": "First of all let me say even though I know absolutely nothing about grammars, this is REALLY cool!&nbsp; Thanks for all the work!&nbsp; <br>\r\n<br>\r\nFrom reading some of the SQL discussions it sounds like proper parsing would require a code refactor.&nbsp; Any word on when this will be available?&nbsp; Thanks again for all the work!&nbsp; This is really impressive and very useful!<br>\r\n<br>\r\nGood luck at the show!!!<br>\r\n",
+    "PostedDate": "2009-04-13T14:50:57.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "178689",
+    "ThreadId": "49013",
+    "Html": "Thanks!<br>\r\nCan you please remind me what refactoring was in discussion you mention? couldn't find it, and doing refactoring right now... so don't wanna miss it<br>\r\nRoman\r\n",
+    "PostedDate": "2009-04-13T15:21:53.63-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "181338",
+    "ThreadId": "49013",
+    "Html": "Hey Roman,<br>\r\n<br>\r\nhope everything is going well. Still waiting for your next great Irony release :) Any idea when it will finally happen?<br>\r\n<br>\r\nThanks,<br>\r\nBenjamin<br>\r\n",
+    "PostedDate": "2009-04-20T08:30:05.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "181485",
+    "ThreadId": "49013",
+    "Html": "Well, still same, getting there. Good thing I'm making progress. The problem is - because of refactoring, the whole thing is quite broken, so I cannot post non-working stuff. Few more days, I know, already said that.. For now, as entertainment, watch my presentation at LangNet, I speak about some new stuff that is coming. Other presentations are quite interesting too. I'll post the link on home page.<br>\r\nthanks again, and sorry for the delay<br>\r\nRoman\r\n",
+    "PostedDate": "2009-04-20T13:11:00.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "182052",
+    "ThreadId": "49013",
+    "Html": "Great presentation about Irony! I like the new parser you're developing, is that one included in the next release?<br>\r\n",
+    "PostedDate": "2009-04-21T15:28:50.183-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "182104",
+    "ThreadId": "49013",
+    "Html": "thanks - glad you liked it! Yes, this stuff will be in the next code drop, some of it. Soon, I still hope -))<br>\r\nRoman\r\n",
+    "PostedDate": "2009-04-21T19:31:56.507-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "183113",
+    "ThreadId": "49013",
+    "Html": "Just uploaded sources - this is PREVIEW, not real update, many things are broken... have a look...\r\n",
+    "PostedDate": "2009-04-23T23:05:28.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "183119",
+    "ThreadId": "49013",
+    "Html": "good, good, I'll check it out right away.",
+    "PostedDate": "2009-04-23T23:44:24.973-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "183161",
+    "ThreadId": "49013",
+    "Html": "I just took a look at the preview and there is a considerable improvement over the latest release. Great work!",
+    "PostedDate": "2009-04-24T01:46:09.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "183238",
+    "ThreadId": "49013",
+    "Html": "thanks!<br>\r\nJust to make sure you don't miss it, have a look at the stuff in Irony.Samples/NonCanonTestGrammars, there's a text file there with some detailed explanations. <br>\r\n<br>\r\n",
+    "PostedDate": "2009-04-24T06:39:39.167-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

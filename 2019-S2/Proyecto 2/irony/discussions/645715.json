@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1446801",
+    "ThreadId": "645715",
+    "Html": "Hi\r<br />\n<br />\nI was running a very old version of Irony, prior to the splitting out of the parsing and AST generation. I've just updated to the latest version and am now getting a different parsing with my grammar - a Sql like language. \r<br />\n<br />\nI've had to move the InvokeValidateToken out of my custom terminals and hook up _ValidateToken event in my grammar as well as remove the DefaultNodeType from the grammar and assign a DefaultNodeCreator function as appropriate. However, those are the only changes I needed to made (other than the various signatures - Init etc - for my own Ast nodes) to get the grammar working error free in Grammar Explorer.<br />\n\r<br />\nHowever, the expression\r<br />\n<br />\na='b' OR a='1'\r<br />\n<br />\nwhere previously parsed as \r<br />\n<br />\n(a='b') OR (a='1')\r<br />\n<br />\nis now being parsed as\r<br />\n<br />\n(a= (b OR a='1'))\r<br />\n<br />\nIt looks to me like it is an operator precedence thing, but that hasn't changed. It is still<br />\n<pre><code>            RegisterOperators(100, &quot;*&quot;, &quot;/&quot;, &quot;\\&quot;, &quot;%&quot;)\n            RegisterOperators(90, &quot;+&quot;, &quot;-&quot;)\n            RegisterOperators(80, &quot;=&quot;, &quot;&gt;&quot;, &quot;&lt;&quot;, &quot;&gt;=&quot;, &quot;&lt;=&quot;, &quot;&lt;&gt;&quot;, &quot;!=&quot;, &quot;!&lt;&quot;, &quot;!&gt;&quot;)\n            RegisterOperators(70, &quot;^&quot;, &quot;&amp;&quot;, &quot;|&quot;)\n            RegisterOperators(60, &quot;NOT&quot;, &quot;IS&quot;)\n            RegisterOperators(50, &quot;LIKE&quot;, &quot;IN&quot;)\n            RegisterOperators(40, &quot;AND&quot;)\n            RegisterOperators(30, &quot;OR&quot;)\n\n\n\nOther salient bits of my grammar are:\n</code></pre>\n\n<pre><code>        expression.Rule = term Or\n                          binaryExpression Or booleanExpression Or\n                          equalityExpression Or unaryExpression Or\n                          nullExpression Or missingExpression Or unknownExpression Or\n                          inExpression Or likeExpression Or\n                          orderByExpression Or studyExpressionList  \n\n        term.Rule = dataitemKeyExpression Or subjectKeyExpression Or sequenceKeyExpression Or recordNumberExpression Or levelExpression Or\n                    numberExpression Or stringExpression Or dateExpression Or quotedExpression   Or\n                    functionExpression Or parenExpression Or\n                    queryExpression Or queryFilterExpression Or\n                    containsCodeExpression Or caseExpression Or parameterExpression Or\n                    dataTypeExpression Or deferredExpression \n\n        parenExpression.Rule = LPAREN + listExpression + RPAREN\n\n        numberExpression.Rule = numberLiteral\n        stringExpression.Rule = identifier Or &quot;*&quot;\n        binaryExpression.Rule = expression + binaryOperator + expression\n        booleanExpression.Rule = expression + booleanOperator + expression\n        equalityExpression.Rule = expression + equalityOperator + expression\n        functionExpression.Rule = functionNameExpression + parenExpression Or\n                                  functionNameExpression + [EMPTYPAREN]\n</code></pre>\n\nWhere else should I be looking to try and resolve this?\r<br />\n<br />\nMany thx\r<br />\n<br />\nS<br />\n",
+    "PostedDate": "2015-10-02T01:41:34.007-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1446809",
+    "ThreadId": "645715",
+    "Html": "Try marking your <code>binaryOperator</code> etc. rules with <code>MarkTransient</code>.\r<br />\n<br />\nAlso please search the forums a bit before asking questions, this has come up before.<br />\n",
+    "PostedDate": "2015-10-02T02:49:33.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1446811",
+    "ThreadId": "645715",
+    "Html": "Many, many thx for the speedy reply. That worked.<br />\n",
+    "PostedDate": "2015-10-02T02:56:11.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

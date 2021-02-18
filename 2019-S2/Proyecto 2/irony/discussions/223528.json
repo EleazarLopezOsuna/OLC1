@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "480381",
+    "ThreadId": "223528",
+    "Html": "<p>So, I'm working through the example here:</p>\r\n<p>http://www.codeproject.com/KB/recipes/YourFirstDSL.aspx</p>\r\n<p>But, it references classes that appear to have been removed from Irony, unless I'm missing something. The code block:</p>\r\n<p>&nbsp;</p>\r\n<pre id=pre9 style=\"margin-top:0pt\" lang=cs>CameraControlGrammar grammar = <span>new</span> CameraControlGrammar();<br>LanguageCompiler compiler = <span>new</span> LanguageCompiler(grammar);<br>AstNode program = compiler.Parse(<span>&quot;</span><span>the source code as a string&quot;</span>);<br><br>uses the LanguageCompiler class, which I can't find. Help?<br><br>None of the examples I've found seem to provide much insight into walking the AST tree. <br>The grammar definition examples are great, but I'm unclear on how to get an AST back that I can then walk to compile my app.<br></pre>",
+    "PostedDate": "2010-08-13T13:47:33.903-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "480385",
+    "ThreadId": "223528",
+    "Html": "The code in this article is completely outdated.\r\nLook at SearchGrammar class and RunSample method - it walks the parse tree\r\n",
+    "PostedDate": "2010-08-13T14:05:03.567-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "481500",
+    "ThreadId": "223528",
+    "Html": "I had this same problem, and figured out what to do by going through the grammar explorer.<br>\r\nhttp://irony.codeplex.com/Thread/View.aspx?ThreadId=216123",
+    "PostedDate": "2010-08-17T10:36:00.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

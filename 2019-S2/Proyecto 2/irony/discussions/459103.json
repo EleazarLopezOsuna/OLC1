@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1099093",
+    "ThreadId": "459103",
+    "Html": "I have a situation where I'm validating numerical range on the NumberLiteral entered. I don't want to stop the parser at that point. I want it to keep parsing -- keep the parser state valid with the proper expectations so that my intellisense continues to function. How can I do this? I just want to add to the error list directly?<br />\n",
+    "PostedDate": "2013-09-25T09:02:26.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1099329",
+    "ThreadId": "459103",
+    "Html": "Well, you can use args.SetError method to set error in ValidateToken handler - the parser will continue, but it will try to recover, so you should have some ErrorRule's established for recovery<br />\n",
+    "PostedDate": "2013-09-25T12:39:59.123-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1099393",
+    "ThreadId": "459103",
+    "Html": "Thanks. AddParserError (in the Reduced event) seems to do what I want.<br />\n",
+    "PostedDate": "2013-09-25T14:48:31.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

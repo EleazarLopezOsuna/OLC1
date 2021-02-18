@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1293164",
+    "ThreadId": "562058",
+    "Html": "hi,\r<br />\n<br />\ni have a simple grammar like this: <br />\n<pre><code>Constant bla;  \nbla-=1;</code></pre>\n\nwhere &quot;Constant&quot; is a keyword and &quot;bla&quot; some name, that the user can change.\r<br />\ni definded the grammar like this:<br />\n<pre><code>IdentifierTerminal identifier = new IdentifierTerminal(&quot;Identifier&quot;);\nDefline.Rule = (ToTerm(&quot;Constant&quot;) + identifier + &quot;;&quot;)\n\nLVS.Rule = identifier + ToTerm(&quot;=&quot;) + number + &quot;;&quot;;</code></pre>\n\nnow i want to check if the identifieres used in the second line (and in the LVS Rule) are one of the names from the &quot;Constant&quot; lines. how do i check that?<br />\n",
+    "PostedDate": "2014-08-25T09:18:09.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1293266",
+    "ThreadId": "562058",
+    "Html": "Just run through generated parse tree, after parsing, using tree iterator/visitor. This is semantic analysis, not grammar/syntax thing, so it's done after parsing (normally)<br />\n",
+    "PostedDate": "2014-08-25T13:55:02.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

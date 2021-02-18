@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "916833",
+    "ThreadId": "396719",
+    "Html": "\r\n<p>I notice that&nbsp;the <strong><em>ExplicitCapture</em></strong> option is not set in the construction of patterns. As&nbsp;capturing-groups are not exposed externally (and I see no reason to do so), setting this option should improve the efficiency of complicated\r\n regular expressions.</p>\r\n<p>BTW: I find myself relying on this class almost exclusively, as the others seem unpredictable; clearly I am missing something in proper setup of the others, but this class seems to be working great.</p>\r\n",
+    "PostedDate": "2012-09-24T12:27:23.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917939",
+    "ThreadId": "396719",
+    "Html": "<p>thanks for the tip. I'm surprised you rely on regex so much, it is thought up as a thing to be used in a few marginal cases. It is much slower than other regular terminals, and has some other shortcomings...&nbsp;</p>",
+    "PostedDate": "2012-09-26T09:42:48.64-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917958",
+    "ThreadId": "396719",
+    "Html": "<p>I cut my teeth on RegEx'es more than 20 years ago, so the moment I encountered difficulties with the others I fell back on them as a comfort zone. Also, the grammars I am implementing do not use whitespace between tokens ....</p>",
+    "PostedDate": "2012-09-26T10:00:39.917-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917971",
+    "ThreadId": "396719",
+    "Html": "<p>A&nbsp;specific issue&nbsp;with KeyTerm is that it is case sensitive even in a case-insensitve grammar. So, it was much easier to define RegExTerminals.</p>",
+    "PostedDate": "2012-09-26T10:20:11.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

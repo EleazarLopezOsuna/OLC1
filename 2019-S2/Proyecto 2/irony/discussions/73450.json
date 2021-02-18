@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "251047",
+    "ThreadId": "73450",
+    "Html": "<p>Hi Roman,</p>\r\n<p>first off, great job on the project. Traditional handwritten or generated scanners/parsers are hard to maintain, but with Irony, it becomes a breeze.</p>\r\n<p>I'd really like to use Irony for expression evaluation in <a href=\"http://livegeometry.codeplex.com\">http://livegeometry.codeplex.com</a>. However I'd need to support both desktop and Silverlight runtimes. My questions:</p>\r\n<ol>\r\n<li>Has anyone done any work to create a Silverlight Irony.dll?</li>\r\n<li>Would you be willing to do the work to multitarget the Irony project to Silverlight? This would include:<ol>\r\n<li>decorate your source code with #if !SILVERLIGHT around [Serializable]</li>\r\n<li>Provide a HashSet for Silverlight (a shallow wrapper around Dictionary)</li>\r\n<li>Create the Irony.Silverlight.csproj and include all the files, maybe extract the common things to a .targets file</li>\r\n<li>Possibly some other minor work</li>\r\n</ol></li>\r\n<li>In the worst case (worst for me, not for you), if you're OK with these changes but don't have time to implement them, you could give me check-in permissions and I could add Silverlight support for this project (of course, I'd send you the shelveset first for code review, not that I would start messing around with your code).</li>\r\n</ol>\r\n<p>Please let me know what you think.</p>\r\n<p>Thanks,</p>\r\n<p>Kirill Osenkov</p>\r\n<p><a href=\"http://blogs.msdn.com/kirillosenkov\">http://blogs.msdn.com/kirillosenkov</a></p>",
+    "PostedDate": "2009-10-28T23:27:58.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "251058",
+    "ThreadId": "73450",
+    "Html": "<p>For now, I've created my own private temporary one-off throw-away no-liability Silverlight version of Irony.dll from source version 36094.</p>\r\n<p>If anyone needs it, you can download it from:</p>\r\n<p><a href=\"http://guilabs.net/IronySilverlight.zip\">http://guilabs.net/IronySilverlight.zip</a></p>\r\n<p>Kirill</p>",
+    "PostedDate": "2009-10-29T00:30:35.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "251212",
+    "ThreadId": "73450",
+    "Html": "<p>Hi!</p>\r\n<p>This is great and I would certainly welcome such a contribution. Unfortunately you'd probably have to do it again -&nbsp;minor enhancements for my next code drop turned into quite a refactoring of the code base. I will post it in a few days and then give you the rights to submit. I'm ok with the suggested strategy of add &quot;if SILVERLIGHT&quot; clauses. By the way, you're on c# team, so maybe you can answere -&nbsp;what's the deal with hashset&lt;T&gt; class? Why is it not there for silverlight? We had already troubles with it, when I tried to convert Irony to safe assembly, and it appeared that hashset has this damn HostProtection attribute which prevented it from being used in safe assemblies and thus stopped my effort. It seems like a very useful generic class, so I don't understand why it's so troubled. Also, rather than faking hashset from Dictionary, I think it would be better to just take its source, tweak it and put it into Irony.</p>\r\n<p>Thanks again,&nbsp;let's get in touch&nbsp;in a few days</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-10-29T08:39:57.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "251873",
+    "ThreadId": "73450",
+    "Html": "<p>Hi,</p>\r\n<p>sure, take your time, it's not urgent. I'd be happy to contribute whenever the refactoring is done.</p>\r\n<p>As I read the source code, I liked it, but I saw a couple of places where I would do things slightly differently. Just as a suggestion, I might be wrong, of course:</p>\r\n<ol>\r\n<li>I thought it would be good to&nbsp;separate parse trees from ASTs. A parse tree shouldn't know anything about the AST (and right now it directly references the AST node using a weakly typed reference). Instead, there should be a visitor that takes a parse tree and produces an AST out of it. It's like stages: Parse tree -&gt; AST -&gt; bound tree -&gt; IL. In fact, I'm now writing a visitor that directly builds LINQ Expression Trees out of a parse tree for expression evaluator.</li>\r\n<li>There are a few places where you use try/catch to find the end of the stream, instead of a simple if - return branch. Generally exceptions, are, well, exceptions and shouldn't be used for regular control flow. Reaching the end of the stream is not an exceptional situation so try/catch should be avoided. There are several reasons for that - exceptions are dog slow, and a pain to debug if you have enabled &quot;Break on first-chance exceptions&quot; - then you will break on every unnecessary exception making your debugging a pain. I understand that none of these reasons really apply in this case, but still, as a general practice.</li>\r\n</ol>\r\n<p>The reason why there's no HashSet&lt;T&gt; in Silverlight 3 is most likely the download size limitation. It was really important to keep the Silverlight 3 download size less than 5 MB, that's why every byte counted. Since HashSet can be kind of easily replaced by Dictionary, they likely just cut it because of download size. I can't be sure however, it's just my guess. If you're really curious, I could ask the BCL folks. Also, hopefully HashSet will make a come back in some next version. I'll actually follow up with them to make sure they're aware of the issue.</p>\r\n<p>Thanks,</p>\r\n<p>Kirill</p>",
+    "PostedDate": "2009-10-30T23:51:06.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252067",
+    "ThreadId": "73450",
+    "Html": "<p>Answering your suggestions:</p>\r\n<p>1. Constructing AST tree. I think AST tree and parse tree are not that far apart, especially for scripted dynamic languages. So building AST tree on-the-fly makes sense in many cases. Secondly, I would disagree that having a field for AST node&nbsp;introduces so much dependency/linkage to AST tree.&nbsp;AST node field in parse node is just a conveniency provided&nbsp;for&nbsp;language implementors. You still can ignore it and go for Visitor pattern, as you did already - that's fine too. Building generic frameworks like Irony&nbsp;is all about providing options and choices to devs who will be using it. Finally Visitor pattern. I&nbsp;really dislike it, and would recommend against using it as far as possible. This pattern introduces a strong mutual dependency between Visitor (processing code)&nbsp;and AST node set (subjects of processing) - and this is a very bad thing. If you need to add a new AST node type, you'll have to modify visitor code, creating special method for dealing with new node.&nbsp;Building on this pattern involves producing a lot&nbsp;of&nbsp;type-based dispatching (glue-like)&nbsp;code&nbsp;that is just a&nbsp;glue (junk in fact) that is a hell to maintain and to debug and trace.&nbsp;However, inspite of my own distaste for this pattern,&nbsp;Irony leaves&nbsp;the choice&nbsp;to use/not use it to the developer - it is still possible to generate&nbsp;AST using visitor, after parsing is complete.&nbsp;</p>\r\n<p>2. Letting out-of-range happen instead of explicit checking the index. First, you can see there that there are two versions of these methods, one for DEBUG mode with range checking and another for RELEASE mode without it. You don't need to explain that exceptions are slow - I certainly know that. The main concern here is that this method/property (PreviewChar) is probably the most heavily used method in Irony. It will be likely called at least once for every character in the input file. As we know, the performance of your parser/scanner pair in 90% determined by scanner performance, and the most-used method in scanner is therefor is most critical. If I add range check of the index on every call, I get performance hit. Maybe tiny, but it is there. Try/Catch block on the other hand is free - it has no performance impact when code executes without exception. It does throw exception at the&nbsp;very end of the file - not always, scanner explicitly checks for EOF, but Terminal's &nbsp;code might cause it. So I decided to let it happen once at the end, but save on range checking during entire file scan. It was a guess work, judgement call, I&nbsp;did not evaluate in any way&nbsp;if I gained/lost anything. I do understand that my gain might be so tiny (given the efficiency of .NET JIT optimizing compiler) that it might not even be worth discussing it here... But at least that's the reason behind this &quot;strange&quot; code. As for general statement &quot;exceptions should not be used for blah-blah...&quot; - please.. exceptions are powerful mechanism, and are ok to be used where justified.&nbsp;</p>\r\n<p>thanks</p>\r\n<p>Roman&nbsp;</p>",
+    "PostedDate": "2009-10-31T22:12:22.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252154",
+    "ThreadId": "73450",
+    "Html": "<p>Hi</p>\r\n<p>Go ahead, get latest and add SL support. I added you as a developer</p>\r\n<p>Please send me a zip before submission; also please create or modify ReadMe with&nbsp;SL-related instructions.</p>\r\n<p>Good luck and thanks in advance.</p>\r\n<p>Roman&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-01T09:48:52.67-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252155",
+    "ThreadId": "73450",
+    "Html": "<p>Hi Roman,</p>\r\n<p>1. Sure, this makes sense. Agreed about the Visitor in the GoF sense, with strong typing. I sometimes think of a Visitor in a broader sense - a way to group a set of operations on a family of objects in such a way that this family of objects doesn't know anything about that set of operations. This would allow having multiple groups of operations. Anyway, I was just suggesting and if you feel that the current design is OK, then I totally agree with that. You have more experience. My concern was mostly driven by the fact that if I wanted to modularize Irony (say, if I don't need AST services), it's hard to cut them out, because the parse tree part depends on them. I was able to trim down the Silverlight binary size from 190 KB to 130 KB and the only two folders I left for my own private binary are Parser and Math - I removed the AST, diagnostics, editor services, etc. Just as a note - if you'd like to make Irony more modularized - a good idea would be to break a dependency of the parse trees on the AST services. But again, your points are valid and I'm not going to tell you how to build this thing. This is just another viewpoint to consider.</p>\r\n<p>2. This is interesting. I haven't viewed optimistic try/catch as a performance optimization. It looks like you know what you're doing. Great.</p>\r\n<p>Please don't view feedback like this as critisism - other viewpoints are valuable even if they're not valid ;)</p>\r\n<p>Thanks,</p>\r\n<p>Kirill</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-01T09:51:51.83-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252157",
+    "ThreadId": "73450",
+    "Html": "<p>What client are you using? If you're using TFC, I could just send you a shelveset.</p>\r\n<p>What name would you like for the Silverlight binary? Is Irony.Silvelight.dll OK?</p>",
+    "PostedDate": "2009-11-01T09:55:10.05-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252187",
+    "ThreadId": "73450",
+    "Html": "<p>Client? I guess it is TFC, I submit checkin directly from VS through TFS connection. Shelveset - never tried this, but let's try it.</p>\r\n<p>Name - I think Irony.Silverlight suggests that inside the namespaces start with Irony.Silverlight. Let's do something without dot - IronySilverlight or simply IronySL.dll will work too. What is the practice with&nbsp;BCL (base class libraries) assemblies in .NET, the&nbsp;SL versions? We can follow the same pattern&nbsp;I guess&nbsp;</p>\r\n<p>Anyway&nbsp;it is just a single attribute in project properties, we can change it later.</p>",
+    "PostedDate": "2009-11-01T12:45:14.127-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

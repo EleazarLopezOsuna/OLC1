@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "241835",
+    "ThreadId": "70939",
+    "Html": "<p>hi there,</p>\r\n<p>Thanks Roman for a really cool project.</p>\r\n<p>I've been playing around, creating a frankenstein grammar from the samples and little console input test apps.</p>\r\n<p>Unfortunately I've not been able to get the 'Grammar Explorer' to work.</p>\r\n<p>I followed the instructions in the ReadMe.txt but after selecting Irony.Samples.dll an error dialog pops up with:</p>\r\n<p>\r\n<pre>System.InvalidCastException: Unable to cast object of type 'System.String' to type 'Irony.GrammarExplorer.GrammarItem'.<br>&nbsp;&nbsp; at Irony.GrammarExplorer.fmGrammarExplorer.miAdd_Click(Object sender, EventArgs e) in E:\\Code\\Irony\\trunk\\Irony.GrammarExplorer\\fmGrammarExplorer.cs:line 251<br>&nbsp;&nbsp; at System.Windows.Forms.ToolStripItem.RaiseEvent(Object key, EventArgs e)<br>&nbsp;&nbsp; at System.Windows.Forms.ToolStripMenuItem.OnClick(EventArgs e)<br>&nbsp;&nbsp; at System.Windows.Forms.ToolStripItem.HandleClick(EventArgs e)<br>&nbsp;&nbsp; at System.Windows.Forms.ToolStripItem.HandleMouseUp(MouseEventArgs e)<br>&nbsp;&nbsp; at System.Windows.Forms.ToolStrip.OnMouseUp(MouseEventArgs mea)<br>&nbsp;&nbsp; at System.Windows.Forms.ToolStripDropDown.OnMouseUp(MouseEventArgs mea)<br>&nbsp;&nbsp; at System.Windows.Forms.Control.WmMouseUp(Message&amp; m, MouseButtons button, Int32 clicks)<br>&nbsp;&nbsp; at System.Windows.Forms.Control.WndProc(Message&amp; m)<br>&nbsp;&nbsp; at System.Windows.Forms.ToolStrip.WndProc(Message&amp; m)<br>&nbsp;&nbsp; at System.Windows.Forms.ToolStripDropDown.WndProc(Message&amp; m)<br>&nbsp;&nbsp; at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message&amp; m)<br>&nbsp;&nbsp; at System.Windows.Forms.NativeWindow.Callback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)</pre>\r\n</p>\r\n<p>Closing the dialog and trying to select one of the items available in the Grammar drop-down I get:</p>\r\n<p>\r\n<pre>System.NullReferenceException: Object reference not set to an instance of an object.\r\n   at Irony.GrammarExplorer.fmGrammarExplorer.CreateGrammar() in E:\\Code\\Irony\\trunk\\Irony.GrammarExplorer\\fmGrammarExplorer.cs:line 280\r\n   at Irony.GrammarExplorer.fmGrammarExplorer.cboGrammars_SelectedIndexChanged(Object sender, EventArgs e) in E:\\Code\\Irony\\trunk\\Irony.GrammarExplorer\\fmGrammarExplorer.cs:line 490\r\n   at System.Windows.Forms.ComboBox.OnSelectedIndexChanged(EventArgs e)\r\n   at System.Windows.Forms.ComboBox.WndProc(Message&amp; m)\r\n   at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message&amp; m)\r\n   at System.Windows.Forms.NativeWindow.Callback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)</pre>\r\n</p>\r\n<p>No further info is displayed in any of the tabs.</p>\r\n<p>I'm on svn revision 33075 but have also tried revision 31155 with the same results.</p>\r\n<p>I've not found other threads on the forum or issues being tracked regarding this but if anyone's run into this please give me a heads up.</p>\r\n<p>crs</p>\r\n<p>\r\n<pre><br></pre>\r\n</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-04T01:35:47.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "241841",
+    "ThreadId": "70939",
+    "Html": "<p>Fixed.</p>\r\n<p>Just in case this happens to anyone else:</p>\r\n<p>Right-click on the Grammar drop-down and select &quot;Remove all&quot; prior to following the instructions in ReadMe.txt and adding the grammars from Irony.Samples.dll works fine.</p>\r\n<p>Since the Grammar Explorer caches the values of that drop-down its possible that I checked out a dirty cache from svn which the explorer tried to access on first launch.</p>\r\n<p>crs</p>",
+    "PostedDate": "2009-10-04T03:27:36.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "241859",
+    "ThreadId": "70939",
+    "Html": "<p>Don't know how I missed it but this was already dealt with here</p>\r\n<p><a href=\"http://irony.codeplex.com/Thread/View.aspx?ThreadId=58744\">http://irony.codeplex.com/Thread/View.aspx?ThreadId=58744</a></p>",
+    "PostedDate": "2009-10-04T05:57:37.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "241896",
+    "ThreadId": "70939",
+    "Html": "<p>thanks for pointing this out, I will add a note to startup instructions.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-10-04T09:51:26.407-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "243010",
+    "ThreadId": "70939",
+    "Html": "<p>Hi Roman,</p>\r\n<p>I ran into the same issue, however - I was not able to add the newly created irony sample assembly to &nbsp;the grammar explorer ('...not derived from irony grammar').</p>\r\n<p>The asm.GetTypes call returned grammars with a base type of 'irony.compiler.grammar', which of cause does not match the expected 'irony.parser.grammar'. &nbsp;I checked the types in &nbsp;the example grammars - OK.</p>\r\n<p>I am using the latest change set &nbsp;(33075) without any changes.</p>\r\n<p>Any idea ?</p>\r\n<p>Jon</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-07T09:15:49.22-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "243026",
+    "ThreadId": "70939",
+    "Html": "<p>Just rebuild the irony.Samples assembly - looks like you're trying to load from an old version, built with prev version of Irony&nbsp;</p>\r\n<p>and of course don't forget to &quot;Remove All&quot; right after you start Grammar Explorer for the first time</p>",
+    "PostedDate": "2009-10-07T09:43:22.1-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "243074",
+    "ThreadId": "70939",
+    "Html": "<p>Sorry,</p>\r\n<p>I did rebuild the &nbsp;project - but I did not realize that Irony explorer kept a file path from from a previous evaluation.</p>\r\n<p>Anyway, this is a great project!</p>\r\n<p>Jon</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-07T11:42:15.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

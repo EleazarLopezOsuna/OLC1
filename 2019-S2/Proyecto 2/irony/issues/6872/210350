@@ -1,0 +1,21 @@
+Index: Irony/Parsing/Scanner/Scanner.cs
+===================================================================
+--- Irony/Parsing/Scanner/Scanner.cs	(revision 42052)
++++ Irony/Parsing/Scanner/Scanner.cs	(working copy)
+@@ -11,6 +11,7 @@
+ #endregion
+ 
+ using System;
++using System.Linq;
+ using System.Collections.Generic;
+ using System.Globalization;
+ using System.Text;
+@@ -172,7 +173,7 @@
+ 
+     private void MatchTerminals() {
+       Token priorToken = null;
+-      foreach (Terminal term in Context.CurrentTerminals) {
++      foreach (Terminal term in Context.CurrentTerminals.OrderByDescending(t => t.Priority)) {
+         // If we have priorToken from prior term in the list, check if prior term has higher priority than this term; 
+         //  if term.Priority is lower then we don't need to check anymore, higher priority (in prior token) wins
+         // Note that terminals in the list are sorted in descending priority order

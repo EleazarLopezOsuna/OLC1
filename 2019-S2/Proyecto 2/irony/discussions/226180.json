@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "489633",
+    "ThreadId": "226180",
+    "Html": "<p>Hello,</p>\r\n<p>I'm wondering if there is a way to set a default Ast Node type if one has not been provided?</p>\r\n<p>For example, if the rule is</p>\r\n<p>MyNonTerminal.Rule = (Empty | SomeNonTerminal) + &quot;hello&quot;;</p>\r\n<p>And the NonTerminal has a NodeType of ExpressionListNode...there will be no Ast nodes created for (Empty | SomeNonTerminal), and the grammar errors will reflect this. &nbsp;What makes the most sense is for you to be able to set ExpressionListNode as the default (instead of NullNode), and then everything will work as expected.</p>\r\n<p>Is this somewhere and I've missed it?</p>\r\n<p>And awesome job on the project, by the way!</p>\r\n<p>Thanks!</p>",
+    "PostedDate": "2010-09-06T02:47:21.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "490220",
+    "ThreadId": "226180",
+    "Html": "<p>There's a property Grammar.DefaultNodeType, and also DefaultLiteralNodeType (defaulted to LiteralValueNode) - just for these. If you assign DefaultNodeType that should work as you want</p>",
+    "PostedDate": "2010-09-07T09:34:46.003-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

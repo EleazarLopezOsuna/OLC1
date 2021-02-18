@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1490573",
+    "ThreadId": "660457",
+    "Html": "Hello erverybody,<br />\n<br />\ni have a problem with the standard Irony.Interpreter.Evaluator.ExpressionEvaluatorGrammar and therefore with my custom implemented grammar. Everythings works well, instead of one thing:<br />\n<br />\nI extended the LanguageRuntime_OpDispatch_Init.cs with an Not UnaryOperatorImplementation for double:<br />\n<br />\nAddUnary(op, typeof(double), x =&gt; (double)x &gt; 0 ? 0.0 : 1.0);<br />\n<br />\nWhen i start the grammar explorer i can use &quot;sin(1)&quot;, i also can use !(sin(1)). But when i try to use &quot;!sin(1)&quot; an exception occurs:<br />\nOperator 'NOT' is not defined for types Irony.Interpreter.ClrMethodBindingTargetInfo.<br />\nIrony.Interpreter.ScriptStackTrace<br />\n<br />\nThe same problem occurs when i'm using NOT or - (negate) without any modifications on the grammar in case of negate. The operator exists but i think, the parser parses the text not correct (comparing ParseTree of !(sin(1)) and !sin(1)). <br />\n<br />\nCan anybody help me with this tricky error, so that i can use &quot;!Function&quot; (in general &lt;UnaryOperator&gt; &lt;Function&gt;)? Any recommandation?<br />\n",
+    "PostedDate": "2017-01-03T07:02:31.273-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1490600",
+    "ThreadId": "660457",
+    "Html": "Hi,\r<br />\n<br />\ni found the solution by myself:\r<br />\n<br />\nThe Standard Rule for UnaryOperator und UnaryExpression is:\r<br />\n<br />\nUnExpr.Rule = UnOp + Term + ReduceHere();\r<br />\nUnOp.Rule = ToTerm(&quot;+&quot;) | &quot;-&quot; | &quot;!&quot;;\r<br />\n<br />\nI extended it and changed it to:\r<br />\n<br />\nUnExpr.Rule = UnOp + Expr;// + ReduceHere();\r<br />\nUnOp.Rule = ToTerm(&quot;+&quot;) | &quot;-&quot; | &quot;!&quot; | &quot;NOT&quot;;\r<br />\n<br />\nNow everything is fine. :)<br />\n",
+    "PostedDate": "2017-01-04T00:22:31.153-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "913669",
+    "ThreadId": "395833",
+    "Html": "\r\n<p>Hi All,</p>\r\n<p>I'm new to irony and I need assistant with the following. &nbsp;I need to create a format function to accept one variable and five numeric values.</p>\r\n<p>eg. format(variable,1,1,1,1,1) and can inserted to other functions as well like =if(x=&quot;a&quot;,&quot;ok&quot;,format(&quot;b&quot;,1,1,1,1,1))</p>\r\n<p>this is what &nbsp;I got so far</p>\r\n<p>public const string FormatStr = &quot;Format&quot;</p>\r\n<p>var variable = new IdentifierTerminal(&quot;Variable&quot;);</p>\r\n<p>var expr = new NonTerminal(&quot;Expression&quot;);</p>\r\n<p>var formatExpr = new NonTerminal(&quot;Format&quot;, typeof(ExpressionListNode));</p>\r\n<p>formatExpr.Rule = ToTerm(FormatStr) &#43; ToTerm(&quot;(&quot;) &#43; variable &#43; ToTerm(&quot;,&quot;) &#43;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; expr &#43; ToTerm(&quot;,&quot;) &#43; expr &#43; ToTerm(&quot;,&quot;) &#43; expr &#43;&nbsp;\r\n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ToTerm(&quot;,&quot;) &#43; expr &#43; ToTerm(&quot;,&quot;) &#43; expr &#43; ToTerm(&quot;)&quot;); &nbsp; &nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>each numeric value will triggered an events, how would I handle that? &nbsp;do I call my code to parse the conditions when the validation is done?</p>\r\n<p>TIA</p>\r\n<p>S</p>\r\n",
+    "PostedDate": "2012-09-17T09:55:23.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "914420",
+    "ThreadId": "395833",
+    "Html": "<p>don't quite understand the question - you need to custom-handle the event when the \"format\" call is parsed? I suggest simply to hook to formatExpr.Reduced event - it is fired when non-terminal (formatExpr) is recongized and \"formed\" - you can get all numeric arguments as child parse nodes in the event args and fire more events or do specific processing there.</p>\r\n<p>One note - you don't have to use ToTerm call so much - you need it only if the first 2 terms in the rules are string literals; otherwise, you can skip them:</p>\r\n<p>formatExpr.Rule = ToTerm(FormatStr) + \"(\" + variable + \",\" + expr + \",\" + expr + \",\" + expr + \",\" + expr + \")\";&nbsp;</p>",
+    "PostedDate": "2012-09-18T21:05:30.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "915499",
+    "ThreadId": "395833",
+    "Html": "<p>Thanks rivantsov for replying to my question. &nbsp;I got most of what I need, but I ran into another problem. &nbsp;Continue from my first post. &nbsp;How would I handle If the last three expr (expressions) if 1 represent boolean true and 0 represent boolean false?&nbsp;</p>\r\n<p>TIA</p>",
+    "PostedDate": "2012-09-20T20:35:12.653-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "915789",
+    "ThreadId": "395833",
+    "Html": "<p>now I'm confused. what do you mean \"handle\"? what are we talking about parsing the expression, or interpreting/executing it? if you execute it and want to interpret \"1\" as true then you need to add the appropriate code in AST node's Evaluate method.</p>",
+    "PostedDate": "2012-09-21T09:46:15.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "915945",
+    "ThreadId": "395833",
+    "Html": "<p>Hi rivantsov,</p>\r\n<p>Sorry for the confusion. &nbsp;What you said is what &nbsp;I need, but I am still struggling with AST node. &nbsp;Could you provide a sample on how I could do this? &nbsp;Does it make sense to put it logic expression in the Grammar? If so, how?</p>\r\n<p>Thanks again.</p>",
+    "PostedDate": "2012-09-21T14:23:23.983-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "916206",
+    "ThreadId": "395833",
+    "Html": "<p>Look at expression Evaluator, in Grammar.Interpreter assembly. Class ExpressionEvaluatorRuntime adds a global built-in method \"format\" implemented by a custom method BuiltInFormatMethod. That's exactly what you're looking for. You need to alter this method if you need some \"custom\" treatment of certain parameters.</p>",
+    "PostedDate": "2012-09-22T21:13:55.833-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

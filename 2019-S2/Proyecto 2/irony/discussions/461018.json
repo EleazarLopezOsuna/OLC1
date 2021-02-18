@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "1103089",
+    "ThreadId": "461018",
+    "Html": "Hi List,\r<br />\ni have to convert functions from Irony 1.0 to the ExpressionevaluatorGrammer \r<br />\n(Irony.Interpreter.2012)\r<br />\n<br />\nThe old Syntax Looks like this:\r<br />\nx = Parameters!Param1\r<br />\n<br />\nthe grammer was defined as \r<br />\nvar parameterSectionStmt = new NonTerminal(&quot;ParameterSectionStmt&quot;);\r<br />\nparameterSectionStmt.Rule = ParameterSection + exclamationMark + identifier;\r<br />\n<br />\nExpr.Rule = Symbol(&quot;null&quot;)<br />\n<pre><code>            | boolean\n            | nil\n            | stringLiteral\n            | numberLiteral\n            | QualifiedName\n            | FunctionExpression\n            | LCb + Expr + RCb\n            | LFb + QualifiedName + RFb\n            | Conditional\n            | BinExpr\n            //| Expr + BinOp + Expr\n            //| LUnOp + Expr\n\n            | parameterSectionStmt\n            | globalSectionStmt\n            | userSectionStmt\n            | fieldsSectionStmt;\n</code></pre>\n\nQualifiedName.Rule = identifier<br />\n<pre><code>            | QualifiedName + dot + identifier \n            | parameterSectionStmt + &quot;!&quot; + identifier \n            | &quot;#&quot; + identifier ;\n</code></pre>\n\nAny ideas\r<br />\nThanks\r<br />\nPeter<br />\n",
+    "PostedDate": "2013-10-03T02:42:57.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1103251",
+    "ThreadId": "461018",
+    "Html": "sorry, any ideas about what? is there a problem? Just replace a few renamed functions/classes like &quot;Symbol(str)&quot; changed to ToTerm(). Everything else should be straightforward\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-10-03T09:38:34.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1103744",
+    "ThreadId": "461018",
+    "Html": "Hi,<br />\ncall me stupid.<br />\nWhat i have:<br />\n<br />\n var ParametersSection = new NonTerminal(&quot;ParametersCall&quot;,typeof(ParametersCallNode));<br />\n<br />\n Expr.Rule = Term | UnExpr | BinExpr | PrefixIncDec | PostfixIncDec | TernaryIfExpr | ParametersSection;<br />\n<br />\n ParametersSection.Rule = &quot;Parameters&quot; + &quot;!&quot; + identifier;<br />\n<br />\nI try this grammer with:<br />\n<br />\nvar g = new BackupGrammar();<br />\nvar eval = new ExpressionEvaluator(g);<br />\n<br />\nvar script = &quot;Parameters!param1&quot;;<br />\nvar result = eval.Evaluate(script);<br />\n<br />\nand get: <br />\nSyntax error, expected: operator, assignment operator, ., [<br />\n<br />\nBut further on......<br />\nThanks in advance<br />\nPeter<br />\n.<br />\n",
+    "PostedDate": "2013-10-04T10:57:04.653-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1103747",
+    "ThreadId": "461018",
+    "Html": "One thing I see: use ToTerm(&quot;Parameters&quot;) in ParameterSection's Rule; the way you have it operator overloading would not kick in and the first two strings in expr will be concatenated into one<br />\n",
+    "PostedDate": "2013-10-04T11:03:31.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1103815",
+    "ThreadId": "461018",
+    "Html": "Hi,\r<br />\nthis way\r<br />\n<br />\n ParametersSection.Rule = ToTerm(&quot;Parameters&quot;) + &quot;!&quot; + identifier;\r<br />\nthe syntax error is gone.\r<br />\n<br />\nWorks perfectly.\r<br />\nThanks Peter<br />\n",
+    "PostedDate": "2013-10-04T13:38:12.627-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1106548",
+    "ThreadId": "461018",
+    "Html": "Hi,\r<br />\nme again.\r<br />\nMost of my conversions work perfectly.\r<br />\n<br />\nOne more Problem:\r<br />\n<br />\n<br />\nvar GlobalSection = new NonTerminal(&quot;GlobalSection&quot;,typeof(GlobalsNode)); \r<br />\n<br />\n<br />\n GlobalSection.Rule = GlobalSection + exclamationMark + Symbol(&quot;PageNumber&quot;)<br />\n<pre><code>    | GlobalSection + exclamationMark + Symbol(&quot;TotalPages&quot;)\n    | GlobalSection + exclamationMark + Symbol(&quot;ExecutionTime&quot;)\n    | GlobalSection + exclamationMark + Symbol(&quot;ReportFolder&quot;)\n    | GlobalSection + exclamationMark + Symbol(&quot;ReportName&quot;);\n</code></pre>\n\nHow can i convert this rule, and, how to implement errorhandling if there is a wrong Statement after the 'exclamationmark'.\r<br />\n<br />\nThanks in advance\r<br />\nPeter<br />\n",
+    "PostedDate": "2013-10-11T11:35:10.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1107790",
+    "ThreadId": "461018",
+    "Html": "sorry for late reply, was just hoping somebody else will jump in, the question seems to be simple to answer. \r<br />\ndo the following: \r<br />\nGlobalSection.Rule = GlobalSeciont + exclMark + GlobalSectionSuffix;\r<br />\nGlobalSectionSuffix.Rule = ToTerm(&quot;PageNumber&quot;) | &quot;TotalPages&quot; | &quot;ExecutionTime&quot; | .... ;<br />\n",
+    "PostedDate": "2013-10-15T10:10:21.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1107930",
+    "ThreadId": "461018",
+    "Html": "Hi,\r<br />\nthere is nothing to excuse.\r<br />\n<br />\nI found the solution by myself <em>g</em>\r<br />\n<br />\nFirst i try your solution, but change to this:\r<br />\n<br />\n GlobalSection.Rule = ToTerm(&quot;Globals&quot;) + exclamationMark + identifier;\r<br />\n<br />\nso i can have a clear errorhandling in my AstNode:\r<br />\nprotected override object DoEvaluate(ScriptThread thread)<br />\n<pre><code>    {\n        thread.CurrentNode = this;  //standard prolog\n        var pi = thread.GetPageInfo();\n\n        var test = globalNode.AsString.ToLower();\n        if ( test == &quot;pagenumber&quot;) {\n            Console.WriteLine(&quot;pagenumberr&quot;);\n            return pi.PageNumber;\n        } else if (test == &quot;pages&quot;) {\n            return pi.TotalPages;\n        } else if (test == &quot;reportname&quot;) {\n            return pi.ReportName;\n        } else if (test == &quot;reportfolder&quot;) {\n            return pi.ReportFolder;\n        } else if (test == &quot;reportfilename&quot;) {\n            return pi.ReportFileName;\n        } \n\n        else {\n            return String.Format(&quot;Syntaxerror in Globals &lt;{0}&gt;&quot;,globalNode.AsString);\n        }\n    }\n</code></pre>\n\nThe reason is:\r<br />\nI use Irony in SharpDevelop.Reporting, the ReportGenerator of SharpDevelop. \r<br />\n<br />\nA ReportColumn contains Text like  '= 'Page ' + Globals!PageNumber + ' of ' + Global!Pages this Expression evaluates to\r<br />\n<br />\nPage 1 of 10 or, if syntaxerror to 'Syntaxerror in Globals &lt;xxxx&gt;\r<br />\n<br />\nSo, if the user makes a typo, he have a clear errormessage where to look, because i Show the message in the \r<br />\n<br />\nThanks\r<br />\nPeter<br />\n",
+    "PostedDate": "2013-10-15T12:27:15.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "883596",
+    "ThreadId": "382680",
+    "Html": "\r\n<p>Just curious if anyone has some ideas about this.</p>\r\n<p>I'm using a grammar for people to describe business data. We take the grammar, parse with Irony, turn that to an object model for persistence / use in the app.</p>\r\n<p>A very simplistic example is using hours a store is open, given simple source like:</p>\r\n<pre>Mon - Fri: 10am - 8pm\nSat, Sun: Closed</pre>\r\n<p>We would turn this in to something the program can use for determining open/closed state of a store.</p>\r\n<p>What I'm trying to do now is to actually take the object representation of something like this and turn it back in to source for export / viewing / editing, etc.</p>\r\n<p>Anyone have any thoughts on how to proceed? &nbsp;If not through Irony, what would be my best bet?</p>\r\n<p>(note this is a very simplistic example, I'm doing much more complicated things where using Irony is a bit more useful, this obviously could be done with Regex, etc.)</p>\r\n",
+    "PostedDate": "2012-07-21T11:18:47.027-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "889172",
+    "ThreadId": "382680",
+    "Html": "<p>PrettyPrinting (generating well-formatted source from ParseTree) is on my to do list, it sure should be core feature, but it's not for now. But it's not difficult to implement for a particular language. Just iterate ParseTree (or Ast tree if you generate it), and write out well-formatted string representations of each node.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-07-23T11:09:46.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "926064",
+    "ThreadId": "399196",
+    "Html": "\r\n<p>For my music parser I sub-classed RegexBasedTerminal to only accept the enumeration constants of an Enum type, as thus:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>   <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;summary&gt;</span>\r\n   <span style=\"color:gray\">///</span><span style=\"color:green\"> RegexBasedTerminal sub-class that parses the constants of enumeration &lt;i&gt;TValue&lt;/i&gt; </span>\r\n   <span style=\"color:gray\">///</span><span style=\"color:green\"> in determining the Value of the Terminal.</span>\r\n   <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;/summary&gt;</span>\r\n   <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;typeparam name=&quot;TValue&quot;&gt;</span><span style=\"color:green\">Must be an &lt;i&gt;Enum&lt;/i&gt; type, but only enforced at run-time</span>\r\n   <span style=\"color:gray\">///</span><span style=\"color:green\"> as a constraint like &lt;i&gt;TValue : System.Enum&lt;/i&gt; is forbidden.&lt;/typeparam&gt;</span>\r\n   <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> MyRegexTerm&lt;TValue&gt; : RegexBasedTerminal <span style=\"color:blue\">where</span> TValue : <span style=\"color:blue\">struct</span> {\r\n   <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;summary&gt;</span>\r\n   <span style=\"color:gray\">///</span><span style=\"color:green\"> RegexBasedTerminal sub-class that parses the constants of enumeration &lt;i&gt;TValue&lt;/i&gt; </span>\r\n   <span style=\"color:gray\">///</span><span style=\"color:green\"> in determining the Value of the Terminal.</span>\r\n   <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;/summary&gt;</span>\r\n      <span style=\"color:blue\">public</span> MyRegexTerm(<span style=\"color:blue\">string</span> pattern, Func&lt;<span style=\"color:blue\">string</span>,TValue&gt; fromString = <span style=\"color:blue\">null</span>) \r\n         : <span style=\"color:blue\">base</span>(pattern) {\r\n         EnumType               = GetType().GetGenericArguments()[0].UnderlyingSystemType;\r\n         <span style=\"color:blue\">if</span> (!EnumType.IsEnum) <span style=\"color:blue\">throw</span> <span style=\"color:blue\">new</span> ArgumentOutOfRangeException(<span style=\"color:#a31515\">&quot;T&quot;</span>,EnumType.Name,\r\n                                                <span style=\"color:#a31515\">&quot;Generic argument must be Enum type.&quot;</span>);\r\n         Name                  = EnumType.Name;\r\n         FromString            = fromString;\r\n         AstConfig.NodeType    = <span style=\"color:blue\">typeof</span>(LiteralValueNode&lt;TValue&gt;);\r\n      }\r\n\r\n      <span style=\"color:blue\">protected</span> Func&lt;<span style=\"color:blue\">string</span>,TValue&gt; FromString   { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }\r\n      <span style=\"color:blue\">protected</span> Type                EnumType     { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }\r\n      <span style=\"color:blue\">protected</span> <span style=\"color:blue\">virtual</span> TValue ConvertValue(ParsingContext context, <span style=\"color:blue\">string</span> textValue) {\r\n         <span style=\"color:blue\">return</span> (FromString == <span style=\"color:blue\">null</span>) ? (TValue)System.Enum.Parse(EnumType,textValue.ToUpper())\r\n                                     : FromString(textValue);\r\n      }\r\n\r\n      <span style=\"color:blue\">public</span> <span style=\"color:blue\">override</span> Token TryMatch(ParsingContext context, ISourceStream source) {\r\n         Token token = <span style=\"color:blue\">base</span>.TryMatch(context, source);\r\n         <span style=\"color:blue\">if</span> (token != <span style=\"color:blue\">null</span>)    token.Value = ConvertValue(context,token.ValueString);\r\n         <span style=\"color:blue\">return</span> token;\r\n      }\r\n   }\r\n\r\n</pre>\r\n</div>\r\n",
+    "PostedDate": "2012-10-12T19:50:21.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "926065",
+    "ThreadId": "399196",
+    "Html": "\r\n<p>Here are some instances of its use in the music parser:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre>   <span style=\"color:blue\">var</span> modeStyle  = <span style=\"color:blue\">new</span> MyRegexTerm&lt;Style&gt;(<span style=\"color:#a31515\">@&quot;[NLS]&quot;</span>);\r\n   <span style=\"color:blue\">var</span> shift      = <span style=\"color:blue\">new</span> MyRegexTerm&lt;OctaveShift&gt;(<span style=\"color:#a31515\">@&quot;O?[&lt;&gt;]&quot;</span>, \r\n                    s =&gt; OctaveShift.Up.FromString(s));\r\n   <span style=\"color:blue\">var</span> noteLetter = <span style=\"color:blue\">new</span> MyRegexTerm&lt;NoteLetter&gt;(<span style=\"color:#a31515\">@&quot;[CDEFGAB]&quot;</span>);\r\n   <span style=\"color:blue\">var</span> sharpFlat  = <span style=\"color:blue\">new</span> MyRegexTerm&lt;SharpFlat&gt;(<span style=\"color:#a31515\">@&quot;[-#&#43;]&quot;</span>, \r\n                    s =&gt; SharpFlat.Natural.FromString(s));\r\n</pre>\r\n</div>\r\n<p>Where the enumeration type suits, <em><strong>System.Enum.Parse(string value)</strong></em> is used;\r\n<br>\r\nbut a custom validator can be provided as for the Terminals <em>shift</em> and <em>\r\nsharpFlat<br>\r\n</em>above<em>.</em></p>\r\n<p>It also has the beneficial side-effect of naming the Terminal after the Enum type<br>\r\n;-)</p>\r\n<p>Pieter</p>\r\n<div id=\"_mcePaste\" style=\"width:1px; height:1px; overflow:hidden; top:0px; left:-10000px\">\r\n&#65279;</div>\r\n",
+    "PostedDate": "2012-10-12T19:57:27.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927555",
+    "ThreadId": "399196",
+    "Html": "<p>nice idea, but keep in mind that RegexTerminal is very slow compared to other terminals like KeyTerm. You are using regexes to recognize a fixed set of names and convert to enum values. If you're ok with trading performance for a slick definition - that's fine. But that's not the case for everyone.&nbsp;</p>",
+    "PostedDate": "2012-10-16T10:14:58.47-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927661",
+    "ThreadId": "399196",
+    "Html": "<p>Do you have any measurements on how bad the efficiency trade-off is? Every well designed Regex for an application like this will be non-back-tracking, and should replace&nbsp;multiple instances of other terminals.</p>\r\n<p>I have always&nbsp;designed primarily for readability, maintainability and verifiability, and worried about performance only where a problem has been identified; but that has limits.</p>",
+    "PostedDate": "2012-10-16T13:51:23.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927812",
+    "ThreadId": "399196",
+    "Html": "<p>well, no exact numbers, just common sense. Regex is a whole engine, with its own complex pseudo-code. At the same time, recognizing a few string constants by simple sub-string matching (as in case of KeyTerms) is much simpler and straightforward op. Again, if your music parser parses relatively small files and interprets them, it does not matter if it takes 1ms or 10ms to recognize a term. But if you are processing huge data files, or code files, it does matter.&nbsp;</p>\r\n<p>So RegexBased terminal works fine for you, but definitely should be avoided in other perf-critical cases.&nbsp;</p>",
+    "PostedDate": "2012-10-16T22:05:24.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927816",
+    "ThreadId": "399196",
+    "Html": "<p>OK; but you might be surprised. The first version of the Music parser was built entirely with Regex, with the grammar twisted around so that every non-terminal comprised exactly 3 tokens to keep the groups synchronized. When that implementation hit the limit I went searching for another tool and found Irony. But Irony required twice as long to parse the same (simple yet twisted) grammar as Regex did. Granted not an apples to apples comparison, and only at 50ms compared to 100 ms for a music piece several minutes long. In 25 years the only time Regex has misbehaved for me it was my fault for being careless.</p>",
+    "PostedDate": "2012-10-16T22:30:17.41-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927818",
+    "ThreadId": "399196",
+    "Html": "<p>I see you found my profile; too bad it's not up to date. Did you see any of my bridge results?</p>",
+    "PostedDate": "2012-10-16T22:31:25.967-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "928134",
+    "ThreadId": "399196",
+    "Html": "<p>Irony's slowness compared with pure Regex parser - as far as I understood, your Irony-based parser used Regex terminals extensively? then what you're comparing is one regex arrangement against another. Not to say that Irony is perfect on perf side, I'm thinking about giving a good refactoring to scanner and terminals, with one of the goals to improve performance.&nbsp;</p>\r\n<p>Ye, looked you up on google, was curious are you a musician turned compiler hacker or the other way around. Looks like neither :)</p>",
+    "PostedDate": "2012-10-17T09:31:22.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "928244",
+    "ThreadId": "399196",
+    "Html": "<p>All true, and I was probably <em>abusing </em>Irony as much as <em>using </em>it at that stage. Before you tackle your refactoring, check out&nbsp;my <em>MyIrony</em> wrapper; it may provide occasional inspiration. Since I am actually building parsers for two <em>distinct</em> music grammars, I have abstracted as much (<em>Irony.dll </em>based) common code as possible&nbsp;into that.</p>\r\n<p>I am a physicist who took up software development 30 years ago.&nbsp;When my most recent project completed I searched for a project&nbsp;to sink my teeth into while learning C#. I started with porting the old Q-Basic Gorilla game (which I first&nbsp;ported to VB-6 about 15 years ago) over to C#, but got sidetracked into enabling the sound strings, and then scope-creep took over.</p>\r\n<p>I have built a handful of DSL's over the years with lex/yacc derivatives, and couldn't resist the allure of Irony when I stumbled across it here:<br /><a href=\"http://www.codeproject.com/Articles/26975/Writing-Your-First-Domain-Specific-Language-Part-1\">http://www.codeproject.com/Articles/26975/Writing-Your-First-Domain-Specific-Language-Part-1</a>. I have been fascinated by compilers since reading <em>Godel, Escher, Bach</em> 30 years ago (and also aced <em>Bob Tennent's </em><span style=\"text-decoration: underline;\">Denotational Semantics </span>course way-back-when, if that name means anything to you).</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-10-17T11:37:43.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

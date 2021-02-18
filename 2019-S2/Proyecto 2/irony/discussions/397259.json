@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "918840",
+    "ThreadId": "397259",
+    "Html": "\r\n<p>The grammar I am working with explicitly specifies the places where newlines are allowed. For example:</p>\r\n<p style=\"padding-left:30px\">trap_statement:<br>\r\n&nbsp; &nbsp; trap &nbsp;new_lines_opt &nbsp; type_literal_opt &nbsp; new_lines_opt &nbsp; statement_block</p>\r\n<p>I can write this:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>            trap_statement.Rule =\r\n                  <span style=\"color:#a31515\">&quot;trap&quot;</span> &#43; new_lines_opt &#43; (type_literal | Empty) &#43; new_lines_opt &#43; statement_block;\r\n</pre>\r\n</div>\r\n<p>which looks a lot like the specified grammar - great. But it has a shift/reduce conflict around the newlines. I found I was able to eliminate the conflict by rewriting the rule like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>            trap_statement.Rule =\r\n                (<span style=\"color:#a31515\">&quot;trap&quot;</span> &#43; statement_block) |\r\n                (<span style=\"color:#a31515\">&quot;trap&quot;</span> &#43; new_lines &#43; statement_block) |\r\n                (<span style=\"color:#a31515\">&quot;trap&quot;</span> &#43; type_literal &#43; statement_block) |\r\n                (<span style=\"color:#a31515\">&quot;trap&quot;</span> &#43; new_lines &#43; type_literal &#43; statement_block) |\r\n                (<span style=\"color:#a31515\">&quot;trap&quot;</span> &#43; type_literal &#43; new_lines &#43; statement_block) |\r\n                (<span style=\"color:#a31515\">&quot;trap&quot;</span> &#43; new_lines &#43; type_literal &#43; new_lines &#43; statement_block)\r\n                ;\r\n</pre>\r\n</div>\r\n<p>Which is pretty ugly, and the resulting parse tree is a mess, too.&nbsp;</p>\r\n<p>Even worse, I really don't care about these shift/reduce conflicts, since the newlines have no semantic value - they're only in the grammar because of restrictions about where they're allowed.</p>\r\n<p>Is there a shortcut, or alternative approach to this problem? So I don't have to rewrite all the rules?</p>\r\n<p>I'm using MarkTransient on newline_opt - would it be&nbsp;appropriate&nbsp;to elide reports of shift/reduce errors on transient nodes?</p>\r\n",
+    "PostedDate": "2012-09-27T23:14:34.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918896",
+    "ThreadId": "397259",
+    "Html": "<p>I use the <em>PreferShiftHere() </em>pseudo-token. Insert it in front of the terms that are reporting the conflict.</p>\r\n<p>There are also <em>ReduceHere()</em> and <em>ReduceIf()</em> pseudo-tokens, but I usually rewrite the grammar to avoid reduce-reduce conflicts.</p>",
+    "PostedDate": "2012-09-28T02:07:50.343-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "919114",
+    "ThreadId": "397259",
+    "Html": "<p>I'm looking into this, interesting case. Give me some time</p>",
+    "PostedDate": "2012-09-28T10:57:52.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "919159",
+    "ThreadId": "397259",
+    "Html": "\r\n<p>Ok, I looked at pwshell grammar (here: http://www.manning.com/payette/AppCexcerpt.pdf)</p>\r\n<p>The rule for statement separator is:&nbsp;&nbsp;&nbsp;</p>\r\n<p>&lt;StatementSeparatorToken&gt; = ';' | '&amp;&amp;' | '||' | &lt;end-of-line&gt;</p>\r\n<p>So NewLine is a whitespace everywhere except where statement separator is expected.&nbsp;Our trick would be to use NewLine in grammar (this would automatically exclude it from whitespace), but to intercept and replace it with artificial &quot;skip&quot; token when\r\n parser does not expect statement separator. This skip token has IsNonGrammar flag set, so parser will skip it.&nbsp;<br>\r\nSo define StatementSeparator as a field, and initialize it in constructor:&nbsp;</p>\r\n<p>&nbsp; &nbsp;StatementSeparator.Rule = NewLine | &quot;;&quot; | &quot;&amp;&amp;&quot; | &quot;||&quot;;</p>\r\n<p>Define class-scope SkipTerminal:&nbsp;</p>\r\n<p>&nbsp; Terminal _skipTerminal = new new Terminal(&quot;Skip&quot;, TokenCategory.Outline, TermFlags.IsNonGrammar);</p>\r\n<p><br>\r\nHook to NewLine.ValidateToken event in grammar constructor and add the handler:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>          NewLine.ValidateToken &#43;= NewLine_ValidateToken; \n          <span style=\"color:green\">//....... </span>\n        <span style=\"color:blue\">void</span> NewLine_ValidateToken(<span style=\"color:blue\">object</span> sender, ValidateTokenEventArgs e) {\n          <span style=\"color:blue\">if</span> (!e.Context.CurrentParserState.Actions.ContainsKey(<span style=\"color:blue\">this</span>.StatementSeparator)) {\n            <span style=\"color:blue\">var</span> current = e.Context.CurrentToken;\n            e.ReplaceToken(<span style=\"color:blue\">new</span> Token(_skipTerminal, current.Location, current.Text, current.Value);\n          }\n        }\n\n</pre>\r\n</div>\r\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\r\n<p>&nbsp;</p>\r\n<p>The method checks if StatementSeparator is expected; if not, it will replace NewLine with Skip token.&nbsp;</p>\r\n<p>Now forget about all these new_lines_opt in rules - they should be skipped automatically by parser.</p>\r\n<p>Try this, I will think about how to make it easier to handle cases like this.&nbsp;</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2012-09-28T12:08:17.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "919173",
+    "ThreadId": "397259",
+    "Html": "<p>Thanks for looking at this, Roman.&nbsp;</p>\r\n<p>FYI, that's not the grammar I'm working from - that's more of a sketch of a grammar, for humans to read when PowerShell was new, but not to write a parser from. There's a lot missing, and a lot of errors.</p>\r\n<p>There is an official grammar in the PowerShell Language Specification (&nbsp;http://www.microsoft.com/en_us/download/details.aspx?id=9706). It's much more complete, although I'm discovering a few errors as I go. I guess I'm the first one to ever use it.</p>\r\n<p>From the spec, section 2.2.4:</p>\r\n<p style=\"padding-left: 30px;\">Unlike some popular languages, PowerShell does not consider line-terminator characters (&sect;2.2.2) to be white space. However, a line terminator can be treated as white space by preceding it immediately by a backtick character, ` (U+0060). This is necessary when the contents of a line are complete syntactically, yet the following line contains tokens intended to be associated with the previous line.&nbsp;</p>\r\n<p>The \"syntactically complete\" bit is important. For example:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre style=\"padding-left: 30px;\">PS<span style=\"color: gray;\">&gt;</span> <span style=\"color: blue;\">if</span> (<span style=\"color: orangered;\">$false</span>)     <span style=\"color: green;\"># this if includes the block</span>\r\n<span style=\"color: gray;\">&gt;&gt;</span> {\r\n<span style=\"color: gray;\">&gt;&gt;</span>     <span style=\"color: #a31515;\">\"hi\"</span>\r\n<span style=\"color: gray;\">&gt;&gt;</span> }\r\n<span style=\"color: gray;\">&gt;&gt;</span>\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>Here, the grammar for `if` <strong>requires</strong>&nbsp;a block to follow, so the parser will continue looking on the next line for that block. Since the open brace requires a close brace, the parser will taking input until it gets that close brace. At that point it will evaluate the entire input. Because the condition is false, the block won't run, and no output will appear. This is all one statement.</p>\r\n<pre>PS<span>&gt;</span> Set<span>-</span>Item <span>function</span>:prompt   <span># this command does not include the block</span>\r\nPS<span>&gt; </span>{\r\n<span>&gt;&gt;</span>    <span>\"PS&gt; \"</span>\r\n<span>&gt;&gt;</span> }\r\n<span>&gt;&gt;</span>\r\n\r\n   <span>\"PS&gt; \"</span>\r\n</pre>\r\n<div><span>In this case, the first `Set-Item` command will accept a block as a parameter, but the parser doesn't know that. Instead, the grammar says a command ends with a newline. It processes the `Set-Item` command when you hit ENTER. Then it sees the open brace and starts parsing again. When you're done, the block is executed, and produces an output. This is all 2 statements.</span></div>\r\n<div><span><br /></span></div>\r\n<div></div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-09-28T12:27:57.167-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "919185",
+    "ThreadId": "397259",
+    "Html": "<p>One important note: it seems like you're trying to define several grammars, one for REPL loop, and another for parsing modules in text files. I think it's not a good approach. Define one grammar, as if it was for parsing modules. Then for REPL/command line, do parsing in 'partial' mode - Parser supports this. Look at mini-Python grammar and command line mode handling for it.</p>\r\n<p>Roman&nbsp;</p>",
+    "PostedDate": "2012-09-28T13:09:27.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026385",
+    "ThreadId": "397259",
+    "Html": "Roman,\r<br />\n<br />\nI have been trying to implement your suggestion about hooking to <code>NewLine.ValidateToken</code>, and I'm not having any luck. What I'm seeing is that my <code>ValidateToken</code> hook is never executing. \r<br />\n<br />\nI debugged around, and have a guess what is going wrong. See <code>Scanner.NextToken()</code>:<br />\n<pre><code>    private void NextToken() {\n      //1. Check if there are buffered tokens\n      if(Context.BufferedTokens.Count &gt; 0) {\n        Context.CurrentToken = Context.BufferedTokens.Pop();\n        return; \n      }\n      //2. Skip whitespace.\n      _grammar.SkipWhitespace(Context.Source);\n      //3. That's the token start, calc location (line and column)\n      Context.Source.Position = Context.Source.PreviewPosition;\n      //4. Check for EOF\n      if (Context.Source.EOF()) {\n        Context.CurrentToken = new Token(_grammar.Eof, Context.Source.Location, string.Empty, _grammar.Eof.Name);;\n        return; \n      }\n      //5. Actually scan the source text and construct a new token\n      ScanToken(); \n    }//method</code></pre>\n\nSince the <code>SkipWhitespace()</code> comes <em>before</em> the <code>ScanToken()</code>, the <code>NewLine.ValidateToken</code> never gets called.\r<br />\n<br />\nAm I reading this correctly? Does this match what you expect?<br />\n",
+    "PostedDate": "2013-04-05T16:14:52.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026388",
+    "ThreadId": "397259",
+    "Html": "Upon further debugging, I discovered:<br />\n<ol>\n<li>\nYou were assuming I was not consuming <code>\\r\\n</code> in <code>SkipWhitespace()</code>. That's a reasonable assumption, since the <code>NewLine</code> token quietly sets <code>Grammar.UsesNewLine</code>, although I had overloaded <code>SkipWhitespace()</code>.<br />\n</li>\n<li>\nYou write <code>if (!e.Context.CurrentParserState.Actions.ContainsKey(this.StatementSeparator)) {</code>, but I missed the <code>!</code>.<br />\n</li>\n</ol>\nFixing up my code now...<br />\n",
+    "PostedDate": "2013-04-05T16:27:05.14-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

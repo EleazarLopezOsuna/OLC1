@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "not an issue/real problem",
+    "ClosedDate": "2013-11-01T10:00:56.967-07:00",
+    "CommentCount": 3,
+    "Custom": null,
+    "Description": "I applied this very hacky fix locally and would appreciate if anyone wishes to incorporate into the source code...\r\n\r\nGrammarItemList.cs, Make Caption public\r\n\r\n```\r\npublic GrammarItem(Type grammarClass, ...)\r\n{ \r\n       ...<snip>...\r\n      Caption = GetCaption(grammarClass);\r\n      LongCaption = Caption;      \r\n      var langAttr = LanguageAttribute.GetValue(grammarClass); \r\n      if (langAttr != null && !string.IsNullOrEmpty(langAttr.Description))\r\n          LongCaption += \": \" + langAttr.Description;\r\n }\r\n```\r\n\r\n```\r\nstatic public string GetCaption(Type grammarClass)\r\n{\r\n      string caption = grammarClass.Name; //default caption      \r\n      var langAttr = LanguageAttribute.GetValue(grammarClass);\r\n      if (langAttr != null)\r\n      {\r\n          caption = langAttr.LanguageName;\r\n          if (!string.IsNullOrEmpty(langAttr.Version))\r\n              caption += \", v\" + langAttr.Version;\r\n      }\r\n      return caption;\r\n    }\r\n```\r\n\r\n\r\n\r\nfmGrammarExplorer.cs:  // Terrible looking hack to update the combo box.\r\n\r\n    Int16 recursionLevel = 0;\r\n\r\n    private void CreateGrammar() {\r\n\r\n      if (recursionLevel++ > 0) // a hack for the add()/select at the end\r\n        return;\r\n     \r\n      GrammarItem selItem = cboGrammars.SelectedItem as GrammarItem;\r\n      _grammar = selItem.CreateGrammar();\r\n\r\n      cboGrammars.Items.Remove(selItem);\r\n      \r\n      // update caption in case the name/version changed from that stored within the xml\r\n      selItem.Caption = GrammarItem.GetCaption(_grammar.GetType());\r\n      selItem.LongCaption = selItem.Caption;      \r\n      \r\n      // re-add and select so that the display updates.  Argh.\r\n      cboGrammars.Items.Add(selItem);\r\n      cboGrammars.Text = selItem.Caption;\r\n    }\r\n",
+    "LastUpdatedDate": "2013-11-01T16:43:59.167-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2013-10-31T13:17:36.277-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "GrammarExplorer: Changing [Language()] attribute on the grammar on .dll does not update combo box on next load",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9888
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Declining. Sorry man, too much trouble for so little gain in so rare situation. Language name changes once in a lifetime, and not a bit trouble to reload the grammar list. ",
+      "PostedDate": "2013-11-01T09:59:29.153-07:00",
+      "Id": 120434
+    },
+    {
+      "Message": "No biggie.  The reason I changed it is because I for us, we recompile the .dll for nearly every invocation of explorer and I didn't think it was reloading my changes because it was showing the old name but it actually was, except for the updated name.  I think maybe it shows the old name forever because its stored within the xml instead of being retrieved (so long as you don't manually remove/re-add it from the combo box).  Thanks anyway.  Great tool!",
+      "PostedDate": "2013-11-01T10:33:53.673-07:00",
+      "Id": 120439
+    },
+    {
+      "Message": "And the provided recursion protection hack has a bug, it needs to decrement at end:\n\ntry { \nif (recursionLevel++ >0) return; \n//... \n}\nfinally {\nrecursionLevel--;\n};",
+      "PostedDate": "2013-11-01T16:43:59.167-07:00",
+      "Id": 121558
+    }
+  ]
+}

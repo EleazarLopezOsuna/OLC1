@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1220977",
+    "ThreadId": "538495",
+    "Html": "Morning Folks,\r<br />\n<br />\nJust trying to add table aliases to the existing SQL 89 sample as I noticed that they cause a parsing error. The following change seems to work, changing:\r<br />\n   Id.Rule = MakePlusRule(Id, dot, Id_simple);\r<br />\nto:\r<br />\n   Id.Rule = MakePlusRule(Id, dot, Id_simple) | Id + asOpt + Id_simple;\r<br />\nin the SqlGrammer.cs file.\r<br />\n<br />\nHowever this leaves me with the following Grammar errors:<br />\n<ul>\n<li>Shift-reduce conflict. State S59, lookahead [AS]. Selected shift as preferred action.</li>\n<li>Reduce-reduce conflict. State S59, lookaheads: id_simple. Selected reduce on first production in conflict set.</li>\n<li>\nShift-reduce conflict. State S154, lookahead [id_simple]. Selected shift as preferred action.<br />\n</li>\n</ul>\nHow can I suppress these conflicts?<br />\n",
+    "PostedDate": "2014-03-10T03:30:39.24-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1222952",
+    "ThreadId": "538495",
+    "Html": "sorry for long silence, will try to get to your problem this weekend<br />\n",
+    "PostedDate": "2014-03-14T16:38:50.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1223663",
+    "ThreadId": "538495",
+    "Html": "here's a fix - add the following to the grammar:<br />\n<pre><code>  var fromList = new NonTerminal(&quot;fromList&quot;);\n  var fromElem = new NonTerminal(&quot;fromElem&quot;);\n  var aliasedTable = new NonTerminal(&quot;aliasedTable&quot;);\n  var joinExpr = new NonTerminal(&quot;joinExpr&quot;);\n  var joinKind = new NonTerminal(&quot;joinKind&quot;);\n  var outerOpt = new NonTerminal(&quot;outerOpt&quot;);\n  fromList.Rule = MakePlusRule(fromList, comma, fromElem);\n  fromElem.Rule = aliasedTable | fromElem + joinExpr; \n  joinExpr.Rule = joinKind + aliasedTable + ON + expression;\n  aliasedTable.Rule = Id + aliasOpt;\n  joinKind.Rule = ToTerm(&quot;JOIN&quot;) | ToTerm(&quot;INNER&quot;) + &quot;JOIN&quot; | &quot;LEFT&quot; + outerOpt + &quot;JOIN&quot; | &quot;RIGHT&quot; + outerOpt + &quot;JOIN&quot;;\n  outerOpt.Rule = Empty | &quot;OUTER&quot;;\n</code></pre>\n\nand change the existing expression: <br />\n<pre><code>  fromClauseOpt.Rule = Empty | FROM + fromList;\n\n</code></pre>\n\nthen aliases should work. I tested an example:<br />\n<br />\n-- testing operator precedence with various capitalization of OR,AND operators<br />\nSELECT Name<br />\nFROM Product x left outer join y on x.yId = y.Id<br />\nwhere A oR B and C OR D + X * 5;<br />\n",
+    "PostedDate": "2014-03-17T13:17:21.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1223669",
+    "ThreadId": "538495",
+    "Html": "I think codeplex site's code formatter went nuts - if you see all these crazy &quot;&43;&quot; - just replace these with PLUS symbol<br />\ncould not find a way to make it appear properly<br />\n",
+    "PostedDate": "2014-03-17T13:34:39.183-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1223696",
+    "ThreadId": "538495",
+    "Html": "Fantastic! Thanks a lot rivantsov.\r<br />\n<br />\nSlightly more to it than my feeble effort. :-)<br />\n",
+    "PostedDate": "2014-03-17T14:34:52.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

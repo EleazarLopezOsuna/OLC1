@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "441683",
+    "ThreadId": "212315",
+    "Html": "<p>Roman and all,</p>\r\n<p>I am looking for an example which generate the AST's IfNode properly. I have created a rule of if statement. Rulewise, it works.&nbsp;But the&nbsp;AST for IfNode is not populated correctly.&nbsp;The&nbsp;boolean expression&nbsp;should be at the &quot;test&quot; node,&nbsp;ends up at the&nbsp;&quot;IfTrue&quot; node; and the&nbsp;statement&nbsp;block for true case ends up at the &quot;IfFalse&quot; node. Thanks</p>\r\n<p>dc&nbsp;&nbsp;&nbsp;&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-05-11T13:01:42.43-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "442395",
+    "ThreadId": "212315",
+    "Html": "<p>I suspect nodes are eliminated because you marked some of them as punctuation. Keep in mind that If node was basically carved for Scheme, implementation in other languages may need tweaking.</p>\r\n<p>If none of this applies, then please provide more details - please post your grammar, how you setup your node</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-05-12T22:51:29.917-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "442702",
+    "ThreadId": "212315",
+    "Html": "<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"font-family:'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span style=\"white-space:normal\"><span style=\"font-family:Consolas, 'Courier New', Courier, monospace\"><span style=\"white-space:pre\"><br><span style=\"font-family:'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span style=\"white-space:normal\">Roman,</span></span></span></span></span></span></pre>\r\n<pre><span style=\"font-family:'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span style=\"white-space:normal\"><span style=\"font-family:Consolas, 'Courier New', Courier, monospace\"><span style=\"white-space:pre\"><span style=\"font-family:'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span style=\"white-space:normal\"><br></span></span></span></span></span></span></pre>\r\n<pre><span style=\"font-family:'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span style=\"white-space:normal\">Thanks, looks like I need to tweak the&nbsp;punctuation first.&nbsp;</span></span></pre>\r\n<pre><span style=\"font-family:'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span style=\"white-space:normal\"><br></span></span></pre>\r\n<pre><span style=\"font-family:'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span style=\"white-space:normal\">dc&nbsp;</span></span></pre>\r\n</div>",
+    "PostedDate": "2010-05-13T19:35:02.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

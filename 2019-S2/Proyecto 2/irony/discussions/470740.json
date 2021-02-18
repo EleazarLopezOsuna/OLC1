@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1127568",
+    "ThreadId": "470740",
+    "Html": "Can Irony be used for parsing a stream of binary data?\r<br />\nFor instance I'm getting binary data as:\r<br />\n&lt;HeaderId&gt;&lt;message or collection of messages with terminator&gt;&lt;terminator&gt;\r<br />\n<br />\nDepending on HeaderId the message that follows it is in different format.\r<br />\n<br />\nBased on the data in the stream, I'd like to construct CLR objects and set their properties accordingly. So far I've been doing the manual parsing with a huge nested switch/case statements, which is hard to maintain. I'm wondering if Irony could make it easier.\r<br />\n<br />\nThanks.<br />\n",
+    "PostedDate": "2013-11-21T07:46:17.48-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1127709",
+    "ThreadId": "470740",
+    "Html": "theoretically, you can try, but I doubt it's worth the trouble. LALR parser are general facilities to parse regular, hierarchical 'inputs', whatever format it is - so binary parsing is possible. But Irony is heavily geared toward text input. \r<br />\nTo try, you can either create a set of terminals that can read binary data (and modify parser/scanner pipeline to accept binary input), or maybe convert binary stream to some kind of text first, and then try to parse it using Irony<br />\n",
+    "PostedDate": "2013-11-21T13:00:27.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1131560",
+    "ThreadId": "470740",
+    "Html": "As a non-Irony side note: I had a requirement to parse a binary stream and 'transform' it to objects on the fly (via ILGenerator) and went with an OMeta(PEG) approach as it was a clean way, for me a least, to not build those &quot;huge nested switch/case statements&quot; which another DevOps person had started doing. Maintenance/testing was killing that approach. \r<br />\n<br />\nCheck out: <a href=\"http://joshondesign.com/2013/03/18/ConciseComputing\" rel=\"nofollow\">http://joshondesign.com/2013/03/18/ConciseComputing</a> \r<br />\n<br />\nThe PNG parsing example was done in OMeta/JS but it is not 100% complete cut/paste example (I have a working OMeta/JS for it somewhere), but I used the concept in C#, there are several OMeta OSS projects that use C# as the 'host language'. The extended PEG format of OMeta just clicks and works in my head for some reason and my end result with as clean as the PNG grammar in that post. Simple to maintain and extend (IMHO).<br />\n",
+    "PostedDate": "2013-12-03T23:38:37.203-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1131725",
+    "ThreadId": "470740",
+    "Html": "Hey Sushihangover,\r<br />\n<br />\nThanks for the explanation. The link you've provided doesn't seem to work. I get &quot;500 TypeError: Cannot call method 'hasNext' of undefined&quot;\r<br />\nPlease advise.<br />\n",
+    "PostedDate": "2013-12-04T07:38:46.267-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1131988",
+    "ThreadId": "470740",
+    "Html": "\r\n<div dir=\"ltr\">\r\n<div>(Codeplex hung three times on trying to post a reply, so I'm trying via their email posting system)</div>\r\n<div><br>\r\n</div>\r\nSeems like Josh's blog crashed… try again later I guess.\r\n<div><br>\r\n</div>\r\n<div>I dug up his original proof of concept grammar, finished the missing JavaScript functions and made a blog post out of it on my site: Try\r\n<a href=\"http://sushihangover.azurewebsites.net/post/OMeta-Binary-data-parsing-1\" target=\"_blank\">\r\nhttp://sushihangover.azurewebsites.net/post/OMeta-Binary-data-parsing-1</a> and that should get you going in the OMeta direction if you are interested.</div>\r\n<div><br>\r\n</div>\r\n<div>-Robert</div>\r\n<div><br>\r\n</div>\r\n<div>\r\n<div>\r\n<div>\r\n<hr id=\"stopSpelling\">\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n",
+    "PostedDate": "2013-12-04T21:56:37.057-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

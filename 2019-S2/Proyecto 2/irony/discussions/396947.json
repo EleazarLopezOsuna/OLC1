@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "917699",
+    "ThreadId": "396947",
+    "Html": "\r\n<p>Have you considered enhancing MakeListRule to something like this?</p>\r\n<pre>protected BnfExpression MakeListRule(NonTerminal list, BnfTerm delimiter, BnfTerm listMember, TermListOptions options = TermListOptions.PlusList) {<br>    return MakeList(list,delimiter, listMember, options).Rule;<br>}<br>protected NonTerminal MakeList(NonTerminal list, BnfTerm delimiter, BnfTerm listMember, TermListOptions options = TermListOptions.PlusList) {<br>    //body identical to that of current MakeListRule except for: <br>    return list;<br>}//method</pre>\r\n<pre>\r\n</pre>\r\n<pre> </pre>\r\n",
+    "PostedDate": "2012-09-26T02:12:16.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917704",
+    "ThreadId": "396947",
+    "Html": "\r\n<p>My apologies for the mangled first post.</p>\r\n<p>The advantage of this enhancement is of enabling definition of the following methods, which I have found useful by implementing this change in a sub-class of Grammar:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre><span style=\"color:blue\">public</span> NonTerminal MakeStarList(BnfTerm listMember, BnfTerm delimiter = <span style=\"color:blue\">null</span>, TermListOptions options = TermListOptions.PlusList) {\r\n    <span style=\"color:blue\">return</span> MakeList(<span style=\"color:blue\">new</span> NonTerminal(listMember.Name &#43; <span style=\"color:#a31515\">&quot;*&quot;</span>), delimiter, listMember, options);\r\n}\r\n<span style=\"color:blue\">public</span> NonTerminal MakeStarList(BnfTerm listMember, Type nodeType, BnfTerm delimiter = <span style=\"color:blue\">null</span>, TermListOptions options = TermListOptions.PlusList) {\r\n    <span style=\"color:blue\">return</span> MakeList(<span style=\"color:blue\">new</span> NonTerminal(listMember.Name &#43; <span style=\"color:#a31515\">&quot;*&quot;</span>, nodeType), delimiter, listMember, options);\r\n}\r\n<span style=\"color:blue\">public</span> NonTerminal MakePlusList(BnfTerm listMember, BnfTerm delimiter = <span style=\"color:blue\">null</span>, TermListOptions options = TermListOptions.PlusList) {\r\n    <span style=\"color:blue\">return</span> MakeList(<span style=\"color:blue\">new</span> NonTerminal(listMember.Name &#43; <span style=\"color:#a31515\">&quot;&#43;&quot;</span>), delimiter, listMember, options);\r\n}\r\n<span style=\"color:blue\">public</span> NonTerminal MakePlusList(BnfTerm listMember, Type nodeType, BnfTerm delimiter = <span style=\"color:blue\">null</span>, TermListOptions options = TermListOptions.PlusList) {\r\n    <span style=\"color:blue\">return</span> MakeList(<span style=\"color:blue\">new</span> NonTerminal(listMember.Name &#43; <span style=\"color:#a31515\">&quot;&#43;&quot;</span>, nodeType), delimiter, listMember, options);\r\n}\r\n\r\n</pre>\r\n</div>\r\n<p>This allows definition of grammars without the explicit of single-use lists, so that the result is even closer to an ABNF specification.</p>\r\n",
+    "PostedDate": "2012-09-26T02:21:19.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917936",
+    "ThreadId": "396947",
+    "Html": "<p>don't quite see the point. Looks like minor style-type enhancements; quite possible to cause confusion for many users - more than one way to do things, or more than one method to create a list is always a risk of confusion. One returns rule, another returns non-terminal.&nbsp;</p>\r\n<p>And you can always create some helper methods for yourself if you feel like it</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-09-26T09:40:54.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917955",
+    "ThreadId": "396947",
+    "Html": "<p>I was typing my way through a rather lengthy ABNF spec, and about the fourth time I had to go back and create a new dummy non-terminal just to hold a phantom plus/star list, I dug into your code to see if there was a better way. I have sub-classed Grammar in my own utility, but that implementation requires that I&nbsp;be attentive to all changes you might make to MakeListRule, or my subclass will degrade.</p>\r\n<p>ABNF here for reference: <a href=\"http://www.norbeck.nu/abc/abcbnf.htm#text\">http://www.norbeck.nu/abc/abcbnf.htm#text</a></p>\r\n<p>Hope to eventually tackle this one: <a href=\"http://www.norbeck.nu/abc/bnf/abc20bnf.htm\">http://www.norbeck.nu/abc/bnf/abc20bnf.htm</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-09-26T09:58:20.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918107",
+    "ThreadId": "396947",
+    "Html": "<p>The enhanced methods shoudl look more like this, of course.</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">protected</span> NonTerminal MakeStarList(BnfTerm listMember, BnfTerm delimiter = <span style=\"color: blue;\">null</span>, TermListOptions options = TermListOptions.None) {\r\n    <span style=\"color: blue;\">return</span> MakeList(<span style=\"color: blue;\">new</span> NonTerminal(listMember.Name + <span style=\"color: #a31515;\">\"*\"</span>),delimiter,listMember,options |= TermListOptions.AllowEmpty);\r\n}\r\n<span style=\"color: blue;\">protected</span> NonTerminal MakeStarList(BnfTerm listMember, Type nodeType, BnfTerm delimiter = <span style=\"color: blue;\">null</span>, TermListOptions options = TermListOptions.None) {\r\n    <span style=\"color: blue;\">return</span> MakeList(<span style=\"color: blue;\">new</span> NonTerminal(listMember.Name + <span style=\"color: #a31515;\">\"*\"</span>, nodeType),delimiter,listMember,options |= TermListOptions.AllowEmpty);\r\n}\r\n<span style=\"color: blue;\">protected</span> NonTerminal MakePlusList(BnfTerm listMember, BnfTerm delimiter = <span style=\"color: blue;\">null</span>, TermListOptions options = TermListOptions.PlusList) {\r\n    <span style=\"color: blue;\">return</span> MakeList(<span style=\"color: blue;\">new</span> NonTerminal(listMember.Name + <span style=\"color: #a31515;\">\"+\"</span>),delimiter,listMember,options |= TermListOptions.PlusList);\r\n}\r\n<span style=\"color: blue;\">protected</span> NonTerminal MakePlusList(BnfTerm listMember, Type nodeType, BnfTerm delimiter = <span style=\"color: blue;\">null</span>, TermListOptions options = TermListOptions.PlusList) {\r\n    <span style=\"color: blue;\">return</span> MakeList(<span style=\"color: blue;\">new</span> NonTerminal(listMember.Name + <span style=\"color: #a31515;\">\"+\"</span>, nodeType),delimiter,listMember,options |= TermListOptions.PlusList);\r\n}\r\n\r\n\r\n</pre>\r\n</div>",
+    "PostedDate": "2012-09-26T14:24:20.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

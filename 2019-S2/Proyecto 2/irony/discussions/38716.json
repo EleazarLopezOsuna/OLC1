@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "128423",
+    "ThreadId": "38716",
+    "Html": "Just had a quick look at it, seems quite fully featured. I realize that its only a sample, but it looks like it could be used for some code analysis or transformation before passing the code on to the framework compiler.<br>\r\n<br>\r\nI notice that the section on arrays is not there (the parser stopped on an array declaration). Is there any technical reason for this, or is it just waiting to be finished?<br>\r\n",
+    "PostedDate": "2008-10-28T15:01:45.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128430",
+    "ThreadId": "38716",
+    "Html": "Unfortunately, this grammar is really half-baked, to use just as a sample. I didn't spend much time bringing it to full language support. The problem with arrays - most likely is a bug, there are some array type definitions there. <br>\r\nThe reasons I left it as it is now:<br>\r\n1. It is a sample.<br>\r\n2. The grammar(s) provided in language specs (c# and other language standards) are aimed at explaining the syntax to humans, not parsing it with specific parsing method like LALR. The grammar therefore has to be tweaked substantially for use in parser impelementation. The amount of tweaking depends on parsing method (LR, LALR, LL, etc), some claim to be easier, but all methods require this. So I decided not to tweak it too much, and stay close to original<br>\r\n3. Even with adjusted grammar, there still may be ambiguities for parser which should be resolved by out-of-grammar rules (like shift preference, or extented lookaheads in source). c# is no exception, and it has several cases when extra lookahead scan is necessary. I decided not to overcomplicate the sample with all these things, so I just &quot;adjusted&quot; parts of the grammar to remove conflicts. The array declaration might be one of the victims. <br>\r\n<br>\r\nBut the main reason for leaving c# grammar in this incomplete state is that I'm planning to implement some advanced/extended parsing algorithm (LRE). I expect it to handle much better such complex grammars as c# than LALR currently used in Irony, so current LALR conflicts would not appear at all. So I simply decided to wait for this to happen - don't even ask me when....<br>\r\nFor now, if you have particular use in mind, you're free to fix it - I will help if I can<br>\r\nThank you<br>\r\nRoman<br>\r\n",
+    "PostedDate": "2008-10-28T16:03:36.057-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128440",
+    "ThreadId": "38716",
+    "Html": "Yea I’ve wrestled with grammar ambiguities in the past, just comes with the territory. Thankfully I don’t really need a semantically correct parser, i.e., it doesn’t have to restrict illegal constructs, I'm just looking for something that will read in a source file. The code can be semantically verified by the framework C# compiler. I use Script# quite a bit, and until its updated to support generics and other C# 2/3 syntax, I would like to ‘pre-process’ files and strip all that out before handing it off to the Script# compiler.<br>\r\n<br>\r\nThe thing is, for even the most basic transformation, you need a complete C# parser, and that’s a big chunk of off-topic work. I’ve been looking around at the various parser generator technologies, and this is the first one that’s ‘clicked’ with me, something clean that I can work with.<br>\r\n<br>\r\nAppreciate the offer for help, I’m sure I’ll take you up on it. I think in the meantime I’ll work on another project I have in mind, to pre-process CSS, should be a lot easier to write a parser for that :) <br>\r\n",
+    "PostedDate": "2008-10-28T16:37:34.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128513",
+    "ThreadId": "38716",
+    "Html": "Good luck, and let me know how it goes<br>\r\nRoman\r\n",
+    "PostedDate": "2008-10-28T23:43:00.817-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,13 @@
+//We found EndSymbol - check if it is escaped; if yes, skip it and continue search
+if (escapeEnabled)
+{
+  bool endSymbolEscaped = false;
+  for (int i = 1; source.Text[endPos - i] == EscapeChar; i++)
+    endSymbolEscaped = !endSymbolEscaped;
+
+  if (endSymbolEscaped)
+  {
+    source.Position = endPos + startS.Length;
+    continue; //searching for end symbol
+  }
+}

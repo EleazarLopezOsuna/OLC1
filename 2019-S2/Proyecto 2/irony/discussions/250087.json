@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "582001",
+    "ThreadId": "250087",
+    "Html": "<p>Hi,</p>\n<p>I have a quick question regarding unit testing and Irony.</p>\n<p>I have been developing an application and i've been using Irony as a parser for the input of my application, which works fine by itself.</p>\n<p>I recently started a Visual Studio Unit Test, to test the application. I kept getting the same error and i found out that it had something to do with Irony.dll.</p>\n<p>Every time i run my application Irony works fine, but if i set my startup project to my Unit Test project to run Irony, i keep getting the following error:</p>\n<p>[System.Security.VerificationException] {\"Operation could destabilize the runtime.\"}</p>\n<p>this always happens on the&nbsp;following line(constructor)</p>\n<pre style=\"font-family: consolas;\">&nbsp;<span style=\"color: blue;\">public</span>&nbsp;Grammar()&nbsp;:&nbsp;<span style=\"color: blue;\">this</span>(<span style=\"color: blue;\">true</span>)&nbsp;{&nbsp;}&nbsp;<span style=\"color: green;\">//case&nbsp;sensitive&nbsp;by&nbsp;default</span><br /></pre>\n<pre style=\"font-family: consolas;\">I tried to find out why this happens, so i redownloaded Irony, along with the Irony test samples and visual studio unit tests.</pre>\n<pre style=\"font-family: consolas;\">I keep getting the same error there too, when i set 040.Irony.Tests.VsTest.2010 as my startup project and try to debug.</pre>\n<pre style=\"font-family: consolas;\">Can anyone give me any pointers regarding this?</pre>\n<pre style=\"font-family: consolas;\">I'm running Visual Studio 2010 Ultimate, Windows 7 Enterprise Edition x64 Bit</pre>\n<pre style=\"font-family: consolas;\">Regards,</pre>\n<pre style=\"font-family: consolas;\">Surush</pre>",
+    "PostedDate": "2011-03-17T04:05:54.313-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "585190",
+    "ThreadId": "250087",
+    "Html": "<p>Google search for this error brings a few forum posts that all indicate that there must be some mismatch of old-version DLL, built for earlier runtime, with new ones. Like you reference a DLL build in .NET 2.0, and because of some changes in .NET 4.0 running the older version my represent a risk of this destabilization.</p>\r\n<p>Do you use some extra libraries in compiled form? Mocking framework, extra unit test frameworks?&nbsp;</p>\r\n<p>I never seen this, at least in Grammar constructor. I do use VS unit test framework, it works OK. Do you have Irony included as project or you reference DLL?&nbsp;</p>\r\n<p>My suggestion is to check all referenced DLLs, in all projects, check their versions, see if you find any older stuff; try to find sources and rebuild them in .NET 4.0; or get the latest binaries&nbsp;</p>",
+    "PostedDate": "2011-03-23T10:40:49.113-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

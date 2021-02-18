@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "191322",
+    "ThreadId": "56612",
+    "Html": "<p>The Irony .Net Language Implementation kit is really superb. But is there any version available targeting for Framework 2.0?</p>",
+    "PostedDate": "2009-05-17T23:43:29.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "191327",
+    "ThreadId": "56612",
+    "Html": "<p>Read the previous discussion about this: <a href=\"http://irony.codeplex.com/Thread/View.aspx?ThreadId=42354\">http://irony.codeplex.com/Thread/View.aspx?ThreadId=42354</a></p>\r\n<p>Contact user emzero, he might have succeeded, but it is probably based on quite old, outdated version of Irony</p>",
+    "PostedDate": "2009-05-17T23:53:18.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

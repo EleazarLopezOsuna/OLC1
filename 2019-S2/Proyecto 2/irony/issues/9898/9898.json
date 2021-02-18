@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "The first couple of lines of BuildAst in AstBuilder check the term flags and also a safety check to see if an AST node is set on the term\r\n\r\n```\r\n public virtual void BuildAst(ParseTreeNode parseNode) {\r\n      var term = parseNode.Term;\r\n      if (term.Flags.IsSet(TermFlags.NoAstNode) || parseNode.AstNode != null) return; \r\n   \r\n```\r\n\r\n... but it looks like it checks for != null meaning you get further down the line to the default node creator and get a NullReferenceException (this is only when trying to run an invalid grammar specification) - not a deal breaker but obviously a bug somewhere.\r\n\r\nChanging to \r\n\r\n```\r\nif (term.Flags.IsSet(TermFlags.NoAstNode) || parseNode.AstNode == null) return; \r\n```\r\n\r\nFixes it temporarily but disables implicit defaults on the ast config. I think the lack of defaults/ast config is the problem \r\n\r\nIt sounds like somewhere down the line there needs to be the right check to ensure that if no default ast setup is provided the correct messages are displayed and no nullref is thrown\r\n\r\nHad me scratching my head until I got hold of the source - I think it would help if this was fixed so that the errors are meaningful",
+    "LastUpdatedDate": "2015-01-07T05:09:45.163-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2015-01-07T03:29:44.097-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "NullReferenceException due to errror in AstBuilder",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9898
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

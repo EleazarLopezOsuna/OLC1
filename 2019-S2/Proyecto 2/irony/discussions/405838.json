@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "952347",
+    "ThreadId": "405838",
+    "Html": "\r\n<p>I'm writing a parser for a language based off it's spec. In the spec it states the precedence is as follows:</p>\r\n<p></p>\r\n<pre>1. **\n\n2. prefix &#43;, -\n\n3. *, /, div, mod\n\n4. infix &#43;,-\n\n5. &lt;, &gt;, =, &lt;=, &gt;=, not=\n\n6. not\n\n7. and\n\n8. or</pre>\r\n<p></p>\r\n<p>Do I need to explicitly declare that the prefix &#43; and - have higher&nbsp;precedence than *, while infix has lower than *, and how would I do that? I can't seem to come up with any instances where the grammar could be&nbsp;ambiguous&nbsp;about that (it should\r\n already be clear from context whether something is infix or prefix). The operators combine to very simple expressions, that conform the same way most languages do (it's probably most similar to python), with the only oddball in the expressions is that ** is\r\n left associative (usually exponents are right associative)</p>\r\n<p>Would the following be correct for this language:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>RegisterOperators(80, Associativity.Left, <span style=\"color:#a31515\">&quot;**&quot;</span>);\nRegisterOperators(60, <span style=\"color:#a31515\">&quot;*&quot;</span>,<span style=\"color:#a31515\">&quot;/&quot;</span>,<span style=\"color:#a31515\">&quot;div&quot;</span>,<span style=\"color:#a31515\">&quot;mod&quot;</span>);\nRegisterOperators(50, <span style=\"color:#a31515\">&quot;&#43;&quot;</span>, <span style=\"color:#a31515\">&quot;-&quot;</span>);\nRegisterOperators(40, <span style=\"color:#a31515\">&quot;&lt;&quot;</span>, <span style=\"color:#a31515\">&quot;&gt;&quot;</span>, <span style=\"color:#a31515\">&quot;=&quot;</span>, <span style=\"color:#a31515\">&quot;&lt;=&quot;</span>, <span style=\"color:#a31515\">&quot;&gt;=&quot;</span>, <span style=\"color:#a31515\">&quot;not=&quot;</span>);\nRegisterOperators(30, <span style=\"color:#a31515\">&quot;not&quot;</span>);\nRegisterOperators(20, <span style=\"color:#a31515\">&quot;and&quot;</span>);\nRegisterOperators(10, <span style=\"color:#a31515\">&quot;or&quot;</span>);\n</pre>\r\n</div>\r\n",
+    "PostedDate": "2012-12-06T08:54:09.98-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "952370",
+    "ThreadId": "405838",
+    "Html": "\r\n<p>There's a hint for this variable precedence, use Grammar.ImplyPrecedenceHere(precValue) (smth like this, do not remember name exactly), use it before the operator symbol in grammar rules. Try this</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2012-12-06T09:31:07.49-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "952392",
+    "ThreadId": "405838",
+    "Html": "\r\n<p>Non-terminals can be set precedence, but I wasn't sure if that was what would work.</p>\r\n<p>&nbsp;</p>\r\n<p>It also applies that to all the infix operators, unless I make a new non-terminal just for &#43; and - infix.</p>\r\n",
+    "PostedDate": "2012-12-06T10:13:17.517-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

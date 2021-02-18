@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1060199",
+    "ThreadId": "447994",
+    "Html": "Hi,\r<br />\nI am trying to implement grammar for a simple language.\r<br />\nSource file is composed of variable declarations first and routine declarations next.<br />\n<pre><code>PROGRAM.Rule = MakeStarRule(PROGRAM, MODULE_CONTENT);\nMODULE_CONTENT.Rule =  &quot;MODULE&quot; + VAR_DECL_LIST + ROUTINE_LIST;\n\nBASIC_TYPE = ToTerm(&quot;int&quot;) | &quot;float&quot;;\n\nVAR_DECL_LIST.Rule = MakeStarRule(VAR_DECL_LIST, VAR_DECL);\nVAR_DECL.Rule = BASIC_TYPE + identifier\n\nROUTINE_LIST.Rule = MakeStarRule(ROUTINE_LIST, ROUTINE);\nROUTINE.Rule = BASIC_TYPE + &quot;FUNC&quot; + identifier + BODY;</code></pre>\n\nMy problem is that variable declaration and routine definition starts with basic type.\r<br />\nThis causes shift reduce conflict at &quot;int&quot; and &quot;float&quot;.\r<br />\nIs there a mechanism for solving this implemented?\r<br />\nI tried to use <strong>CustomActionHere</strong> at the beginning of BASIC_TYPE:<br />\n<pre><code>BASIC_TYPE =CustomActionHere(this.ResolveFundTypeConflict) + (ToTerm(&quot;CARD&quot;) | &quot;CHAR&quot; | &quot;BYTE&quot; | &quot;INT&quot;);</code></pre>\n\n<pre><code>private void ResolveFundTypeConflict(ParsingContext context, CustomParserAction customAction)\n{\n    var scanner = context.Parser.Scanner;\n    Token token = null;\n    if (context.CurrentParserInput.Term.Name == &quot;Unnamed0&quot;)\n    {\n        scanner.BeginPreview();\n        token = scanner.GetToken(); \n        scanner.EndPreview(true);\n    }\n    ParserAction action;\n    if (token.Text != &quot;FUNC&quot;)\n        action = customAction.ShiftActions.First(a =&gt; a.Term.Name == &quot;Unnamed0&quot;);\n    else\n    {\n        action = customAction.ReduceActions.First();\n    }\n    action.Execute(context);\n}</code></pre>\n\nbut after reduce BASIC_TYPE token seems to be already eaten and parsing starts at FUNC\r<br />\ncausing error.\r<br />\nPlease help\r<br />\nRegards\r<br />\nTristan<br />\n",
+    "PostedDate": "2013-06-23T15:51:32.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1060327",
+    "ThreadId": "447994",
+    "Html": "Here is an example code causing shift-resolve conflict in my grammar:\r<br />\n<br />\nMODULE\r<br />\n<br />\nBYTE TMP\r<br />\nINT TMP2\r<br />\n<br />\nBYTE FUNC TEST(INT A)\r<br />\nRETURN\r<br />\n<br />\nI want all variables to be declared before routines declaration start.\r<br />\nI can't change the grammar because I am working on a crosscompiler for existing language (ACTION for 8-bit Atari)\r<br />\nCheers\r<br />\nTristan<br />\n",
+    "PostedDate": "2013-06-24T04:28:52.523-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1060693",
+    "ThreadId": "447994",
+    "Html": "try the following:<br />\n<ol>\n<li>Use MakePlusRule for both var and routine lists</li>\n<li>\nExpress 'optional' nature of both lists directly in rule for module:\r<br />\n  module.Rule = 'MODULE' + module_body;\r<br />\nmodule_body.Rule = var_decl_list | routine_list | var_decl_list + routine_list | Empty;<br />\n</li>\n</ol>\nthat should solve the problem (my WAG, did not test it, but feels like it should work). If you have more that 2 subsection, that would become a problem, but for just 2 it should work\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-06-24T22:08:47.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1061356",
+    "ThreadId": "447994",
+    "Html": "Thank you, it worked like a charm :) I think I understand what you did.\r<br />\nNow I have two more conflicts right below, can you have a look at that too please?\r<br />\n<strong>Shift-reduce conflicts on inputs: CARD CHAR BYTE INT</strong>\r<br />\nThe problem lies at routine level. I made routine a root to isolate it.\r<br />\nI think the collision is at FUNC_DECL and SYSTEM_DECL (both can start with a type):<br />\n<pre><code>            this.Root = ROUTINE_LIST;\n            ROUTINE_LIST.Rule = MakePlusRule(ROUTINE_LIST, ROUTINE);\n            ROUTINE.Rule = (PROC_DECL | FUNC_DECL) + ROUTINE_BODY;\n            ROUTINE_BODY.Rule = SYSTEM_DECL_LIST | STATEMENTS | SYSTEM_DECL_LIST + STATEMENTS | Empty;\n\n            PROC_DECL.Rule = &quot;PROC&quot; + identifier + &quot;(&quot; + PARAM_DECL_LIST + &quot;)&quot;;\n            FUNC_DECL.Rule = FUND_TYPE + &quot;FUNC&quot; + identifier + &quot;(&quot; + PARAM_DECL_LIST + &quot;)&quot;;\n            PARAM_DECL_LIST.Rule = MakeStarRule(PARAM_DECL_LIST, PARAM_DECL);\n            PARAM_DECL.Rule = ...;\n\n            SYSTEM_DECL_LIST.Rule = MakePlusRule(SYSTEM_DECL_LIST, SYSTEM_DECL);\n            SYSTEM_DECL.Rule = VAR_DECL | RECORD_DEF;\n            VAR_DECL.Rule = FUND_DECL | POINTER_DECL | ARRAY_DECL | RECORD_DECL;\n            FUND_DECL.Rule = FUND_TYPE + FUND_IDENT_LIST;\n\n            // statements\n            STATEMENTS.Rule = MakePlusRule(STATEMENTS, STATEMENT);\n            STATEMENT.Rule = EXIT_STAT | ASSIGN_STAT | RETURN_STAT | ROUTINE_CALL_STAT | DO_OR_UNTIL_LOOP_STAT | WHILE_LOOP_STAT | FOR_LOOP_STAT | IF_STAT | CODE_BLOCK_STAT;\n</code></pre>\n\nsome example code presenting the problem:<br />\n<pre><code>INT FUNC F1(BYTE A)\nINT TEST=2\nRETURN A+TEST\n\nINT FUNC F2(BYTE A)\n\nINT FUNC F3(BYTE A)\nINT TEST2=2\n\nPROC F3(BYTE A)\n</code></pre>\n\nRoutine can be declared with empty body (something like forward declaration)\r<br />\nRoutine also don't have to end with RETURN. \r<br />\nThe example code is perfectly correct from the grammar point of view.\r<br />\n<br />\nCan you think about it please?\r<br />\nRegards\r<br />\nTristan<br />\n",
+    "PostedDate": "2013-06-26T04:06:20.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1061753",
+    "ThreadId": "447994",
+    "Html": "come on man, try to solve it yourself, i hope you got the idea - just refactor the rules. Google (like 'resolving shift-reduce conflicts'), get some ideas. Try/fail/google/retry loop. Don't think I have some secret knowledge, it's all about general principles about LALR and LALR grammars, conflicts and adjusting grammars to fit LALR limitations<br />\n",
+    "PostedDate": "2013-06-26T20:10:08.083-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

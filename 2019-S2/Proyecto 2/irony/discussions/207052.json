@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "422695",
+    "ThreadId": "207052",
+    "Html": "<p>Hello, Just a quick thank you to Roman for creating such a useful and <span id=ReviewListText5>powerful project!</span><br> <br> I have a newbie question about how to restrict/customize a NumberLiteral to certain range. That is, I wish to have a grammar something like this &quot;psuedo-BNF&quot; example:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">restrictedNumber</span><span style=\"color:Blue\">&gt;</span>::=<span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">restrictedInt</span><span style=\"color:Blue\">&gt;</span>.<span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">restrictedInt</span><span style=\"color:Blue\">&gt;</span> | <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">restrictedInt</span><span style=\"color:Blue\">&gt;</span>\r\n<span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">restrictedInt</span><span style=\"color:Blue\">&gt;</span> ::= MakePlusRule(restrictedInt, intRange);\r\n<span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">intRange</span><span style=\"color:Blue\">&gt;</span> ::= 1|2|3|4|5\r\n// ...same as ExpressionEvaluatorGrammar example from here on, only using &quot;restrictedNumber&quot; for the NumberLiteral\r\nexpression.Rule = binexpr | restrictedNumber;\r\nbinexpr.Rule = expression + binop + expression;\r\n...\r\n\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>So in this grammar, restrictedNumber could only take on values between [1, 5.55*].&nbsp; I have had a few attempts at a solution without my success, so suspect I am missing somthing fundamental.</p>\r\n<p>Any advice about how to go about doing this in Irony would be much appreciated!<br> <br> Thanks again,<br> Kalori</p>",
+    "PostedDate": "2010-03-23T11:30:04.05-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "422757",
+    "ThreadId": "207052",
+    "Html": "<p>Use NumberLiteral.ValidateToken event, in case number is out of range set Context.CurrentToken to error token:</p>\r\n<p>Context.CurrentToken = Context.Source.CreateErrorToken(&quot;invalid number&quot;);</p>",
+    "PostedDate": "2010-03-23T13:50:11.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "422928",
+    "ThreadId": "207052",
+    "Html": "<p>Excellent that works, thanks Roman.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-03-24T01:22:00.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,170 @@
+[
+  {
+    "Id": "918539",
+    "ThreadId": "397181",
+    "Html": "\r\n<p>I'm writing a parser for the PowerShell grammar. Creating the Parser object is taking a long time. Breaking in to the debugger, I see we're spending a lot of time in&nbsp;Transition.IncludeTransition.&nbsp;</p>\r\n<p>It takes about 18 seconds in a Release build running not under the debugger, on my relatively slow computer. ParserData.States has about 600 states.</p>\r\n<p>What options are available to me to improve this performance?</p>\r\n<p>I wonder if Irony's approach of building the parser at runtime is a bad fit for what I'm doing?</p>\r\n<p>If you need to look at my code, the Rules are here:&nbsp;<a href=\"https://github.com/JayBazuzi/Pash2/blob/master/Source/Pash.System.Management/Pash/ParserIntrinsics/PowerShellGrammar.cs\">https://github.com/JayBazuzi/Pash2/blob/master/Source/Pash.System.Management/Pash/ParserIntrinsics/PowerShellGrammar.cs</a></p>\r\n",
+    "PostedDate": "2012-09-27T08:30:41.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918632",
+    "ThreadId": "397181",
+    "Html": "<p>oh man, sorry, but this stuff is quite messed up. I downloaded the entire thing, and after a few troubles and workarounds finally managed to load and compile the solution. I added GrammarExplorer to the solution, built all, launched it and tried to load your Pash grammar into GrammarExplorer. First thing - you binary assembly is call System.Management.Automation (System?!), while project is Pash.System.Management - why? had to go back and look at project properties to see what's going on.&nbsp;</p>\r\n<p>Attempt to load Powershell grammar blew up with exception - no public parameterless constructor found. Looked in the grammar - there is constructor but it is private. Apparently, you never loaded and analyzed the grammar in Grammar Explorer - do this first!!!&nbsp;</p>\r\n<p>When I finally loaded all grammars in your assembly, it showed me an error on all but one of them: \"NonTerminal X has uninitialized Rule property\". All except InteractiveINput grammar - it spend about 4 seconds thinking, then threw up a whole bunch of conflicts. So my guess is: it's not really parser construction that takes long time, it is parser builder going around and reporting all errors.&nbsp;</p>\r\n<p><strong>So the conclusion is - do the Grammar analysis with GrammarExplorer first! </strong></p>\r\n<p><strong>Clean it up, fix the conflicts, try parsing samples.</strong></p>\r\n<p>As a side note: what's this all stuff with static class constructor and assigning nonterminals thru reflection?! I'm afraid you are too fancy here, and adding many more troubles in debugging and maintenance. The general recommendation for static constructor is - use it only if you really need it, and do as little as possible there. And keep in mind that Regex terminal is really slow, you should explore other options and use it only if nothing else really works - including custom terminal (your own custom class).&nbsp;</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-09-27T10:49:33.73-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918644",
+    "ThreadId": "397181",
+    "Html": "<p>Thanks for the quick response, Roman.</p>\r\n<p>OK, I will try GrammarExplorer and see where that gets me. I've never done that before, as you guessed.</p>\r\n<p>To answer some of your questions:</p>\r\n<p>I am writing an Open Source clone of PowerShell, which is why you see things in the System namespace.</p>\r\n<p>I'm not sure why you weren't able to load the solution and compile. Which version of Visual Studio do you use? (I use VS2012 Express). What issues did you see / what workaround did you apply? I want to fix this. I should probably set up a Virtual Machine with a clean OS to test that on.&nbsp;</p>\r\n<p>The static stuff is going away - already fixed in my development branch, but not merged to master yet.</p>\r\n<p>The reflection is to avoid the duplication with the name of the rule &amp; the variable containing the rule:</p>\r\n<p>&nbsp; &nbsp; NonTerminal Foo = new NonTerminal(\"Foo\"); // duplication</p>\r\n<p>I use a lot of RegexTerminal because I receive the lexical grammar as a series of production rules in the language specification, which are easy to translate to regular expressions. However, the resulting parse tree is hard to consume. The more complex RegexTerminals will become NonTerminals.</p>\r\n<p>I understand that the RegexTerminal is slow, and I'm OK with that for now. Startup performance matters to me much more than parsing performance. It's an interpreted language: users will spend far more time waiting for commands to run than waiting for parsing. But I'll get to that eventually, too.</p>",
+    "PostedDate": "2012-09-27T11:11:01.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918672",
+    "ThreadId": "397181",
+    "Html": "<p>re:</p>\r\n<pre>The reflection is to avoid the duplication with the name of the rule &amp; the variable containing the rule:\r\n\r\n    NonTerminal Foo = new NonTerminal(\"Foo\"); // duplication\r\n</pre>\r\n<p>C# is a great language, but I do sometime miss old fashioned C macros.<br />;-)</p>",
+    "PostedDate": "2012-09-27T12:23:25.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918701",
+    "ThreadId": "397181",
+    "Html": "<p>you gotta be kidding... to go on reflection mess and huge static constructor for THIS?!!!</p>",
+    "PostedDate": "2012-09-27T13:21:55.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918721",
+    "ThreadId": "397181",
+    "Html": "<blockquote style=\"border: solid .1em #ccc; font-style: italic; margin: .25em 1em 0 1em; padding: 0 .25em 0 .25em;\"><strong>pgeerkens wrote:</strong><br />\r\n<p>re:</p>\r\n<pre>The reflection is to avoid the duplication with the name of the rule &amp; the variable containing the rule:\r\n\r\n    NonTerminal Foo = new NonTerminal(\"Foo\"); // duplication\r\n</pre>\r\n<p>C# is a great language, but I do sometime miss old fashioned C macros.<br /> ;-)</p>\r\n</blockquote>\r\n<p>Yes, C macros are almost ideally suited to parser generation, and highly troublesome almost everywhere else!</p>",
+    "PostedDate": "2012-09-27T14:05:49.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918724",
+    "ThreadId": "397181",
+    "Html": "<blockquote style=\"border: solid .1em #ccc; font-style: italic; margin: .25em 1em 0 1em; padding: 0 .25em 0 .25em;\"><strong>rivantsov wrote:</strong><br />\r\n<p>you gotta be kidding... to go on reflection mess and huge static constructor for THIS?!!!</p>\r\n</blockquote>\r\n<p>As I mentioned, the static constructor is gone in my working branch.</p>\r\n<p>The reflection is straightforward if you like reflection, and ugly if you don't like reflection. I guess you're in that second camp, and there's nothing wrong with that.&nbsp;</p>\r\n<p>I had considered suggesting an enhancement to Irony where it reflects over the user's grammar to discover the names of the rules, instead of requirement to be hard-coded, but I'm guessing you wouldn't go for that!</p>\r\n<p>I'm open to other suggestions as to how I can cleanly meet the requirements of the Irony API without that duplication and the risks that carries.</p>",
+    "PostedDate": "2012-09-27T14:14:44.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918729",
+    "ThreadId": "397181",
+    "Html": "<p>sorry for the outcry, didn't mean to offend anyone. I do like reflection and use it a lot. But i don't think it's use is justified here. Local var name matching to term name - does not matter at all. You can name your variables x1, x2, x3, while keeping descriptive terminal names in constructors - Irony does not care. Maintaining grammar construction code would be a problem - for you as a programmer, but parser does not care. Local variable names disappear at runtime, even reflection metadata and IL does not keep them.&nbsp;And you can even name the terminals with whatever name you want - it does not matter. Irony does not look at these names, they are used only for displaying information (state table) in grammar explorer. So eventual mismatch is no problem at all, and certainly not worth doing reflection.&nbsp;</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-09-27T14:31:16.317-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918736",
+    "ThreadId": "397181",
+    "Html": "<p>... that is if you are concerned about eventual mismatch.</p>\r\n<p>If you're just 'lazy' :) to type \"foo\" twice... Well, I think it's not that big a deal, provided that mistakes do not do any harm.</p>\r\n<p>To be honest, I was annoyed by this too in the early times, and tried to think up some way to avoid it, but did not come up with anything simple and decided to put it to rest.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-09-27T14:42:22.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918755",
+    "ThreadId": "397181",
+    "Html": "\r\n<p>About the third time one loses 40 minutes&nbsp; chasing down the wrong (mis-named due to an incomplete Copy/Paste) malformed non-terminal, one seriously contemplates using Reflection to eliminate the double typing. I was actualy considering what the effort\r\n in building a pre-processor would be.<br>\r\n;-)</p>\r\n<p>More seriously: It is a wart on a beautiful face; but not worth cutting the nose off for.</p>\r\n",
+    "PostedDate": "2012-09-27T15:28:09.673-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918762",
+    "ThreadId": "397181",
+    "Html": "<p>Roman, I want to be clear that I am deeply grateful that you have devoted your energy to this project, giving the world the gift of parsing. Thank you!&nbsp;It sure saves me a ton of work, which means I can give a gift of a Free PowerShell that works on Linux &amp; Mac.</p>\r\n<p>We're getting a little off topic from my original question (startup performance; the ball is my court to do the steps you laid out for me), but while we're here:</p>\r\n<p>How do you inspect a parse tree?</p>\r\n<pre><span>if</span> (parseTreeNode.ChildNodes[0] ???)</pre>\r\n<p>One way is to use the name field:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">if</span> (parseTreeNode.ChildNodes[0].Term.Name == <span style=\"color: #a31515;\">\"Foo\"</span>)\r\n</pre>\r\n</div>\r\n<p>But that requires duplicating the name in the grammar and the client code, and that is of course error-prone. I'm already good at making bugs without extra help!</p>\r\n<p>&nbsp;</p>\r\n<p>My approach is to make the BnfTerms fields, not locals, so clients can compare them directly:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">class</span> MyGrammar : Grammar\r\n{\r\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">readonly</span> NonTerminal Foo;\r\n}\r\n\r\n<span style=\"color: gray;\">///</span><span style=\"color: green;\"> ------------------</span>\r\n\r\nMyGrammar grammar = ...\r\nParseTreeNode parseTreeNode = ...\r\n\r\n<span style=\"color: blue;\">if</span> (parseTreeNode.ChildNodes[0].Term = grammar.Foo)\r\n{\r\n    ...\r\n}\r\n</pre>\r\n</div>\r\n<p>So now the Name field of a BnfTerm is not important to me, but the name of the field containing it is important. One unfortunate side effective of this approach is that the Rule definition and the field declaration are far apart from each other.</p>\r\n<p>Maybe there's an Irony idiom that I've missed.&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-09-27T16:08:25.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918783",
+    "ThreadId": "397181",
+    "Html": "<p>I started looking at my grammar under GrammarExplorer, which I've never looked at before. Yes, it prompts with 5 grammar types, but only 1 of them legitimate - InteractiveInput.</p>\r\n<p>80% or so of the grammar errors have to do with optional newlines. The PowerShell grammar is very particular with newline &amp; whitespace treatment. Newlines are part of the grammar, but have no semantic purpose. When faced with a conflict around newlines, it doesn't matter what Irony picks. The non-newline conflicts are more interesting, but I guess I will have to work through them all to get GrammarExplorer to give me a green light.</p>\r\n<p>Eventually I'll have to insert regular whitespace in to the grammar, as well, since there are a few places where whitespace is prohibited between tokens, e.g.:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>PS<span style=\"color: gray;\">&gt;</span> <span style=\"color: gray;\">[</span><span style=\"color: teal;\">System.Int32</span><span style=\"color: gray;\">]</span><span style=\"color: gray;\">::</span>MaxValue       <span style=\"color: green;\"># OK</span>\r\n2147483647\r\nPS<span style=\"color: gray;\">&gt;</span> <span style=\"color: gray;\">[</span><span style=\"color: teal;\">System.Int32</span><span style=\"color: gray;\">]</span> ::MaxValue      <span style=\"color: green;\"># ERROR</span>\r\nUnexpected token\r\n</pre>\r\n</div>\r\nBut I'm quietly ignoring that problem for now.</p>",
+    "PostedDate": "2012-09-27T18:05:29.81-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918912",
+    "ThreadId": "397181",
+    "Html": "<p>You can take over explicit handling of all whitespace by adding this override to your Grammar definition:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> SkipWhitespace(ISourceStream source) { <span style=\"color: blue;\">return</span>; }\r\n\r\n</pre>\r\n</div>\r\n<p>I have had to do this with my parser for ABC notation.</p>",
+    "PostedDate": "2012-09-28T02:47:16.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "919033",
+    "ThreadId": "397181",
+    "Html": "<blockquote style=\"border: solid .1em #ccc; font-style: italic; margin: .25em 1em 0 1em; padding: 0 .25em 0 .25em;\"><strong>pgeerkens wrote:</strong><br />\r\n<p>You can take over explicit handling of all whitespace by adding this override to your Grammar definition:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> SkipWhitespace(ISourceStream source) { <span style=\"color: blue;\">return</span>; }\r\n\r\n</pre>\r\n</div>\r\n<p>I have had to do this with my parser for ABC notation.</p>\r\n</blockquote>\r\n<p>I have overridden SkipWhitespce already, because PowerShell has some slightly unusual whitespace ideas.</p>\r\n<pre>whitespace:\r\n    Any character with Unicode class Zs, Zl, or Zp\r\n    Horizontal tab character (U+0009)\r\n    Vertical tab character (U+000B)\r\n    Form feed character (U+000C)\r\n    `   (The backtick character U+0060) followed by new_line_character\r\n\r\nnew_line_character:\r\n    Carriage return character (U+000D)\r\n    Line feed character (U+000A)\r\n    Carriage return character (U+000D) followed by line feed character (U+000A)\r\n</pre>\r\n<p>Normally newlines are *not* treated as whitespace, unless they're escaped, in which case a single whitespace can be 3 characters long (`\\r\\n).</p>\r\n<p>However, there are 4 points where whitespace is <strong>prohibited </strong>in a production rule.&nbsp;</p>\r\n<pre>member_access: Note no whitespace is allowed between terms in these productions.\r\n    primary_expression   .   member_name\r\n    primary_expression   ::   member_name\r\n</pre>\r\n<p>So I need a way to express that. The only way I know of right now is to add whitespace between every term in the entire grammar, except for the 4 locations where it's prohibited. That seems like a lot of trouble, so I'm putting it off until some more useful things get done.</p>",
+    "PostedDate": "2012-09-28T08:27:58.947-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "919180",
+    "ThreadId": "397181",
+    "Html": "<blockquote style=\"padding-bottom: 0px; font-style: italic; margin: 0.25em 1em 0px; padding-left: 0.25em; padding-right: 0.25em; padding-top: 0px; border: #ccc 0.1em solid;\"><strong>JayBazuzi wrote:</strong><br />\r\n<p>However, there are 4 points where whitespace is <strong>prohibited </strong>in a production rule.&nbsp;</p>\r\n<pre>member_access: Note no whitespace is allowed between terms in these productions.\r\n    primary_expression   .   member_name\r\n    primary_expression   ::   member_name\r\n</pre>\r\n</blockquote>\r\n<p>That is surprising, as most C-style languages allow white-space there. If you <em>&egrave;xpanded</em>` the grammar to allow this, does it break something else&Eacute;</p>",
+    "PostedDate": "2012-09-28T12:57:07.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "919184",
+    "ThreadId": "397181",
+    "Html": "<p>about these 2 places where whitespace is prohibited. I suspect it's just the way the MS powershell parser works, just an accident. I think it's OK to allow whitespace in your parser (so it is more 'forgiving'). However, if you want to disallow it, I think the best way is to allow it in the grammar rules, but to verify it after parsing member_access. Just hook to 'Reduced' event of member_access, and check child nodes of the parsed node - verify that there's no gaps between.&nbsp;</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-09-28T13:05:31.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "919215",
+    "ThreadId": "397181",
+    "Html": "<p>That text about \"no whitespace is allowed\" is a quote from Microsoft's language spec, not something I invented. But maybe you're right - maybe I could be forgiving, at least for now.</p>\r\n<p>I said there are 4 points with whitespace prohibition, but I only gave one of them.&nbsp;</p>\r\n<pre>    generic_token_with_subexpr:\r\n        No whitespace is allowed between ) and command_name.\r\n        generic_token_with_subexpr_start   statement_list_opt   )   command_name\r\n\r\n    member_access: Note no whitespace is allowed between terms in these productions.\r\n        primary_expression   .   member_name\r\n        primary_expression   ::   member_name\r\n\r\n    element_access: Note no whitespace is allowed between primary_expression and [.\r\n        primary_expression   [  new_lines_opt   expression   new_lines_opt   ]\r\n\r\n    invocation_expression: Note no whitespace is allowed between terms in these productions.\r\n        primary_expression   .   member_name   argument_list\r\n        primary_expression   ::   member_name   argument_list\r\n</pre>\r\n<p>And I think I found a bug in the grammar which leads to a 5th, but I don't need to bother you with it right now. If you're really curious, see:&nbsp;<a href=\"https://github.com/JayBazuzi/Pash2/issues/8\">https://github.com/JayBazuzi/Pash2/issues/8</a></p>",
+    "PostedDate": "2012-09-28T13:53:29.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "920962",
+    "ThreadId": "397181",
+    "Html": "<p>Just an FYI: it should now be much easier to compile Pash on a clean machine, mostly because I added NUnit in to the repository. You still have to install gtk#, or unload or ignore the project that depends on it.</p>\r\n<p>Also, the static ctor is now gone.&nbsp;</p>\r\n<p>I haven't resolved all the performance issues, shift/reduce conflicts, reduce/reduce conflicts, and whitespace handling trickiness I raised earlier, because I've been busy, but I'm grateful for the guidance offered here, which will help when I work on those things.</p>",
+    "PostedDate": "2012-10-02T17:30:24.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026896",
+    "ThreadId": "397181",
+    "Html": "I worked on implementing whitespace prohibition as you suggested. As an experiment, I wrote this code:<br />\n<pre><code> _member_access_or_invocation_expression.Reduced += delegate(object sender, ReducedEventArgs e)\n{\n    var primaryExpressionSpan = e.ResultNode.ChildNodes[0].Span;\n    var operatorSpan = e.ResultNode.ChildNodes[1].Span;\n\n    if (SourceLocation.Compare(primaryExpressionSpan.Location + primaryExpressionSpan.Length, operatorSpan.Location) != 0)\n        throw new Exception(&quot;No whitespace allowed&quot;);\n};</code></pre>\n\nSure enough, the exception does throw when there is a whitespace where it's not allowed. Great.<br />\n<br />\nIs there a mechanism I should be using to turn this in to a parse error, instead of throwing an exception?<br />\n",
+    "PostedDate": "2013-04-07T15:07:56.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026952",
+    "ThreadId": "397181",
+    "Html": "e.Context.AddParserError(...)<br />\n",
+    "PostedDate": "2013-04-07T20:15:48.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026957",
+    "ThreadId": "397181",
+    "Html": "Thanks!<br />\n",
+    "PostedDate": "2013-04-07T20:33:24.623-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

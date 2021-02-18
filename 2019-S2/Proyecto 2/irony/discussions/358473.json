@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "845188",
+    "ThreadId": "358473",
+    "Html": "\r\n<p>Hello, i have a long string of arbitrary code:</p>\r\n<p>like: &quot;fklkljagjg akljgt tgf gdfajk 565 diltysgbhnmf gjklaydjf g a&ntilde;lkjf5 46lla56kjfd&quot;</p>\r\n<p>want to extract just</p>\r\n<p>565, 5, 46, 56</p>\r\n<p>How can i do it&nbsp;using irony?</p>\r\n<p>Thanks!</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-06-05T13:53:50.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "845315",
+    "ThreadId": "358473",
+    "Html": "<p>i don't think Irony is a good choice for this - you be better by just scanning the string char by char and finding numbers</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-06-05T20:02:47.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "857552",
+    "ThreadId": "358473",
+    "Html": "<p>Try Regular Expressions</p>\r\n<p>var input = \"fklkljagjg akljgt tgf gdfajk 565 diltysgbhnmf gjklaydjf g a&ntilde;lkjf5 46lla56kjfd\";<br />var re = new Regex(@\"\\d{1,}\");<br />foreach (var item in re.Matches(input))<br />{<br />&nbsp;&nbsp;&nbsp; Console.Write(item + \", \");<br />}</p>",
+    "PostedDate": "2012-07-04T14:29:13.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

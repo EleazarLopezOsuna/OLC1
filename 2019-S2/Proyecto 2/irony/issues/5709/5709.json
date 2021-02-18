@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Fixed in latest drop",
+    "ClosedDate": "2009-10-13T15:38:53.88-07:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "Using the latest Irony code drop (33075).\n\nI am developing a grammar and a simple compiler for a subset of the C preprocessor language.\nInitially I had the compiler class create the grammar on each call to my Compile method.  \nBut I decided to change that and to have the grammar object as a singleton to be created once.  After I did that my unit tests started to fail in what looked like totally random places.\n\nThe reason was, that some of my unit tests also created the grammar object directly, in order to check the correctness of the parse tree for simple grammars.\nSince my test runner (xUnit) runs the unit tests in a random order, this changed the Grammar.CurrentGrammar static property because a new Grammar object was created (randomly).  However, the old one was still alive and was used in later tests.\n\nThis caused the following bug:\nIn GrammarDataBuilder.CreateProduction(), the following condition:\n        if (operand == Grammar.CurrentGrammar.Empty)\nfailed even when operand is the Empty keyword, because the Empty in operand was created in a different Grammar object than the one in Grammar.CurrentGrammar.  So Empty terminals were not skipped, and this stage produced a grammar with incorrect productions.\n\nIMHO, using the static CurrentGrammar field is more trouble than it’s worth.\nIn this specific method, there is no reason to use it, since GrammarDataBuilder has a _grammar field which points back to the correct grammar we’re working on.\n\nPossible workarounds (in the current release, without changing Irony code):\n- Always create a new Grammar object before using it\n- If using a Grammar singleton, then before using it, check if (Grammar.CurrentGrammar != grammarSingleton) and if so, some other Grammar has “stolen” the CurrentGrammar reference, and we need to restore it by recreating the Grammar object.",
+    "LastUpdatedDate": "2009-10-13T15:38:53.88-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-10-03T15:36:56.003-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Grammar.CurrentGrammar can lead to nasty bugs with more than a single grammar derived object",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 5709
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "You are right, it is a nasty bug. But the problem is not this static property by itself, just the use of it in this place. It was created to be used exclusively in helper methods of Grammar class which are called from custom grammar constructor (op_Plus, op_Pipe, Star, etc). There was a long search for solution for these methods, and thread-static CurrentGrammar property is a perfect solution. Using it in parser builder is a bug, don't know how it got there. I will fix it.  \r\nThanks for finding it and sorry for your troubles\r\nRoman",
+      "PostedDate": "2009-10-05T08:35:22.123-07:00",
+      "Id": 29135
+    },
+    {
+      "Message": "Hi, thanks for your quick response.\r\nI looked again into the usage of CurrentGrammar in the helper methods you mentioned, and now I agree that your usage of it there, it does solve the problem, allowing easy usage of the custom operators when defining a custom grammar (which is one of the great things about Irony).\r\n\r\nSorry if I’ve been harsh, the bug wasn’t that difficult to find.\r\nI think Irony is a great parser library, quite easy to understand and work with.  I appreciate all the work you put into it!\r\n",
+      "PostedDate": "2009-10-09T09:15:57.033-07:00",
+      "Id": 29136
+    }
+  ]
+}

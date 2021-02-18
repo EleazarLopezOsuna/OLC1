@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T11:44:07.29-07:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "It seem that operator precedence doesn't work because A+X*Y-Z  is different from  A+(X*Y)-Z. If you expand the AST in the GrammarExplorer the two previous expressions are parsed differently even if they should be the same because * operator as precedence on + and -.\nThe expression 'A+X*Y-Z' is parsed as 'A+(X*(Y-Z))'. Tested with C#, gwbasic and expression grammars.\n\nI'm not sure if it's a bug, maybe interpreter/runtime infrastructure take care of it.",
+    "LastUpdatedDate": "2010-03-26T11:44:07.29-07:00",
+    "PlannedForRelease": "BETA release",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "High",
+      "Severity": 150,
+      "Id": 3
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2008-11-10T09:51:23.59-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "operator precedence",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 3193
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "What version are you using? \r\nI've just tried for c# and expr grammar, seems to be working fine. See screenshot attached\r\nRoman",
+      "PostedDate": "2008-11-10T10:45:38.42-08:00",
+      "Id": 29091
+    },
+    {
+      "Message": "Ooopsss.. I see the problem now. Will have a look and fix ASAP\r\nthank you for finding it\r\nRoman",
+      "PostedDate": "2008-11-10T10:49:39.717-08:00",
+      "Id": 29092
+    }
+  ]
+}

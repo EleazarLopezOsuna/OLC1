@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "917012",
+    "ThreadId": "396764",
+    "Html": "\r\n<p>I have the following</p>\r\n<p>RegexBasedTerminal name = new RegexBasedTerminal(&quot;name&quot;, &quot;[a-zA-Z][a-zA-Z0-9_]*&quot;);</p>\r\n<p>var myRule= new NonTerminal(&quot;myRule&quot;);<br>\r\nmyRule.Rule = name &#43; plus &#43; &quot;b&quot; | &quot;a&quot; &#43; minus &#43; &quot;b&quot;;<br>\r\nRoot = myRule;</p>\r\n<p><br>\r\nI want them to be able to say any name &#43; b or a - b.</p>\r\n<p>&nbsp;</p>\r\n<p>a - b incorrectly fails to parse as follows:</p>\r\n<p>Stack Top&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Input&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Action</p>\r\n<p>(S0)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a (name)&nbsp; Shift to S2</p>\r\n<p>a (name)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -(key symbol) Syntax Error</p>\r\n<p>a (name)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -(key symbol) RECOVERING: popping stack, looking for state with error shift</p>\r\n<p>(S0)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -(key symbol) FAILED TO RECOVER.</p>\r\n<p>&nbsp;</p>\r\n<p>I don't understand why it fails to recover.&nbsp; Also is there a way to make a better look ahead?&nbsp; I feel like it should have shifted to some intermediary to tell if it was a name or an a...</p>\r\n<p>&nbsp;</p>\r\n<p>This is the simplest grammar I could create that is expressing the problem I am having, so it's not like I can make the regex simply exclude a and have an extra add for a.</p>\r\n",
+    "PostedDate": "2012-09-24T21:31:28.38-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917149",
+    "ThreadId": "396764",
+    "Html": "\r\n<p>Your definition of <em>name</em> includes both <em>a </em>and <em>b </em>as valid possibilities. In essence, it seemes yuo are asking the Scanner to be a Parser as well.</p>\r\n<p>So, the question back to you is&nbsp;why the following grammar does not meet your needs (note the quantifier change in the definition of\r\n<em>name</em>.):</p>\r\n<pre>public MyGrammar() {\r\n\tvar name \t= new RegexBasedTerminal(&quot;name&quot;,\t@&quot;[a-zA-Z][a-zA-Z0-9_]&#43;&quot;);\r\n\tvar letter\t= new RegexBasedTerminal(&quot;letter&quot;,\t@&quot;[a-bA-B]&quot;);\r\n\r\n\tvar MyRule\t= new NonTerminal(&quot;MyRule&quot;);\r\n\tvar BinOp\t= new NonTerminal(&quot;BinOp&quot;);\r\n\r\n\tRoot = MyRule;\r\n\r\n\tMyRule.Rule\t= name \t&#43;  &quot;&#43;&quot; \t&#43; letter\r\n\t\t\t| letter &#43; BinOp\t&#43; letter;\r\n\tBinOp.Rule\t= ToTerm(&quot;&#43;&quot;) | &quot;-&quot;;\r\n}\r\n</pre>\r\n",
+    "PostedDate": "2012-09-25T03:51:22.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917568",
+    "ThreadId": "396764",
+    "Html": "<p>I use name for things other then just this so I would need to change all of them.&nbsp; Also you name definition won't allow 1 character names?<br /><br />I have a similar issue with defining a language that has variables and allows math, string, and boolean operations.&nbsp; I want it to allow the following:</p>\r\n<p>&nbsp;</p>\r\n<p>mathExpr= any math operation (+ - * / %) using numbers or names (standard expression, term and factor here)</p>\r\n<p>srtingExpr= literalString | literalString + stringExpr | name | name + stringExpr</p>\r\n<p>boolExpression = boolTerm | boolTerm + \"or\" + boolTerm | boolTerm + \"and\" boolTerm</p>\r\n<p>boolTerm = name | \"true\" | \"false\" | mathExpr + \"==\" + mathExpr | stringExpr + \"==\" + stringExpr | boolExpr + \"==\" + boolExpr</p>\r\n<p>&nbsp;</p>\r\n<p>I am ok with it choosing a math/string when you say a == a (since it can't know, it would be nice if I could choose preference it would be nice).</p>\r\n<p>&nbsp;</p>\r\n<p>The issue comes when you need a boolTerm and type</p>\r\n<p>&nbsp;</p>\r\n<p>x or a</p>\r\n<p>&nbsp;</p>\r\n<p>it decides that the a is a stringExpr and won't parse.</p>",
+    "PostedDate": "2012-09-25T18:04:58.487-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917696",
+    "ThreadId": "396764",
+    "Html": "<p>Your examples badly confuse the (very distinct) roles&nbsp;of Scanner, Parser, and Semantic Checker. Have you&nbsp;checked out&nbsp;any of the simple grammar examples available on the web and in Irony.Samples?</p>",
+    "PostedDate": "2012-09-26T02:06:52.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917896",
+    "ThreadId": "396764",
+    "Html": "<p>I noticed after your reply to the first one that I over simplified it too much and it was not what I wanted.&nbsp; My issue is with the parser.&nbsp; The scanner is getting the correct values (in my case not the first one).</p>\r\n<p>&nbsp;</p>\r\n<p>I am making something that will evaluate expressions.&nbsp; An expression can either be math, boolean, or string. All can use variables (names).&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>var name = new RegexBasedTerminal(\"name\", [a-zA-Z][a-zA-Z0-9_]+)</p>\r\n<p>Math rules:</p>\r\n<p>var number = new RegexBasedTerminal(\"number\", \"-?[0-9]+\");</p>\r\n<p>var mathExpr = new NonTerminal(\"mathExpr\");</p>\r\n<p>var mathTerm = new NoNTerminal(\"mathTerm\");</p>\r\n<p>var mathFactor = new NonTermianl(\"mathFactor\");</p>\r\n<p>mathExpr.Rule = mathTerm | mathExpr + \"+\" + mathTerm | mathExpr + \"-\"&nbsp; + mathTerm</p>\r\n<p>mathTerm.Rule = mathFactor | mathTerm + \"*\" + mathFacror | mathTerm + \"/\" + mathFacror | mathTerm + \"%\" + mathFacror</p>\r\n<p>mathFactor.Rule = number | name | \"(\" + mathExpr + \")\"</p>\r\n<p>&nbsp;</p>\r\n<p>String rules:</p>\r\n<p>var literal = (I forget but there is a class factory to create C# string literals)</p>\r\n<p>var strExpr = new NonTerminal(\"strExpr\")';</p>\r\n<p>//This is preferred over math if it is name + name, Irony chooses it but I would like to set in the parser</p>\r\n<p>strEexpr.Rule = literal | name | name + strExpr | literal + strExpr</p>\r\n<p>&nbsp;</p>\r\n<p>Boolean rules:</p>\r\n<p>var test = new NonTerminal(\"test\");</p>\r\n<p>var boolExpr = new NonTermainl(\"boolExpr\");</p>\r\n<p>var boolFactor = new NonTerminal(\"boolFactor\");</p>\r\n<p>var boolTerm = new NonTerminal(\"boolTerm\");</p>\r\n<p>test.rule = boolExpr + \"=\" + boolExpr | numExpr + \"=\" + numExpr | strExpr + \"=\" + numExpr;</p>\r\n<p>boolExpr.Rule = boolExpr + \"or\" + boolTerm | boolTerm;</p>\r\n<p>boolTerm.Rule = boolTerm + \"and\" + boolFactor;</p>\r\n<p>//I need a way to say true and false take precedence over name in the scanner</p>\r\n<p>boolFactor.Rule = \"true\" | \"false\" | name | \"(\" + \"boolExpr\" + \")\" | test</p>\r\n<p>&nbsp;</p>\r\n<p>I tried writing</p>\r\n<p>a or b</p>\r\n<p>&nbsp;</p>\r\n<p>and it says that == is expected, it parses b as a strExpr even though that won't work and parsing it as a boolExpr would.</p>",
+    "PostedDate": "2012-09-26T08:41:52.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917928",
+    "ThreadId": "396764",
+    "Html": "<p>I agree with pg - why don't you start with expression grammar in samples, play with it, see how it works, and then see what you need change?! The main purpose of this sample is to give a working example and a starting point for guys like you. From your explanations I see that you need basic math expression evaluator. Why reinvent the wheel - from scratch?!!!</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-09-26T09:31:56.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917963",
+    "ThreadId": "396764",
+    "Html": "<p>Be gentle Roman. This looks like a first assignment in a compiler course.</p>\r\n<p>;-)</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-09-26T10:05:35.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918804",
+    "ThreadId": "396764",
+    "Html": "<p>This is actually a part of a much larger language.&nbsp; The issue that I am having is not expressed in any of the samples (at least not in a basic way).&nbsp; There is a conflict because math both math and strings can have names (identifiers) with addition.&nbsp; I would not care if it resolved to either valid one, but the issue is this:</p>\r\n<p>&nbsp;</p>\r\n<p>a == \"a\" won't parse.&nbsp; It decides (prematurely) that a is a math expression and expects math no \"a\".&nbsp; If it was a == b then it would be correct to say either (I would like constituency though).&nbsp; \"a\" == a works because it knows that it's comparing strings.</p>\r\n<p>&nbsp;</p>\r\n<p>I don't get why it decides what a is before seeing the \"a\".&nbsp; I understand that a scanner should put out name (and that is correct and it does), but the parser should shift and wait for \"a\" to reduce, but it won't.</p>",
+    "PostedDate": "2012-09-27T19:59:40.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918902",
+    "ThreadId": "396764",
+    "Html": "\r\n<p>Type-checking belongs in the <em>Checker</em>, which here happens in the <strong>\r\n<em>AstNode.Init(..)</em></strong> overloaded method. Define a property <em>Type</em> in the overloaded AstNode for each term, and on the completion of each\r\n<em>BinaryOp</em> expression verify that the term types on each side are compatible. Errors can be reported just like regular parser errors as shown below. See (<a href=\"http://irony.codeplex.com/discussions/396545\">http://irony.codeplex.com/discussions/396545</a>)\r\n for an explanation of how I can use a SourceSpan as a SourceLocation, or just use a SourceLocation instead.</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre><div style=\"background-color:white; color:black\"><pre>context.Messages.Add(<span style=\"color:blue\">new</span> LogMessage(ErrorLevel.Error,Children[Children.Count-1].Span,ex.Message,<span style=\"color:blue\">null</span>));\r\n</pre>\n</div>\n</pre>\r\n</div>\r\n",
+    "PostedDate": "2012-09-28T02:21:38.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "919053",
+    "ThreadId": "396764",
+    "Html": "<p>Thank you for all your help.&nbsp; I will try this when I get home, but there is one thing I don't understand.&nbsp; I tried two slightly differing grammars and one worked while the other did not.</p>\r\n<p>Grammar 1 (works as expected, when something can be a string or math expression it chooses a string because it is the first ion the rule)</p>\r\n<p>var str = TerminalFactory.CreateCSharpStringTermainal(\"str\");</p>\r\n<p>var number = TerminalFactory.CreateCSharpNumber(\"number\");</p>\r\n<p>var name = new RegexBasedTerminal(\"name\", [a-zA-Z][a-zA-Z0-9_]+);</p>\r\n<p>var strExrp = new NonTerminal(\"streEpr\");</p>\r\n<p>strExpr.Rule = name | str | name + strExpr | str + strExpr;</p>\r\n<p>var mathExpr = new NonTerminal(\"mathEpr\");</p>\r\n<p>mathExp.Rule = name | number | name + mathExpr | str + mathExpr;</p>\r\n<p>var rootExpr = new NonTerminal(\"root\");</p>\r\n<p>rootExpr.Rule = strExpr | mathExpr;</p>\r\n<p>Root = rootExpr;</p>\r\n<p>&nbsp;</p>\r\n<p>Grammar 2 (always assumes that name is a string if it is first in the expression and won't allow a + 1, it expects a name or strExpr)</p>\r\n<p>var str = TerminalFactory.CreateCSharpStringTermainal(\"str\");</p>\r\n<p>var number = TerminalFactory.CreateCSharpNumber(\"number\");</p>\r\n<p>var name = new RegexBasedTerminal(\"name\", [a-zA-Z][a-zA-Z0-9_]+);</p>\r\n<p>var strExrp = new NonTerminal(\"streEpr\");</p>\r\n<p>strExpr.Rule = name | str | name + \"+\" + strExpr | str + \"+\" + strExpr;</p>\r\n<p>var mathExpr = new NonTerminal(\"mathEpr\");</p>\r\n<p>mathExp.Rule = name | number | name + \"+\" + mathExpr | str + \"+\" + mathExpr;</p>\r\n<p>var rootExpr = new NonTerminal(\"root\");</p>\r\n<p>rootExpr.Rule = strExpr | mathExpr;</p>\r\n<p>Root = rootExpr;</p>\r\n<p>&nbsp;</p>\r\n<p>The only difference is if I have an add symbol or not and I feel like that should just be one extra shift in the grammar?&nbsp; Why won't it take a + 1?&nbsp; Grammar 1 was able to take a 1 or a \"a\".&nbsp; It will take 1 + a (it parses the 1 and says oh ok the a is a number). <br /><br /></p>",
+    "PostedDate": "2012-09-28T08:55:18.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "552435",
+    "ThreadId": "242545",
+    "Html": "\r\n<p>Hy,</p>\r\n<p>I use Irony in this context&nbsp; <a href=\"http://www.sqlservercentral.com/articles/Full-Text&#43;Search&#43;(2008)/64248/\">\r\nA Google-like Full Text Search</a> - an article by Michael Coles about Google-to-SQL Server full-text search query converter based on Irony.</p>\r\n<p>For the latin language, French, english, Spanish, Irony works well but for the arabic language, the compiler causes an error.</p>\r\n<p>The word to search :&nbsp; &quot;مخصصة&quot; for example</p>\r\n<p><span style=\"color:#2b91af; font-size:x-small\"><span style=\"color:#2b91af; font-size:x-small\"><span style=\"color:#2b91af; font-size:x-small\"><span style=\"font-size:x-small\"><span style=\"font-size:x-small\"></span></span></span></p>\r\n<p><span style=\"font-size:x-small\"><span style=\"font-size:x-small\"></p>\r\n<p>_compiler =<span style=\"color:#0000ff; font-size:x-small\"><span style=\"color:#0000ff; font-size:x-small\">new</span></span><span style=\"font-size:x-small\">\r\n</span><span style=\"color:#2b91af; font-size:x-small\"><span style=\"color:#2b91af; font-size:x-small\">LanguageCompiler</span></span><span style=\"font-size:x-small\">(_grammar);</span><span style=\"color:#2b91af; font-size:x-small\"><span style=\"color:#2b91af; font-size:x-small\"><span style=\"color:#2b91af; font-size:x-small\">\r\n</span></span></span></p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"color:#2b91af; font-size:x-small\"><span style=\"color:#2b91af; font-size:x-small\"><span style=\"color:#2b91af; font-size:x-small\"><span style=\"color:#2b91af; font-size:x-small\"><span style=\"color:#2b91af; font-size:x-small\"><span style=\"color:#2b91af; font-size:x-small\"></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>AstNode <span style=\"font-size:x-small\">oot = _compiler.Parse(sFind);<span style=\"font-size:x-small\">\r\n</span></span></p>\r\n</span></span></span>\r\n<p>&nbsp;</p>\r\n</span></span></span><span style=\"font-size:x-small\"><span style=\"font-size:x-small\">&nbsp;</span></span>\r\n<p></p>\r\n<div><span style=\"font-size:x-small\"><span style=\"font-size:x-small\">&nbsp;</span></span>\r\n<p>&nbsp;</p>\r\n</div>\r\n</span></span>\r\n<p></p>\r\n</span>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p></p>\r\n<p><span style=\"color:#2b91af; font-size:x-small\"><span style=\"color:#2b91af; font-size:x-small\"><span style=\"font-size:x-small\"><span style=\"font-size:x-small\"><span style=\"color:#2b91af; font-size:x-small\"><span style=\"color:#2b91af; font-size:x-small\"><span style=\"font-size:x-small\"><font size=\"2\"></p>\r\n<p>&nbsp;</p>\r\n</font></span></span></span></span></span></span></span>\r\n<p><span style=\"font-size:x-small\"><span style=\"font-size:x-small\"><span style=\"color:#0000ff; font-size:x-small\"><span style=\"color:#0000ff; font-size:x-small\">if</span></span><span style=\"font-size:x-small\"> (_compiler.Context.Errors.Count == 0)</span></span></span></p>\r\n<p></p>\r\n<p></p>\r\n</span>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"font-size:x-small\"><span style=\"font-size:x-small\"></p>\r\n<p>&nbsp;</p>\r\nERROR Invalid character: 'م<span style=\"font-size:x-small\"></span>\r\n<p>&nbsp;Thx for your help.</p>\r\n</span></span>\r\n<p></p>\r\n&nbsp;\r\n<p></p>\r\n<p>_grammar =<span style=\"color:#0000ff; font-size:x-small\"><span style=\"color:#0000ff; font-size:x-small\">new</span></span><span style=\"font-size:x-small\">\r\n</span><span style=\"color:#2b91af; font-size:x-small\"><span style=\"color:#2b91af; font-size:x-small\">SearchGrammar</span></span><span style=\"font-size:x-small\">();</span><span style=\"font-size:x-small\"><span style=\"font-size:x-small\">\r\n</span></span></p>\r\n",
+    "PostedDate": "2011-01-20T01:51:01.323-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "552784",
+    "ThreadId": "242545",
+    "Html": "\r\n<p>Please use the SearchGrammar version in samples included in download on this site.&nbsp;</p>\r\n<p>The code in Michael's article is outdated.&nbsp;</p>\r\n<p>The current version supports international characters, just verified with your arabic word, works fine.</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2011-01-20T11:34:53.793-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "553044",
+    "ThreadId": "242545",
+    "Html": "\r\n<p>Hy Roman,</p>\r\n<p>I downloaded the source and modified the Samples.Console.2010 to use the SearchGrammar.&nbsp;<span id=\"x_result_box\" lang=\"en\"><span title=\"Cliquer ici pour voir d'autres traductions\">I</span>\r\n<span title=\"Cliquer ici pour voir d'autres traductions\">added</span> <span title=\"Cliquer ici pour voir d'autres traductions\">\r\nthe</span> <span title=\"Cliquer ici pour voir d'autres traductions\">option</span> 3\r\n<span title=\"Cliquer ici pour voir d'autres traductions\">to</span> <span title=\"Cliquer ici pour voir d'autres traductions\">\r\ninstantiate</span> <span title=\"Cliquer ici pour voir d'autres traductions\">the</span>\r\n<span title=\"Cliquer ici pour voir d'autres traductions\">class</span>&nbsp;<span title=\"Cliquer ici pour voir d'autres traductions\">SearchGrammar</span>\r\n<span title=\"Cliquer ici pour voir d'autres traductions\">and run</span> <span title=\"Cliquer ici pour voir d'autres traductions\">\r\nthe program</span><span title=\"Cliquer ici pour voir d'autres traductions\">.</span>\r\n<span title=\"Cliquer ici pour voir d'autres traductions\">The search expression</span>\r\n<span title=\"Cliquer ici pour voir d'autres traductions\">Sarkozy</span> &#43;<span title=\"Cliquer ici pour voir d'autres traductions\">Segolene</span>&nbsp;<span title=\"Cliquer ici pour voir d'autres traductions\">causes the</span>\r\n<span title=\"Cliquer ici pour voir d'autres traductions\">following error</span><span title=\"Cliquer ici pour voir d'autres traductions\">:\r\n<span style=\"color:#ff0000\"><strong>Root AST node is null, cannot evaluate.&nbsp;\r\n</strong></span></span></span></p>\r\n<p><span lang=\"en\"><span title=\"Cliquer ici pour voir d'autres traductions\"><span style=\"color:#ff0000\">&nbsp;</span></span></span><span lang=\"en\" style=\"color:#000000\"><span title=\"Cliquer ici pour voir d'autres traductions\">Could you give me advices to figure\r\n out?</span></span></p>\r\n<p><span lang=\"en\" style=\"color:#000000\"><span title=\"Cliquer ici pour voir d'autres traductions\">Bernard</span></span></p>\r\n<p><span lang=\"en\" style=\"color:#000000\"><span title=\"Cliquer ici pour voir d'autres traductions\">&nbsp;</span></span></p>\r\n<p><span lang=\"en\" style=\"color:#000000\"></span></p>\r\n",
+    "PostedDate": "2011-01-21T01:04:02.09-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "553256",
+    "ThreadId": "242545",
+    "Html": "\r\n<p>Try it directly in grammar explorer, it allows you to execute conversion when running sample</p>\r\n",
+    "PostedDate": "2011-01-21T07:22:38.18-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "553285",
+    "ThreadId": "242545",
+    "Html": "\r\n<p>Hy Roman,</p>\r\n<p>Now, It's ok and It works well (I&nbsp;did certainly a mistake). We use it with Sql Server Full Text in 6 languages : French, english,&nbsp; spanish, arabic, german and portuguese.</p>\r\n<p>Thx</p>\r\n<p>Bernard</p>\r\n",
+    "PostedDate": "2011-01-21T08:03:30.46-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

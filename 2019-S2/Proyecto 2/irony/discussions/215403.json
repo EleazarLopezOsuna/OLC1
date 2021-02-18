@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "453275",
+    "ThreadId": "215403",
+    "Html": "Hi everybody!\r\n<br>\r\nHere's a chance to contribute to the project! I have created a Wikibook:\r\n<br>\r\nhttp://en.wikibooks.org/wiki/Irony_-_Language_Implementation_Kit\r\n<br>\r\n  \r\nIt is in fact an empty page - I think this is a minimum required to start a book; if something else is required, please let me know.\r\nLet's write it together! The idea is to create introduction/dev guide/crash course/inside-out - whatever you think may be useful for a newcomer.\r\nEverybody is welcome to contribute, let's finally start filling out the documentation void!\r\n<br>\r\nthank you all for you support, and thanks in advance for contributions!\r\n<br>\r\nRoman\r\n<br>\r\n\r\nPS Please do not document on Interpreter/runtime part, this is about to change soon. Everything in Parsing namespace is more-less stable. \r\n",
+    "PostedDate": "2010-06-08T19:14:30.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

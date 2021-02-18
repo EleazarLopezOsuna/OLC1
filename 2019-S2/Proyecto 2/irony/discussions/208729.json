@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "428905",
+    "ThreadId": "208729",
+    "Html": "<p>Hi,</p>\r\n<p>thanks for the Irony tool. It's proved to be quite fast to get productive with.</p>\r\n<p>Are there any good examples / design patterns / or rules of thumb for coding the compilation phase of pushing&nbsp;a parse tree into&nbsp;different&nbsp;target languages? I'm not doing anything&nbsp;that major. It's just a simple domain specific idea I had to be implemented (dynamically) in similar but different 3rd party products. I figure it's an adaptive way to&nbsp;achieve inversion of controll.</p>\r\n<p>The only example I've found so far is the Google Search to SQL Server Full Text Search code. Their approach seemed to be a bunch of case statements. I'm looking for something a little more elegant. I had a problem with their code on an AST node to&nbsp;(Token) casting. Not quite sure what they wanted to achieve there. Probably it worked fine against an earlier version of Irony.</p>\r\n<p>thanks,<br>Steven</p>",
+    "PostedDate": "2010-04-08T09:54:04.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "429038",
+    "ThreadId": "208729",
+    "Html": "<p>Hi,</p>\r\n<p>are you talking about IL code generation or about interpreting the code? As you mention DSL, I think interpreting would be more appropriate.&nbsp;</p>\r\n<p>Google-To-SQL example - the code in the article is for very old version of Irony. There is an updated version in Irony.Samples project and you can run it from Grammar Explorer. This sample works directly from ParseTree - no need for more complex thing. As for doing an interpreter, you need to first produce an AST tree - a tree of abstract syntax, this is a standard way desribed in text books. For this look at expression evaluator sample - how to specify AST node types and produce AST tree. Then you interpret the tree. Irony's interpreter in the current version is rudimentary, I'm currently working on a real one, will upload it some time in the future. But I guess for DSL you need to create your own AST nodes (classes) that encode the semantics of DSL constructs</p>\r\n<p>Hope this helps</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-08T16:35:47.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "430342",
+    "ThreadId": "208729",
+    "Html": "<p>Hi,</p>\r\n<p>thanks for replying.</p>\r\n<p>I guess what I'm doing is a high level cross compiler/translator for a limited grammer.</p>\r\n<p>Here's a couple of low-level&nbsp;references:</p>\r\n<p><a href=\"http://www.springerlink.com/content/uacar19mm8xj9q7m/\">http://www.springerlink.com/content/uacar19mm8xj9q7m/</a></p>\r\n<p><a href=\"http://en.wikipedia.org/wiki/Cross_compiler\">http://en.wikipedia.org/wiki/Cross_compiler</a></p>\r\n<p>Steven</p>",
+    "PostedDate": "2010-04-13T01:15:44.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "430343",
+    "ThreadId": "208729",
+    "Html": "<p>BTW: your reply helped me piece together a strategy. all-be-it a simple one.</p>\r\n<p>I could</p>\r\n<p>1. inherit from an AST + implement some&nbsp;behaviours in different classes.</p>\r\n<p>2. Walk the AST and either clone a node or cast it to a more specific AST.</p>\r\n<p>3. Finally, I could execute a compile or translate behaviour on each node.</p>\r\n<p>Steven</p>",
+    "PostedDate": "2010-04-13T01:21:23.317-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "430749",
+    "ThreadId": "208729",
+    "Html": "<p>Well, sounds interesting. Good luck!</p>",
+    "PostedDate": "2010-04-13T21:57:37.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

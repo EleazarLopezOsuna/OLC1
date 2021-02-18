@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "664134",
+    "ThreadId": "270604",
+    "Html": "<p>I have a Grammar defining a few custom AST nodes for our scripting language.</p>\n<p>&nbsp;</p>\n<p>When I call parsetree.Root.AstNode.GetAll(), the IEnumerable&lt;AstNode&gt; returns a big array of nodes, but doesn't include all of them. I've put a break point in the Init for one of the Node types I've defined with nodes missing and see that the node is being  created. I can trace it up to<span style=\"color: #010001;\"> ExecuteReduce pushing it onto the ParserStack. Perhaps maybe it's a child of another of my custom AST nodes, is there much needing to be done here?&nbsp;</span></p>\n<p>&nbsp;</p>\n<p>Any ideas why it wouldn't turn up in the GetAll()?</p>\n<p>&nbsp;</p>\n<p>Here is my AstNode</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> ScriptCallNode : AstNode, ICallTarget\n{\n\t<span style=\"color: blue;\">public</span> IdentifierNode NameNode;\n\t<span style=\"color: blue;\">public</span> ScriptFileNameNode SourceNode;\n\n\t<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> Init(ParsingContext context, ParseTreeNode treeNode)\n\t{\n\t\t<span style=\"color: blue;\">base</span>.Init(context, treeNode);\n\t\t\t\n\t\t<span style=\"color: blue;\">if</span> (treeNode.ChildNodes.Count &gt; 2)\n\t\t{\n\t\t\tSourceNode = AddChild(<span style=\"color: #a31515;\">\"Source\"</span>, treeNode.ChildNodes[0]) <span style=\"color: blue;\">as</span> ScriptFileNameNode;\n\t\t\tNameNode = AddChild(<span style=\"color: #a31515;\">\"Name\"</span>, treeNode.ChildNodes[2]) <span style=\"color: blue;\">as</span> IdentifierNode;\n\t\t}\n\t\t<span style=\"color: blue;\">else</span>\n\t\t{\n\t\t\tNameNode = AddChild(<span style=\"color: #a31515;\">\"Name\"</span>, treeNode.ChildNodes[0]) <span style=\"color: blue;\">as</span> IdentifierNode;\n\t\t\tSourceNode = <span style=\"color: blue;\">null</span>;\n\t\t}\n\t\tAsString = <span style=\"color: #a31515;\">\"&lt;ScriptCall \"</span> + NameNode.AsString + <span style=\"color: #a31515;\">\"&gt;\"</span>;\n\t}<br /><br /><br />The ScriptFileNameNode is another custom one to represent a partial path.</pre>\n</div>",
+    "PostedDate": "2011-08-26T17:16:31.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "664153",
+    "ThreadId": "270604",
+    "Html": "<p>I think the problem is that AST node is created (and you see it pushed into Stack), but it's not added to Parent's ChildNodes list. This happens in Init method of the parent. Init method you show does this for it's 2 child nodes - SourceNode and NameNode. Trace if this ever happens for your custom nodes (that they are added to the parent's list ChildNodes)</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-08-26T19:14:38.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "664980",
+    "ThreadId": "270604",
+    "Html": "<p>Thanks as always Roman,</p>\r\n<p>&nbsp;</p>\r\n<p>You were right. The node above it in the tree was a FunctionCallNode which wasn't correct and wasn't adding what needed to be added to it's ChildNodes. Changing it to the more generic ExpressionListNode type meant everything was added correctly.</p>\r\n<p>&nbsp;</p>\r\n<p>Cheers,</p>\r\n<p>Colin</p>",
+    "PostedDate": "2011-08-29T11:41:05.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

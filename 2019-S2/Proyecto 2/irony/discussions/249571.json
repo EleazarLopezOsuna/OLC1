@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "579959",
+    "ThreadId": "249571",
+    "Html": "\r\n<p>Hi all,</p>\r\n<p>I am using the FTS to Google conversion project, and would like to know how much time did the parse tree take to be generated - ie from user search string to generation of the tree.</p>\r\n<p>Can anyone please direct me on how best to achieve this?</p>\r\n<p>Thanks!</p>\r\n<p>J.</p>\r\n",
+    "PostedDate": "2011-03-14T04:19:12.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "585191",
+    "ThreadId": "249571",
+    "Html": "<p>Just time it in Grammar Explorer for a few complex queries, it shows \"run time\" in ms.</p>\n<p>From my experience (I run similar but more advanced converter on real-life enterprise project) - it is very fast, tiny portion of total time running the query.</p>",
+    "PostedDate": "2011-03-23T10:42:20.947-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

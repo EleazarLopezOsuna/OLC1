@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "720975",
+    "ThreadId": "285127",
+    "Html": "\r\n<p>Hello Everyone,</p>\r\n<p>Has anyone been successful in making a ternary operator? Basically I just want to have a simple expression like this:</p>\r\n<p>x = (true) ? 1 : 0</p>\r\n<p>If I could get some pointers on how to do this I would really appreciate it.</p>\r\n",
+    "PostedDate": "2012-01-05T11:53:04.523-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "720989",
+    "ThreadId": "285127",
+    "Html": "<p>It works already in expression evaluator; start grammar explorer, load SampleExpressionEvaluator grammar, then enter this script:</p>\r\n<p>x = 1&gt;0 ? 1 : 0</p>\r\n<p>Run it, the result is 1, as expected. The only difference is \"true\" constant, expr evaluator does not know about this, it is not defined there as a constant. Should be, probably.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-01-05T12:31:19.497-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "721075",
+    "ThreadId": "285127",
+    "Html": "<p>Thanks for the help Roman. I downloaded the newest version of Irony and it had what I was looking for.</p>",
+    "PostedDate": "2012-01-05T14:19:25.557-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

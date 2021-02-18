@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1290332",
+    "ThreadId": "561256",
+    "Html": "So we have a own method ValidateData() accepts parameters as decimal and have added it to ExpressionEvaluatorRuntime class, when parsing script we get an exception that the method could not be found.\r<br />\n<br />\nIt would work if we change the parameter type to doulbe or object, but that's not what we want.\r<br />\n<br />\nCould anyone help us?<br />\n",
+    "PostedDate": "2014-08-15T02:12:26.87-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1290664",
+    "ThreadId": "561256",
+    "Html": "can you please provide more specifics - function signature, how you add it, and how you try to call it (script example)<br />\n",
+    "PostedDate": "2014-08-15T23:53:53.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

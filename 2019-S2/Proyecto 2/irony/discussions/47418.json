@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "158707",
+    "ThreadId": "47418",
+    "Html": "What do these do? (I looked at source - but there were no comments)\r\n",
+    "PostedDate": "2009-02-17T15:18:42.453-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "158710",
+    "ThreadId": "47418",
+    "Html": "well, you just gotta look a bit deeper -)))<br>\r\n for example, if methods sets some flag, look where this flag is used (Find All References). <br>\r\nRegisterOperators - registers symbols as operator and sets precedence/associativity; used when resolving conflicts in artihmetic expressions<br>\r\nRegsiterPunctuation - tells Irony to remove these symbols from output AST tree<br>\r\nRegisterBracePair - used in brace pair matching method, for validation of pair matches, and also for building brace pair lists for editor highlighting (not currently used in Grammar Explorer)<br>\r\n",
+    "PostedDate": "2009-02-17T15:26:36.873-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "158748",
+    "ThreadId": "47418",
+    "Html": "I'm sorry, but I dont see it. What line number of what file is that? (I don't use VS.net)\r\n",
+    "PostedDate": "2009-02-17T17:00:10.6-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "158835",
+    "ThreadId": "47418",
+    "Html": "Sorry I wasn't clear, these were just my explanations, you won't find them in code. All these methods are defined in Grammar.cs, have a look. Without VS - tough, you probably have to use some grep utility to find references to some flag or whatever is touched by method you're looking at. Good luck\r\n",
+    "PostedDate": "2009-02-17T23:19:57.167-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

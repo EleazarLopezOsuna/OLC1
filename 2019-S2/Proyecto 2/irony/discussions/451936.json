@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1075016",
+    "ThreadId": "451936",
+    "Html": "Hi\r<br />\n<br />\nMy project requires creating a DSL for creating SSIS packages. I am exploring Irony.Net for the same but currently stuck at the point where I need to create the AST from the ParseTree. Following is the snapshot of the code:<br />\n<pre><code>// ETLGrammar is my custom defined grammar\nETLGrammar grammar = new ETLGrammar();\nLanguageData compiler = new LanguageData(grammar);\nParser _parser = new Parser(compiler);\nParseTree programTree = _parser.Parse(sourceCode);\n\n//How to create the AST from the Parse Tree</code></pre>\n\nI am new to Irony and what I have noticed the <strong>programTree.Root.AstNode</strong> is null and so is the case for all the child nodes as well.\r<br />\n<br />\nHelp in this matter is highly appreciated.\r<br />\n<br />\nThanks and Regards\r<br />\nSaptarshi Chaudhuri<br />\n",
+    "PostedDate": "2013-07-31T02:01:40.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1075384",
+    "ThreadId": "451936",
+    "Html": "To build AST tree you need to do 2 things:<br />\n<ol>\n<li>specify Ast node types for all non-terminals in your grammar (except Transient ones)</li>\n<li>Set CreateAst flag in language flags\r<br />\nSee expression evaluator for an example</li>\n</ol>\n",
+    "PostedDate": "2013-07-31T19:43:45.73-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

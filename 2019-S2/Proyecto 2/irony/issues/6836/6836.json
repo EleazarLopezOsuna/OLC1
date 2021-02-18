@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Fixed in Jan 24 update",
+    "ClosedDate": "2010-01-25T09:13:58.973-08:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "ParsingContext.TabWidth property is writable, but in fact currently is doesn't have any sense, cause we don't have any way to set it before SourceStream will be created?\n\nExample:\n_grammar = new Grammar();\n_parser = new Irony.Parsing.Parser(_grammar);\n// Scanner and SourceStream created internally and we obtain default TabWidth value\n_parser.Context.TabWidth = 4; // no any effect\n\nTabWidth property ignored, because it's actually used in Scanner, while creating SourceStream. And i don't see any way to how set it.",
+    "LastUpdatedDate": "2010-01-25T09:13:58.973-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-12-30T07:57:12.107-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ParsingContext.TabWidth ignored",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 6836
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Good catch, will look into this\r\nthanks!",
+      "PostedDate": "2009-12-30T10:54:43.607-08:00",
+      "Id": 29145
+    },
+    {
+      "Message": "Made property writable, now can be changed before parsing",
+      "PostedDate": "2010-01-24T22:28:44.79-08:00",
+      "Id": 29146
+    },
+    {
+      "Message": "Oh, thanks!\r\nLooks little dirty, but... now this code works right!\r\n\r\n\t_grammar = new Grammar();\r\n\t_parser = new Irony.Parsing.Parser(_grammar);\r\n\t_parser.Context.Source.TabWidth = 4; \r\n",
+      "PostedDate": "2010-01-25T06:57:04.617-08:00",
+      "Id": 29147
+    }
+  ]
+}

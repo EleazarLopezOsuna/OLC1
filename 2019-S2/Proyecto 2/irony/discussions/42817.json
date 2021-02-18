@@ -1,0 +1,98 @@
+[
+  {
+    "Id": "142302",
+    "ThreadId": "42817",
+    "Html": "<p>I defined my syntax, that worked very good. <br>\r\nBut now i must ask again about indent.<br>\r\n<br>\r\nI made a smale sample:<br>\r\n<br>\r\n<span style=\"font-size:13px\">\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</span></p>\r\n<p><span style=\"font-size:13px;color:#0000ff\">public</span><span style=\"font-size:13px\"> testsprechGrammer(){<br>\r\n</span><span style=\"font-size:13px;color:#2b91af\">NonTerminal</span><span style=\"font-size:13px\"> compilation_unit = </span><span style=\"font-size:13px;color:#0000ff\">new</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">NonTerminal</span><span style=\"font-size:13px\">(</span><span style=\"font-size:13px;color:#a31515\">&quot;compilation_unit&quot;</span><span style=\"font-size:13px\">);<br>\r\n</span><span style=\"font-size:13px;color:#2b91af\">SymbolTerminal</span><span style=\"font-size:13px\"> _cmd = Symbol(</span><span style=\"font-size:13px;color:#a31515\">&quot;KOMMANDO&quot;</span><span style=\"font-size:13px\">);<br>\r\n</span><span style=\"font-size:13px;color:#2b91af\">SymbolTerminal</span><span style=\"font-size:13px\"> _ind = Symbol(</span><span style=\"font-size:13px;color:#a31515\">&quot;INDENT&quot;</span><span style=\"font-size:13px\">);<br>\r\n</span><span style=\"font-size:13px;color:#2b91af\">NonTerminal</span><span style=\"font-size:13px\"> zeile = </span><span style=\"font-size:13px;color:#0000ff\">new</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">NonTerminal</span><span style=\"font-size:13px\">(</span><span style=\"font-size:13px;color:#a31515\">&quot;zeile&quot;</span><span style=\"font-size:13px\">);<br>\r\n</span><span style=\"font-size:13px;color:#2b91af\">NonTerminal</span><span style=\"font-size:13px\"> indentzeile = </span><span style=\"font-size:13px;color:#0000ff\">new</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">NonTerminal</span><span style=\"font-size:13px\">(</span><span style=\"font-size:13px;color:#a31515\">&quot;indentzeile&quot;</span><span style=\"font-size:13px\">);<br>\r\nzeile.Rule = _cmd + </span><span style=\"font-size:13px;color:#2b91af\">Grammar</span><span style=\"font-size:13px\">.NewLine;<br>\r\nindentzeile.Rule = </span><span style=\"font-size:13px;color:#2b91af\">Grammar</span><span style=\"font-size:13px\">.Indent + _ind;<br>\r\ncompilation_unit.Rule = zeile + indentzeile;<br>\r\nTokenFilters.Add(</span><span style=\"font-size:13px;color:#0000ff\">new</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">CodeOutlineFilter</span><span style=\"font-size:13px\">(</span><span style=\"font-size:13px;color:#0000ff\">false</span><span style=\"font-size:13px\">)); <br>\r\n</span><span style=\"font-size:13px;color:#0000ff\">this</span><span style=\"font-size:13px\">.Root = compilation_unit;<br>\r\n}<br>\r\n<br>\r\nThan I used this test:<br>\r\nKOMMANDO<br>\r\n INDENT<br>\r\n<br>\r\nI get than this result:<br>\r\n<br>\r\nSyntax error. (parser state: S6)<br>\r\n (L:C = L1:C8)<br>\r\n<br>\r\nMy question where is my fault. <br>\r\n<br>\r\nthanks<br>\r\nWolfram\r\n<p>&nbsp;</p>\r\n</span></p>\r\n",
+    "PostedDate": "2008-12-22T02:22:18.74-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142320",
+    "ThreadId": "42817",
+    "Html": "Only to clarify:<br>\r\n<br>\r\nI have this problem even with:<br>\r\n<span style=\"font-size:13px\">    TokenFilters.Add(</span><span style=\"font-size:13px;color:#0000ff\">new</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">CodeOutlineFilter</span><span style=\"font-size:13px\">(</span><span style=\"font-size:13px;color:#0000ff\">false</span><span style=\"font-size:13px\">));  <br>\r\nor<br>\r\n<span style=\"font-size:13px\">    TokenFilters.Add(</span><span style=\"font-size:13px;color:#0000ff\">new</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">CodeOutlineFilter</span><span style=\"font-size:13px\">(</span><span style=\"font-size:13px;color:#0000ff\">true</span><span style=\"font-size:13px\">)); <br>\r\nmakes no diffenrence.<br>\r\n<br>\r\nthanks<br>\r\nWolfram<br>\r\n<br>\r\n</span><br>\r\n</span>\r\n",
+    "PostedDate": "2008-12-22T04:00:43.307-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142397",
+    "ThreadId": "42817",
+    "Html": "My first advice in situations like these would be to enable tracing and to look at the token list, then parser trace and see when things mismatch\r\n",
+    "PostedDate": "2008-12-22T10:02:45.7-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142438",
+    "ThreadId": "42817",
+    "Html": "<span style=\"font-size:13px\">that I did.<br>\r\n<br>\r\nso I get the result that KOMMANDO is recognized than LF than some whitespace again LF than the this error. INDENT is not recognized.<br>\r\nKOMMANDO<br>\r\n INDENT</span><br>\r\n",
+    "PostedDate": "2008-12-22T12:57:01.73-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142442",
+    "ThreadId": "42817",
+    "Html": "to add this:<br>\r\n<br>\r\nthat what is suprising me:<br>\r\nKOMMAND [Symbol]<br>\r\n[LF]<br>\r\n[LF] <br>\r\n<br>\r\nis identified. But there are not two LF only one.<br>\r\n<br>\r\nI hope TAB is correct for indent!?<br>\r\n<br>\r\nregards Wolfram\r\n",
+    "PostedDate": "2008-12-22T13:06:47.443-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142454",
+    "ThreadId": "42817",
+    "Html": "I see the problem. There's some inconsistency in the way NewLine symbol works together with outline token filter. Let me think how to fix it, I'll get back to you soon\r\n",
+    "PostedDate": "2008-12-22T13:53:50.063-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142458",
+    "ThreadId": "42817",
+    "Html": "thanks!<br>\r\n",
+    "PostedDate": "2008-12-22T14:11:28.04-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142634",
+    "ThreadId": "42817",
+    "Html": "thank you for your review! about the bug, here's what you do. In CodeOutlineFilter.BeginFiltering method, add the following line at the beginning of the method:<br>\r\n<br>\r\n<span style=\"font-size:13px\">\r\n<p>context.Compiler.Grammar.WhitespaceChars = </p>\r\n</span>\r\n<p><span style=\"font-size:13px;color:#a31515\">&quot; \\t\\r\\n\\v&quot;</span><span style=\"font-size:13px\">; <br>\r\n<br>\r\nthat would fix it. this is temporary workaround, will come up with permanent fix later<br>\r\n<p>&nbsp;</p>\r\n</span></p>\r\n",
+    "PostedDate": "2008-12-23T10:14:28.817-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142665",
+    "ThreadId": "42817",
+    "Html": "Hi Roman,<br>\r\n<br>\r\nthanks for the fix. But it seems not to work 100%<br>\r\n<br>\r\nI added in the method:<br>\r\n<br>\r\n<span style=\"font-size:13px\">\r\n<p>&nbsp;</p>\r\n</span>\r\n<p><span style=\"font-size:13px;color:#0000ff\">public</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#0000ff\">override</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">IEnumerable</span><span style=\"font-size:13px\">&lt;</span><span style=\"font-size:13px;color:#2b91af\">Token</span><span style=\"font-size:13px\">&gt; BeginFiltering(</span><span style=\"font-size:13px;color:#2b91af\">CompilerContext</span><span style=\"font-size:13px\"> context, </span><span style=\"font-size:13px;color:#2b91af\">IEnumerable</span><span style=\"font-size:13px\">&lt;</span><span style=\"font-size:13px;color:#2b91af\">Token</span><span style=\"font-size:13px\">&gt; tokens) {<br>\r\n    context.Compiler.Grammar.WhitespaceChars = </span><span style=\"font-size:13px;color:#a31515\">&quot; \\t\\r\\n\\v&quot;</span><span style=\"font-size:13px\">; <br>\r\n.....<br>\r\n<br>\r\nBy using my sample:<br>\r\n<span style=\"font-size:13px\">KOMMANDO<br>\r\n    INDENT<br>\r\n<br>\r\nThe parser seems to get all tokens, but still a error ist there I tried to append Grammer.eof but same result.<br>\r\n<br>\r\nError:<br>\r\nSyntax error. (parser state: S8)<br>\r\n (L:C = L1:C14)    <br>\r\n<br>\r\nif I use this:<br>\r\n<span style=\"font-size:13px\">        indentzeile.Rule = </span><span style=\"font-size:13px;color:#2b91af\">Grammar</span><span style=\"font-size:13px\">.Indent + _ind + </span><span style=\"font-size:13px;color:#2b91af\">Grammar</span><span style=\"font-size:13px\">.NewLine+ </span><span style=\"font-size:13px;color:#2b91af\">Grammar</span><span style=\"font-size:13px\">.Eof ;<br>\r\n<span style=\"font-size:13px\">        Here the result:<br>\r\n                KOMMANDO [SYMBOL]<br>\r\n                [LF]<br>\r\n                [INDENT]   &lt;&lt;-- Here the ident is recognized with the patch you gave.<br>\r\n                INDENT     [Symbol]<br>\r\n                [LF]  &lt;--- But there is no LF<br>\r\n                [DEDENT] &lt;-- but there is no dedent   <br>\r\n        </span><span style=\"font-size:13px\">Error:<br>\r\n            Syntax error. (parser state: S8)<br>\r\n             (L:C = L1:C14)    </span><br>\r\nor this:<br>\r\n</span><span style=\"font-size:13px\">            indentzeile.Rule = </span><span style=\"font-size:13px;color:#2b91af\">Grammar</span><span style=\"font-size:13px\">.Indent + _ind    </span><span style=\"font-size:13px\">;<br>\r\n<span style=\"font-size:13px\">            Here the result:</span><br>\r\n<span style=\"font-size:13px\">                KOMMANDO [SYMBOL]<br>\r\n                [LF]<br>\r\n                [INDENT]   &lt;&lt;-- Here the ident is recognized with the patch you gave.<br>\r\n                INDENT     [Symbol]<br>\r\n                [LF]  &lt;--- But there is no LF<br>\r\n            Error<br>\r\n</span>                Syntax error. (parser state: S7)<br>\r\n                 (L:C = L1:C14)<br>\r\n        <br>\r\n            </span>    \r\n<p>&nbsp;</p>\r\n</span></span></p>\r\n",
+    "PostedDate": "2008-12-23T12:07:33.623-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142670",
+    "ThreadId": "42817",
+    "Html": "this is an expected behavior - CodeOutlineFilter on EOF &quot;unindents&quot; all previous indents and Scanner adds finishing end-of-line; it is expected that grammars use indentation in a &quot;balanced&quot; way; that makes it much easier to deal with unindents for languages like Python. So the reason is that you use incomplete test-like grammar. Just complete your grammar with unindent symbol that should complete the indented block (I guess). \r\n",
+    "PostedDate": "2008-12-23T12:22:42.673-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142674",
+    "ThreadId": "42817",
+    "Html": "Dear Roman.<br>\r\nthanks <br>\r\nThat was the problem<br>\r\n<span style=\"font-size:13px\"><br>\r\ndoing like that and it works.<br>\r\nindentzeile.Rule = </span><span style=\"font-size:13px;color:#2b91af\">Grammar</span><span style=\"font-size:13px\">.Indent + _ind+ </span><span style=\"font-size:13px;color:#2b91af\">Grammar</span><span style=\"font-size:13px\">.NewLine+</span><span style=\"font-size:13px;color:#2b91af\">Grammar</span><span style=\"font-size:13px\">.Dedent+</span><span style=\"font-size:13px;color:#2b91af\">Grammar</span><span style=\"font-size:13px\">.Eof ;<br>\r\n<br>\r\n<strong><span style=\"text-decoration:underline\">merry christmas to you and your familie</span>.<br>\r\n</strong><br>\r\nregards<br>\r\nWolfram\r\n<p>&nbsp;</p>\r\n</span>\r\n",
+    "PostedDate": "2008-12-23T12:30:20.293-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142693",
+    "ThreadId": "42817",
+    "Html": "You're welcome and Merry Christmas!\r\n",
+    "PostedDate": "2008-12-23T13:54:14.13-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

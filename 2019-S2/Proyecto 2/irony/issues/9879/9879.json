@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "all grammars in Samples assembly are SAMPLES, not real things",
+    "ClosedDate": "2013-02-25T12:35:07.49-08:00",
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "The following common/simple SQL syntax blows up the SQL sample grammar:\r\n\r\nSELECT j.*\r\nFROM Jobs j\r\nJOIN Employees e ON e.EmployeeID = j.EmployeeID\r\nWHERE 1 = e.Enabled\r\n\r\nThe parser doesn't like the table aliases:  j, e",
+    "LastUpdatedDate": "2013-02-25T12:35:07.49-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2013-02-25T11:51:25.427-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "SQL Sample grammar is incomplete; Table aliases are unsuppoorted",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9879
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "this is a SAMPLE, not a real thing. closing as not an issue",
+      "PostedDate": "2013-02-25T12:34:33.95-08:00",
+      "Id": 91463
+    }
+  ]
+}

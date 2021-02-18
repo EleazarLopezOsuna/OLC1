@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "84457",
+    "ThreadId": "25187",
+    "Html": "\r\nHi,<br /><br />Can be done a c# to codedom parser?<br />",
+    "PostedDate": "2008-04-02T05:06:11.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "84538",
+    "ThreadId": "25187",
+    "Html": "\r\nhi<br />Not sure what you mean... c# 3.0 parser - working on it, initial draft will be in the next drop. CodeDom as output - as far as I know, CodeDom model does not cover all language constructs for a language like c#. It has limited purpose - primarily for code serialization of data structures in components, not full code representation<br />thanks<br />Roman<br />",
+    "PostedDate": "2008-04-02T10:04:23.81-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

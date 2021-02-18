@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1474792",
+    "ThreadId": "655123",
+    "Html": "I've got a nifty VS extension that generates C# wrapper classes for sql queries. I currently do this with string methods. So somewhere in my thing, you're going to see me generating C# properties for each column in a resultset :<br />\n<pre><code>foreach( var myField in MyResultsetSchema )\n    code.AppendLine( &quot;public &quot; + myField.CSType + &quot; &quot; + myField.CSName + &quot;{get;set;}&quot;;\n</code></pre>\n\nI'm dimly aware that this is primitive! I want to give my users maximum control over the code that gets generated. Some will want auto-implemented properties, some might want immutable objects, some might want class and interface definitions and so on. \r<br />\n<br />\nIs this a good job for Irony? Do I need to create my own DSL, or is their a DSL already defined for generating C#? We're talking about a text transformation, where I have a design time template and a run time input, essentially\r<br />\n {\r<br />\n   [QueryParameters],\r<br />\n   [ResultsetColumns]\r<br />\n}\r<br />\n<br />\nThe Irony examples I've seen on the web just have one input. I'm so confused about this I'm even wondering if I should use XSLT! Someone please save me!<br />\n",
+    "PostedDate": "2016-06-01T01:55:31.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1474795",
+    "ThreadId": "655123",
+    "Html": "Looks like I needed to be <a href=\"http://www.stringtemplate.org/\" rel=\"nofollow\">over here</a>. Found this <a href=\"http://pjmolina.com/metalevel/2009/06/choosing-a-template-engine-for-code-generation/\" rel=\"nofollow\">nice summary</a> of templating approaches. Very happy to have discovered Irony though. If only I were smarter.<br />\n",
+    "PostedDate": "2016-06-01T03:15:58.37-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

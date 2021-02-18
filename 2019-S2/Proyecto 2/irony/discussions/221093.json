@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "471860",
+    "ThreadId": "221093",
+    "Html": "I'm implementing a language which has a c-like preprocessor- #define, #undef, #include, etc.  At the moment I don't really care about expanding them in the AST, I'd just like them to be appropriately parsed.  The trick is that they can be anywhere.  My guess is that I should create a new Terminal and add it the to the NonGrammarTerminals list.  Would it be appropriate to derive from CompoundTerminalBase, say with a prefix like &quot;#define&quot; and a suffix of a newline?  Or would that fail on a multiline #define (with trailing backslash), and I should look at CommentTerminal instead?\r\n\r\nAnd if I wanted to store the #define text (for providing tooltips in Visual Studio), what would be a good way to go about that?\r\n\r\nAny direction would be appreciated.",
+    "PostedDate": "2010-07-23T15:03:43.06-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "472700",
+    "ThreadId": "221093",
+    "Html": "I think it should be a custom terminal, with a highly specialized matching function. You would also need some special facility to do actual substitution to recognize macro reference (probably hook it into Identifier terminal) and to perform actual substitution - token filter I guess, that would push-back the expanded macro definition back into scanner source - or (alternatively) inject a set of tokens into the token stream. \r\nStill I don't have a ready to use solution or recipe for this, still thinking how to support this in Irony. I've been long asked about supporting c-style macros, but did not get to this yet. Try playing with a token filter",
+    "PostedDate": "2010-07-26T09:10:05.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

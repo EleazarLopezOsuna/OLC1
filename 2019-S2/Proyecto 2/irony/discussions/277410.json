@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "690236",
+    "ThreadId": "277410",
+    "Html": "\r\n<p>We're trying to enforce a rule in our grammar that our string literals can't be empty. &nbsp;It seems like we'll need to extend StringLiteral to do so, but we're not sure what methods (if any) we'll need to override.</p>\r\n<p>Any advice would be greatly appreciated. &nbsp;Thanks.</p>\r\n",
+    "PostedDate": "2011-10-27T05:53:14.457-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "690252",
+    "ThreadId": "277410",
+    "Html": "<p>After digging around, this seems easy enough. &nbsp;Not sure if this is the preferred way of getting it done but it seems to work:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><div style=\"color: black; background-color: white;\"><pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> NonEmptyStringLiteral : StringLiteral {\n\t<span style=\"color: blue;\">public</span> NonEmptyStringLiteral(<span style=\"color: blue;\">string</span> name, <span style=\"color: blue;\">string</span> startEndSymbol, StringOptions options) : <span style=\"color: blue;\">base</span>(name, startEndSymbol, options) { }\n\n\t<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">override</span> Token TryMatch(ParsingContext context, ISourceStream source) {\n\t\t<span style=\"color: blue;\">var</span> token = <span style=\"color: blue;\">base</span>.TryMatch(context, source);\n\t\t<span style=\"color: blue;\">if</span> (token != <span style=\"color: blue;\">null</span> &amp;&amp; token.Value.ToString() == String.Empty) {\n\t\t\t<span style=\"color: blue;\">return</span> source.CreateErrorToken(<span style=\"color: blue;\">string</span>.Format(<span style=\"color: #a31515;\">@\"Empty string provided in expression: {0}\"</span>, source.Text));\n\t\t}\n\t\t<span style=\"color: blue;\">return</span> token;\n\t}\n}\n</pre>\n</div>\n</pre>\n</div>",
+    "PostedDate": "2011-10-27T06:12:45.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "690305",
+    "ThreadId": "277410",
+    "Html": "<p>It's even easier, you don't have to subclass anything, just hook to ValidateToken on Terminal</p>",
+    "PostedDate": "2011-10-27T07:27:13.147-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "690328",
+    "ThreadId": "277410",
+    "Html": "<p>Cool, thanks. &nbsp;Is there a way we can generate a similar error message from the token, since we won't have access to the source?</p>",
+    "PostedDate": "2011-10-27T08:03:35.6-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "690356",
+    "ThreadId": "277410",
+    "Html": "<p>dont' quite understand... source.Text is the entire input source file - I don't think this is the right thing you do in your initial snippet.</p>\r\n<p>You can use methods of ValidateTokenEventArgs to set error message that will translate into error token. The error will refer to the position in the source code (that happens automatically), so when you double-click on error message in grammar Explorer you'll jump to error location.&nbsp;</p>",
+    "PostedDate": "2011-10-27T09:13:44.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

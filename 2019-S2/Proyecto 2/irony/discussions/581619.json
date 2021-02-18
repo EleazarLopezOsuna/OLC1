@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1354890",
+    "ThreadId": "581619",
+    "Html": "I'm trying to figure out how to change the SQL Grammar so that .NET identifiers are allowed.<br />\n<br />\nFor instance:<br />\n<pre><code>SELECT * FROM Table WHERe Column = @identifier;\n</code></pre>\n\nThe prefix can either be <code>?</code>, <code>:</code> or <code>@</code>.<br />\n<br />\nIf I've interpreted things correctly it's the <strong>term</strong> expression that should be changed, but I can't figure out how. I also want to only modify the WHERE clause if possible.<br />\n<br />\n(whereExpression -&gt; binExpr -&gt; expression -&gt; term)<br />\n",
+    "PostedDate": "2015-02-23T06:14:25.88-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354964",
+    "ThreadId": "581619",
+    "Html": "Define another Identitifier terminal (SpecilId), with list of firstChars consisting of your prefix symbols, and add it to term.Rule expression. That should work I think\r<br />\nRoman<br />\n",
+    "PostedDate": "2015-02-23T10:33:10.557-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

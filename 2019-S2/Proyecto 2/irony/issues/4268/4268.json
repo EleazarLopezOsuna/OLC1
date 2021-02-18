@@ -1,0 +1,61 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "resolved",
+    "ClosedDate": "2010-03-26T11:42:06.587-07:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "Hello,\n\nI managed to move symbols list to grammar, and keep source code compatibility (except by the method ClearSymbols which I removed from SymbolTerminal, to recompile Irony_All, just take out the line that calls ClearSymbols). The code for is attached to this message. \n\nThis change is one of the TODO comments that was there in the code, This allows to have two or more completly separate grammars in the same project working at the same time (the way it was before they share symbol terminals, that's a problem because a terminal gets bind to only a single grammar, except for Empty et al). Ah, It also includes the patchs that has been published here in CodePlex.\n\nAbout Empty and family, filter them by type is a bit ugly if you ask me... yet I did nothing about that.\n\nBy the way I'm writting this here because this **** CodePlex only allows me to attach files here.\n\nPlease comment!!! (I'm a bit worried about the upcomming update... I'm wondering if it will cover this, or if we may merge code).",
+    "LastUpdatedDate": "2010-03-26T11:42:06.587-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-04-15T20:10:10.16-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "A few changes I did on my own",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 4268
+  },
+  "FileAttachments": [
+    {
+      "FileId": 210348,
+      "FileName": "Irony.zip",
+      "DownloadUrl": ".\\210348"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi\r\nThank you for your effort. The problem is, the change had be already done. I would be happy to look at this, but I don't have rar unzipper; pls attach zip. Sorry for making you and other guys wait for update, just so much sh.... going on. And just feel tired, very tired. let me relax for couple of days on the conference, listen to the talks, and then I'll resume the effort. Just so much shittt to refactor. lot of overdue stuff. Sorry again and again thanks for your effort\r\nSincerely \r\nRoman",
+      "PostedDate": "2009-04-15T21:39:03.3-07:00",
+      "Id": 29116
+    },
+    {
+      "Message": "Ok, I'm attaching in zip now... if you want cab, ace, etc...it's possible too :P\r\n\r\nso you already went to this topic... If I can help I may put a few hours to it, this one I did it in a single day.\r\nI think it's better idea to populate grammar in BnfTerm when it's created, we could also populate from rule assingments and operators, and there make the collection grammar is doing recursively. If we do that we may have an Empty and family per grammar.\r\n\r\nFrom my code that means adding Grammar to all the terminals constructors and taking it out from Init, That was the first way I developed this, changed it to minimze broken code.\r\n\r\nAnother Idea I had if making a class to hold the place of a grammar, populate with that one, and at the end instead of going recursive, just set the grammar to that object and that way all the terms will have access to grammar. So grammar has a reference to it too, done that way, that \"placeholder\" may contain the list of terminals and then we may apply the filters there. I discated that idea cuz that's grammar's work, but who knows if you are interested.\r\n",
+      "PostedDate": "2009-04-15T22:51:30.523-07:00",
+      "Id": 29117
+    },
+    {
+      "Message": "thanks again for the code. I found what I think is the least breaking way of fixing it - using a static field with [ThreadStatic] attribute to hold the \"current\" grammar. Then all predefined terminals (like Empty) become instance fields on the grammar, and static methods and static operator overloads can access them. ThreadStatic is quite a neat construct, very useful for situations like this. The code will be in next update, I'm almost there. \r\nIf you're willing to contribute, I would welcome this, just wait for the next drop and lets see what we can do together\r\nThanks again\r\nRoman\r\n",
+      "PostedDate": "2009-04-21T21:54:30.62-07:00",
+      "Id": 29118
+    }
+  ]
+}

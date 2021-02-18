@@ -1,0 +1,31 @@
+digraph G{
+node[shape=box];
+rankdir=UD;
+
+"9_INICIO"[label = "INICIO"];
+"8_OPCIONES"[label = "OPCIONES"];
+"9_INICIO"->"8_OPCIONES";
+"8_OPCIONES"[label = "OPCIONES"];
+"7_FUNCION"[label = "FUNCION"];
+"8_OPCIONES"->"7_FUNCION";
+"7_FUNCION"[label = "FUNCION"];
+"6_SI"[label = "SI"];
+"7_FUNCION"->"6_SI";
+"6_SI"[label = "SI"];
+"1_ENTERO"[label = "5"];
+"6_SI"->"1_ENTERO";
+"6_SI"[label = "SI"];
+"5_OPCIONES"[label = "OPCIONES"];
+"6_SI"->"5_OPCIONES";
+"5_OPCIONES"[label = "OPCIONES"];
+"4_FUNCION"[label = "FUNCION"];
+"5_OPCIONES"->"4_FUNCION";
+"4_FUNCION"[label = "FUNCION"];
+"3_IMPRIMIR"[label = "IMPRIMIR"];
+"4_FUNCION"->"3_IMPRIMIR";
+"3_IMPRIMIR"[label = "IMPRIMIR"];
+"2_CADENA"[label = "asd"];
+"3_IMPRIMIR"->"2_CADENA";
+
+
+}

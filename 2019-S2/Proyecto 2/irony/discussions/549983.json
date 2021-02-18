@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "1260836",
+    "ThreadId": "549983",
+    "Html": "Please I need a help,\r<br />\nExpressionEvaluatorGrammar  works wonderfull, but I need to add  IF (...) MULTIPLE_STATEMENT ELSE MULTIPLE_STATEMENT\r<br />\n<br />\nsomebody help me please.<br />\n",
+    "PostedDate": "2014-06-28T22:34:37.33-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1261245",
+    "ThreadId": "549983",
+    "Html": "Well, define the non-terminal for your IF statement, and then AST node that implements evaluation. If statements inside IF are each on its own line, then looking at mini-python grammar would help. If they are on one line - then what's the delimiter? add the delimiter into the mix. Follow the patterns in the samples. Advice - don't bother with AST node and evaluation at the beginning, just implement parsing part first; then once it parses correctly, implement evaluation. <br />\n",
+    "PostedDate": "2014-06-30T09:40:29.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1261313",
+    "ThreadId": "549983",
+    "Html": "thank you rivantsov,<br />\nParsing working ok, but I want to Evaluate now and I have the following exception: \r<br />\n<br />\n<strong>Attempt to evaluate NULL AST node. The AST node for term 'if' was not created during parsing.</strong>\r<br />\n<br />\nthis is the script:<br />\n<pre><code>        a = 2\n        if (a == 2) \n            a = 3\n        b = a * 2\n</code></pre>\n\nthis is how I did it:\r<br />\n<br />\nvar <strong>IfExpr</strong> = new NonTerminal(&quot;IfExpression&quot;, typeof(IfNode));\r<br />\n<br />\nExpr.Rule = Term | UnExpr | BinExpr | PrefixIncDec | PostfixIncDec | TernaryIfExpr | <strong>IfExpr</strong>;\r<br />\n<br />\n<strong>IfExpr</strong>.Rule = ToTerm(&quot;if&quot;) + ParExpr + Statement | ToTerm(&quot;if&quot;) + ParExpr + Statement + PreferShiftHere() + ToTerm(&quot;else&quot;) + Statement; \r<br />\n<br />\nI'm using the same code in ExpressionEvaluatorGrammar \r<br />\n<br />\nIt seems problem is in IFNode when Init the Test = AddChild(&quot;Test&quot;, nodes[0]); var child = (AstNode)childParseNode.AstNode; this part is null\r<br />\n<br />\nhow I can fix this?\r<br />\n<br />\nthank you.<br />\n",
+    "PostedDate": "2014-06-30T12:14:12.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1261330",
+    "ThreadId": "549983",
+    "Html": "I think the problem is that you IF AST node does not handle missing else clause - which is what you have in your sample. Modify it accordingly<br />\n",
+    "PostedDate": "2014-06-30T13:21:12.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1261612",
+    "ThreadId": "549983",
+    "Html": "I believe I can do all I need to my language, but...when I try to create Ast nodes I have issues. Please help.\r<br />\nthis is my grammar, very simple: (basically I've just copy from Writing Calculator blog sample)\r<br />\n<br />\nvar number = TerminalFactory.CreateCSharpNumber(&quot;number&quot;);<br />\n<pre><code>        var identifier = TerminalFactory.CreateCSharpIdentifier(&quot;identifier&quot;);\n        var expression = new NonTerminal(&quot;expression&quot;);\n        var binexpr = new NonTerminal(&quot;binexpr&quot;, typeof(BinaryOperationNode));\n        var parexpr = new NonTerminal(&quot;parexpr&quot;);\n        var fncall = new NonTerminal(&quot;fncall&quot;, typeof(FunctionCallNode));\n        var binop = new NonTerminal(&quot;binop&quot;, &quot;operator&quot;);\n        var program = new NonTerminal(&quot;program&quot;, typeof (StatementListNode));\n\n        expression.Rule = parexpr | binexpr | number | fncall;\n        parexpr.Rule = &quot;(&quot; + expression + &quot;)&quot;;\n        binexpr.Rule = expression + binop + expression;\n        binop.Rule = ToTerm(&quot;+&quot;) | &quot;-&quot; | &quot;/&quot; | &quot;*&quot; | &quot;%&quot;;\n        fncall.Rule = identifier + &quot;(&quot; + expression + &quot;)&quot;;\n\n        MarkPunctuation(&quot;(&quot;, &quot;)&quot;);\n        RegisterOperators(1, &quot;+&quot;, &quot;-&quot;);\n        RegisterOperators(2, &quot;*&quot;, &quot;/&quot;, &quot;%&quot;);\n\n\n        MarkTransient(parexpr, expression);\n\n        this.Root = expression;\n        this.LanguageFlags = LanguageFlags.NewLineBeforeEOF | LanguageFlags.SupportsBigInt | LanguageFlags.CreateAst;\n</code></pre>\n\nand I'm receiving an error in Line 97 in AstBuilder, Object reference not set to an instance of an object.\r<br />\n<br />\nwhat I'm doing wrong ?\r<br />\n<br />\nthank you so much.<br />\n",
+    "PostedDate": "2014-07-01T08:51:10.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1262946",
+    "ThreadId": "549983",
+    "Html": "add binOp to MarkTransient call<br />\n",
+    "PostedDate": "2014-07-05T12:35:53.06-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1263511",
+    "ThreadId": "549983",
+    "Html": "thank you, so far so good, Irony is indeed powerful :)\r<br />\nI need to create something like RETURN command, I don't have ideas how to do it.\r<br />\nThe behavior must be everything after RETURN command cannot be evaluated. any ideas?\r<br />\n<br />\nthank you.<br />\n",
+    "PostedDate": "2014-07-07T20:08:37.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1264101",
+    "ThreadId": "549983",
+    "Html": "you have to build an AST node that directly manipulates the 'call stack' and performs the return. The return is associated with container function (you return not from immediate parent AST node context but from the function/method). So you have to walk the stack popping all frames until you find function decl/body (it most likely the immediate parent, but still), and pop it from stack and do other necessary things (push result into value stack) so interpreter can continue after function call in the caller. <br />\n",
+    "PostedDate": "2014-07-09T11:33:39.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1277736",
+    "ThreadId": "549983",
+    "Html": "this is how I did, and it's working perfectly If Then Else (in case somebody needs this)\r<br />\n<br />\nifStatement.Rule = ToTerm(&quot;if&quot;) + ParExpr + &quot;then&quot; + NewLine + statements + NewLine + &quot;endif&quot; |<br />\n<pre><code>            //else\n            ToTerm(&quot;if&quot;) + ParExpr + &quot;then&quot; + NewLine + statements + NewLine +\n            &quot;else&quot; + NewLine + statements + &quot;endif&quot;;\n</code></pre>\n\nIrony Rocks!!!!<br />\n",
+    "PostedDate": "2014-07-25T07:58:16.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

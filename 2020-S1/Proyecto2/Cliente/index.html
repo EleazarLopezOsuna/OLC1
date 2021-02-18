@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ejemplo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="../dist/style.min.css" />
+    <link href="../css/layout.css" rel="stylesheet" type="text/css" media="all">
+    <script src="../js/index.js"></script>
+
+
+
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="../js/manejoDeLineas.js"></script>
+  <style>
+    .rownr {width: 30px; overflow-y: hidden; background-color: rgb(105,105,105); color: white; 
+            text-align: right; vertical-align:top; resize: none;}
+    .txt {width: 626px; overflow-x: scroll; resize: none;}
+  </style>
+
+
+
+  </head>
+  <body>
+
+    <!--<div class="wrapper row3">
+      <main class="container clear">
+        <div class="group" id="div">
+          <div id="data" class="demo"></div>
+          <textarea name="" id="operacion" cols="30" rows="10"></textarea>*
+          <input type="text" id="resultado" style="display: none;">*
+          <button onclick="Conn()">Analizar</button>*
+          <button id="createForlder" disabled>Generar Arbol</button><br>*
+        </div>
+        <div class="clear"></div>
+      </main>
+    </div>!-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item dropdown">
+        <button type="button" class="btn btn-success" id="openTrigg">Abrir</button>
+      </li>
+      <li>
+        <button type="button" class="btn btn-secondary" onclick="Conn()">Compilar</button>
+      </li>
+      <li>
+        <input id="nombreGuardar" type="text" class="form-control" placeholder="Guardar Como" aria-label="Recipient's username" aria-describedby="basic-addon2">
+      </li>
+      <li>
+        <button type="button" class="btn btn-success" onclick="guardarNuevo()">Guardar</button>
+      </li>
+      <li>
+        <button type="button" class="btn btn-secondary" onclick="Comparar()">Comparar</button>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<label>Primer Texto </label>
+<ul class="nav">
+  <li class="nav-item">
+    <br>
+    <div id="home" class="tab-pane fade in active" style="margin: 0;">
+      <div style="margin: 0; width: 34px;">
+        <textarea class="rownr" rows="10" cols="3" value="1" readonly></textarea>
+      </div>
+    </div>
+  </li>
+  <li>
+    <br>
+    <textarea id = "operacion" class="txt" rows="10" cols="150" nowrap="nowrap" wrap="off" autocomplete="off" autocorrect="off" autocapitalize="off"
+      spellcheck="false" onclick="input_changed(this)" onkeyup="keyup(this,event)" oninput="input_changed(this)"
+      onscroll="scroll_changed(this)"></textarea>
+  </li>
+  <li class="nav-item">
+    <div class="tab-content">
+      <label>Segundo Texto </label>
+      <div class="tab-pane fade in active">
+        <textarea name="" id="traduccion" cols="150" rows="10" style="width: 660px; resize: none;"></textarea><script>
+          document.getElementById('traduccion').disabled = true
+        </script>
+      </div>
+    </div>
+  </li>
+</ul>
+
+<ul class="nav">
+  <li>
+    <div class="tab-content">
+      <div class="tab-pane fade in active">
+        <div style="margin: 0; width: 680px;">
+          <label>Variables </label>
+          <br>
+          <table id="variables" class="table table-bordered" style="width: 100%;" style="color: #000;">
+            <thead>
+              <tr id="cabeceras">
+                
+              </tr>
+            </thead>
+            <tbody id="cuerpo">
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </li>
+  <li class="nav-item">
+    <div style="margin: 0;">
+      <div id="data" class="demo"></div>
+    </div>
+  </li>
+</ul>
+
+<input id="fileInput" type="file" hidden accept=".cs"/>
+<script>
+  function reportarErrores(errores){
+    var child = document.getElementById('cabeceras').lastElementChild;  
+    while (child) { 
+      document.getElementById('cabeceras').removeChild(child); 
+      child = document.getElementById('cabeceras').lastElementChild; 
+    }
+
+    child = document.getElementById('cuerpo').lastElementChild;  
+    while (child) { 
+      document.getElementById('cuerpo').removeChild(child); 
+      child = document.getElementById('cuerpo').lastElementChild; 
+    }
+
+
+    var tipo = document.createElement('th')
+    var linea = document.createElement('th')
+    var columna = document.createElement('th')
+    var error = document.createElement('th')
+
+    tipo.scope = "col"
+    linea.scope = "col"
+    columna.scope = "col"
+    error.scope = "col"
+
+    tipo.textContent = "Tipo"
+    linea.textContent = "Linea"
+    columna.textContent = "Columna"
+    error.textContent = "Error"
+
+    document.getElementById('cabeceras').appendChild(tipo)
+    document.getElementById('cabeceras').appendChild(linea)
+    document.getElementById('cabeceras').appendChild(columna)
+    document.getElementById('cabeceras').appendChild(error)
+
+    for(var i = 0; i < errores.length; i++){
+      var nuevoTr = document.createElement('tr')
+      var nuevoTipo = document.createElement('td')
+      var nuevoLinea = document.createElement('td')
+      var nuevoColumna = document.createElement('td')
+      var nuevoError = document.createElement('td')
+
+      nuevoTipo.scope = "col"
+      nuevoLinea.scope = "col"
+      nuevoColumna.scope = "col"
+      nuevoError.scope = "col"
+
+      nuevoTipo.textContent = errores[i].tipo
+      nuevoLinea.textContent = errores[i].linea
+      nuevoColumna.textContent = errores[i].columna
+      nuevoError.textContent = errores[i].mensaje + errores[i].lexema
+
+      nuevoTr.appendChild(nuevoTipo)
+      nuevoTr.appendChild(nuevoLinea)
+      nuevoTr.appendChild(nuevoColumna)
+      nuevoTr.appendChild(nuevoError)
+
+      document.getElementById('cuerpo').appendChild(nuevoTr)
+    }
+  }
+
+  document.getElementById('openTrigg').addEventListener('click', () => {
+    document.getElementById('fileInput').click()
+  });
+
+  const input = document.getElementById('fileInput')
+  input.addEventListener('change', function(e){
+    const reader = new FileReader()
+    reader.readAsText(input.files[0])
+    reader.onload = function(){
+      document.getElementById('operacion').value = reader.result
+    }
+  }, false)
+
+  var txt = "";
+
+  function guardarNuevo(){
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + 
+
+    encodeURIComponent(document.getElementById('operacion').value));
+    pom.setAttribute('download', document.getElementById('nombreGuardar').value + ".cs");
+
+    pom.style.display = 'none';
+    document.body.appendChild(pom);
+
+    pom.click();
+    
+    document.body.removeChild(pom);
+  }
+
+
+  function guardarReportes(textos){
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textos[0]));
+    pom.setAttribute('download', "copiasClases.txt");
+    pom.style.display = 'none';
+    document.body.appendChild(pom);
+    pom.click();
+    document.body.removeChild(pom);
+
+    pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textos[1]));
+    pom.setAttribute('download', "copiasFunciones.txt");
+    pom.style.display = 'none';
+    document.body.appendChild(pom);
+    pom.click();
+    document.body.removeChild(pom);
+
+    pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textos[2]));
+    pom.setAttribute('download', "copiasVariables.txt");
+    pom.style.display = 'none';
+    document.body.appendChild(pom);
+    pom.click();
+    document.body.removeChild(pom);
+  }
+</script>
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/jquery.backtotop.js"></script>
+    <script src="../js/jquery.mobilemenu.js"></script>
+    <script src="../dist/jstree.min.js"></script>
+    <script>
+      $data = []
+      $('#data').jstree({
+        'core' : {
+          'check_callback' : true
+        }
+      });
+
+      $('#createForlder').on('click', create_node);
+
+    function create_node(nuevo) {
+      $('#data').jstree(true).settings.core.data = nuevo
+      $('#data').jstree(true).refresh();
+    }
+    </script>
+  </body>
+</html>

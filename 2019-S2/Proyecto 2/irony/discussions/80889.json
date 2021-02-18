@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "277342",
+    "ThreadId": "80889",
+    "Html": "<p>How do I activate error recovery? Is there any way I could indicate some syncronization points in the grammar?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-14T14:18:28.727-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277344",
+    "ThreadId": "80889",
+    "Html": "<p>assign NonTerminal.ErrorRule property - look at c# grammar as an example</p>",
+    "PostedDate": "2010-01-14T14:25:49.007-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277349",
+    "ThreadId": "80889",
+    "Html": "<p>Excellent ! Now it is working !</p>\r\n<p>Last question I hope</p>\r\n<p>I need to match something like this</p>\r\n<p>{ A, B, C, D, }</p>\r\n<p>I tried with the star rule, however, the delimiter is only used inside. So when I tried to add it at the end, it is not working</p>\r\n<p style=\"margin:0.0px 0.0px 0.0px 0.0px;font:10.0px Helvetica\">MakeStarRule(nt_fields, t_comma, nt_field) + t_comma.</p>\r\n<p style=\"margin:0.0px 0.0px 0.0px 0.0px;font:10.0px Helvetica\">&nbsp;</p>\r\n<p>Why is this happening?</p>\r\n<p>Thanks again. I really like your work, and you've been very helpful today.</p>",
+    "PostedDate": "2010-01-14T14:43:56.26-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277366",
+    "ThreadId": "80889",
+    "Html": "<p>you'll have to create an extra non-terminal containing the list plus optional comma. I already recognized that this is a common case, so i'm working on adding support for this optional tailing delimiter in list-making methods</p>",
+    "PostedDate": "2010-01-14T15:23:50.003-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277381",
+    "ThreadId": "80889",
+    "Html": "<p>When I try to do that I get the following error:</p>\r\n<p>Shift-reduce conflict. State S20, lookaheads [,]. Selected shift as preferred action.</p>\r\n<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">State S20 (Inadequate)</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp;Shift items:</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp;Field+ -&gt; Field+ &middot;, Field&nbsp;</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp;Reduce items:</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp;Fields -&gt; Field+ &middot; [, } )]</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp;Transitions: ,-&gt;S32,&nbsp;</div>\r\n<p>\r\n<p>State S20 (Inadequate)</p>\r\n<p>&nbsp;&nbsp;Shift items:</p>\r\n<p>&nbsp;&nbsp; &nbsp;Field+ -&gt; Field+ &middot;, Field&nbsp;</p>\r\n<p>&nbsp;&nbsp;Reduce items:</p>\r\n<p>&nbsp;&nbsp; &nbsp;Fields -&gt; Field+ &middot; [, } )]</p>\r\n<p>&nbsp;&nbsp;Transitions: ,-&gt;S32,&nbsp;</p>\r\n<div></div>\r\n<div>----</div>\r\n<div></div>\r\n<div>\r\n<div>Contents &nbsp;(Nullable)&nbsp;</div>\r\n<div>&nbsp;&nbsp; Contents -&gt; BodyId , FieldsComma&nbsp;</div>\r\n<div>&nbsp;&nbsp; Contents -&gt; FieldsComma&nbsp;</div>\r\n<div>&nbsp;&nbsp; Contents -&gt; Value&nbsp;</div>\r\n<div>BodyId</div>\r\n<div>&nbsp;&nbsp; BodyId -&gt; Name&nbsp;</div>\r\n<div>&nbsp;&nbsp; BodyId -&gt; Number&nbsp;</div>\r\n<div>FieldsComma &nbsp;(Nullable)&nbsp;</div>\r\n<div>&nbsp;&nbsp; FieldsComma -&gt; Fields&nbsp;</div>\r\n<div>&nbsp;&nbsp; FieldsComma -&gt; Fields ,&nbsp;</div>\r\n<div>Fields &nbsp;(Nullable)&nbsp;</div>\r\n<div>&nbsp;&nbsp; Fields -&gt;&nbsp;</div>\r\n<div>&nbsp;&nbsp; Fields -&gt; Field+&nbsp;</div>\r\n<div>Field+</div>\r\n<div>&nbsp;&nbsp; Field+ -&gt; Field&nbsp;</div>\r\n<div>&nbsp;&nbsp; Field+ -&gt; Field+ , Field&nbsp;</div>\r\n<div>Field</div>\r\n<div>&nbsp;&nbsp; Field -&gt; Name = Value&nbsp;</div>\r\n</div>\r\n<div></div>\r\n<div>I have tried a lot of alternatives, but I still don't get it...</div>\r\n</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-14T16:04:12.613-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277383",
+    "ThreadId": "80889",
+    "Html": "<p>please post the source code of grammar constructor, at least a reduced version with all involved terminals and non-terminals</p>",
+    "PostedDate": "2010-01-14T16:09:00.673-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

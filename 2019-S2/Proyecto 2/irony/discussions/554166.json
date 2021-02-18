@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1277740",
+    "ThreadId": "554166",
+    "Html": "I'm trying to do (for example) round( 3.4455, 2)   (created by my or created by BuiltIn)<br />\n<br />\nvar ArgList = new NonTerminal(&quot;ArgList&quot;, typeof (ExpressionListNode));<br />\nvar FunctionCall = new NonTerminal(&quot;FunctionCall&quot;, typeof(FunctionCallNode));<br />\n<br />\nArgList.Rule = MakeStarRule(ArgList, comma, Expr);<br />\nFunctionCall.Rule = Expr + PreferShiftHere() + &quot;(&quot; + ArgList + &quot;)&quot; | Expr + PreferShiftHere();<br />\n<br />\nit works perfect when the function have only one parameter, but with two parameters it shows the following error.<br />\n<br />\n<strong>Attempt to evaluate NULL AST node. The AST node for term 'Expr+' was not created during parsing.</strong><br />\n<br />\nThe message is very clear,  <strong>MakeStarRule creates this NonTerminal  with name Expr+</strong> (this node has TermFlags.IsListContainer but doesn't have any  AstNode to execute something.<br />\n <br />\ndon't know if problem is in ExpressionListNode when doing DoEvaluate, and why only the first node in the list is <strong>Expr+</strong> (this node have a child where is the  Number) the other is Comma and Number<br />\n<br />\nany idea how to fix this?<br />\n<br />\nthanks.<br />\n",
+    "PostedDate": "2014-07-25T08:12:33.257-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1277830",
+    "ThreadId": "554166",
+    "Html": "Look at sample expression evaluator. I just tried the following expression that uses functions from Math class:\r<br />\n<br />\nx = Min(2, 3) + Round(3.4567, 2) \r<br />\n<br />\nIt gives the correct result - 5.46\r<br />\nApparently, functions with 2 parameters work there<br />\n",
+    "PostedDate": "2014-07-25T13:04:32.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1278690",
+    "ThreadId": "554166",
+    "Html": "yes..it works perfectly...thank you.<br />\n",
+    "PostedDate": "2014-07-29T04:26:51.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

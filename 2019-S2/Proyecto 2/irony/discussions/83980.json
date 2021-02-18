@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "288382",
+    "ThreadId": "83980",
+    "Html": "<p>I have been trying to convert the Lua grammer from VSLua into one that can be used to generate an AST. I'm in the middle of the process, but I'd be interested in some input about what I have so far.</p>\r\n<p>The grammer is <a href=\"http://bitbucket.org/sylvanaar2/lua-for-irony/src/tip/LuaGrammer.cs\">http://bitbucket.org/sylvanaar2/lua-for-irony/src/tip/LuaGrammer.cs</a></p>\r\n<p>I should add that anywhere you see &quot;new NonTerminal&quot; in a rule, thats just basically a &quot;todo&quot; item.</p>\r\n<p>Right now I am stuck on the FuncName production. It will have to be broken up some more.</p>\r\n<p>Any input or tips would be welcome.</p>\r\n<p>Thanks!</p>\r\n<p>Jon</p>",
+    "PostedDate": "2010-02-10T11:01:58.737-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "291356",
+    "ThreadId": "83980",
+    "Html": "<p>Will have a look, not sure when it might happen, quite busy with million other things right now&nbsp;</p>\r\n<p>Do you mind if I add this grammar to samples? if it goes well and we can fix it of course.</p>",
+    "PostedDate": "2010-02-16T11:13:33.263-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "291376",
+    "ThreadId": "83980",
+    "Html": "<p>Thanks. No rush, I'm quite busy myself.&nbsp;</p>\r\n<p>I don't have any problem with the grammar being added to the samples. Since the&nbsp;grammar&nbsp;is just some modifications to VSLua's grammar <a href=\"http://vslua.codeplex.com/\">http://vslua.codeplex.com/</a>&nbsp;- so you might want to ask VSLua's author as well. (Though VSLua uses the MIT&nbsp;license&nbsp;so it shouldn't be a problem)</p>",
+    "PostedDate": "2010-02-16T12:05:31.113-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

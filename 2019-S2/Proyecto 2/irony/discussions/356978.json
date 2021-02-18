@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "840359",
+    "ThreadId": "356978",
+    "Html": "\r\n<p>Hi everybody, i have just started to play with the Irony project and my first attempt was to extend the functionality of the Irony tutorial at:</p>\r\n<p><a href=\"http://swik.net/tag4sree/Hibernate&#43;-&#43;Objects/Writing&#43;a&#43;calculator&#43;in&#43;C%23&#43;using&#43;Irony/c3yq4\">http://swik.net/tag4sree/Hibernate&#43;-&#43;Objects/Writing&#43;a&#43;calculator&#43;in&#43;C%23&#43;using&#43;Irony/c3yq4</a></p>\r\n<p>This project parses expressions like:</p>\r\n<p>1 &#43; ( 3 *5 )</p>\r\n<p>My extension was supposed to allow the usage of XPath expression in the expression, for example:</p>\r\n<p>1 &#43; ( 3 * 5 ) - xpath(//item[@id='1']/@quantity)</p>\r\n<p>For this i found out that the CustomTerminal would be handy, and in the MatchHandler try to compile the XPath expression as sort of validation and then put the entire xpath expression in the parsetree/AST</p>\r\n<p>I have trouble to get this to work and before i dig to deep i just wonder if this is correct approach, my grammar is defined as:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre><span style=\"color:blue\">public</span> SimpleCalcGrammar()\r\n\t\t{\r\n\t\t\t<span style=\"color:blue\">var</span> xpath = <span style=\"color:blue\">new</span> CustomTerminal(<span style=\"color:#a31515\">&quot;xpath&quot;</span>, ParseXPathExpressionHandler);\r\n\t\t\t<span style=\"color:blue\">var</span> number = TerminalFactory.CreateCSharpNumber(<span style=\"color:#a31515\">&quot;number&quot;</span>);\r\n\t\t\t<span style=\"color:blue\">var</span> identifier = TerminalFactory.CreateCSharpIdentifier(<span style=\"color:#a31515\">&quot;identifier&quot;</span>);\r\n\t\t\t<span style=\"color:blue\">var</span> expression = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;expression&quot;</span>);\r\n\t\t\t<span style=\"color:blue\">var</span> binexpr = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;binexpr&quot;</span>);\r\n\t\t\t<span style=\"color:blue\">var</span> parexpr = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;parexpr&quot;</span>);\r\n\t\t\t<span style=\"color:blue\">var</span> fncall = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;fncall&quot;</span>);\r\n\t\t\t<span style=\"color:blue\">var</span> binop = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;binop&quot;</span>);\r\n\t\t\t<span style=\"color:blue\">var</span> xpathexpr = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;xpathexpr&quot;</span>);\r\n\r\n\t\t\txpathexpr.Rule = <span style=\"color:#a31515\">&quot;xpath(&quot;</span> &#43; xpath &#43; <span style=\"color:#a31515\">&quot;)&quot;</span>;\r\n\t\t\texpression.Rule = parexpr | binexpr | number | fncall | xpathexpr;\r\n\t\t\tparexpr.Rule = <span style=\"color:#a31515\">&quot;(&quot;</span> &#43; expression &#43; <span style=\"color:#a31515\">&quot;)&quot;</span>;\r\n\t\t\tbinexpr.Rule = expression &#43; binop &#43; expression;\r\n\t\t\tbinop.Rule = ToTerm(<span style=\"color:#a31515\">&quot;&#43;&quot;</span>) | <span style=\"color:#a31515\">&quot;-&quot;</span> | <span style=\"color:#a31515\">&quot;/&quot;</span> | <span style=\"color:#a31515\">&quot;*&quot;</span> | <span style=\"color:#a31515\">&quot;%&quot;</span>;\r\n\t\t\tfncall.Rule = identifier &#43; <span style=\"color:#a31515\">&quot;(&quot;</span> &#43; expression &#43; <span style=\"color:#a31515\">&quot;)&quot;</span>;\r\n\t\t\t<span style=\"color:blue\">this</span>.Root = expression;\r\n\r\n\t\t\tRegisterOperators(1, <span style=\"color:#a31515\">&quot;&#43;&quot;</span>, <span style=\"color:#a31515\">&quot;-&quot;</span>);\r\n\t\t\tRegisterOperators(2, <span style=\"color:#a31515\">&quot;*&quot;</span>, <span style=\"color:#a31515\">&quot;/&quot;</span>, <span style=\"color:#a31515\">&quot;%&quot;</span>);\r\n\r\n\t\t}\r\n</pre>\r\n</div>\r\n<p>I would very much&nbsp;appreciate&nbsp;input on how the MatchHandler is supposed to be defined, do i my self have to analyze the input string for the closing paranthesis of the xpath(...) statement, i dont find much documentation on this...</p>\r\n<p>I would very much like to avoid parsing XPath expressions but instead compile it in C# as a sort of basic validation.</p>\r\n<p>Regards Andreas</p>\r\n",
+    "PostedDate": "2012-05-24T04:37:00.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "840809",
+    "ThreadId": "356978",
+    "Html": "<p>Hi, i finally got it to work, is this the way to go?</p>\r\n<p>It successfully parses strings like #//item[@id='id1']/@price#</p>\r\n<p>Regards Andreas</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre> <span style=\"color: blue;\">var</span> xpath = <span style=\"color: blue;\">new</span> StringLiteral(<span style=\"color: #a31515;\">\"xpath\"</span>, <span style=\"color: #a31515;\">\"#\"</span>); xpath.ValidateToken += <span style=\"color: blue;\">delegate</span>(<span style=\"color: blue;\">object</span> sender, ValidateTokenEventArgs args) </pre>\r\n<pre>\t{ </pre>\r\n<pre>\t\tToken currentToken = args.Context.CurrentToken; </pre>\r\n<pre>\t\t<span style=\"color: green;\">// Get rid of # at beginning and end and try to parse</span> </pre>\r\n<pre>\t\t<span style=\"color: blue;\">string</span> xpathString = currentToken.Text.Substring(1, currentToken.Length - 2); </pre>\r\n<pre><span style=\"color: blue;\">\t\ttry</span> </pre>\r\n<pre>\t\t{ </pre>\r\n<pre>\t\t\tXPathExpression compiledExpression = XPathExpression.Compile(xpathString); </pre>\r\n<pre>\t\t\tcurrentToken.Value = compiledExpression; </pre>\r\n<pre>\t\t} </pre>\r\n<pre>\t\t<span style=\"color: blue;\">catch</span> (Exception exception) </pre>\r\n<pre>\t\t{ </pre>\r\n<pre>\t\t\tcurrentToken = args.Context.CreateErrorToken(<span style=\"color: #a31515;\">\"Not a valid xpath expression: {0} \\nDetails: {1}\"</span>, xpathString, exception.Message); </pre>\r\n<pre>\t\t} </pre>\r\n<pre>\t};</pre>\r\n</div>",
+    "PostedDate": "2012-05-25T01:45:42.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "841007",
+    "ThreadId": "356978",
+    "Html": "<p>looks ok, as long as it works for you</p>",
+    "PostedDate": "2012-05-25T09:50:45.617-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "841019",
+    "ThreadId": "356978",
+    "Html": "<p>Thanks for your reply, its a bit tricky to get going with this, however i have got something up and running by now but still have questions, now about evaluation. I have modified the EvaluationGrammar provided in the Samples to fit my needs, but when im about to evaluate my script i need access to the underlying xml, how am i supposed to access that, ie i need to execute my xpath expressions to get some element/attributes from my xml to perform calculations...</p>\r\n<p>Regards Andreas</p>",
+    "PostedDate": "2012-05-25T10:34:47.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "841122",
+    "ThreadId": "356978",
+    "Html": "\r\n<p>put your Xml document into Globals variables under some special key, so it would be readily available in your custom Ast node - that you need to write and associate with your terminal</p>\r\n<p>(put XML doc into ... I mean, assume it is there in you node's code, and when you call the script to evaluate, make sure you put into Globals)</p>\r\n",
+    "PostedDate": "2012-05-25T20:10:03.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

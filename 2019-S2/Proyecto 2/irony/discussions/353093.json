@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "826932",
+    "ThreadId": "353093",
+    "Html": "\r\n<p>I have a grammar in Yacc/Lex that I would like to convert to Irony (and also convert the entire program from C to C# mind you xD), but I've stumbled across one thing that I don't know how to handle.</p>\r\n<p>The parser-file (parser.y) has stuff like this defined:</p>\r\n<p></p>\r\n<pre>block_statement:\r\n    LEFT_CURLY_BRACKET\r\n        {\r\n             EnterNestedScope();\r\n        }\r\n    statement_list RIGHT_CURLY_BRACKET\r\n        {\r\n             $$ = MakeBlockStatement($2);<br></pre>\r\n<p></p>\r\n<pre>             LeaveScope();</pre>\r\n<p></p>\r\n<pre>&nbsp;}\r\n;</pre>\r\nHow would I go about achieving the same thing in Irony?\r\n<p></p>\r\n",
+    "PostedDate": "2012-04-21T15:12:30.87-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "827440",
+    "ThreadId": "353093",
+    "Html": "<p>the fragment you show, as far as I can guess, mixes syntax rule (block= \"{\" + stmt_list + \"}\" ), and interpreter, runtime rule (create nested scope when entering the block).&nbsp;</p>\r\n<p>The syntax rule in Irony is expressed the usual way.</p>\r\n<p>Scope creation - it should be done by an AST node for a block element, this is part of interpreter behavior.</p>",
+    "PostedDate": "2012-04-23T10:20:58.053-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

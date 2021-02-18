@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "802231",
+    "ThreadId": "346466",
+    "Html": "\r\n<p>Here's part of my code that <span style=\"text-decoration:underline\">works</span> to parse something like this:&nbsp;</p>\r\n<p><strong>Container^AccountCode LIKE &quot;A&quot; AND Container^ItemCode = &quot;C0000009&quot;</strong></p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> number = <span style=\"color:blue\">new</span> NumberLiteral(<span style=\"color:#a31515\">&quot;number&quot;</span>);\r\n<span style=\"color:blue\">var</span> stringLiteral = <span style=\"color:blue\">new</span> StringLiteral(<span style=\"color:#a31515\">&quot;string&quot;</span>);\r\nstringLiteral.AddStartEnd(<span style=\"color:#a31515\">&quot;\\&quot;&quot;</span>, StringOptions.NoEscapes);\r\n<span style=\"color:blue\">var</span> identifier = <span style=\"color:blue\">new</span> IdentifierTerminal(<span style=\"color:#a31515\">&quot;identifier&quot;</span>);\r\n<span style=\"color:blue\">var</span> file = CreateCustomIdentifier(<span style=\"color:blue\">this</span>, <span style=\"color:#a31515\">&quot;file&quot;</span>);\r\n<span style=\"color:blue\">var</span> field = CreateCustomIdentifier(<span style=\"color:blue\">this</span>, <span style=\"color:#a31515\">&quot;field&quot;</span>);\r\n\r\n<span style=\"color:blue\">var</span> comma = ToTerm(<span style=\"color:#a31515\">&quot;,&quot;</span>);\r\n<span style=\"color:blue\">var</span> caret = ToTerm(<span style=\"color:#a31515\">&quot;^&quot;</span>);\r\n\r\n<span style=\"color:blue\">var</span> Expr = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;expression&quot;</span>);\r\n<span style=\"color:blue\">var</span> Column = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;Column&quot;</span>, <span style=\"color:blue\">typeof</span>(ColumnNode));\r\n<span style=\"color:blue\">var</span> BinExpr = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;Binexpr&quot;</span>, <span style=\"color:blue\">typeof</span>(BinaryOperationNode));\r\n<span style=\"color:blue\">var</span> ParExpr = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;parexpr&quot;</span>);\r\n<span style=\"color:blue\">var</span> FunctionCall = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;FunctionCall&quot;</span>, <span style=\"color:blue\">typeof</span>(FunctionCallNode));\r\n<span style=\"color:blue\">var</span> Constant = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;Constant&quot;</span>, <span style=\"color:blue\">typeof</span>(LiteralValueNode));\r\n<span style=\"color:blue\">var</span> BinOp = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;binop&quot;</span>, <span style=\"color:#a31515\">&quot;operator&quot;</span>);\r\n<span style=\"color:blue\">var</span> UnExpr = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;UnExpr&quot;</span>, <span style=\"color:blue\">typeof</span>(UnaryOperationNode));\r\n<span style=\"color:blue\">var</span> ArgList = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;ArgList&quot;</span>, <span style=\"color:blue\">typeof</span>(ExpressionListNode));\r\n<span style=\"color:blue\">var</span> UnOp = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;unop&quot;</span>, <span style=\"color:#a31515\">&quot;operator&quot;</span>);\r\n\r\n<span style=\"color:green\">// BNF rules</span>\r\n<span style=\"color:blue\">this</span>.Root = Expr;\r\n\r\n<span style=\"color:green\">// components of an expressions</span>\r\nConstant.Rule = number | stringLiteral;\r\nColumn.Rule = file &#43; caret &#43; field;<span style=\"color:green\">// | field;</span>\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>---- ...</p>\r\n<p>Now to make it work on a slight deviation such as:</p>\r\n<p><strong>AccountCode LIKE &quot;A&quot; AND Container^ItemCode = &quot;C0000009&quot;</strong></p>\r\n<p>I change the last line (shown above) to this:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>Column.Rule = file &#43; caret &#43; field | field;\r\n</pre>\r\n</div>\r\nbut that gives me a syntax error. Can someone explain why this is? What am I missing?\r\n<p></p>\r\n",
+    "PostedDate": "2012-02-27T13:22:40.313-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "802235",
+    "ThreadId": "346466",
+    "Html": "<p>it probably scans the stand-alone custom identifier as a \"file\", not field. You have to resolve this somehow. One suggestion - can you use the same terminal \"field\" for both? It does not seem they are actually different internally, you use the same CreateCustomIdentifier  method. So the scanner would produce \"field\" token for both cases, and then the Parser would recognize what is this based on grammar rules.&nbsp;</p>",
+    "PostedDate": "2012-02-27T13:27:32.897-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "802237",
+    "ThreadId": "346466",
+    "Html": "<p>OK, I'll experiment with that.&nbsp;</p>\r\n<p>Thanks for your quick response!</p>",
+    "PostedDate": "2012-02-27T13:30:16.067-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "803920",
+    "ThreadId": "346466",
+    "Html": "<p>so here's another issue that I have with the way the order of parsing works,&nbsp;</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: green;\">// components of an expressions</span>\r\nConstant.Rule = number | stringLiteral;\r\nColumn.Rule = (columnPart + caret + columnPart) | columnPart;\r\nFunctionCall.Rule = identifier + <span style=\"color: #a31515;\">\"(\"</span> + ArgList + <span style=\"color: #a31515;\">\")\"</span>;\r\nFunctionCall.NodeCaptionTemplate = <span style=\"color: #a31515;\">\"call #{0}(...)\"</span>;\r\nArgList.Rule = MakeStarRule(ArgList, comma, Expr);\r\n\r\nExpr.Rule = UnExpr | BinExpr | Column | Constant | FunctionCall | ParExpr;\r\n</pre>\r\n</div>\r\n</p>\r\n<p>the problem is when I have something like this:</p>\r\n<p><strong>Container^Date &lt; CurDate()</strong></p>\r\n<p>as it tries to parse CurDate() it expects a column and gets thrown off when it sees a '(' ...</p>\r\n<p>I am a bit new to this, but isn't it supposed to follow the path of no error,</p>",
+    "PostedDate": "2012-03-01T11:18:37.747-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "804596",
+    "ThreadId": "346466",
+    "Html": "<p>I think it's the same kind of problem as before - is columnPart declared as Identifier? The trouble is that Scanner has several \"identifiers\" to choose from, they are all the same, and it has no knowledge which one is which. Parser can help scanner sometimes (tell it what is expected in this position), but in your case both are expected - function name or columnPart, so scanner make arbitrary decision.</p>\r\n<p>Make sure you have a single IdentifierTerminal declared in grammar and reuse it in all expressions.</p>",
+    "PostedDate": "2012-03-02T11:32:54.83-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

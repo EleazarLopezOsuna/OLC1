@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1091855",
+    "ThreadId": "456720",
+    "Html": "I've just completed my compiler for the Shakespeare programming language (using Irony)\r<br />\n<br />\nDetails on my blog: <a href=\"http://honestillusion.com/blog/2013/09/12/Shakespeare-compiler-for-NET/\" rel=\"nofollow\">http://honestillusion.com/blog/2013/09/12/Shakespeare-compiler-for-NET/</a>\r<br />\n<br />\nSource code: <a href=\"https://github.com/jamescurran/ShakespeareCompiler\" rel=\"nofollow\">https://github.com/jamescurran/ShakespeareCompiler</a>\r<br />\n<br />\nIt has a grammar/parser, and <em>three</em> different back-ends (producing C source, C# source code, and a .NET exe directly), plus a command-line interface for running the whole process.\r<br />\n<br />\nFeel free to add any part of it to the samples.\r<br />\n<br />\n(Also, if someone who knows how to create a back-end code generator wants to look at my code and say if I'm doing it right, that would be great)<br />\n",
+    "PostedDate": "2013-09-12T11:26:31.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1091866",
+    "ThreadId": "456720",
+    "Html": "Great! I put a link to this post on Home page\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-09-12T11:47:31.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

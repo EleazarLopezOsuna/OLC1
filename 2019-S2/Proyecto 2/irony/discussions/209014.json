@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "429899",
+    "ThreadId": "209014",
+    "Html": "<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">Hi all!</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">Tell me please, what is difference between MakeStarRule and MakePlusRule?</div>\r\n<p>\r\n<p>Hi all!</p>\r\n<p>Tell me please, what is the difference between MakeStarRule and MakePlusRule?</p>\r\n</p>\r\n<p>tnx!</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-12T00:08:30.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "430106",
+    "ThreadId": "209014",
+    "Html": "<p>It's the semantics of Kleene operators: &quot;term*&quot; means zero-or-more occurrences of term, &quot;term+&quot; is one or more</p>",
+    "PostedDate": "2010-04-12T10:11:19.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

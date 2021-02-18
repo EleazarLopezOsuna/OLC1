@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "285849",
+    "ThreadId": "83167",
+    "Html": "<p>Roman,</p>\r\n<p>I've been searching around in the code for a way to add some new binary operators for the interpreter, but I cannot find a way to get them handled by the DynamicCallDispatcher.</p>\r\n<p>It looks like the LanguageRuntime::InitOperatorImplementations() function is where the OperatorImplementationTable gets initialized.&nbsp; However, the InitOperatorImplementations function is virtual (implying that it could be overridden by subclasses), but the table itself is private.&nbsp; The only other function that currently adds to this table is also private (AddImplementation).&nbsp; Right now, the InitOperatorImplementations function creates a new table and assigns it to the private _baseOperatorImplementations data member.&nbsp; It seems like it would be better to have the function return a table that the caller can place into the _baseOperatorImplementations data member since it is a virtual function.</p>\r\n<p>I saw in the comments for the LanguageRuntime that the table that is initialized is the &quot;base&quot; that everything gets copied from, and that it &quot;can be extended on the fly to include extra implementations with arg conversions&quot;.&nbsp; What do you mean by this?</p>\r\n<p>Currently, I've been making custom AstNode classes to act as the binary operators that I want / need (since the only use for a custom binary implementation is during execution with an AST).&nbsp; Is this the intended approach to solving this issue?</p>\r\n<p>Brian</p>",
+    "PostedDate": "2010-02-04T08:57:38.417-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "285868",
+    "ThreadId": "83167",
+    "Html": "<p>Hi</p>\r\n<p>yes, this area is not quite done yet, so there are a lot of inconsitencies there; one of the things is &quot;private&quot; attr for the table field. Try to do some workaround for now, do some hacks if you need to. I will revisit this area and make sure I have extensibility scenario. &quot;can be extended...&quot; - I mean that &quot;Init&quot; method creates only implementations for matching argument types, like &quot;int32 + int32&quot;. When binOpExpression needs to evaluate &quot;int32 + int16&quot;, the implementation is not there - so it is created on the fly at runtime; by taking implementation method from &quot;int32 + int32&quot; and adding a conversion method for the second argument &quot;int16-&gt;int32&quot;. The newly created record is added to the implementations table.</p>\r\n<p>This dispatch code needs a big revision in general. The problem is that different languages use different symbols for operators and even for the same symbol (like &quot;|&quot;) use different implementation.&nbsp;But currently in&nbsp;Irony the implementation is associated with&nbsp;particular symbol - this should change,&nbsp;there must be an extra mapping layer between symbols and implementations. I'm working on this as well. For now&nbsp;do some hacks - make the table field and AddImplementation method&nbsp;protected, override Init method and add your own operators.</p>\r\n<p>Sorry for inconvenience</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-02-04T10:13:35.777-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "285873",
+    "ThreadId": "83167",
+    "Html": "<p>Ah, that's pretty cool.&nbsp; I have no problems creating the AstNode classes for this use; I just wasn't sure if that was the way I was supposed to or not.&nbsp; (I didn't even think to look for a different method of doing it until just recently!)</p>\r\n<p>I look forward to what you come up with!&nbsp; Great work so far!&nbsp; Irony is amazingly flexible and extremely fast.&nbsp; I'm using it to write a &quot;calculation engine&quot; or sorts for a much larger project, and it's parsing and executing some fairly complex expressions in about a third of a millisecond (.37 ms).&nbsp; And most of that time is spent processing the data rather than being consumed by Irony!</p>\r\n<p>Brian</p>",
+    "PostedDate": "2010-02-04T10:27:06.917-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

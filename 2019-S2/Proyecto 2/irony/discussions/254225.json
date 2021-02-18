@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "598601",
+    "ThreadId": "254225",
+    "Html": "\r\n<p>Is it possible to create a pull parser like XMLReader using Irony? If it is possible then how to achieve it?</p>\r\n",
+    "PostedDate": "2011-04-17T01:35:17.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "600448",
+    "ThreadId": "254225",
+    "Html": "<p>My guess would be that you would need three layers:</p>\r\n<p>(1) Tokenize your input stream using Irony</p>\r\n<p>(2) Produce an AST using Irony</p>\r\n<p>(3) Provide a Pull API (e.g. GetElements()) on top of the AST to clients</p>\r\n<p>Mohamed</p>",
+    "PostedDate": "2011-04-20T08:11:30.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "600537",
+    "ThreadId": "254225",
+    "Html": "<p>If I create the parser by following these steps, then I think it will not serve the purpose of pull parsing. If I consume the whole input stream first and then create AST from it, then there is no point of creating a pull parser. I want to create a pull parser using Irony where in I can control the parsing, like the XmlReader does. It does not consume the whole input xml stream, it continues with parsing treating the document as a series of items which are read in sequence using the Iterator design pattern&nbsp;under your full control, you don't have to parse the whole xml at once.</p>",
+    "PostedDate": "2011-04-20T10:38:49.367-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

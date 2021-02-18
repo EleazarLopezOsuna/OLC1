@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "812652",
+    "ThreadId": "349230",
+    "Html": "\r\n<p>I'm working on a parser for email headers, and have run into a bit of trouble with messages that have blank subjects. &nbsp;What I want is for the parser to see a line that starts with &quot;Subject:&quot;, and accept everything until the next line terminator as the\r\n message's subject.</p>\r\n<p>What I have right now is:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> text = <span style=\"color:blue\">new</span> FreeTextLiteral(<span style=\"color:#a31515\">&quot;text&quot;</span>, FreeTextOptions.AllowEof, <span style=\"color:#a31515\">&quot;\\r\\n&quot;</span>, <span style=\"color:#a31515\">&quot;\\r&quot;</span>, <span style=\"color:#a31515\">&quot;\\n&quot;</span>) {Priority = TerminalPriority.Low};\r\n<span style=\"color:blue\">var</span> subject = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;subject&quot;</span>);\r\nsubject.Rule = ToTerm(<span style=\"color:#a31515\">&quot;subject:&quot;</span>) &#43; text;\r\n\r\n</pre>\r\n</div>\r\n<p>This works fine when the subject contains some text. &nbsp;When the subject line is blank, though, the 'text' rule captures the next non-blank line instead. &nbsp;What can be done to prevent this from happening?</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-03-19T12:09:16.007-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "813096",
+    "ThreadId": "349230",
+    "Html": "<p>The problem is that scanner skips whitespace after reading \"subject:\"; so make \"subject:\" a prefix of FreeTextLiteral instead.</p>",
+    "PostedDate": "2012-03-20T09:56:20.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "813122",
+    "ThreadId": "349230",
+    "Html": "<p>I changed the code to:</p>\n<p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">var</span> subjectText = <span style=\"color: blue;\">new</span> FreeTextLiteral(<span style=\"color: #a31515;\">\"text\"</span>, FreeTextOptions.AllowEof, <span style=\"color: #a31515;\">\"\\r\\n\"</span>, <span style=\"color: #a31515;\">\"\\r\"</span>, <span style=\"color: #a31515;\">\"\\n\"</span>) \n    { Firsts = <span style=\"color: blue;\">new</span> StringSet { <span style=\"color: #a31515;\">\"subject:\"</span> } };\n<span style=\"color: blue;\">var</span> subject = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"subject\"</span>);\nsubject.Rule = subjectText;\n\n</pre>\n</div>\n</p>\n<p>and it's working well now, thanks!</p>\n<p>Out of curiosity: Style considerations aside, does leaving that vestigial nonterminal hurt anything?</p>",
+    "PostedDate": "2012-03-20T11:02:26.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "813275",
+    "ThreadId": "349230",
+    "Html": "<p>no, it doesn't hurt, it's harmless</p>",
+    "PostedDate": "2012-03-20T16:12:42.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "230598",
+    "ThreadId": "67837",
+    "Html": "<p>How to handle optional parameters in a function call</p>\r\n<p>for example&nbsp;</p>\r\n<p>ABC(param1,[param2],param3)</p>\r\n<p>in the above function call param2 ia an optional parameter. how to write BNF rule for the same</p>",
+    "PostedDate": "2009-09-03T02:59:11.003-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "234152",
+    "ThreadId": "67837",
+    "Html": "<p>Don't quite understand... First of all, in most cases (languages), it is not allowed to have optional parameter in the middle, it should always be the last, or one of the last set of parameters all of which are optional. So for ABC, param3 should be optional also.</p>\r\n<p>Next, optionality is usually described in the declaration by special means, like default value, or keyword &quot;optional&quot;. So, just describe the construct in a BNF rule...</p>\r\n<p>Roman</p>\r\n<p>PS sorry for delay in reply, was on vacation for a few days</p>",
+    "PostedDate": "2009-09-13T20:28:45.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "234265",
+    "ThreadId": "67837",
+    "Html": "<p>Thanks for your reply.</p>\r\n<p>ABC(param1,param2,[param3],[param4])</p>\r\n<p>if parameter 3 and 4 of the above function&nbsp;are optional, can i write BNF rule as follows</p>\r\n<p>paramter.Expression = param1+ comma+param2+ comma+param3+ comma+param4 | param1+ comma+param2+ comma+param3+ Comma | param1+ comma+param2+ comma+ Comma+param4 | param1+ comma+param2+ comma+ Comma</p>\r\n<p>&nbsp;Thanks</p>\r\n<p>Valarmathi</p>",
+    "PostedDate": "2009-09-14T04:52:55.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "234759",
+    "ThreadId": "67837",
+    "Html": "<p>You don't need to &quot;describe&quot; parameter section for you function like this; you should just use general LIST of parameters - using MakeStarList method - out of a single parameter definition. Look at examples, for ex. c# sample.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-15T08:36:15.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

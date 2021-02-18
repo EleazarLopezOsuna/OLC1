@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "271406",
+    "ThreadId": "79271",
+    "Html": "<p>Hi,</p>\r\n<p>Thank you for this great work, can't wait for the final release!</p>\r\n<p>One question please about the regular expression:</p>\r\n<p>My final language some thing look like that:</p>\r\n<p>&nbsp;</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>MyCustomExpressions\r\n{\r\n       ExpressionOne <span style=\"color:#A31515\">&quot;^[\\n &amp;lt;&amp;quot;']*([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+)&quot;</span>\r\n\r\n       ExpressionTwo <span style=\"color:#A31515\">&quot;^([1-9]{0,1})([0-9]{1})(\\.[0-9])?$&quot;</span>\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>The question how I can represent the expression term [<span style=\"color:#A31515\">&quot;^([1-9]{0,1})([0-9]{1})(\\.[0-9])?$&quot;</span>] in the irony, I look at 'RegexBasedTerminal' but it seems for another purpose where we determine the pattern in its constructor, may be I just use the string literal, but asking if there is a better solution.</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you,</p>",
+    "PostedDate": "2009-12-29T04:45:49.117-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "271773",
+    "ThreadId": "79271",
+    "Html": "<p>As far as I understand these reg expressions, you need numbers with limited number of digits before and after the dot. Use NumberLiteral and handle ValidateToken event: in the event handler validate the content of the token and if it is invalid, report an error: replace the token with error token.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-30T10:54:16.33-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

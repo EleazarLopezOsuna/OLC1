@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "697500",
+    "ThreadId": "279258",
+    "Html": "<p>Hello,</p>\n<p>I wanted to ask, how&nbsp;can I start testing the latest release of&nbsp;Irony (the best way of explanation, I think would be an example project)?</p>",
+    "PostedDate": "2011-11-13T02:20:28.78-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "697938",
+    "ThreadId": "279258",
+    "Html": "<p>For language service - no up-to-date sample, only an article on CodeProject (link:&nbsp;<a href=\"http://www.codeproject.com/KB/recipes/VSLanguageService.aspx\">http://www.codeproject.com/KB/recipes/VSLanguageService.aspx</a>) but might be outdated.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-11-14T09:14:08.45-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

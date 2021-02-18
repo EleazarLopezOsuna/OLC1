@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": null,
+    "Description": "Hi I was getting an error so took a look at the source code and found this section of code on line 349 of StringLiteral.cs that is causing an index out of range exception.\r\n\r\n```\r\n\r\nif (segment.Length < len + 1) {\r\n   details.Error = string.Format(Resources.ErrBadUnEscape, segment.Substring(len + 1), len);// \"Invalid unicode escape ({0}), expected {1} hex digits.\"\r\n   return segment;\r\n}\r\n```\r\nYou check segment.Length but accidently set Substring out of range.",
+    "LastUpdatedDate": "2014-12-09T08:40:39.85-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2014-03-18T22:39:33.553-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "index out of range in StringLiteral.cs",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 2,
+    "Id": 9893
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Proposed fix:\n\nChange `segment.Substring(...)` to `details.Text`:\n\n    details.Error = string.Format(Resources.ErrBadUnEscape, details.Text, len);// \"Invalid unicode escape ({0}), expected {1} hex digits.\"",
+      "PostedDate": "2014-12-09T08:36:39.453-08:00",
+      "Id": 167621
+    },
+    {
+      "Message": "... which would make the expression `\"\\u1\"` to yield the following parser error:\n\n> Invalid unicode escape (\\u1), expected 4 hex digits.",
+      "PostedDate": "2014-12-09T08:40:39.85-08:00",
+      "Id": 167624
+    }
+  ]
+}

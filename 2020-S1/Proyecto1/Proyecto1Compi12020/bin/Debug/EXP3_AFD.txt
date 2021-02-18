@@ -1,0 +1,10 @@
+digraph G {
+rankdir = LR;
+S1 -> S2 [label = "\\n"];
+S1 -> S3 [label = "\\t"];
+S2 -> S2 [label = "\\n"];
+S2 -> S3 [label = "\\t"];
+S3 -> S4 [label = "\\'"];
+S4 -> S5 [label = "letras"];
+S5[shape=doublecircle];
+}

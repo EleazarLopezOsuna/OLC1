@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1451557",
+    "ThreadId": "647174",
+    "Html": "Is it possible to switch between multiple separate grammars when parsing one file with Irony?\r<br />\nLike for HTML mixed with PHP for example. Achieving independent coloring and validation.\r<br />\nHow would I start extending Irony to support that if it's not available feature yet?<br />\n",
+    "PostedDate": "2015-11-10T03:04:46.003-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

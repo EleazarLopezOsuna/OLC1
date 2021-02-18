@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "907302",
+    "ThreadId": "394066",
+    "Html": "\r\n<p>If I recall correctly, one of the&nbsp;merits&nbsp;from LR parsing over LL parsing is that to parse the first complete statement you need to parse a significantly smaller portion of the whole tree. This should (hopefully) mean that it could be possible to\r\n say parse untill you find a nonterminal of type &quot;Expression&quot; for instance, and then later continue from there. Is this doable in Irony?</p>\r\n",
+    "PostedDate": "2012-09-01T08:28:08.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "908002",
+    "ThreadId": "394066",
+    "Html": "<p>Take a look into ExecuteNextAction and GetNextAction&nbsp;(Parser.cs : 116, 139)</p>",
+    "PostedDate": "2012-09-03T19:08:50.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

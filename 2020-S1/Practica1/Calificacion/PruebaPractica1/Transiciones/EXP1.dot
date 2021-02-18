@@ -1,0 +1,58 @@
+digraph{
+tablaSiguientes[shape=none; margin=0, label = <
+<TABLE BORDER = "0" CELLBORDER = "1" CELLSPACING = "0" CELLPADDING = "4"><TR>
+<TD ROWSPAN = "2"> Estado </TD>
+<TD COLSPAN = "7"> Terminales </TD>
+</TR>
+<TR>
+<TD>   </TD>
+<TD> vocales_min </TD>
+<TD> minusculas </TD>
+<TD> logicos </TD>
+<TD> mayusculas </TD>
+<TD> vocales_may </TD>
+<TD> relacionales </TD>
+</TR>
+<TR>
+<TD> S0 </TD>
+<TD>  </TD>
+<TD> S1 </TD>
+<TD>  </TD>
+<TD>  </TD>
+<TD>  </TD>
+<TD>  </TD>
+<TD>  </TD>
+</TR>
+<TR>
+<TD> S1 </TD>
+<TD> S3 </TD>
+<TD>  </TD>
+<TD> S2 </TD>
+<TD> S3 </TD>
+<TD>  </TD>
+<TD> S1 </TD>
+<TD>  </TD>
+</TR>
+<TR>
+<TD> S3 </TD>
+<TD>  </TD>
+<TD>  </TD>
+<TD>  </TD>
+<TD>  </TD>
+<TD>  </TD>
+<TD>  </TD>
+<TD> S1 </TD>
+</TR>
+<TR>
+<TD> S2 </TD>
+<TD>  </TD>
+<TD>  </TD>
+<TD>  </TD>
+<TD>  </TD>
+<TD> S1 </TD>
+<TD>  </TD>
+<TD>  </TD>
+</TR>
+</TABLE>
+>];
+}

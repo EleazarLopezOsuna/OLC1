@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1132395",
+    "ThreadId": "472085",
+    "Html": "Hi,\r<br />\n<br />\nSuppose I have three input &lt;a,b,c&gt; and want to generate two outputs &lt;d,e&gt;.\r<br />\nWith the Expression Evaluator , evaluating the following lines would return the value of <strong>e</strong><br />\n<pre><code>a=&quot;Hello&quot;\nb=&quot;World&quot;\nc=&quot; Fred&quot;\n\nd=a+&quot; &quot;+b\ne=a+&quot; &quot;+b</code></pre>\n\nCurrently I can do two rounds of evaluation for <strong>d</strong> and <strong>e</strong> . Where can I start with if I want to get multiple return values in a key value dictionary in a single round?<br />\n",
+    "PostedDate": "2013-12-05T23:22:49.17-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1132704",
+    "ThreadId": "472085",
+    "Html": "you can access values of any variable using Globals dictionary<br />\nvar eval = new ExprEvaluator();<br />\neval.Evaluate(script);<br />\nvar d = eval.Globals[&quot;d&quot;];<br />\nvar e = eval.Globals[&quot;e&quot;];<br />\n",
+    "PostedDate": "2013-12-06T22:07:37.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

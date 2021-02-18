@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "269526",
+    "ThreadId": "78723",
+    "Html": "<p>Hi there,</p>\r\n<p>thanks for the release, but i'm unable to load most of the projects without removing the scc items&nbsp;(maybe Visual Source Safe?!?) by hand.&nbsp;</p>\r\n<p>It would be fine and safe much time if the release version is loadable by the &quot;small&quot; VS Versions out of the box without the need for a specific source control system.</p>\r\n<p>best regards,</p>\r\n<p>Stanley</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-21T02:21:08.497-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270004",
+    "ThreadId": "78723",
+    "Html": "<p>Hi</p>\r\n<p>This question appears to be the same as described in this recently created issue:</p>\r\n<p><a href=\"http://irony.codeplex.com/WorkItem/View.aspx?WorkItemId=6673\">http://irony.codeplex.com/WorkItem/View.aspx?WorkItemId=6673</a></p>\r\n<p>This issue keeps surfacing from time to time, so I need to clarify it - what's going on and how much trouble this is. I had an impression that this is not a big deal - when you try to open the solution with bindings, VS shows you message box - smth like &quot;Cannot connect to TFS, bla-bla&quot;, you click Ok, and then solution opens&nbsp;without source control, and you can run and play with it without any problems. For me it happens when I&nbsp;am not connected to Internet,&nbsp;it happens only once,&nbsp;and next time I reopen it VS does not ask any more. I thought this is not a big deal (to click Ok on message box), it was expected behavior according to Codeplex documentation, so I never worried about this.</p>\r\n<p>Now it appears a different story emerges, from your post and some previous ones. It looks like to open the solution you have to go through some manual process of removing bindings (deleting vss files?), otherwise you can't open/see anything. Is this the case? Then we need to have a second look at it. I don't mind doing it myself for release download, so you guys don't have to do it.</p>\r\n<p><strong>My question to everybody, especially those running &quot;smaller&quot; versions of visual studio: </strong></p>\r\n<p><strong>What is your experience with opening the project? Is it more than simply clicking a button on warning box?</strong></p>\r\n<p>What seems strange for me with your situation - I also have VS Professional, so your version is not &quot;smaller&quot; than mine; then why you have this trouble at all?</p>\r\n<p>Let's work it out, identify the procedure for removing bindings for release version, and I'll follow the process each time I upload the release.</p>\r\n<p>There was an earlier discussion with comments on how to remove the bindings, need&nbsp;to look at it one more time&nbsp;Again, I was under impression at the time that this wasn't a big deal. <strong>Apologies to everyone if this is not the case. </strong>This is similar to the issue with unit testing framework. At the beginning I used nUnit, but then decided to move to VS built-in unit testing. I thought that would simplify things for everybody, but it turned out, VS unit testing framework was not available in smaller versions of VS. So I'm planning to move it back to nUnit in some near future - I want to also refactor unit tests a bit at the same time, so it has to wait for its turn.</p>\r\n<p>Thank you</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-22T11:29:08.163-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

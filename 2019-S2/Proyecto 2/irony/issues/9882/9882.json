@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "the grammar is just sample, not expected to cover all c#",
+    "ClosedDate": "2013-06-20T14:11:12.383-07:00",
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "If you use the sample C# grammar, parser finds errors in constructions like\r\n\r\n(a as b).c;\r\nz = (a as b).d();\r\n\r\nPlease, fix.",
+    "LastUpdatedDate": "2013-06-20T14:11:12.383-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2013-06-20T11:57:49.89-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "C# grammar, statements with 'as' cause syntax errors",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9882
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "this is just sample, it misses a lot of things \nclosing it",
+      "PostedDate": "2013-06-20T14:10:38.36-07:00",
+      "Id": 103686
+    }
+  ]
+}

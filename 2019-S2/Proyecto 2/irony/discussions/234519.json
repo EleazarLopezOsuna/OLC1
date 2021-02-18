@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "521305",
+    "ThreadId": "234519",
+    "Html": "\r\n<p>Hi everybody</p>\r\n<p>Just uploaded new code drop, with a few minor fixes and NUnit support. Now you can run tests in both environments - VS Test or NUnit. There are two test projects in the solution for each option plus conditional attribute renaming in source code (test are\r\n shared between the two projects).</p>\r\n<p>After doing all this, checking in, getting all back from codeplex I found a problem. I usually update the zip on Downloads page right after I do the checkin. I download the sources back, open VS, remove source control bindings (to make things easier for\r\n those who will use the downloads), build, run unit tests, etc. It turns out, after I removed bindings and disconnected from TFS (codeplex), VS Tests stopped working. Attempt to run the test project pops up a box with a message &quot;The target of invocation had\r\n thrown an exception&quot;. If you experience the same effect, here's the situation.</p>\r\n<p>It turned out it is a known problem - read the following post, and there are several workarounds there:</p>\r\n<p><a href=\"http://chezray.linklord.com/roller/chezray/entry/unit_tests_failing_with_exception\">http://chezray.linklord.com/roller/chezray/entry/unit_tests_failing_with_exception</a></p>\r\n<p>what worked for me is simply reconnecting with TFS (without binding the project) - after reconnection it started working. Alternatively you can consider deleting the registry key as described.</p>\r\n<p>On another theme, I'm preparing to move to VS 2010/.NET 4. I'm planning to make project runnable in both environments for a while. In the current version you'll notice that I added suffix &quot;2008&quot; to project and solution files. Next time there will be 2010\r\n versions.</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2010-11-12T13:48:52.23-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "521483",
+    "ThreadId": "234519",
+    "Html": "\r\n<p>Hi Roman,</p>\r\n<p>Thanks for adding the NUnit stuff. &nbsp;Just curious why you want to support both frameworks? &nbsp;With TestDriven.Net (<a href=\"http://www.testdriven.net/download.aspx\">http://www.testdriven.net/download.aspx</a>) you can easily run NUnit within Visual\r\n Studio and its free to use on open source project. &nbsp;There are subtle differences in the NUnit and MStest APIs (particularly that testing for exceptions in NUnit is much nicer), I'm concerned that the unit tests will end up being a jumble of preprocessor\r\n directives to properly support both frameworks.</p>\r\n",
+    "PostedDate": "2010-11-13T06:24:38.293-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "521757",
+    "ThreadId": "234519",
+    "Html": "\r\n<p>As you can see in Irony's tests, they use only very basic facilities (Assert helper class), which is very similar in both environments. So for now, a single #if statement at the top of the file is enough.</p>\r\n<p>As for other things like TestDriven.NET, I would prefer not to introduce more dependencies on other frameworks; I think NUnit/VSTest is enough for now.</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2010-11-14T09:17:01.15-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

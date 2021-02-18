@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "496612",
+    "ThreadId": "228039",
+    "Html": "<p>Hi,</p>\r\n<p>I'm writing grammar for unit of measure.&nbsp; The syntax is like:</p>\r\n<p>simple_rule : PREFIX_SYMBOL&nbsp;ATOM_UNIT;</p>\r\n<p>PREFIX_SYMBOL : 'c' | 'm' | 'k';&nbsp; // c-centi, m-milli, k-kilo</p>\r\n<p>ATOM_UNIT : 'g' | 's'; // g - gram, s - second</p>\r\n<p>How can I define this in Irony which might accomodate units like &quot;cm&quot; (c&nbsp;centimeter), &quot;ms&quot; (millisecond)?&nbsp; Irony throws syntax error.</p>\r\n<p>Regards,</p>\r\n<p>Ali</p>",
+    "PostedDate": "2010-09-21T10:15:40.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496678",
+    "ThreadId": "228039",
+    "Html": "<p>In this case it might be simpler to define all combinations directly, there are just six.</p>\r\n<p>Otherwise, to allow two symbols follow each other without space, you should set special Terminal flag on the &quot;first&quot; set of symbols, like AllowAlphaAfter, don't remember the exact name</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-21T12:46:51.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496805",
+    "ThreadId": "228039",
+    "Html": "<p>Thanks Rivan.&nbsp; It is AllowAlphaAfterKeyword in KeyTerm.&nbsp; Now, it is working.&nbsp; The reason I'm selecting this option is the grammar has more combinations than the one shown above.</p>",
+    "PostedDate": "2010-09-21T21:03:53.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

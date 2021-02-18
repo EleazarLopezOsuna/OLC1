@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "143327",
+    "ThreadId": "43122",
+    "Html": "Getting back to my test with the Pilot language, the basic syntax is &quot;(command letter)(optional conditional)(colon)(other stuff)&quot;.&nbsp; On the most extended version of the language, the conditional could be an expression, although in the basic&nbsp; syntax, it's just &quot;Y&quot; or &quot;N&quot;, so that we'd have:<br>\r\n<br>\r\nT:&nbsp; Hello World!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (always print &quot;Hello World)<br>\r\nT(#X&gt;#Y):Hello World!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (print &quot;Hello World if variable X is greater than Y)<br>\r\nTY: Hello World!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (print &quot;Hello World if the global match condition is true)<br>\r\n<br>\r\nThe first line works OK, I haven't tried implementing the second yet, but I think it should parse well enough.&nbsp; The third line fails, as it doesn't see the &quot;T' and &quot;Y&quot; as two separate tokens.&nbsp; If I were to write it as <br>\r\n<br>\r\nT Y: Hello World!&nbsp;&nbsp;&nbsp; <br>\r\n<br>\r\nThat works, but that's not the language syntax.&nbsp; Is there anyway to get it to recognized two one-letter keywords without intervening whitespace?<br>\r\n<br>\r\nI could handle this by making &quot;T:&quot;, &quot;TY:&quot; and &quot;TN:&quot; separate tokens, but since virtually any command can have a conditional, this would essentially be tripling the grammar.<br>\r\n<br>\r\n",
+    "PostedDate": "2008-12-29T06:50:18.687-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "143407",
+    "ThreadId": "43122",
+    "Html": "I don't think you can do anything here directly using Irony's facilities, it it too different from what Irony's scanner is made for. But try changing the WhitespaceChars property in Grammar class, and introduce space as a separate token.. although it's a lot of trouble. I'm afraid you can't do much without custom terminals. <br>\r\nI was thinking for a long time about creating FixedLengthTerminal, for reading files with fixed-length field, will probably do it some day. Although not sure this will help in this case. Let me think about this. <br>\r\n",
+    "PostedDate": "2008-12-29T15:26:08.17-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

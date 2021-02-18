@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T11:44:52.413-07:00",
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "Using the Python grammar with the input below issues an invalid operator exception (download 29 april 2008)\n----------------------------------------------------\nfor quant in range(99, 0, -1):\n   if quant > 1:\n      print quant, \"bottles of beer on the wall,\", quant, \"bottles of beer.\"\n\n\"\"\"\n99 Bottles\n\"\"\"\n-----------------------------------------",
+    "LastUpdatedDate": "2010-03-26T11:44:52.413-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2008-05-02T15:28:41.673-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "System.InvalidOperationException (Stack empty) on illegal python input",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 2145
+  },
+  "FileAttachments": [
+    {
+      "FileId": 210343,
+      "FileName": "InvalidOperationException.txt",
+      "DownloadUrl": ".\\210343"
+    }
+  ],
+  "Comments": []
+}

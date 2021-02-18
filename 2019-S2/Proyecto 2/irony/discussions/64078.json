@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "217886",
+    "ThreadId": "64078",
+    "Html": "<p>Hello,</p>\r\n<p>Wouldn't be useful if we can write:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>nodes[4]\r\n</pre>\r\n</div>\r\n<p>instead of:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>nodes.ChildNodes[4]\r\n</pre>\r\n</div>\r\n<p>In ParseTreeNode.cs:&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>    <span style=\"color:Blue\">public</span> ParseTreeNode <span style=\"color:Blue\">this</span>[<span style=\"color:Blue\">int</span> index]\r\n    {\r\n        <span style=\"color:Blue\">get</span>\r\n        {\r\n            <span style=\"color:Blue\">return</span> ChildNodes[index];\r\n        }\r\n    }\r\n\r\nRegards,</pre>\r\n<pre>Zoltan</pre>\r\n</div>",
+    "PostedDate": "2009-07-31T00:14:11.37-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218203",
+    "ThreadId": "64078",
+    "Html": "<p>I would disagree. The indexer should be implemented in classes that represents lists of some sort, or sets or dictironaries. ParseTreeNode is not a list, it&nbsp;has ChildNodes property which is a list, along with other properties. I think creating default indexer would be confusing and go against accepted guidelines</p>\r\n<p>thanks anyway for the suggestion - keep digging!</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-07-31T16:37:03.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

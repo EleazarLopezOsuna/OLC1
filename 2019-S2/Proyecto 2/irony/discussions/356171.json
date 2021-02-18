@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "837739",
+    "ThreadId": "356171",
+    "Html": "<p>Is there a terminal that imposes a specific set of characters constraint? I'm looking at the samples &nbsp;and I cant find anything that looks like that.</p>\n<p>I need a token that obligatorily has punctuation within it.</p>\n<p>TIA,</p>\n<p>Francois</p>",
+    "PostedDate": "2012-05-17T08:54:54.173-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "837752",
+    "ThreadId": "356171",
+    "Html": "<p>Just pick the terminal that fits most and hook to ValidateToken event</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-05-17T09:28:08.973-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "837899",
+    "ThreadId": "356171",
+    "Html": "<p>Thanks!</p>",
+    "PostedDate": "2012-05-17T15:22:05.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "837913",
+    "ThreadId": "356171",
+    "Html": "<p>Quick Followup:</p>\r\n<p>I need a Terminal that catches everything between \" \", even &nbsp;an arbitrary number of quotes (not escaped), Is that possible?</p>\r\n<p>(I tried with FreeText, to no avail)</p>\r\n<p>TIA,</p>\r\n<p>Francois</p>",
+    "PostedDate": "2012-05-17T16:13:09.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "837915",
+    "ThreadId": "356171",
+    "Html": "<p>please give a source sample and desired tokens output</p>",
+    "PostedDate": "2012-05-17T16:14:37.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "837924",
+    "ThreadId": "356171",
+    "Html": "<p>&nbsp;</p>\r\n<p>(TOKENKEY#1=\"TOKENSTRING \"random?string&eacute;&agrave;\" (all the way to the following quote)\")</p>\r\n<p>token = TOKENKEY#1</p>\r\n<p>comp = =</p>\r\n<p>string = TOKENSTRING \"random?string&eacute;&agrave;\" (all the way to the following quote)</p>\r\n<p>I cant seem to capture the funky string.</p>\r\n<p>TIA,</p>\r\n<p>Francois</p>",
+    "PostedDate": "2012-05-17T16:50:17.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "837957",
+    "ThreadId": "356171",
+    "Html": "<p>well, not clear what would be the algorithm for the terminal - when it starts moving along the string and finds a quote? what this quote - string end or embedded quote? anyway, once you clarify this&nbsp;algorithm, then I think your only choice is custom terminal class to implement it.&nbsp;</p>",
+    "PostedDate": "2012-05-17T20:18:52.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1446199",
+    "ThreadId": "645546",
+    "Html": "I'm putting together a grammar for an existing language that has an object literal.  All objects are numbered and represented as #&lt;number&gt;, e.g. #52 (I represent this as a numeric literal of int only, prefixed by #).  The language also features basic integer and floating point numbers, represented by a basic numeric literal.  Objects in this language can have properties and methods.  The conflict I run into is that when I try to parse the expression &quot;#3.foo&quot;, the parser seems to decide that I must be trying to represent a floating point number and gives me the error &quot;invalid character: '#'&quot;.  This occurs even though I have the property member access defined in the language.  If I use a variable (assuming it represents an object), such as &quot;foo.bar&quot;, the parser works just fine.  Is there a way to indicate to the parser that my object literal should take precedence over the numeric literal, so that referencing the property on an object literal will work?  Of course feel free to point out a more proper solution if you have one.  Thank you in advance for any help :).<br />\n",
+    "PostedDate": "2015-09-28T09:43:11.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1446214",
+    "ThreadId": "645546",
+    "Html": "I have found the root of my problem.  I had the NoDotAfterInt flag specified in there.  Silly mistake.<br />\n",
+    "PostedDate": "2015-09-28T12:12:21.96-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2015-09-28T12:12:26.767-07:00"
+  }
+]

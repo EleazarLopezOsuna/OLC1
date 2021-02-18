@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1087874",
+    "ThreadId": "455349",
+    "Html": "I'm trying to parse a grammar with the following (simplified) BNF rules:\r<br />\n<br />\nConstantExpression = number | Date | QuotedString\r<br />\nDate = Year/Month/Day | Year/Month/Day Hour:Minute:Second\r<br />\nQuotedString = 'string'\r<br />\nYear etc = number\r<br />\n<br />\nHere is my code:<br />\n<pre><code> public TestGrammar()\n  {\n    \n    var number = new NumberLiteral( &quot;number&quot; );    \n    var str = new RegexBasedTerminal( &quot;str&quot;, &quot;[a-zA-Z0-9 ]*&quot; );\n\n    var ConstantExpression  = new NonTerminal( &quot;ConstantExpression&quot; );   \n    var QuotedString        = new NonTerminal( &quot;QuotedString&quot; );\n    var Year                = new NonTerminal( &quot;Year&quot; );\n    var Month               = new NonTerminal( &quot;Month&quot; );\n    var Day                 = new NonTerminal( &quot;Day&quot; );\n    var Hour                = new NonTerminal( &quot;Hour&quot; );\n    var Minute              = new NonTerminal( &quot;Minute&quot; );\n    var Second              = new NonTerminal( &quot;Second&quot; );\n    var Date                = new NonTerminal( &quot;Date&quot; );   \n        \n    QuotedString.Rule = ToTerm( &quot;'&quot; ) + str + ToTerm( &quot;'&quot; ); \n\n    Year.Rule   = number;    \n    Month.Rule  = number;    \n    Day.Rule    = number;    \n    Hour.Rule   = number;    \n    Minute.Rule = number;    \n    Second.Rule = number;    \n\n    Date.Rule = ToTerm( &quot;'&quot; ) + Year + ToTerm( &quot;/&quot; ) + Month + ToTerm( &quot;/&quot; ) + Day + ToTerm( &quot;'&quot; )\n              | ToTerm( &quot;'&quot; ) + Year + ToTerm( &quot;/&quot; ) + Month + ToTerm( &quot;/&quot; ) + Day + ToTerm( &quot; &quot; ) \n                + Hour + ToTerm( &quot;:&quot; ) + Minute + ToTerm( &quot;:&quot; ) + Second + ToTerm( &quot;'&quot; );\n    \n    ConstantExpression.Rule = number | Date | QuotedString;   \n\n    this.Root = ConstantExpression;\n          \n  }</code></pre>\n\nThis works fine for numbers and QuotedStrings, but fails for dates e.g.\r<br />\n'12/12/12': Syntax error, expected: '\r<br />\n<br />\nShouldn't the parser backtrack and attempt to recognise the text using Date if QuotedString fails?\r<br />\n<br />\nMany thanks,\r<br />\n<br />\nJames<br />\n",
+    "PostedDate": "2013-09-03T12:43:21.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1087948",
+    "ThreadId": "455349",
+    "Html": "get rid of Year,Month, Day.. etc terminals, use 'number' directly<br />\n",
+    "PostedDate": "2013-09-03T14:18:08.343-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1088111",
+    "ThreadId": "455349",
+    "Html": "Thanks for the suggestion, but that doesn't seem to be helping:<br />\n<pre><code>public TestGrammar()\n  {\n    \n    var number  = new NumberLiteral( &quot;number&quot; );    \n    var str     = new RegexBasedTerminal( &quot;str&quot;, &quot;[a-zA-Z0-9 ]*&quot; );\n\n    var ConstantExpression  = new NonTerminal( &quot;ConstantExpression&quot; );   \n    var QuotedString        = new NonTerminal( &quot;QuotedString&quot; );    \n    var Date                = new NonTerminal( &quot;Date&quot; );   \n        \n    QuotedString.Rule = ToTerm( &quot;'&quot; ) + str + ToTerm( &quot;'&quot; );     \n\n    Date.Rule = ToTerm( &quot;'&quot; ) + number + ToTerm( &quot;/&quot; ) + number + ToTerm( &quot;/&quot; ) + number + ToTerm( &quot;'&quot; )\n              | ToTerm( &quot;'&quot; ) + number + ToTerm( &quot;/&quot; ) + number + ToTerm( &quot;/&quot; ) + number + ToTerm( &quot; &quot; ) \n                + number + ToTerm( &quot;:&quot; ) + number + ToTerm( &quot;:&quot; ) + number + ToTerm( &quot;'&quot; );\n    \n    ConstantExpression.Rule = number | Date | QuotedString;   \n\n    this.Root = ConstantExpression;\n          \n  }</code></pre>\n\n'12/12/12': Syntax error, expected: '\r<br />\n<br />\nAny other ideas? BTW, very much liking Irony so far - many thanks!<br />\n",
+    "PostedDate": "2013-09-04T01:20:43.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1088129",
+    "ThreadId": "455349",
+    "Html": "Define a separate non-terminal for Time, and define DateExt nonterminal as 'Date + TimeOpt,\r<br />\nwhere TimeOpt.Rule = Time | Empty; \r<br />\nOn a general note, I suggest to treat dates and strings as quoted strings. The content of the string is checked in ValidateToken event for the strings. Your code should analyze the content and if it is date, replace the token.Terminal value with Date terminal.\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-09-04T02:16:20.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1088804",
+    "ThreadId": "455349",
+    "Html": "Thanks for the alternative suggestion. For the benefit of others, here is what I am now using:<br />\n<pre><code>public class TestGrammar : Irony.Parsing.Grammar \n{\n\n  private Dictionary&lt; string, Terminal &gt; m_TerminalOverrides = new Dictionary&lt; string, Terminal &gt;();\n\n  public TestGrammar()\n  {\n    var datetime            = new Terminal( &quot;datetime&quot; );\n    var str                 = new Terminal( &quot;str&quot; );\n    var number              = new NumberLiteral( &quot;number&quot; );    \n    var quotedStringOrDate  = new RegexBasedTerminal( &quot;quotedString&quot;, @&quot;'[\\w /\\:\\.\\+\\-]*'&quot; );\n\n    m_TerminalOverrides[ datetime.Name ]  = datetime;\n    m_TerminalOverrides[ str.Name ]       = str;\n\n    quotedStringOrDate.ValidateToken += quotedStringOrDate_ValidateToken;\n\n    var ConstantExpression  = new NonTerminal( &quot;ConstantExpression&quot; );                \n\n    ConstantExpression.Rule = number \n                            | datetime \n                            | str\n                            | quotedStringOrDate;   \n\n    this.Root = ConstantExpression;\n     \n  }\n\n  void quotedStringOrDate_ValidateToken( object sender, ValidateTokenEventArgs e )\n  {\n    var current = e.Context.CurrentToken;\n    var dateRegex = new Regex( @&quot;'\\d{4}/\\d{2}/\\d{2}'|'\\d{4}/\\d{2}/\\d{2} \\d{2}:\\d{2}:\\d{2}(\\.\\d+)*'&quot; );\n\n    if( dateRegex.Match( current.Text ).Length &gt; 0 )\n    {\n      // If regex matches, we have a date\n      e.ReplaceToken( new Token( m_TerminalOverrides[ &quot;datetime&quot; ], current.Location, current.Text, current.Value ) );\n    }\n    else\n    {\n      // Else it must be just a plain string\n      e.ReplaceToken( new Token( m_TerminalOverrides[ &quot;str&quot; ], current.Location, current.Text, current.Value ) );\n    }\n  }\n}</code></pre>\n\n",
+    "PostedDate": "2013-09-05T08:25:03.483-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1088865",
+    "ThreadId": "455349",
+    "Html": "one suggestion - move 'dateRegex' to field and do new Regex in constructor - AFAIK regex does compilation of pattern first time it is used, so to avoid repeated overhead do it once\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-09-05T10:35:17.457-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

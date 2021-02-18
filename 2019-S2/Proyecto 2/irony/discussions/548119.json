@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1254631",
+    "ThreadId": "548119",
+    "Html": "My language allows string to be enclosed in both double quote and single quote. How to define that in grammar?\r<br />\n<br />\nThx<br />\n",
+    "PostedDate": "2014-06-09T21:10:16.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1254883",
+    "ThreadId": "548119",
+    "Html": "just create two string literals, one for each case<br />\n",
+    "PostedDate": "2014-06-10T09:39:15.477-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

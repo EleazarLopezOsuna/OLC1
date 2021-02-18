@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T09:15:13.507-07:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "NumberLiteral (with BigInt support option turned on) can't parse 11962222086548019456196316149565771506.\nTry pasting this number into ExpressionEvaluation sample (which supports BigInteger arithmetics): it will report invalid number.\nNumberLiteral would accept it if you add more digits: for example, 119622220865480194561963161495657715061 is accepted.\nAnother sample invalid number is Factorial(40) = 119622220865480194561963161495657715064383733760000000000.",
+    "LastUpdatedDate": "2010-03-26T09:15:13.507-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2010-02-07T11:44:43.897-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "NumberLiteral bug",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 6992
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "man, how you find this? checking all numbers one-by-one? :) I will look into this\r\nthanks!",
+      "PostedDate": "2010-02-08T09:49:15.81-08:00",
+      "Id": 29160
+    },
+    {
+      "Message": "Haha, no, it was pure accident :)\r\nBy the way, NumberLiteral also doesn't parse harmless 0 (zero) when DefaultIntTypes contains only TypeCodeBigInt.\r\n\r\nSee NumberLiteral.cs, line 413:\r\ndetails.Body = details.Body.TrimStart('+').TrimStart('-').TrimStart('0'); // strip away everything, leaving empty string",
+      "PostedDate": "2010-02-09T07:11:19.887-08:00",
+      "Id": 29161
+    },
+    {
+      "Message": "Should be fixed in latest code drop. ",
+      "PostedDate": "2010-03-14T22:37:12.54-07:00",
+      "Id": 29162
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1319293",
+    "ThreadId": "571342",
+    "Html": "Hi\r<br />\nI'm new on using Irony but i would like to use it and substitute my sql parser built on\r<br />\nGold Parser engine ;-)\r<br />\nI've tried to see if there is an utility for converting a BNF source file into an Irony class.\r<br />\nThe Gold parser grammar simple read a BNF file and is ready to be used.. what i have to do with Irony?\r<br />\nI've tried to use the SQL parser example but it doesn't work even with a simple statement\r<br />\nincluding more than one JOIN clause..\r<br />\n<br />\nPlease can you help me ?\r<br />\n<br />\nRegards\r<br />\nLuigi<br />\n",
+    "PostedDate": "2014-11-05T02:24:28.317-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1319785",
+    "ThreadId": "571342",
+    "Html": "the Gold parser reads not BNF file, but file with BNF encoded in custom BNF-like meta-language. Irony does not need this external encoding in metalanguage, you use c# directly, with operator overloading to encode the grammar. As for Join clause in SQL grammar - yes, it needs to be expanded, SQL sample is just a sample.<br />\n",
+    "PostedDate": "2014-11-06T13:36:53.077-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

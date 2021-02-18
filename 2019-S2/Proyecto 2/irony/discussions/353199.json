@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "827260",
+    "ThreadId": "353199",
+    "Html": "\r\n<p>Hi Roman,</p>\r\n<p>I'm working on a console for GrammarExplorer.<br>\r\nConsole will support both WriteLine and ReadLine methods for grammar samples.</p>\r\n<p>Where should I put ReadLine() method implementation?<br>\r\nLooks like it should be in ScriptApp, am I right?</p>\r\n",
+    "PostedDate": "2012-04-23T02:59:35.23-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "827437",
+    "ThreadId": "353199",
+    "Html": "<p>Look at CommandLine.cs class - it uses IConsoleAdaptor interface. You should create ConsoleAdapter class for your console control (or make the control itself implement the interface). Not sure I understand the question, that's as far as I can guess.</p>",
+    "PostedDate": "2012-04-23T10:17:59.73-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "827486",
+    "ThreadId": "353199",
+    "Html": "<blockquote style=\"border: solid .1em #ccc; font-style: italic; margin: .25em 1em 0 1em; padding: 0 .25em 0 .25em;\"><strong>rivantsov wrote:</strong><br />\n<p>Not sure I understand the question, that's as far as I can guess.</p>\n</blockquote>\n<p>Sorry for being not quite clear.</p>\n<p>I'd like to extend the \"Run grammar sample\" feature of the GrammarExplorer.<br /> The current implementation of&nbsp;InterpretedLanguageGrammar.RunSample can only write text, but cannot read user input.<br /> RunSample method creates a ScriptApp&nbsp;instance, calls _app.Evaluate() and returns _app.OutputBuffer.<br /> To enable ReadLine operation, I should pass my IConsoleAdaptor implementation, right?</p>\n<p>I'm going to do it like this:<br /> 1. Extend&nbsp;RunSampleArgs class, add IConsoleAdaptor parameter.<br /> 2. Extend ScriptApp class, add IConsoleAdaptor property (say, Console).<br /> 3. AstNode will be able to use&nbsp;ScriptThread.App.Console.ReadLine/WriteLine methods.</p>\n<p>It is the right way to do things?</p>",
+    "PostedDate": "2012-04-23T12:09:12.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "827687",
+    "ThreadId": "353199",
+    "Html": "<p>Keep in mind that supporting console mode (REPL) is optional, even if evaluation is supported. Like SearchGrammar - you can evaluate input query (and produce converted SQL) but it does not make much sense to start REPL session.</p>\r\n<p>So grammar must somehow indicate that it supports REPL/console, and secondly, create and return the ComandLine instance. Not sure how to do it most intuitively. One option is to extend (and rename) ICanRunSample interface, to allow it to a) create full-blown interactive console, and/or b) provide one-time evaluation of the script in the editor panel.</p>\r\n<p>Any ideas? everybody?</p>",
+    "PostedDate": "2012-04-23T23:42:19.627-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "827738",
+    "ThreadId": "353199",
+    "Html": "<blockquote style=\"border: solid .1em #ccc; font-style: italic; margin: .25em 1em 0 1em; padding: 0  .25em 0 .25em;\"><strong>rivantsov wrote:</strong><br />\n<p>Keep in mind that supporting console mode (REPL) is optional, even if evaluation is supported. Like SearchGrammar - you can evaluate input query (and produce converted SQL) but it does not make much sense to start REPL session.</p>\n</blockquote>\n<p>I'm not currently speaking about REPL, it's another thing. Consider the following grammar sample:</p>\n<div style=\"color: black; background-color: white;\">\n<pre>  WriteLine(<span style=\"color: #a31515;\">\"Type in yor name: \"</span>);\n  Name = ReadLine();\n  WriteLine(<span style=\"color: #a31515;\">\"Hello, \"</span>, Name, <span style=\"color: #a31515;\">\"!\"</span>);\n</pre>\n</div>\n<p>Think of it as a console application that&nbsp;uses IConsoleAdaptor (ScriptApp.Console property) for I/O.<br /> When executed by the GrammarExplorer, these operations are performed by ConsoleTextBox.<br /> In the CommandLine app, they are directed to a native system console.</p>\n<p>I propose to extend ICanRunSample in a way that it supports both I/O directions,<br /> so the GrammarExplorer can run samples like the above.</p>\n<p>Supporting REPL would be another task.</p>\n<blockquote style=\"border: solid .1em #ccc; font-style: italic; margin: .25em 1em 0 1em; padding: 0 .25em 0 .25em;\"><strong>rivantsov wrote:</strong><br />\n<p>So grammar must somehow indicate that it supports REPL/console, and secondly, create and return the ComandLine instance.</p>\n</blockquote>\n<p>I think that the console should be provided by the application, not by the grammar.</p>\n<p>When we run console application, the window is created for us by the operating system &mdash; <br /> we use STDIN/STDOUT and don't care whether it's a real console window or a file.</p>\n<blockquote style=\"border: solid .1em #ccc; font-style: italic; margin: .25em 1em 0 1em; padding: 0 .25em 0 .25em;\"><strong>rivantsov wrote:</strong><br />\n<p>One option is to extend (and rename) ICanRunSample interface, to allow it to a) create full-blown interactive console, and/or b) provide one-time evaluation of the script in the editor panel.</p>\n</blockquote>\n<p>Looks like it should be two different interfaces :)<br /> ICanRunSample supports one-time evaluation, and, say ICanRunREPL supports interactive console.</p>",
+    "PostedDate": "2012-04-24T01:37:30.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "827941",
+    "ThreadId": "353199",
+    "Html": "<p>ok then, agree with your prev proposal, to add console adaptor to ScriptApp</p>",
+    "PostedDate": "2012-04-24T09:39:39.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "828704",
+    "ThreadId": "353199",
+    "Html": "<p>Hi Roman,</p>\n<p>I've created a project Irony.WinForms that contains two text box controls: IronyTextBox and ConsoleTextBox.<br /> IronyTextBox supports syntax highlighting (Language property should be set to some LanguageData).<br /> ConsoleTextBox is an implementation of IConsoleAdaptor.</p>\n<p>GrammarExplorer now uses both controls: IronyTextBox for code snippets and ConsoleTextBox for runtime output.</p>\n<p>I've modified a Refal program <a title=\"arith.ref\" href=\"http://irony.codeplex.com/SourceControl/network/forks/yallie/IronyContrib/changeset/view/d7589547a1d5#Languages%2fRefal%2fUnitTests%2fSources%2farith.ref\">arith.ref</a> (simple expression translator) to read input expressions from a console.<br /> It's basically a read-evaluate-print loop run by interpreted grammar sample:</p>\n<p><img title=\"Irony GrammarExplorer Console sample running Refal expression translator\" src=\"http://www.sharp-shooter.ru/misc/irony-grammar-explorer-console.png\" alt=\"Irony GrammarExplorer Console sample running Refal expression translator\" /></p>\n<p>Other samples &mdash; wiki, sql, expression evaluator &mdash; work as usual.</p>\n<p>I didn't push my changes to the main repo yet.<br /> I'll be unavailable for about two weeks, so I suppose it's better to wait until I'm back and ready for bug fixing :)</p>",
+    "PostedDate": "2012-04-25T16:39:21.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "828876",
+    "ThreadId": "353199",
+    "Html": "<p>that's great, thanks! will look at it</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-04-26T05:17:56.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

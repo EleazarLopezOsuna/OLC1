@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "808698",
+    "ThreadId": "348162",
+    "Html": "\r\n<p>Hi Roman,</p>\r\n<p>Thanks for the Irony project. I use SearchGrammar from the example to convert Google-like search string into full-text SQL query.</p>\r\n<p>It works pretty good except one simple case - when search string starts from the keyword which should be excluded from result (like &quot;-keyword&quot;) - then parsing fails with &quot;Syntax error, expected: Term, ~, &#43;, Phrase&quot; exception.</p>\r\n<p>If search string looks like &quot;keyword1 -keyword2&quot; - parsing completed correctly.</p>\r\n<p>Can you advice how to fix it? Do I need to make some changes in SearchGrammar description or implement some additional handling?</p>\r\n<p>Thanks in advance,</p>\r\n<p>Dmitry</p>\r\n",
+    "PostedDate": "2012-03-11T05:39:56.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "808732",
+    "ThreadId": "348162",
+    "Html": "<p>this is known \"issue\" and in fact done deliberately - SQL server FTS syntax does not allow expression start with NOT.</p>",
+    "PostedDate": "2012-03-11T08:28:23.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "808755",
+    "ThreadId": "348162",
+    "Html": "<p>Is there any known workaround for the \"issue\"? If FTS does not allow expressions starting with NOT then it should be somehow possible to rearrange subexpressions so that the whole expression does not start from NOT. Or maybe it's possible to add a kind of  stub as the first subexpression?</p>\n<p>Please advice.</p>",
+    "PostedDate": "2012-03-11T10:04:15.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "808761",
+    "ThreadId": "348162",
+    "Html": "<p>you'd better ask Mike about this, on the forum for the article - I see you already asked the question. Also check his book about FTS, he may have more explanations there</p>",
+    "PostedDate": "2012-03-11T10:26:09.96-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "808766",
+    "ThreadId": "348162",
+    "Html": "<p>Ok. Thanks for the explanation.</p>",
+    "PostedDate": "2012-03-11T10:45:30.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

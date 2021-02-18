@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1431703",
+    "ThreadId": "640400",
+    "Html": "Feel a bit stupid for asking but how do I build this in VS2010?\r<br />\n<br />\nI've downloaded the Irony_2013_12_12 release and opened the Irony_All.2010.sln - when I attempt to build 010.irony.2010 I get a bunch of errors for the Irony/Parsing/_new folder for eg:\r<br />\n<br />\nError\t2\tSource file 'W:\\code\\lib\\Irony_2013_12_12\\Irony_2013_12_12\\Irony\\Parsing_new\\GlrParser.cs' could not be opened ('Unspecified error ')\t010.Irony.2010\r<br />\n<br />\nThe other missing files are _new/NewScanner/_partialDefs.cs _new/NewScanner/NewScanner.cs _new/NewScanner/SourceSegments.cs and _new/NewScanner/TerminalLookupByPrefix.cs\r<br />\n<br />\nThis folder doesn't exist in the zip file but folders _new/NewScanner _new/CompilerDirective appear to be generated when I attempt to build.  What am I missing?<br />\n",
+    "PostedDate": "2015-06-24T06:06:21.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431732",
+    "ThreadId": "640400",
+    "Html": "just remove these files from the solution/projects. Or better use 2012 version<br />\n",
+    "PostedDate": "2015-06-24T09:33:34.63-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1432674",
+    "ThreadId": "640400",
+    "Html": "that did it, thankyou!<br />\n",
+    "PostedDate": "2015-06-30T18:28:53.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

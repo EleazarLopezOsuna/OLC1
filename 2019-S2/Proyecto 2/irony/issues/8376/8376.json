@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "by design",
+    "ClosedDate": "2010-05-17T12:23:59.48-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "If the first charecter for hex number is one of A,B,C,D,E,F parser fails with syntax error, for decimal digits all works fine.\n\n    [Language(\"Try\", \"1.0\", \"Try grammar\")]\n    public class TryGrammar : Grammar\n    {\n        public TryGrammar() : base(false)\n        {\n            var ident = new IdentifierTerminal(\"ident\");\n            var number = new NumberLiteral(\"hex\", NumberOptions.Hex);\n            var expr = new NonTerminal(\"expr\");\n\n            // syntax error example: \"var1 = FF09\"\n            // normal work example: \"var1 = 09FF\"\n            expr.Rule = ident + \"=\" + number;\n\n            this.Root = expr;\n        }\n    }\n\nAdding a few lines of code to NumberLiteral.GetFirsts() fixes the situation:\n\nif (IsSet(NumberOptions.Hex))\n      foreach (var item in \"ABCDEFabcdef\") { result.Add(item.ToString()); }",
+    "LastUpdatedDate": "2010-05-17T12:23:59.48-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2010-05-14T06:00:11.287-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "NumberLiteral don't handle situation when the first char is hex",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8376
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "This is by design, hex numbers in all languages I know are associated with special prefix, commonly \"0x\", so this prefix provides the prefix char. Even in the case of your grammar, if you make it slightly more realistic and allow identifiers on the right side of assignment, then it would be impossible for scanner to decide what is \"F0\" - is it identifier or a hex number. ",
+      "PostedDate": "2010-05-17T12:18:51.733-07:00",
+      "Id": 29165
+    }
+  ]
+}

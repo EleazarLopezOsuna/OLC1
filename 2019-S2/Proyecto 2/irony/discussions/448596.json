@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1062729",
+    "ThreadId": "448596",
+    "Html": "I have written an Irony implementation that parses a domain specific query language. The language functions as both an internal and external DSL, being used to communicate between various services and as a query language for users.\r<br />\n<br />\nThe language allows for the querying of a number of different types of data from different sources within an inheritance hierarchy that allows filtering based upon shared properties. Different queries may return a single result set of a type, multiple result sets of different types or a single set filtered by another type; however, not all users have access to all data types/sources. If a query is submitted that involves an unavailable or illegal type an exception will be thrown when execution of the compiled query against the data sources is attempted.\r<br />\n<br />\nI would like to know how to only allow the parsing of those predicates that are available to any given configuration or user by somehow limiting the EBNF expressions included in the definition via conditional inclusion of Irony grammar elements in the grammar provided when initialising a parser.\r<br />\n<br />\nI need to make available only the legal predicates to the parser when I create it, before trying to either pass a query as a message or allowing a user to submit one. Messages are parsed before being sent to ensure validity. In the UI queries are colorised as they are entered by progressive parsing. Nonetheless, as I have described a query may be syntactically correct and yet produce a compiled output that will fail. Only allowing legal predicates at this point where I just parse the query without even generating an AST will keep my &quot;try parses&quot; and UI colorisation correct, preventing illegal queries being submitted and mitigating the likelihood of error messages being returned when the compiled query is executed.\r<br />\n<br />\nIs it possible to merge a number of grammars when creating a parser depending upon a setting in the application where the parser is created? If so I could separate the language elements into different definition files and only load those that were required into the parser.\r<br />\n<br />\nOtherwise is it somehow possible to only include certain grammar elements from those in the grammar definition class dependant on an application setting?\r<br />\n<br />\nAre there any other solutions to this problem? I have considered creating a parser for each type, parsing the query entered by slicing it up (by predicate against a list exposed by each parser from its grammar) and passing the elements to the appropriate parser to see if the predicates' associated values parse, then finally combining the output from all the parsers (I compile to LINQ expressions that can easily be merged) at the end. I would like to find another solution if one is available as I would prefer not to have to create more than one parser, implement a wrapper around this collection of parsers then manipulate both the string of the entered query and the compiled output instead of simply creating a single parser.\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2013-06-29T02:20:27.303-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1062965",
+    "ThreadId": "448596",
+    "Html": "Certainly, there are no facilities for 'conditional enablement' of grammar elements in already constructed parser. Like you build an 'all-included' grammar, build parser from it, and then parse an input text accompanied by some enabled-elements config. I don't think it's even theoretically doable for LALR parser - the parser automaton is a huge graph with a lot of connections derived from grammar elements, and it would not be possible to reliably disable some subset. Even if doable, it would require complete redesign of the whole parsing engine. \r<br />\nOne option for you is to have in input config parameter to grammar, that passes a set of enablement flags, and grammar rules are constructed based on these flags. Then you construct a number of grammars/parsers, one for each config set. But if you say that you want to avoid multiple parser instances, then the other option is to construct all-included parser/grammar, and filter out  (signal as error ) the unavailable options by parse tree analysis, after parsing.\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-06-30T12:22:17.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1067790",
+    "ThreadId": "448596",
+    "Html": "Hi Roman, Thanks for your reply. Having thought it through I have decided to follow the multiple parser route. It seems to be the only practical solution given that my requirements also include a need to be able to easily add new data sources/types easily;\r<br />\n separate grammars will allow me to encapsulate the grammar for a type very cleanly such that I may easily configure the language per user and/or installation and add new elements without having to make any changes to my existing grammars. Implementing this\r<br />\n solution was also clean and easy. Creating multiple parsers has proven to work just fine without any significant performance hit or tricky issues. I'd also like to thank you for creating Irony. The first version of our DSL was implemented using regex; when\r<br />\n time came to extend it the availability of Irony allowed us to reimplement in a far superior manner. Defining and implementing our EBF grammar in C# provides code that matches our docs and is much more clear and understandable than our massively complex regexes\r<br />\n ever could. Irony does an excellent job of providing an abstraction over the concepts of parser construction that let me apply my otherwise woefully inadequate knowledge of the topic from university to arrive at a clean implementation much more rapidly than\r<br />\n I could have using ANTLR or GOLD (having considered both as I approached the project) and all entirely in C#/.net. The result is infinitely more maintainable and I have been able to add new constructs for the new data sources very quickly indeed (initially\r<br />\n I reimplemented the original elements without the extensions, then built in the new search terms.) My whole team are able to work with Irony quickly and well now we've learnt to use it and all of us suffer so much less frustration than we ever encountered\r<br />\n writing and debugging the regex! So thank you and a big hats off from us all. Toby ________________________________________<br />\n",
+    "PostedDate": "2013-07-12T20:58:23.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1067797",
+    "ThreadId": "448596",
+    "Html": "you're welcome, and thank you for your kind words\r<br />\none favor to ask - why not share these experience in a review on Downloads page - so that the next guy who tries to decide between Irony and other tool can easily find your feedback?\r<br />\nthanks\r<br />\nfeedback like this makes the efforts worth it\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-07-12T22:12:23.523-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1067799",
+    "ThreadId": "448596",
+    "Html": "I'll certainly do that, expect to see an account of our experiences this week ________________________________________<br />\n",
+    "PostedDate": "2013-07-12T22:18:03.413-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1071109",
+    "ThreadId": "448596",
+    "Html": "thanks! - appreciated!\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-07-22T00:25:51.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

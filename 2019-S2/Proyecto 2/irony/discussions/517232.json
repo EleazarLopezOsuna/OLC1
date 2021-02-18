@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1187410",
+    "ThreadId": "517232",
+    "Html": "I am currently working on some pseudoMDX expression parser and I got stucked.\r<br />\nI got reduce-reduce conflict which I don't know why occurs.\r<br />\n<br />\nHere is my simplified grammar:<br />\n<pre><code>internal class CG : Grammar\n{\n    public CG()\n        : base(false)\n    {\n        //terminals \n        var integer = new NumberLiteral(&quot;integer&quot;, NumberOptions.IntOnly);\n        var mdxIdentifier = new StringLiteral(&quot;mdxIdentifier&quot;);\n        mdxIdentifier.AddStartEnd(&quot;[&quot;, &quot;]&quot;, StringOptions.None);\n\n        //nonTerminals\n        var expression = new NonTerminal(&quot;expression&quot;);\n        var numOperation = new NonTerminal(&quot;numOperation&quot;);\n        var numOperator = new NonTerminal(&quot;numOperator&quot;);\n        var expressionItem = new NonTerminal(&quot;expressionItem&quot;);\n        var memberFromExpression = new NonTerminal(&quot;memberFromExpression&quot;);\n        var memberForItemFunction = new NonTerminal(&quot;memberForItemFnc&quot;);\n        var member = new NonTerminal(&quot;member&quot;);\n        var itemFunction = new NonTerminal(&quot;itemFunction&quot;);\n\n        expression.Rule =\n            numOperation\n            | expressionItem\n            | &quot;(&quot; + expression + &quot;)&quot;;\n\n        numOperation.Rule = expression + numOperator + expression;\n        numOperator.Rule = ToTerm(&quot;+&quot;) | &quot;-&quot; | &quot;/&quot; | &quot;*&quot;;\n        expressionItem.Rule =\n            memberFromExpression\n            //| lots of other rules\n            ;\n\n        memberFromExpression.Rule =\n            member\n            | &quot;{&quot; + memberFromExpression + &quot;}&quot;\n            | &quot;(&quot; + memberFromExpression + PreferShiftHere() + &quot;)&quot;\n            //lots of other rules\n            ;\n\n        memberForItemFunction.Rule =\n            member\n            | &quot;{&quot; + memberForItemFunction + &quot;}&quot;\n            //lots of other rules\n            ;\n            \n        member.Rule =\n            mdxIdentifier\n            | itemFunction\n            //lots of other rules\n            ;\n\n        itemFunction.Rule =\n            memberForItemFunction + &quot;.&quot; + &quot;item&quot; + &quot;(&quot; + integer + &quot;)&quot;\n            //| memberFromExpression + &quot;.&quot; + &quot;item&quot; + &quot;(&quot; + integer + &quot;)&quot;\n            ;\n\n        Root = expression;\n\n        RegisterOperators();\n    }\n\n    private void RegisterOperators()\n    {\n        RegisterOperators(40, &quot;+&quot;, &quot;-&quot;);\n        RegisterOperators(50, &quot;*&quot;, &quot;/&quot;);\n    }\n}</code></pre>\n\nI can't catch the point why there is conflict.<br />\n<pre><code>  Reduce-reduce conflicts on inputs: }\n  Reduce items:\n    membersFromExpression -&gt; member · [EOF + - / * } )]\n    memberForItemFunction -&gt; member · [. }]\n  Transitions: </code></pre>\n\nWell, OK they may look the same i.e. &quot;{[Member]}&quot;, but thy both exist in different context so I don't think they are ambigious.\r<br />\nUsing Reduce hint wont help because<br />\n<pre><code>memberForItemFunction.Rule =\n            member + ReduceHere()\n            | &quot;{&quot; + memberForItemFunction + &quot;}&quot;\n            //lots of other rules\n            ;</code></pre>\n\nwould not parse expression like &quot;{[Member]}&quot; as memberFromExpression.\r<br />\nAnd using Reduce hint for memberFromExpression would not parse expression &quot;{[Member]}.item(7)&quot; because it would not identify &quot;{[Member]}&quot; as memberForItemFunction.\r<br />\n<br />\nIt there any way how to solve this?<br />\n",
+    "PostedDate": "2014-01-21T06:00:38.227-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1191445",
+    "ThreadId": "517232",
+    "Html": "These two look so similar that it does not seem reasonable to make them different things for parser. Just define one thing instead, let parser parse it and then distinguish them if needed analyzing the parse tree. Note that LALR parser in general is very limited in recognizing 'surrounding context' of a token and making judgement about proper variety of a node - mostly, just the next token and nothing else in decision. Do not overload parser with semantic decisions - it things are similar the way they look, they should be represented as one element in the grammar.\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-01-22T10:57:58.203-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1192822",
+    "ThreadId": "517232",
+    "Html": "Well, thats the problem. The script above is only very simplified grammar and other rules for memberFromExpression and memberForItemFunction are different. This is the only case which causes a problem.\r<br />\nAll in all, thnx for ansver, I'll try to reorganize it somehow.<br />\n",
+    "PostedDate": "2014-01-22T22:35:53.273-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

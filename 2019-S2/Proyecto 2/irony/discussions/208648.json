@@ -1,0 +1,106 @@
+[
+  {
+    "Id": "428626",
+    "ThreadId": "208648",
+    "Html": "<p>Hi,</p>\r\n<p>I am new to Irony. But I have to give some quick result.</p>\r\n<p>I have expression which can contaion:</p>\r\n<p>1. Number: I am getting.</p>\r\n<p>2. indetifier: I am getting.</p>\r\n<p>3. Function: I am getting.</p>\r\n<p>4. Place holder: If in expression X | Y | Z | A appear in any case. Then grammar should identify it as place holder not as identifier.</p>\r\n<p>&nbsp;</p>\r\n<p>Regards,</p>\r\n<p>Ashish Kundan</p>",
+    "PostedDate": "2010-04-07T22:40:53.953-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "428892",
+    "ThreadId": "208648",
+    "Html": "<p>Hi,</p>\r\n<p>Don't quite understand what is place holder - just another terminal, some special thing?</p>\r\n<p>You can declare it as non-terminal with a rule:</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">var</span> placeHolder = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;PlaceHolder&quot;</span>); \r\n\r\nplaceHolder.Rule = ToTerm(<span style=\"color:#A31515\">&quot;X&quot;</span>) | <span style=\"color:#A31515\">&quot;Y&quot;</span> | <span style=\"color:#A31515\">&quot;Z&quot;</span> | <span style=\"color:#A31515\">&quot;A&quot;</span>;\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>Additionally you'll have to set priority of X,Y,Z,A to be higher than that of Identifier or function, like this:</p>\r\n<p>ToTerm(&quot;X&quot;).Priority = 100;</p>\r\n<p>ToTerm(&quot;Y&quot;).Priority = 100;</p>\r\n<p>and so on...</p>\r\n<p>Alternatively you can lower priority of Identifier and Function</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-08T09:38:20.97-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "429079",
+    "ThreadId": "208648",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks a lot for youe reply.</p>\r\n<p>Your understanding is correct. Solution that you provided is working. I was missing priority in my code.</p>\r\n<p>Placeholder is just like an indicator. X mean someting, Y means something and&nbsp; so on.</p>\r\n<p>I defined node for place holder like:</p>\r\n<p>public class PlaceHolderNode : AstNode {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Name;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public AstNode Argument;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public override void Init(Irony.Parsing.ParsingContext context, Irony.Parsing.ParseTreeNode treeNode)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.Init(context, treeNode);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name = treeNode.ChildNodes[0].FindTokenAndGetText();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AsString = Name;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;<br>&nbsp; }//class</p>\r\n<p>It is accepting all. But I want this node to consider only x,y,z,a in upper and lower case.</p>\r\n<p>Is there any help document available for Irony apart from source code.</p>\r\n<p>Regards,</p>\r\n<p>Ashish Kundan</p>",
+    "PostedDate": "2010-04-08T20:42:10.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "429358",
+    "ThreadId": "208648",
+    "Html": "<p>Just add lower-case strings to expression for placeHolder.Rule</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-04-09T11:16:40-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "429457",
+    "ThreadId": "208648",
+    "Html": "<p>Thanks Roman.</p>\r\n<p>I need to identify date in an expression. Can we use regular expression to define its rule?</p>\r\n<p>&nbsp;</p>\r\n<p>Regards,</p>\r\n<p>Ashish kundan</p>",
+    "PostedDate": "2010-04-09T19:44:23.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "429728",
+    "ThreadId": "208648",
+    "Html": "<p>It depends on what format the date is - are there any delimiters? You can use QuotedValueLiteral for VB-like dates : #01/02/2010#. Or FixedLengthLiteral if there are no quoting characters. Other possibility is CustomTerminal - you have to provide matching method implementation. Finally there's RegExBasedLiteral where you specify reg expr</p>",
+    "PostedDate": "2010-04-11T08:18:58.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "429895",
+    "ThreadId": "208648",
+    "Html": "<p>I got it. Thanks a lot.</p>",
+    "PostedDate": "2010-04-11T23:57:08.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "430804",
+    "ThreadId": "208648",
+    "Html": "<p>Roman,</p>\r\n<p>&nbsp;</p>\r\n<p>I want to understand what are the important things that we need to take care while defining nodes. e.g I want to define a node for Nonterminal which contain only stock codes like IBM,MSFT etc. Those node I want to identify in expression as stock code node.</p>\r\n<p>Regards,</p>\r\n<p>Ashish Kundan</p>",
+    "PostedDate": "2010-04-14T00:48:11.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "430913",
+    "ThreadId": "208648",
+    "Html": "<p>Well, the only important thing for defining an AST node class is to make it implement IAstNodeInit interface - that would allow nodes to be automatically created and initialized by parser. IBrowsableAstNode lets node be displayed in AST tree view in Grammar Explorer. That's it - the rest is defined by semantics of your language or DSL, whatever you need them to do.</p>",
+    "PostedDate": "2010-04-14T06:44:57.473-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "431242",
+    "ThreadId": "208648",
+    "Html": "<p>Thanks again for the response and making such a wonderfull tool.</p>",
+    "PostedDate": "2010-04-14T20:47:59.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "431781",
+    "ThreadId": "208648",
+    "Html": "<p>Roman,</p>\r\n<p>&nbsp;</p>\r\n<p>I wote parser to parse function call. It is like :</p>\r\n<p>var number = TerminalFactory.CreateCSharpNumber(&quot;number&quot;);<br>var expression = new NonTerminal(&quot;expression&quot;);<br>var identifier = TerminalFactory.CreateCSharpIdentifier(&quot;identifier&quot;);<br>var fncall = new NonTerminal(&quot;fncall&quot;,typeof(FunctionCallNode));<br>var funArgument = new NonTerminal(&quot;funArgument&quot;);<br>var ArgList = new NonTerminal(&quot;ArgList&quot;, NodeType.GetNodeType(&quot;ExpressionListNode&quot;));<br>fncall.Rule = functioName + OpenParen + ArgList + CloseParen;<br>ArgList.Rule = MakeStarRule(ArgList, comma, funArgument);<br>funArgument.Rule = expression| fncall | number;</p>\r\n<p>&nbsp;</p>\r\n<p>expression id fun call or binary expression.</p>\r\n<p>Above grammar parser function having argument expression, fncall and number in any order.</p>\r\n<p>But I want only those funtion to be parsed whose first argumnet is expression or fncall and second argumnet is number.</p>\r\n<p>Regards,</p>\r\n<p>Ashish</p>",
+    "PostedDate": "2010-04-15T22:41:42.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432029",
+    "ThreadId": "208648",
+    "Html": "<p>Hi</p>\r\n<p>Grammar looks ok. What do you mean &quot;only those functions to be parsed whose...&quot; - you want to accept as valid only certain functions and reject others as errors?</p>\r\n<p>If so, then I would recommend the following. Leave the grammar as is, and parser should accept all function calls. Note I mean Parser. The &nbsp;in the after-parse validation you can check the function arguments and issue an error if it does not fit your restrictions. I think there's an event there which fires when parser creates AST node - you can handle this event and validate function args. Alternatively you can do it after parsing the file - by running thru the AST tree and validating all FunctionCallNodes. Finally, you can subclass FunctionCallNode and validate in Init method.</p>\r\n<p>Roman&nbsp;</p>",
+    "PostedDate": "2010-04-16T11:37:16.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432260",
+    "ThreadId": "208648",
+    "Html": "<p>Yes Roman, your understanding is correct. Thanks for your quick reply.</p>",
+    "PostedDate": "2010-04-17T08:46:14.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

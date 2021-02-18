@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1014078",
+    "ThreadId": "436357",
+    "Html": "Hello! I am trying to create grammar for sql with good error handling.\r<br />\nThe question is how to leave last terminal in error rule in stack?\r<br />\n<br />\nFor example, i have next sql statement:\r<br />\n<br />\nselect a,b bAlias errorSymbol,c from table\r<br />\n<br />\nI have errorRule for column: SyntaxError+&quot;,&quot;\r<br />\n<br />\nSo, when parsing sample statement, parser recovers error, but when recovering it &quot;eats&quot; &quot;,&quot;.\r<br />\nHow can i leave &quot;,&quot; on stack so after recovering it starts from it?<br />\n",
+    "PostedDate": "2013-03-12T11:01:36.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1014955",
+    "ThreadId": "436357",
+    "Html": "I'm afraid I have no recipe for you - in the current implementation of error recovery, that's the way it works.\r<br />\nWill definitely look into this in the next iteration.\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-03-13T18:53:36.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

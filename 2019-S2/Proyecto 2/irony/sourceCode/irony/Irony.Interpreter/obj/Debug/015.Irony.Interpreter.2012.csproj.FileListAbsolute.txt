@@ -1,0 +1,9 @@
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony.Interpreter\bin\Debug\Irony.Interpreter.dll
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony.Interpreter\bin\Debug\Irony.Interpreter.pdb
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony.Interpreter\bin\Debug\Irony.dll
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony.Interpreter\bin\Debug\Irony.pdb
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony.Interpreter\obj\Debug\015.Irony.Interpreter.2012.csprojAssemblyReference.cache
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony.Interpreter\obj\Debug\015.Irony.Interpreter.2012.csproj.CoreCompileInputs.cache
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony.Interpreter\obj\Debug\015.Irony.Interpreter.2012.csproj.CopyComplete
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony.Interpreter\obj\Debug\Irony.Interpreter.dll
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony.Interpreter\obj\Debug\Irony.Interpreter.pdb

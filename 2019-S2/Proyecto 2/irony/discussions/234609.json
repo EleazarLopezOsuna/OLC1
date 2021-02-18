@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "521603",
+    "ThreadId": "234609",
+    "Html": "\r\n<p>Does Irony support type checking? if yes, then how can I implement that to the c# grammar example?</p>\r\n<p>For example: when I declare a variable&nbsp;like this</p>\r\n<p>int x =3.5;</p>\r\n<p>Is there any way I can catch this error in Irony?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2010-11-13T14:50:54.68-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "521755",
+    "ThreadId": "234609",
+    "Html": "\r\n<p>Hi</p>\r\n<p>Irony is primarily parsing technology (currently), with a few demo-like facilities for interpreting the code. Type checking belongs to &quot;code-analysis&quot; phase, which is a separate phase coming after parsing. Irony does not cover this phase currently.</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2010-11-14T09:14:25.537-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "923263",
+    "ThreadId": "398417",
+    "Html": "\r\n<p>Hi there,</p>\r\n<p><span id=\"root\"><span id=\"dir_3_span\" style=\"display:block; margin-left:20px\"><a id=\"dir_3_2\"></a></span></span></p>\r\n<div><a id=\"dir_3_2\">With regards to the FullTextSearchQueryConverter</a><a id=\"file_3_2_0\" href=\"http://irony.codeplex.com/SourceControl/changeset/view/1f7bdd8e9147#Irony.Samples%2fFullTextSearchQueryConverter%2fSearchGrammar.cs\">/SearchGrammar.cs\r\n</a>sample</div>\r\n<div></div>\r\n<div>How can one search using &quot;1/4&quot; etc at the moment it will throw an error?</div>\r\n<div></div>\r\n<div>Regards DotnetShadow</div>\r\n<p><span id=\"dir_3_2_span\" style=\"display:block; margin-left:20px\"></span></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-10-07T23:50:40.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "924121",
+    "ThreadId": "398417",
+    "Html": "<p>did you try \"1/4\" in quotes?</p>",
+    "PostedDate": "2012-10-09T09:40:15.083-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "925001",
+    "ThreadId": "398417",
+    "Html": "<p>Thanks for that , the quotes seem to parse it correctly, so if I had the phrase:</p>\r\n<p><strong>1/4 teaspoon</strong> would I have to convert this to\"</p>\r\n<p><strong>\" \"1/4\" \"teaspoon\" \"</strong></p>\r\n<p>Is that correct?</p>\r\n<p>Regards DotnetShadow</p>",
+    "PostedDate": "2012-10-10T19:02:08.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "925424",
+    "ThreadId": "398417",
+    "Html": "<p>Please read the original article by Michael Coles, he explains the input syntax and all details</p>\r\n<p><a href=\"http://www.sqlservercentral.com/articles/Full-Text+Search+(2008)/64248/\">http://www.sqlservercentral.com/articles/Full-Text+Search+(2008)/64248/</a></p>",
+    "PostedDate": "2012-10-11T11:19:56.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

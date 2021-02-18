@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1494679",
+    "ThreadId": "662222",
+    "Html": "I'm working on upgrading to newer version of Irony. <br />\n<br />\nI am parsing the string:<br />\n<pre><code>ds:label\n</code></pre>\n\nI had this grammar previously:<br />\n<pre><code>var colon = ToTerm(&quot;:&quot;);\nvar metricId = new NonTerminal(&quot;metricId&quot;);\nvar nsId = new NonTerminal(&quot;nsId&quot;);\nvar fmtOpt = new NonTerminal(&quot;fmtOpt&quot;);\nvar datasource = new IdentifierTerminal(&quot;datasource&quot;);\nvar name = new IdentifierTerminal(&quot;name&quot;);\nfmtOpt.Rule = Empty | colon + format;\nnsId.Rule = datasource + colon + name;\nmetricId.Rule = nsId + fmtOpt;\n\n</code></pre>\n\nThe AST as XML would give<br />\n<pre><code>&lt;Node Element=&quot;metricId&quot; NodeType=&quot;AstNode&quot;&gt;\n    &lt;Node Element=&quot;datasource&quot; NodeType=&quot;Token&quot; Value=&quot;ds&quot; ValueType=&quot;System.String&quot;/&gt;\n    &lt;Node Element=&quot;name&quot; NodeType=&quot;Token&quot; Value=&quot;label&quot; ValueType=&quot;System.String&quot;/&gt;\n    &lt;Node Element=&quot;fmtOpt&quot; NodeType=&quot;AstNode&quot;/&gt;\n&lt;/Node&gt;\n\n</code></pre>\n\nNow using the new version of Irony I'm getting the parse tree as XML, and is giving<br />\n<pre><code>&lt;Node Term=&quot;metricId&quot;&gt;\n    &lt;Node Term=&quot;name&quot; Terminal=&quot;IdentifierTerminal&quot; Value=&quot;label&quot;/&gt;\n    &lt;Node Term=&quot;fmtOpt&quot;/&gt;\n&lt;/Node&gt;\n</code></pre>\n\nNote that &quot;datasource&quot; is missing.  I've tried a few different things, but I can't get the parser to give me the value for &quot;datasource&quot;. I assume that I'm missing something that will be obvious in hindsight.<br />\n",
+    "PostedDate": "2017-03-26T10:12:25.363-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

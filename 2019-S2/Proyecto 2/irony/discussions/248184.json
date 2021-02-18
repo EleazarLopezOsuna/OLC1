@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "574575",
+    "ThreadId": "248184",
+    "Html": "\r\n<p>I have been having a lot of issues with the following defined BNF grammar:</p>\r\n<p style=\"padding-left:30px\">condition := predicate {AND predicate} | predicate {OR predicate}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (where {} denotes zero or more times)</p>\r\n<p>This form&nbsp;is required because it is possible to have multiple ANDs or ORa but this grammar does not allow both&nbsp;ANDs and ORs in the same statement without using braces.&nbsp; Initially I interpreted it as follows:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>            condition.Rule = predicate | predicate &#43; condition_and | predicate &#43; condition_or;\r\n            condition_and.Rule = MakePlusRule(condition_and, predicate &#43; AND);\r\n            condition_or.Rule = MakePlusRule(condition_or, predicate &#43; OR);\r\n\r\n</pre>\r\n</div>\r\n<p>But this simply created&nbsp;four reduce-reduce conflicts, two for &quot;AND&quot; and two for &quot;OR&quot;&nbsp; .&nbsp;I tried all sorts of variations around the MakePlusRule, including&nbsp;using &quot;AND&quot; as the separator but nothing worked.</p>\r\n<p>Eventually, after looking at the MakePlusRule code&nbsp;itself, I hit upon the following idea:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>            condition.Rule = predicate | condition_and | condition_or;\r\n            condition_and.Rule = predicate &#43; AND &#43; predicate | condition_and &#43; AND &#43; predicate;\r\n            condition_or.Rule = predicate &#43; OR &#43; predicate | condition_or &#43; OR &#43; predicate;\r\n\r\n</pre>\r\n</div>\r\n<p>&nbsp;Which now&nbsp;works just fine with no conflicts, but is no longer a list.&nbsp; Any ideas as to why I was hitting this issue and how I might turn it back into a simple&nbsp;list of &quot;predicate&quot;s?</p>\r\n<div id=\"x__mcePaste\" style=\"width:1px; height:1px; overflow:hidden; top:0px; left:-10000px\">\r\n&#65279;</div>\r\n",
+    "PostedDate": "2011-03-02T11:39:20.487-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "574626",
+    "ThreadId": "248184",
+    "Html": "<p>I think this is standard SR conflict with chain of operators. In you original version, the parser does not know how to interpret&nbsp;\"pred AND pred AND pred\":</p>\r\n<p>As \"(pred AND pred) AND pred\" or as \"pred AND (pred AND pred)\"</p>\r\n<p>This should be resolved if you register AND and OR as operators with LeftAssociation, precedence does not matter as they don't mix in one expression.</p>\r\n<p>The other way to go is to define condition as</p>\r\n<p>andCond.Rule = MakePlusRule(andCond, \"AND\", pred);</p>\r\n<p>orCond.Rule = MakePlusRule(orCond, \"OR\", pred);</p>\r\n<p>cond.Rule = andCond | orCond;&nbsp;</p>",
+    "PostedDate": "2011-03-02T13:18:46.28-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "574721",
+    "ThreadId": "248184",
+    "Html": "<p>Sorry, I think I was a bit confused, the problem with your original version is not associativity. When I looked at it closely, it appears to have a mistake. According to your definition of condition_and, a list containing a single element is: \"predicate AND\".</p>\r\n<p>Combined with the rule for condition, it follows that the following is a valid condition:</p>\r\n<p>predicate predicate AND</p>\r\n<p>Something is wrong here :)</p>",
+    "PostedDate": "2011-03-02T17:07:14.77-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "574857",
+    "ThreadId": "248184",
+    "Html": "<p>My appologies. As you rightly point out I have messed up the post above!&nbsp; But I promise you (this time!) that I tried both of the following</p>\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; condition.Rule = predicate |&nbsp;condition_and&nbsp;+ predicate |&nbsp;condition_or + predicate;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; condition_and.Rule = MakePlusRule(condition_and, predicate + AND);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; condition_or.Rule = MakePlusRule(condition_or, predicate + OR);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; condition.Rule = predicate |&nbsp;predicate + condition_and |&nbsp;predicate + condition_or;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; condition_and.Rule = MakePlusRule(condition_and, AND + predicate );<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; condition_or.Rule = MakePlusRule(condition_or, OR + predicate );</p>\n<p>which should now read \"(predicate AND) predicate\" or \"predicate (AND predicate)\" respectively.&nbsp; I know that&nbsp;I had these forms working because in some instances they worked and others they didnt, (I therefore assumed the inconsistent behaviour was the reduce-reduce conflict?)</p>\n<p>I also tried the list approach you mention without success.</p>\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; condition.Rule = predicate |&nbsp;condition_and&nbsp;|&nbsp;condition_or ;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; condition_and.Rule = MakePlusRule(condition_and, AND&nbsp;, predicate );<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; condition_or.Rule = MakePlusRule(condition_or, OR&nbsp;, predicate );</p>\n<p>I still got the reduce-reduce conflict.&nbsp;</p>\n<p>The only form that I have found that works is the one I had posted previously (which I have doubled checked against my code and is also correctly copied and pasted :) ).&nbsp; This form also appears to parse sucessfully on a consistent basis:</p>\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; condition.Rule = predicate | condition_and | condition_or;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; condition_and.Rule = predicate + AND + predicate | condition_and + AND + predicate;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; condition_or.Rule = predicate + OR + predicate | condition_or + OR + predicate;<br /><br /></p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-03-03T01:27:20.59-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "575149",
+    "ThreadId": "248184",
+    "Html": "<p>Now it's clear I think. Look at \"condition\" definition, in either case. It says that condition is one of 3: a single predicate, or sequence of 1+ predicates joined by AND, or sequence of 1+ predicates joined by OR.</p>\r\n<p>Each of this variants is a distinctive parsing alternative, and parser has to know when to use which. Now the problem: if we have a single predicate as an input, it can be interpreted as any of these 3 alternative: it is standalone predicate (bing!), and it is an AND sequence with a single element, and it is OR sequence with single element. Parse has no way of deciding based on the grammar - that's what it is reporting in conflict errors!</p>\r\n<p>The solution I think is to define condition as a binary expression, with operations AND, OR - see expression evaluator grammar, the same way. The extra restriction that AND should not mix with ORs can be enforced after parsing, either in AstNote.Init method, or in a separate visitor walk.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-03-03T09:40:50.317-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "575179",
+    "ThreadId": "248184",
+    "Html": "<p>Yes, I think you are right.&nbsp; I have learnt three things here.&nbsp;</p>\r\n<p>First, although I have an \"official grammar\" to follow, that does not mean it can be parsed directly in the form as \"officially\" defined.&nbsp; I have seen comments to that extent in other posts and I now understand that.&nbsp; I like your suggestion of using the ExpressionEvaluator structure.</p>\r\n<p>Second I am making&nbsp;the assumption that the parser will&nbsp;recognise that there will always be at least one \"AND predicate\" with the MakePlusRule when distinguishing between the alternatives (as opposed to MakeStarRule where it wouldnt necessarily even see one case). While logically you might reason that should be the case, in practice that appears to be an invalid assumption when designing the rule.&nbsp; I have stumbled into other cases similar that.&nbsp;</p>\r\n<p>Finally, dont try to do work best done post parsing.&nbsp; I will go and learn a little bit more about AST.</p>\r\n<p>Many thanks.&nbsp; Will let you know how I get on.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-03-03T10:34:39.337-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "575831",
+    "ThreadId": "248184",
+    "Html": "<p>All solved.&nbsp; No more conflicts.</p>\r\n<p>Using the ExpressionEvaluator grammar rather than the \"official\" grammar was the way forward.&nbsp; Still need to sort out the post-parse processing, but that is under my complete control and&nbsp;should now be relatively easy.</p>\r\n<p>Thanks again for your help.</p>\r\n<p>Will.</p>",
+    "PostedDate": "2011-03-04T15:06:01.523-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

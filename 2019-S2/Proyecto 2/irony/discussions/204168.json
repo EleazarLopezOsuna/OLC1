@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "415402",
+    "ThreadId": "204168",
+    "Html": "<p>Hello,<br>When switching to the Parser Trace pane after parsing a test file, the marked line throws a NullReferenceException (ParseTreeNode.cs):</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><div style=\"color:Black;background-color:White\"><pre>    <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">override</span> <span style=\"color:Blue\">string</span> ToString() {\r\n      <span style=\"color:Green\">/* &gt;&gt;&gt; */</span> <span style=\"color:Blue\">return</span> Term.Grammar.GetParseNodeCaption(<span style=\"color:Blue\">this</span>); <span style=\"color:Green\">// Term is null</span>\r\n    }<span style=\"color:Green\">//method</span>\r\n</pre>\r\n</div>\r\n</pre>\r\n</div>\r\n<p>This used to work in previous releases; anything obvious I'm missing?</p>\r\n<p>Thanks in advance,</p>\r\n<p>Rob</p>",
+    "PostedDate": "2010-03-08T03:59:49.587-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "415477",
+    "ThreadId": "204168",
+    "Html": "<p>Ooopss... I thought I fixed that...&nbsp;</p>\r\n<p>Please replace the code in ToString with the following:</p>\r\n<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp;public override string ToString() {</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp; &nbsp;if (Term == null)&nbsp;</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;return &quot;(S0)&quot;; //initial state node</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp; &nbsp;else&nbsp;</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;return Term.GetParseNodeCaption(this);&nbsp;</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp;}//method</div>\r\n<div>&nbsp;&nbsp; &nbsp;public override string ToString() {</div>\r\n<div>&nbsp;&nbsp; &nbsp; &nbsp;if (Term == null)&nbsp;</div>\r\n<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;return &quot;(S0)&quot;; //initial state node</div>\r\n<div>&nbsp;&nbsp; &nbsp; &nbsp;else&nbsp;</div>\r\n<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;return Term.GetParseNodeCaption(this);&nbsp;</div>\r\n<div>&nbsp;&nbsp; &nbsp;}//method</div>\r\n<div></div>\r\n<div>Also replace BnfTerm.GetParseTreeNodeCaption:</div>\r\n<div></div>\r\n<div>\r\n<div>&nbsp;&nbsp; &nbsp;public virtual string GetParseNodeCaption(ParseTreeNode node) {</div>\r\n<div>&nbsp;&nbsp; &nbsp; &nbsp;if (GrammarData != null)</div>\r\n<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;return GrammarData.Grammar.GetParseNodeCaption(node);</div>\r\n<div>&nbsp;&nbsp; &nbsp; &nbsp;else&nbsp;</div>\r\n<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;return Name;&nbsp;</div>\r\n<div>&nbsp;&nbsp; &nbsp;}</div>\r\n<div></div>\r\n</div>\r\n<div></div>\r\n<div>Sorry for the trouble, will patch it asap</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-03-08T07:31:34.27-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "415647",
+    "ThreadId": "204168",
+    "Html": "<p>Fix is working, thank you!</p>",
+    "PostedDate": "2010-03-08T13:53:46.073-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

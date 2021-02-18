@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "909014",
+    "ThreadId": "394593",
+    "Html": "\r\n<p>Hi again!</p>\r\n<p>I have a strange problem concerning operator precedence and braces. I do not want to post the grammar here, as it is quite complex. So I just describe my problem, maybe any of you guys had a similar problem and can point me in the right direction or give\r\n me some hint.</p>\r\n<p>Consider the following lines of code:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>var0 = not var1 &#43; var2\nvar0 = not (var1 &#43; var2)\n</pre>\r\n</div>\r\n<p>&quot;not&quot; has highest precedence, &quot;&#43;&quot; a much lower one. The point is, the first line works. It results in &quot;var0 = (not var1) &#43; var2&quot;, which is correct. The second line, however, leads to a parsing error at the plus-operator. If I change the precedence of &quot;not&quot;\r\n to be lower than that of &quot;&#43;&quot;, parsing works fine, but clearly expressions without braces would then be parsed incorrectly due to the wrong operator precedence.</p>\r\n<p>It seems that at the plus operator, the parser checks the precedence, and as &quot;not&quot; has higher precedence than &quot;&#43;&quot;, it reduces var1, which is not correct because there is an opening brace beforehand.</p>\r\n<p>I am thankful for any hint!<br>\r\nRegards,<br>\r\nMarkus</p>\r\n",
+    "PostedDate": "2012-09-06T00:41:21.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "909248",
+    "ThreadId": "394593",
+    "Html": "\r\n<p>that's really strange. I tried the following in expression evaluator:</p>\r\n<p>&nbsp;- ( 2 &#43; 1)</p>\r\n<p>and it parses ok and gives correct result -3 when executed.</p>\r\n<p>I also added unary bool operator &quot;!&quot; to expr eval grammar with highest precedence, ran the expression</p>\r\n<p>! ( true | false)&nbsp;</p>\r\n<p>and it works correctly, gives FALSE. Please try the same, see the difference with your grammar - something you may be missing</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2012-09-06T09:48:37.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "909471",
+    "ThreadId": "394593",
+    "Html": "<p>OK, I will look into that example.</p>\r\n<p>Thanks for the effort!</p>",
+    "PostedDate": "2012-09-06T23:47:29.547-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

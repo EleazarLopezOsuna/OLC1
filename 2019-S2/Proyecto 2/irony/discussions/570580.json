@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1316292",
+    "ThreadId": "570580",
+    "Html": "I'm trying to define a grammar for a simple language:\r<br />\n<br />\nzero or more a's followed by zero or more b's\r<br />\n<br />\nThe following code functions very well for this:<br />\n<pre><code>NonTerminal PROGRAM = new NonTerminal(&quot;PROGRAM&quot;);\nNonTerminal ALIST = new NonTerminal(&quot;AS&quot;);\nNonTerminal BLIST = new NonTerminal(&quot;BS&quot;);\n\nALIST.Rule = MakeStarRule(ALIST, ToTerm(&quot;a&quot;));\nBLIST.Rule = MakeStarRule(BLIST, ToTerm(&quot;b&quot;));\nPROGRAM.Rule = ALIST + BLIST;\n\nthis.Root = PROGRAM;</code></pre>\n\nNow I need to change the grammar so that every a and b should be on a new line and there can be empty lines in between.\r<br />\n<br />\nWhatever I try, I keep getting reduce-conflicts...\r<br />\n<br />\nPlease help,\r<br />\nSimon<br />\n",
+    "PostedDate": "2014-10-24T08:37:57.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1316609",
+    "ThreadId": "570580",
+    "Html": "MakeStarRule allows specifying delimiter inside, try using NewLine with it. Most likely your problem comes from joining two STAR rules - each allows empty list as implementation, so an empty file has multiple interpretations - like Empty Alist or Empty BList, or both. Try to remove ambiguity by altering rules<br />\n",
+    "PostedDate": "2014-10-26T11:54:05.93-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1316803",
+    "ThreadId": "570580",
+    "Html": "Thanks! \r<br />\n<br />\nI added the delimiter, but it didn't work straight away. I looked in the code for MakeStarRule and added a modified call to MakeListRule.<br />\n<pre><code>NonTerminal PROGRAM = new NonTerminal(&quot;PROGRAM&quot;);\nNonTerminal ALIST = new NonTerminal(&quot;AS&quot;);\nNonTerminal BLIST = new NonTerminal(&quot;BS&quot;);\n\nALIST.Rule = MakeListRule(ALIST, NewLinePlus, ToTerm(&quot;a&quot;), TermListOptions.StarList | TermListOptions.AllowTrailingDelimiter | TermListOptions.AllowEmpty);\nBLIST.Rule = MakeListRule(BLIST, NewLinePlus, ToTerm(&quot;b&quot;), TermListOptions.StarList | TermListOptions.AllowTrailingDelimiter | TermListOptions.AllowEmpty);\nPROGRAM.Rule = ALIST + BLIST;\n\nthis.Root = PROGRAM;</code></pre>\n\nIt parses ok now, but there are 2 shift-reduce conflicts. <br />\n<pre><code>Shift-reduce conflict. State S0, lookaheads [LF]. Selected shift as preferred action.\nShift-reduce conflict. State S3, lookaheads [LF]. Selected shift as preferred action.</code></pre>\n\nI've tried adding some PreferShiftHere()'s but I'm not sure where to put them.\r<br />\n<br />\nAny tips?<br />\n",
+    "PostedDate": "2014-10-27T10:45:30.113-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1316806",
+    "ThreadId": "570580",
+    "Html": "I don't think this kind of grammar (with multiple empty lines in between) fits pure LALR algorithm, it might be difficult to express this in BNF in a simple way. \r<br />\nI would suggest a bit simpler approach. Define the grammar as sequence of lines that are either A or B or empty. Program is a list of lines. This grammar allows mixing A and Bs in any order. Then hook to Reduced event of LineList non-terminal and check in code that the order is correct - A's are before B's.\r<br />\nEssentially you define grammar for less restrictive simpler language, but then enforce extra rule after parsing, by validating the parse tree.<br />\n",
+    "PostedDate": "2014-10-27T10:53:13.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1316807",
+    "ThreadId": "570580",
+    "Html": "Thanks, I'll try that!<br />\n",
+    "PostedDate": "2014-10-27T10:55:36.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

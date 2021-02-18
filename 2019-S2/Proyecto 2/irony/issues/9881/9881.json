@@ -1,0 +1,76 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 5,
+    "Custom": null,
+    "Description": "I got the crash (shown in the attached screenshot).",
+    "LastUpdatedDate": "2013-04-26T12:58:15.777-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2013-04-25T14:05:26.507-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "crash with rv null in ComputeProductionFlags",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9881
+  },
+  "FileAttachments": [
+    {
+      "FileId": 669068,
+      "FileName": "rvIsNull.png",
+      "DownloadUrl": ".\\669068"
+    },
+    {
+      "FileId": 669069,
+      "FileName": "ProcedureGrammar.cs",
+      "DownloadUrl": ".\\669069"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "I've attached my grammar also.",
+      "PostedDate": "2013-04-25T14:08:20.12-07:00",
+      "Id": 98516
+    },
+    {
+      "Message": "At the point of the crash the parent CreateProduction lvalue = {StartSectionRow.grp1}",
+      "PostedDate": "2013-04-25T14:10:21.457-07:00",
+      "Id": 98517
+    },
+    {
+      "Message": "I find that there was a problem in my code. I was using the |= operator on a rule that had not been initialized. It would be nice if that case was handled appropriately. The | operator should return the non-null item out of two.",
+      "PostedDate": "2013-04-25T14:15:54.967-07:00",
+      "Id": 98520
+    },
+    {
+      "Message": "yeah, I see the problem. I think the best place to add this is in overload of \"+\" operator. Will add in the next code update\nthanks\nRoman",
+      "PostedDate": "2013-04-26T10:27:43.887-07:00",
+      "Id": 98602
+    },
+    {
+      "Message": "I think you'll have to fix both Op_Plus and Op_Pipe to handle null inputs.",
+      "PostedDate": "2013-04-26T12:58:15.777-07:00",
+      "Id": 98639
+    }
+  ]
+}

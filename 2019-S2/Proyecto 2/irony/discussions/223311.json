@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "479526",
+    "ThreadId": "223311",
+    "Html": "<p>Hi,<br><br>i have a very strange problem. My application is using Irony to parse and interpret a special language. This works fine for the desktop version of my application (which uses Irony.dll). But when I'm trying to parse the exactly same code snippet in my silverlight application (which uses IronySL.dll), the parser core reports one or more errors.</p>\r\n<p>The error messages that appear are all from the same type:</p>\r\n<p>\r\n<pre>Failed to create AST node for non-terminal [{0}], error: {1}</pre>\r\n</p>\r\n<p>Only the {0} part <span>varies from message to message. </span></p>\r\n<p><span>Example:</span></p>\r\n<p><span>\r\n<pre>Failed to create AST node for non-terminal [logik], error: Fehler beim Versuch von Methode &quot;Irony.Parsing.BnfTerm.CreateAstNode(Irony.Parsing.ParsingContext, Irony.Parsing.ParseTreeNode)&quot;, auf Methode &quot;ProdKonf.RuntimeEnv.Interpreter.Ast.StatementListNode..ctor()&quot; zuzugreifen.</pre>\r\n</span></p>\r\n<p>This errors are kept in Irony.Parsing.ParseTree.ParserMessages attribute.</p>\r\n<p>I'm hoping that somebody has a hint for me ... I'm using the latest version (51617).</p>\r\n<p>Thanks.</p>",
+    "PostedDate": "2010-08-12T00:04:08.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "479755",
+    "ThreadId": "223311",
+    "Html": "Can you please translate the error message? I don't understand German (my guess it's German). ",
+    "PostedDate": "2010-08-12T08:37:34.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "480014",
+    "ThreadId": "223311",
+    "Html": "<p>Oh sorry. The error message in english:</p>\r\n<p>\r\n<pre>Failed to create AST node for non-terminal [logik], error: Attempt by method 'Irony.Parsing.BnfTerm.CreateAstNode(Irony.Parsing.ParsingContext, Irony.Parsing.ParseTreeNode)'<br>to access method 'ProdKonf.RuntimeEnv.Interpreter.Ast.StatementListNode..ctor()' failed.</pre>\r\n</p>\r\n<p>or for example an other message that occures (same type):</p>\r\n<p>\r\n<pre>Failed to create AST node for non-terminal [arg], error: Attempt by method 'Irony.Parsing.BnfTerm.CreateAstNode(Irony.Parsing.ParsingContext, Irony.Parsing.ParseTreeNode)' <br>to access method 'ProdKonf.RuntimeEnv.Interpreter.Ast.ArgNode..ctor()' failed.</pre>\r\n</p>",
+    "PostedDate": "2010-08-12T23:11:56.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "480258",
+    "ThreadId": "223311",
+    "Html": "Well, looks like Irony's code cannot access the constructor of node types. Check StatementListNode constructor (default, parameterless constructor), make sure it's public, \r\nand that the assembly in which the type lives is available (in the same run-time folder). Can you debug it and step-through to the point where it happens?\r\n",
+    "PostedDate": "2010-08-13T09:03:32.547-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "480827",
+    "ThreadId": "223311",
+    "Html": "<p>Ok, I've localized the problem. Some of my extended AST node classes (as well as StatementListNode) did have the wrong scope ... Now they are public and it works fine!</p>\r\n<p>Thank you very much for your help.</p>",
+    "PostedDate": "2010-08-15T23:30:21.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

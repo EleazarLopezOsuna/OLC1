@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1355518",
+    "ThreadId": "581789",
+    "Html": "Hello,\r<br />\n<br />\nI need to define the &quot;==&quot; operator for a decimal and an integer. \r<br />\n<br />\nCurrently I have a method, lets name it A(), that returns an Enum as an Int. I later use this integer to check if it is 0 or 1 in a function that is being parsed by Irony.\r<br />\n<br />\nI have two number literals, one defined suchas:<br />\n<pre><code>var enNumber = new NumberLiteral(&quot;enNumber&quot;)\n            {\n                DefaultIntTypes = new[] { TypeCode.Decimal },\n                DecimalSeparator = '.'\n            };</code></pre>\n\nAnd one defined suchas:<br />\n<pre><code> var svNumber = new NumberLiteral(&quot;svNumber&quot;)\n            {\n                DefaultIntTypes = new[] { TypeCode.Decimal },\n                DecimalSeparator = ','\n            };</code></pre>\n\nThe number from A() is being returned as an Int, but is somehow being parsed as decimal (this is probably correct). However, when the comparison is being made:\r<br />\n<br />\n(something like this):\r<br />\n<br />\nif A() == 1\r<br />\n<br />\nIt breaks and gives me &quot;Operator 'Equal' is not defined for types System.Int32 and System.Decimal.&quot;.\r<br />\n<br />\nI belive a lot of operators are not implemented for decimal. Maybe a lot of parsing/casting should be implemented as well...\r<br />\n<br />\nAny help is very much appreciated.\r<br />\n<br />\nCheers<br />\n",
+    "PostedDate": "2015-02-25T01:25:40.623-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1355721",
+    "ThreadId": "581789",
+    "Html": "Look at LanguageRuntime class, file LanguageRuntime_OpDispatch_Init.cs. All binary operations (including equal) are explicitly encoded there. You need to subclass LanguageRuntime, override Grammar.CreateRuntime method (return your custom runtime instance). \r<br />\nThe best way to go I think is to provide type conversion method to automatically convert Int to decimal for type-mismatching Equal.  I see that there's no typeconverter int-&gt;decimal; so override InitTypeConverters, call base method, and add int-&gt;decimal converter. That should solve the problem. For you '==' operator, the runtime will convert int to decimal and then compare 2 decimals. <br />\n",
+    "PostedDate": "2015-02-25T11:08:48.14-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "89851",
+    "ThreadId": "26880",
+    "Html": "\r\nHi Roman,<br /><br />The support for interpreter in Irony, That features or scope includes ? <br /><br />Please, you can comment  or show an code preview ...<br /><br />Because now, I understand that I can walk on the AST and implement my visitors ...<br /><br />Very Thanks! For you attention<br />",
+    "PostedDate": "2008-04-30T06:57:58.56-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "89934",
+    "ThreadId": "26880",
+    "Html": "\r\nHi<br />hard to say what and how - still designing and implementing it. Some basic execution mechanisms, and standard AST nodes implementing Evaluate method for standard language constructs. Just wait for couple of weeks - we'll see...<br />Roman<br />",
+    "PostedDate": "2008-04-30T14:30:34.67-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

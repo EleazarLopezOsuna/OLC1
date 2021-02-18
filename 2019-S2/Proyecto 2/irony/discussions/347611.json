@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "806701",
+    "ThreadId": "347611",
+    "Html": "\r\n<p>how to execute an array&nbsp;</p>\r\n<p>for&nbsp;example: &nbsp;</p>\r\n<p>foreach var in tab &nbsp;// tab is an array</p>\r\n<p>var=var&#43;1</p>\r\n",
+    "PostedDate": "2012-03-07T00:25:26.083-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "807539",
+    "ThreadId": "347611",
+    "Html": "<p>again, you need to implement AstNode for \"foreach\"; it has little to do with array</p>",
+    "PostedDate": "2012-03-08T09:06:52-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

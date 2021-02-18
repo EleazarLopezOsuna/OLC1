@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1492414",
+    "ThreadId": "661234",
+    "Html": "How I add IN operator to ExpressionEvaluator? The following should return true.\r<br />\nvar script=@&quot;A=1\r<br />\nA IN(1,2,3)&quot;<br />\n",
+    "PostedDate": "2017-02-08T19:48:10.553-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

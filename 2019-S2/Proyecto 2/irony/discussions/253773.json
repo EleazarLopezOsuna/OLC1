@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "596778",
+    "ThreadId": "253773",
+    "Html": "\r\n<p>Would you allow your Irony code to be used within the StyleCop project which is under the MS-PL licence?</p>\r\n",
+    "PostedDate": "2011-04-13T12:33:04.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "596784",
+    "ThreadId": "253773",
+    "Html": "<p>Sure, why not - Irony is under MIT license, do whatever you want.</p>\r\n<p>Two questions:&nbsp;</p>\r\n<p>1. Are you planning it for c# parser or some other language? I've seen requests on Stylecop page to make it for JavaScript...</p>\r\n<p>2. We are using it here, at my daytime job (inside MS in fact). We have trouble - it crashes on parameters with default values, and gives up on entire project. So we can't use it on half of our projects. When the fix will be available?</p>\r\n<p>thanks</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-04-13T12:39:40.597-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "597053",
+    "ThreadId": "253773",
+    "Html": "<p>&gt;Sure, why not - Irony is under MIT license, do whatever you want.</p>\r\n<p>Actually I am considering Irony for a VB.NET and / or TSQL parser.</p>\r\n<p>I am not yet on the StyleCop \"team\", but being bi-lingual C#/VB.NET and very appreciative of StyleCop, I am investigating writing/finding a VB.NET parser for styleCop.</p>\r\n<p>&gt;We have trouble - it crashes on parameters with default values, and gives up on entire project.</p>\r\n<p>Are you able to post some sample code that illustrates this problem without disclosing any propriatry information? I would be glad to attempt to reproduce your problem and vote on it to be fixed.</p>",
+    "PostedDate": "2011-04-14T01:14:59.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

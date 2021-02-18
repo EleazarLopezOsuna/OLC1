@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1201610",
+    "ThreadId": "528611",
+    "Html": "I've looked at several threads here, including this one:\r<br />\n<br />\n<a href=\"https://irony.codeplex.com/discussions/499902\" rel=\"nofollow\">https://irony.codeplex.com/discussions/499902</a>\r<br />\n<br />\nand I'm not sure how to proceed.\r<br />\n<br />\nI am creating a custom grammar for calculations. Some of the terms I want to use in the calculations are variables whose names may have spaces embedded within them. In the Variable names are enclosed with braces {}, and their values are looked up externally for use in the calculation.\r<br />\n<br />\nHere's a simplified example of a statement I'd like to use in my calculator:<br />\n<pre><code>1+MyFunction({A Variable With Spaces})+3</code></pre>\n\nSo far, I'm doing OK as long as I only use variables whose names don't have spaces. This, for example, works fine:<br />\n<pre><code>1+MyFunction({AVariableWithoutSpaces})+3</code></pre>\n\nThe grammar code for my variable is currently like this:<br />\n<pre><code>  var myVariableName = new IdentifierTerminal(&quot;VariableName&quot;);\n  var myVariableExpr = new NonTerminal(&quot;MyVariableExpr&quot;, typeof(MyVariableNode));\n  var myVariableExpr.Rule = &quot;{&quot; + myVariableName + &quot;}&quot;;</code></pre>\n\nI sense from the response in <a href=\"https://irony.codeplex.com/discussions/499902\" rel=\"nofollow\">https://irony.codeplex.com/discussions/499902</a> that instead of being an IdentifierTerminal, I need to subclass it or make my own version that allows embedded spaces - but I'm not sure how to do that, and let's just say I'm not the strongest C# programmer in the world. I can go by examples pretty well though.\r<br />\n<br />\nCan anyone point me in the right direction?<br />\n",
+    "PostedDate": "2014-02-01T05:08:56.027-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1201752",
+    "ThreadId": "528611",
+    "Html": "Update: I took a suggestion I found here <a href=\"https://irony.codeplex.com/discussions/501380\" rel=\"nofollow\">https://irony.codeplex.com/discussions/501380</a> and decided to preprocess the equation to ensure there were no embedded spaces in the variable names. (It's just as well, because it turns out I have other problematic characters in the stream as well, so I just deal with them all now.) I can then reverse the preprocessing at the point when the identifiers have to be resolved to actual values for computation.\r<br />\n<br />\nThat will get me going for now, but it seems like an inelegant approach. If there's a relatively straightforward way to &quot;do it right&quot; I'm interested in learning it.\r<br />\n<br />\nThanks!<br />\n",
+    "PostedDate": "2014-02-02T03:58:51.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

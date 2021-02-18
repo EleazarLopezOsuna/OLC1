@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "1021053",
+    "ThreadId": "437983",
+    "Html": "Hi Roman<br />\n<br />\nI am using Irony to parse simple functions of the form &quot;foo(x1, x2)&quot;. Until now, the number of function parameters has been known when the grammar was set created.<br />\n<br />\nI would like to use variadic functions. My approach has been (simplified, without AST Node creation):<br />\n<pre><code>var argument = new StringLiteral(&quot;argument&quot;);\n\nvar openParameterList = new NonTerminal(&quot;openParameterList&quot;);\nopenParameterList = argument | argument + &quot;, &quot; + openParameterList;\n\nvar function = new NonTerminal(&quot;function&quot;).\nfunction.Rule = ToTerm(&quot;foo&quot;) + &quot;(&quot; + openParameterList + &quot;);\n\nthis.MarkTransient(function);</code></pre>\n\nIs this the correct way or would you recommend another way?<br />\n<br />\nThank you for your help.<br />\n<br />\nCheers Ivan<br />\n",
+    "PostedDate": "2013-03-25T23:43:23.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1021338",
+    "ThreadId": "437983",
+    "Html": "it's better to use MakeStarList function for openParameterList, see sample grammars for examples<br />\n",
+    "PostedDate": "2013-03-26T10:29:58.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025254",
+    "ThreadId": "437983",
+    "Html": "Thanks a lot for the help. Parsing works like a charm.\r<br />\n<br />\nDuring testing, I observed that no ast nodes are created for the subtree of the openParameterList. Is this behavior correct?\r<br />\n<br />\nI will have a look at the code.\r<br />\n<br />\nCheers Ivan<br />\n",
+    "PostedDate": "2013-04-04T01:04:59.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025281",
+    "ThreadId": "437983",
+    "Html": "I found the the following behavior in the class AstBuilder:\r<br />\nIf a node is flagged with &quot;TermFlags.NoAstNode&quot;, no AstNode for itsself and its child nodes are created.\r<br />\n<br />\nI expected the following behavior:\r<br />\nIf a node is flagged with &quot;TermFlags.NoAstNode&quot;, no AstNode for itsself is created. AstNodes for child nodes are created.\r<br />\n<br />\nDid I miss the point?<br />\n",
+    "PostedDate": "2013-04-04T02:17:44.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025831",
+    "ThreadId": "437983",
+    "Html": "yep, the point is - who will own these child AST nodes? who will be parent if parse node's term is marked NoAstNode.\r<br />\nYou might argue that maybe grandparent's Ast node might own these grandchildren, but it gets messy. The idea of NoAstNode flag is to tell to parser 'do not create node automatically, it's parent (AST node of the parent) will probably take care of this and will just use the information directly'. \r<br />\nLike BinaryOp node - it's middle child holding operation symbol is not a real AST node, so it might not have one - the BinaryOpNode would just use the symbol (+ or -) to setup itself.<br />\n",
+    "PostedDate": "2013-04-04T23:14:21.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025890",
+    "ThreadId": "437983",
+    "Html": "Good Morning\r<br />\n<br />\nThanks for the help. Ah, I missed that one:-). As you already pointed out, I would like to argue about <br />\n<blockquote>\ngrandparent's Ast node might own these grandchildren.<br />\n</blockquote>\nbut I agree that this approach would be messy.\r<br />\n<br />\nGoing back to my code example in the first post. I changed the grammar in the following way:<br />\n<pre><code>var argument = new StringLiteral(&quot;argument&quot;);\n\nvar openParameterList = new NonTerminal(&quot;openParameterList&quot;);\nopenParameterList .Rule = this.MakeStarRule(openParameterList, this.ToTerm(&quot;,&quot;, &quot;Comma&quot;), argument );\n\nvar function = new NonTerminal(&quot;function&quot;).\nfunction.Rule = ToTerm(&quot;foo&quot;) + &quot;(&quot; + openParameterList + &quot;);\n\nthis.MarkTransient(function, openParameterList);</code></pre>\n\nShouldn't the parse node &quot;openParameterList&quot; be replaced by its children?\r<br />\n<br />\nCheers Ivan<br />\n",
+    "PostedDate": "2013-04-05T00:53:53.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025902",
+    "ThreadId": "437983",
+    "Html": "<blockquote>\nThe idea of NoAstNode flag is to tell to parser 'do not create node automatically, it's parent (AST node of the parent) will probably take care of this and will just use the information directly'. <br />\n</blockquote>\nIf I correctly understand this statement, the ast node of function &quot;foo&quot; in my previous example is responsible for creating ast nodes for its argument using the &quot;openParameterList&quot; as intermediate node for accessing its children . \r<br />\n<br />\nHow would I achieve that?<br />\n",
+    "PostedDate": "2013-04-05T01:06:11.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026218",
+    "ThreadId": "437983",
+    "Html": "Just look at expression evaluator or miniPython sample, it's all there<br />\n",
+    "PostedDate": "2013-04-05T09:44:19.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

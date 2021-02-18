@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "non-issue",
+    "ClosedDate": "2010-02-17T11:13:50.727-08:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "The IAstNodeInit.Init method of the IdentifierNode throws a null reference on the following line because treeNode.Token.Symbol is null:\n\n    Symbol = treeNode.Token.Symbol;\n    AsString = Symbol.Text;",
+    "LastUpdatedDate": "2010-02-17T11:13:50.727-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2010-02-12T19:57:26.023-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "\"Failed to create AstNode\" in IdentifierNode (null reference)",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7018
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Can you please provide more info? This code obviously works for simple cases like Expression evaluator grammar, so need to know what are circumstances when it breaks. Can you please debug your grammar/parser and see why the Symbol is not set in your case?\r\n",
+      "PostedDate": "2010-02-16T11:15:30.127-08:00",
+      "Id": 29163
+    },
+    {
+      "Message": "I believe this is a non-issue.  As per your suggestion, I started learning Irony by building my grammar starting from the VSLua code.  In the process, I had changed the name of my grammar class from \"Grammar\" to \"TestGrammar\".  However, the integration code in that project instantiates the grammar as \"Grammar\", which resolved to \"Irony.Parsing.Grammar\" so it didn't show up as a compiler error.  Changing the code so that it instantiates \"TestGrammar\" seems to properly initialize everything.",
+      "PostedDate": "2010-02-16T12:49:15.817-08:00",
+      "Id": 29164
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "82075",
+    "ThreadId": "24468",
+    "Html": "\r\nFirst of all I'd like to thank the developers for making this great software, i've always been confused by this stuff but now I can manage it easily.<br /><br />I've been developing a grammer for parsing advanced expessions, based on the template provided. I found it easy to add features but now I've run into a problem and I think filters would solve this problem, but I don't know how to proceed.<br /><br />I have a MultipliedVar NonTerminal for handling productions such as: 3X, 3sin(x) and 13(4x + 7)<br /><br />Using the 3X example, I need a filter to reduce each MultipliedVar terminal like this,<br /><br />MultipliedVar<br />    3, <a href=\"http://www.codeplex.com/irony/Wiki/View.aspx?title=number\">number</a><br />    X, <a href=\"http://www.codeplex.com/irony/Wiki/View.aspx?title=variable\">variable</a><br /><br />into this:<br /><br />Expr<br />      3, <a href=\"http://www.codeplex.com/irony/Wiki/View.aspx?title=number\">number</a><br />      *<br />      X, <a href=\"http://www.codeplex.com/irony/Wiki/View.aspx?title=variable\">variable</a><br /><br />Any suggestions?<br />",
+    "PostedDate": "2008-03-21T08:24:22.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "82097",
+    "ThreadId": "24468",
+    "Html": "\r\nHi<br />I think the best way to do this is to create a filter that expands your MultipliedVar token into 3 tokens. The constituent tokens may be prepared by MultipliedVar.TryMatch method, and saved into token.Attributes dictionary. Yea, I know, it looks ugly, but that's the only way I see it for now. <br />The better way would be to return 3 tokens from TryMatch method directly, while current structure allows only a single one. I was thinking about scenario like this before, and I think the best way to accomodate this is to introduce a MultiToken - a special Token that is a container for several tokens. TryMatch can return this token and Scanner would recognize it and \"expand\" automatically, without any extra filters. This thing is on my to-do list, I'll move it up, so expect it soon. For now - writing a special filter is the only way.  <br />thanks<br />Roman<br />",
+    "PostedDate": "2008-03-21T09:43:55.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "82142",
+    "ThreadId": "24468",
+    "Html": "\r\nThanks for the reply, I guess I will wait for the next version of Irony then.<br />",
+    "PostedDate": "2008-03-21T14:54:04.607-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

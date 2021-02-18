@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1110372",
+    "ThreadId": "463073",
+    "Html": "Greetings All,\r<br />\n<br />\nA while back there was a post about writing a <a href=\"http://www.codeproject.com/Articles/33250/Writing-Your-First-Visual-Studio-Language-Service\" rel=\"nofollow\">Visual Studio language service using Irony.</a>. The author references an Irony language service templet for use with VS2008. There is a download in that article for a template to generate a Visual Studio Integration Package for an Irony Language Service.\r<br />\n<br />\nIt seems like this would be a very useful addition to Irony. We looked at the latest Irony download, but didn't find anything at all related to VS extensions.\r<br />\n<br />\nDoes anyone know where, or if, there's an update to such a template?\r<br />\n<br />\nRegards,<br />\n<pre><code>- Steve Nunez\n</code></pre>\n\n",
+    "PostedDate": "2013-10-21T22:39:42.073-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111405",
+    "ThreadId": "463073",
+    "Html": "I think I saw VS2010 template somewhere in discussions. VS2010 language service can be updated to support VS2012 by a simple manifest update.<br />\n",
+    "PostedDate": "2013-10-23T23:40:59.38-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111453",
+    "ThreadId": "463073",
+    "Html": "Thanks. I thought so too, but the only thing that's remotely relevant is <a href=\"https://irony.codeplex.com/discussions/223913\" rel=\"nofollow\">https://irony.codeplex.com/discussions/223913</a>, and that's just a user reporting that he was able to go from VS2008 to VS2010.\r<br />\n<br />\nHave you got a link?<br />\n",
+    "PostedDate": "2013-10-24T01:10:56.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111845",
+    "ThreadId": "463073",
+    "Html": "I don't know much about VS template creating, it was all some other devs effort, and I'm afraid all you can find is outdated. Sorry\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-10-24T13:44:09.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1127337",
+    "ThreadId": "463073",
+    "Html": "<strong>rivantsov wrote:</strong><br />\n<blockquote>\nI don't know much about VS template creating, it was all some other devs effort, and I'm afraid all you can find is outdated. Sorry<br />\nRoman<br />\n</blockquote>\nHave you looked at this? \r<br />\n<a href=\"https://mpfproj11.codeplex.com/\" rel=\"nofollow\">https://mpfproj11.codeplex.com/</a>\r<br />\n<br />\n I have no idea how to use it as I just found it about a half hour ago. I have been trying to look into creating language services.<br />\n\r<br />\nMainly cause I am taking a course in Java this semester and java 2 next semester and hate the ides for it. I think I'm biting off more then I can chew but I was thinking language service for java would be nice...<br />\n",
+    "PostedDate": "2013-11-20T17:17:57.73-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1129073",
+    "ThreadId": "463073",
+    "Html": "I have the Irony Language service running in VS2010 and VS2012. \r<br />\nBasically follow the VS2008/VS2010 information on the web (from memory there is a CodeProject post which covers VS2008).\r<br />\n<br />\nThis <a href=\"http://stackoverflow.com/questions/5671847/ive-created-my-first-language-in-irony-now-how-do-i-get-it-into-visual-studio\" rel=\"nofollow\">post</a> is particularly useful for upgrading it to VS2010.\r<br />\n<br />\nOnce you get it going it's absolutely amazing!<br />\n",
+    "PostedDate": "2013-11-26T00:51:39.37-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

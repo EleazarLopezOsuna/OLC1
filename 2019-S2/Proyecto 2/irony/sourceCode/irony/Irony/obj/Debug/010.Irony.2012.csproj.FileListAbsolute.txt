@@ -1,0 +1,8 @@
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony\bin\Debug\Irony.dll
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony\bin\Debug\Irony.pdb
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony\obj\Debug\010.Irony.2012.csprojAssemblyReference.cache
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony\obj\Debug\Irony.Resources.resources
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony\obj\Debug\010.Irony.2012.csproj.GenerateResource.cache
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony\obj\Debug\010.Irony.2012.csproj.CoreCompileInputs.cache
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony\obj\Debug\Irony.dll
+C:\Users\USER\Desktop\irony\sourceCode\irony\Irony\obj\Debug\Irony.pdb

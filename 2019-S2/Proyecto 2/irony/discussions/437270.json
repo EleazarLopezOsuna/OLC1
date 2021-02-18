@@ -1,0 +1,114 @@
+[
+  {
+    "Id": "1018028",
+    "ThreadId": "437270",
+    "Html": "There's so much text here, and I'm overwhelmed. What does this say?<br />\n<pre><code>State S79 (Inadequate)\n  Shift-reduce conflicts on inputs: [ , + dash ++ dashdash\n  Shift items:\n    cast_expression -&gt; type_literal ·unary_expression \n    unary_expression -&gt; ·primary_expression \n    primary_expression -&gt; ·value \n    value -&gt; ·parenthesized_expression \n    parenthesized_expression -&gt; ·( pipeline ) \n    value -&gt; ·sub_expression \n    sub_expression -&gt; ·$( statement_list_opt ) \n    value -&gt; ·array_expression \n    array_expression -&gt; ·@( statement_list_opt ) \n    value -&gt; ·script_block_expression \n    script_block_expression -&gt; ·{ script_block } \n    value -&gt; ·hash_literal_expression \n    hash_literal_expression -&gt; ·@{ hash_literal_body_opt } \n    value -&gt; ·literal \n    literal -&gt; ·integer_literal \n    integer_literal -&gt; ·decimal_integer_literal \n    integer_literal -&gt; ·hexadecimal_integer_literal \n    literal -&gt; ·real_literal \n    literal -&gt; ·string_literal \n    string_literal -&gt; ·expandable_string_literal \n    string_literal -&gt; ·verbatim_string_literal \n    value -&gt; ·type_literal \n    type_literal -&gt; ·[ type_spec ] \n    value -&gt; ·variable \n    primary_expression -&gt; ·member_access \n    member_access -&gt; ·primary_expression Unnamed6 member_name \n    primary_expression -&gt; ·element_access \n    element_access -&gt; ·primary_expression [ expression ] \n    primary_expression -&gt; ·post_increment_expression \n    post_increment_expression -&gt; ·primary_expression ++ \n    primary_expression -&gt; ·post_decrement_expression \n    post_decrement_expression -&gt; ·primary_expression dashdash \n    unary_expression -&gt; ·expression_with_unary_operator \n    expression_with_unary_operator -&gt; ·, unary_expression \n    expression_with_unary_operator -&gt; ·-not unary_expression \n    expression_with_unary_operator -&gt; ·! unary_expression \n    expression_with_unary_operator -&gt; ·-bnot unary_expression \n    expression_with_unary_operator -&gt; ·+ unary_expression \n    expression_with_unary_operator -&gt; ·dash unary_expression \n    expression_with_unary_operator -&gt; ·pre_increment_expression \n    pre_increment_expression -&gt; ·++ unary_expression \n    expression_with_unary_operator -&gt; ·pre_decrement_expression \n    pre_decrement_expression -&gt; ·dashdash unary_expression \n    expression_with_unary_operator -&gt; ·cast_expression \n    cast_expression -&gt; ·type_literal unary_expression \n    expression_with_unary_operator -&gt; ·-split unary_expression \n    expression_with_unary_operator -&gt; ·-join unary_expression \n  Reduce items:\n    value -&gt; type_literal · [assignment_operator . :: [ ++ dashdash , .. format_operator * / % + dash as ccontains ceq cge cgt cle clike clt cmatch cne cnotcontains cnotlike cnotmatch contains creplace csplit eq ge gt icontains ieq ige igt ile ilike ilt imatch ine inotcontains inotlike inotmatch ireplace is isnot isplit join le like lt match ne notcontains notlike notmatch replace split -band -bor -bxor -and -or -xor 2&gt;&amp;1 1&gt;&amp;2 file_redirection_operator | ; new_line_character EOF } ) = ]]\n  Transitions: unary_expression-&gt;S187, primary_expression-&gt;S158, value-&gt;S60, parenthesized_expression-&gt;S61, (-&gt;S62, sub_expression-&gt;S63, $(-&gt;S64, array_expression-&gt;S65, @(-&gt;S66, script_block_expression-&gt;S67, {-&gt;S68, hash_literal_expression-&gt;S69, @{-&gt;S70, literal-&gt;S71, integer_literal-&gt;S72, decimal_integer_literal-&gt;S73, hexadecimal_integer_literal-&gt;S74, real_literal-&gt;S75, string_literal-&gt;S76, expandable_string_literal-&gt;S77, verbatim_string_literal-&gt;S78, type_literal-&gt;S79, [-&gt;S80, variable-&gt;S81, member_access-&gt;S82, element_access-&gt;S83, post_increment_expression-&gt;S84, post_decrement_expression-&gt;S85, expression_with_unary_operator-&gt;S97, ,-&gt;S98, -not-&gt;S99, !-&gt;S100, -bnot-&gt;S101, +-&gt;S102, dash-&gt;S103, pre_increment_expression-&gt;S104, ++-&gt;S105, pre_decrement_expression-&gt;S106, dashdash-&gt;S107, cast_expression-&gt;S108, -split-&gt;S109, -join-&gt;S110\n</code></pre>\n\nThe grammar is from the PowerShell language spec: <a href=\"http://www.microsoft.com/en-us/download/details.aspx?id=9706\" rel=\"nofollow\">http://www.microsoft.com/en-us/download/details.aspx?id=9706</a>. <br />\n<br />\nMy project is here: <a href=\"https://github.com/Pash-Project/Pash/tree/method-invocation/Source/Pash.System.Management\" rel=\"nofollow\">https://github.com/Pash-Project/Pash/tree/method-invocation/Source/Pash.System.Management</a><br />\n",
+    "PostedDate": "2013-03-19T19:53:11.527-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1018672",
+    "ThreadId": "437270",
+    "Html": "Well, all I can say is just reword the conflict message: Parser does not know what to do when it pushed 'value' and sees symbols '[ , + dash ++ dashdash' in the input. I tried to look at your grammar in sources, but gave up, it's too big. \r<br />\nIt seems to me in this particular case, the conflict is between the very first shift item and reduce item: \r<br />\n<br />\nShift item:\r<br />\n  cast_expression -&gt; type_literal *unary_expression \r<br />\nReduce item:\r<br />\n  value -&gt; type_literal *\r<br />\n<br />\nParser cannot decide which action to choose when it pushed type_literal and sees things like dash in the input stream. I guess it might be part of artihm expression like 'x-y' or cast expr like 'INT -3' (not sure what cast syntax is in PS). \r<br />\nthe only advice I can give is to try to reduce number of all these nonterminals that refer to different subtypes of values and literals. Like grammars often define 'TypeName' as a special term, and use it in rules; if you try to translate it into Irony and make TypeName nonterminal with rule = Identifier; then it causes a lot of conflicts. Because for the parser type names and variable names are indistinguishable, and should be all identifiers. So TypeName should not be introduced in Irony grammar. Same situation might be here - what is type_literal, seems like it should be simply identifier.\r<br />\n<br />\nthat's all I can guess\r<br />\n<br />\nRoman<br />\n",
+    "PostedDate": "2013-03-20T22:19:57.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1019422",
+    "ThreadId": "437270",
+    "Html": "Thanks Roman.\r<br />\n<br />\nIn PowerShell, a type literal looks like <code>[int]</code>. You could convert an int to a string with a cast expression: <code>[int] &quot;7&quot;</code>. Types can be values, so you can do things like <code>$t = [int]</code>.\r<br />\n<br />\nSo perhaps <code>[int] -3</code> can parse as either &quot;subtract 3 from <code>[int]</code>&quot; or &quot;cast <code>-3</code> to <code>[int]</code>&quot;, and that's the ambiguity in the grammar. Is that what the error is saying?<br />\n",
+    "PostedDate": "2013-03-22T03:25:52.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1019644",
+    "ThreadId": "437270",
+    "Html": "Answering your question - well, probably so, that's my best guess<br />\n",
+    "PostedDate": "2013-03-22T09:28:12.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1023037",
+    "ThreadId": "437270",
+    "Html": "So to make things more interesting (and confusing for me):\r<br />\n<br />\nA type literal in PowerShell looks like <code>[int]</code>. \r<br />\n<br />\nAs the name suggests, you can use a type literal as a value:<br />\n<pre><code>    $x = [int]              # OK</code></pre>\n\nYou can also cast any value with a type literal:<br />\n<pre><code>    $x = [double]7          # $x is of type `double` now.\n    $x = [string][int]7     # casts 7 to int first, then to string\n    $x = [string][int]      # casts the Type object to string. This is legal in the grammar.</code></pre>\n\nMember access is done with <code>.</code>. For example:<br />\n<pre><code>    [int].Assembly          # OK\n    $x = &quot;Assembly&quot;\n    [int].$x                # same thing</code></pre>\n\nSince type literals are values, it's even legal to do:<br />\n<pre><code>    [int].[string]          # OK!</code></pre>\n\nI'm not surprised that Irony is finding the grammar ambiguous, but I'm not sure what to do about it.<br />\n",
+    "PostedDate": "2013-03-29T14:17:30.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1023063",
+    "ThreadId": "437270",
+    "Html": "do not distinguish between type literal and value/variable - even if it's done in formal grammar for the language - good for clarity of explaining syntax, but bad for LALR parser; so skip it in Irony grammar. Simply put, do not distinguish (as different non-terminals) things that are too similar syntax-wise. Do the semantic checks after parsing, over parse tree<br />\n",
+    "PostedDate": "2013-03-29T15:54:25.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1023076",
+    "ThreadId": "437270",
+    "Html": "Once again, it is clearly to me that I am working at the edge of my ability. I'm not really sure what you're suggesting.\r<br />\n<br />\nHere is an abridged excerpt from my grammar:<br />\n<pre><code>primary_expression.Rule = value | _member_access_or_invocation_expression | element_access | post_increment_expression | post_decrement_expression;\n\nunary_expression.Rule = primary_expression | expression_with_unary_operator;\n\nexpression_with_unary_operator.Rule = (pre_increment_expression) | (pre_decrement_expression) | (cast_expression);\n\ncast_expression.Rule = type_literal + unary_expression;\n\nvalue.Rule = parenthesized_expression | sub_expression | array_expression | script_block_expression | hash_literal_expression | literal | type_literal | variable;</code></pre>\n\nWhich part do you suggest I modify? How?<br />\n",
+    "PostedDate": "2013-03-29T16:49:08.627-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1023095",
+    "ThreadId": "437270",
+    "Html": "just looking over your grammar on github. Quick question:\r<br />\n<br />\n _type_spec_array.Rule = array_type_name + MakeStarRule(_type_spec_array, ToTerm(&quot;,&quot;)) + &quot;]&quot;;\r<br />\n<br />\n_type_spec_generic.Rule = generic_type_name + generic_type_arguments + &quot;]&quot;;\r<br />\n<br />\nare you missing &quot;[&quot; somewhere?<br />\n",
+    "PostedDate": "2013-03-29T18:52:08.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1023096",
+    "ThreadId": "437270",
+    "Html": "That's taken straight from the language spec, and appears correct, if you consider:<br />\n<pre><code>array_type_name:\n    type_name   [\n\ngeneric_type_name:\n    type_name   [</code></pre>\n\n",
+    "PostedDate": "2013-03-29T18:54:31.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1023104",
+    "ThreadId": "437270",
+    "Html": "I have resolved a couple more shift-reduce errors, and now I'm down to two, in this experimental branch:  <a href=\"https://github.com/JayBazuzi/Pash/tree/shift-reduce-errors\" rel=\"nofollow\">https://github.com/JayBazuzi/Pash/tree/shift-reduce-errors</a><br />\n<br />\n<strong>EDIT</strong>: Those changes have been merged in to <code>master</code><br />\n",
+    "PostedDate": "2013-03-29T19:30:45.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1024023",
+    "ThreadId": "437270",
+    "Html": "I looked at little more closely at the <code>type_literal</code> shift/reduce error. <br />\n<ul>\n<li>\nI found that if I remove <code>cast_expression</code> from <code>expression_with_unary_operator</code>, the shift/reduce error goes away.<br />\n</li>\n<li>\nIf I remove <code>type_literal</code> from <code>value</code>, the shift/reduce error goes away.<br />\n</li>\n</ul>\nI think the grammar would be OK with more lookahead, but Irony is LR(1). (right?)<br />\n",
+    "PostedDate": "2013-04-01T20:24:20.55-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1024045",
+    "ThreadId": "437270",
+    "Html": "well, you might be fixing conflict, but in fact just delaying/hiding the problem - it will show up when you start parsing\r<br />\non previous post, about array_type_name and generic_type_name. that's exactly the problem I'm trying to point out. Copying the official grammar definitions might be real trouble. I see that you implement these type-names using regexTerminal. First problem: I'm pretty sure that 'official' grammar definition assumes that spaces are allowed before the &quot;[&quot;. Does your regex allow this?! Another thing. By merging the &quot;[&quot; into the name itself (making it part of the terminal), you effectively hiding it from the parser; the symbol is essentially a special symbol, paired brace in fact, but parser does not know about it at all. So you might lose some ability of the parser to make decisions based on this symbol. And you cannot use brace-pairing check. \r<br />\nSo my advice - remove &quot;[&quot; from the terminal, here and in all similar cases. As for the rest of the name, the spec says about Unicode char categories - c# has the same stuff, so look at TerminalFactory.CreateCSharpIdentifier for an example. Try to leave a single identifier terminal in grammar used for all kind of names. Having more than one is a source of big trouble - when you start parsing, the scanner will randomly pickup one of your several identifiers, use it to produce token and that's it - it has no way to know which one is better, they all 'look' the same. <br />\n",
+    "PostedDate": "2013-04-01T22:30:03.14-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1024487",
+    "ThreadId": "437270",
+    "Html": "Thanks Roman.\r<br />\n<br />\nRegarding spaces before the <code>[</code>: no, the PowerShell grammar does not allow that for generics and array type names. For example:<br />\n<pre><code>&gt; New-Object MyCollection[string]                             # same as &quot;new MyCollection&lt;string&gt;()&quot; in C#\n&gt; New-Object MyCollection [string]                            # same as &quot;new MyCollection(typeof(string))&quot; in C#</code></pre>\n\nThey are semantically different, although I think you're saying that the scanner should see them as being the same, and the difference should come when I analyze the parse tree later on. Right?\r<br />\n<br />\nThere are other cases where whitespace is not allowed:<br />\n<pre><code>&gt; [int]::MaxValue     # OK\n\n&gt; [int]:: MaxValue    # ERROR in PowerShell v1 and v2, OK in v3\n\n&gt; [int] ::MaxValue    # ERROR</code></pre>\n\nand<br />\n<pre><code>&gt; [int]::Parse( '7' )     # OK\n\n&gt; [int]::Parse ( '7' )    # ERROR</code></pre>\n\nBut at least in these cases, they are an error, not an alternate semantic interpretation.\r<br />\n<br />\nI think I understand your guidance to make all identifiers in to the same type of token. I'll try that out.<br />\n",
+    "PostedDate": "2013-04-02T13:58:50.167-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1024500",
+    "ThreadId": "437270",
+    "Html": "By the way, I want to comment on my use of RegexTerminal. I used that because it's easy to translate the token definitions in the language spec to regex. Eventually I plan to migrate away from them, which I expect will improve performance and simplify my code, but that's not the top priority at the moment. <br />\n<br />\nCorrect behavior comes before performance.<br />\n",
+    "PostedDate": "2013-04-02T14:11:28.483-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

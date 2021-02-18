@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "429102",
+    "ThreadId": "208793",
+    "Html": "<p>I've implemented the google search grammar for full text searching in Sql and noticed some exceptions that happen that I'm trying to figure out the best way to fix.&nbsp; I'm pretty new to this and I think an explanation of how to solve this would begin to help me understand going forward.</p>\r\n<p>For example:</p>\r\n<p>test+&nbsp;&nbsp;&nbsp; -causes an error, this for me is an actual term that should be able to be searched, similar to &quot;test+&quot;</p>\r\n<p>&quot;test&nbsp;&nbsp;&nbsp;&nbsp; -is there a way to just ignore unmatched parenthesis?&nbsp; What would be the way to handle this instead of just failing? Process standard failures if errors occur and try to re-process?</p>\r\n<p>foo/bar&nbsp;&nbsp; -this would just result in an or clause</p>\r\n<p>&nbsp;</p>\r\n<p>I think if I see how you would fix these then it may start clicking in terms of how to do more.</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-08T22:22:54.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "429730",
+    "ThreadId": "208793",
+    "Html": "<p>The last one is the simplest I think - just add &quot;/&quot; to the expression for binary op:</p>\r\n<p>BinaryOp.Rule = ImpliedAnd | &quot;and&quot; | &quot;&amp;&quot; | &quot;-&quot; | &quot;or&quot; | &quot;|&quot; | &quot;/&quot;;</p>\r\n<p>and add handling it in converter.&nbsp;</p>\r\n<p>For unmatched quote - you can add double-quote as a standalone term to&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Expression.Rule = PrimaryExpression | BinaryExpression;</div>\r\n<p>\r\n<p>&nbsp;&nbsp; &nbsp;var unmantchedQuote = ToTerm(&quot;\\&quot;&quot;);&nbsp;</p>\r\n<p>&nbsp;&nbsp; Expression.Rule = PrimaryExpression | BinaryExpression | unmatchedQuote;</p>\r\n<p>Also add it to MarkPunctuation(...) list - so it would be eliminated after parsing. By default it would be assigned the lowest priority, so if double-quoted term fails to scan a token (because quote is unmatched) then this terminal will take it, produce token and it will be eliminated.&nbsp;</p>\r\n<p>For test+ &nbsp; : &nbsp;you can try the following: hook to ValidateToken event of Term element, and in the event handler check the source stream and see if it is followed by &quot;+&quot; and nothing else - in this case add &quot;+&quot; to token content and move source stream one symbol ahead</p>\r\n<p>Roman</p>\r\n<div></div>\r\n</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-11T08:42:04.22-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "457578",
+    "ThreadId": "208793",
+    "Html": "<p>I'm trying to implement these too. &nbsp;I got the &quot;/&quot; as an OR operator working. &nbsp;I'm having trouble with the other two. &nbsp;Can you provide a little more detail?</p>\r\n<p>Thanks so much for your time!</p>",
+    "PostedDate": "2010-06-19T08:17:07.22-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "458115",
+    "ThreadId": "208793",
+    "Html": "<p>1. Case with &quot;+&quot; as part of term, for ex: test+</p>\r\n<p>The problem here is that SearchGrammar treats &quot;+&quot; always as operator, and what is wanted is to treat it part of search term - when there's no space in between.&nbsp;</p>\r\n<p>Note that this MIGHT be confusing for the user; the following two expressions will have different meaning:</p>\r\n<p>one+ two &nbsp; //search for text with &quot;one+&quot; AND &quot;two&quot;</p>\r\n<p>one + two &nbsp;// search for &quot;one&quot; AND &quot;two&quot;</p>\r\n<p>&nbsp;</p>\r\n<p>Now how to do this. Notice, I take back my previous recommendation in prior response, disregard it)</p>\r\n<p>To implement this, just add &quot;+&quot; sign to character lists in term's declaration, in a call to identifier, in CreateTerm method:</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var term = new IdentifierTerminal(name, &nbsp; &quot;!@#$%^*_'.?-+&quot;, &quot;!@#$%^*_'.?0123456789+&quot;);</p>\r\n<p>notice &quot;+&quot; at the end of both lists.&nbsp;</p>\r\n<p>I think that should do it</p>\r\n<p>&nbsp;</p>\r\n<p>2. For unmatched quote, that might be tricky. Again, disregard my previous recipe, there's currently a bug that prevents you from setting precedence on key terms, so that would not work as described. So define a single quote as a term, add it to PrimaryExpression.Rule expression:</p>\r\n<p>PrimaryExpression.Rule = unmatchedQuote | Term | ...;</p>\r\n<p>Also register unmatchedQuote as punctuation (to eliminate after parsing):</p>\r\n<p>MarkPunctuation(unmatchedQuote);&nbsp;</p>\r\n<p>Then set the priority of Phrase (quoted string) to lowest:</p>\r\n<p>Phrase.Priority = Terminal.LowestPriority;</p>\r\n<p>that should work then.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-21T09:38:54.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

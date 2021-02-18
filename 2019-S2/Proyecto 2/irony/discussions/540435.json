@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1227759",
+    "ThreadId": "540435",
+    "Html": "As part of learning Irony this week, I've been working through Daniel Flower's fantastic <a href=\"http://www.codeproject.com/Articles/29058/Writing-your-first-Domain-Specific-Language-Part\" rel=\"nofollow\">Irony Freight Language</a> article.<br />\n\r<br />\nThe code was written way back in 2008 and doesn't work with the latest Irony, so I had to update it (with some help from rivantsov!).  In case it's usefule to anyone else on their Irony journey, I've out the updated code up on GitHub here:\r<br />\n<br />\n<a href=\"https://github.com/seankearon/irony-freight-language\" rel=\"nofollow\">https://github.com/seankearon/irony-freight-language</a>\r<br />\n<br />\nAny comments, corrections or contributions welcome!<br />\n",
+    "PostedDate": "2014-03-28T04:49:19.443-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

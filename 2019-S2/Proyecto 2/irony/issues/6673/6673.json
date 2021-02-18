@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Continued as discussion",
+    "ClosedDate": "2010-01-13T09:17:24.953-08:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "A minor annoyance, really, but the downloadable sources still have TFS bindings. This, causes VS to prompt that it cannot access the TFS server every time you open the solution.",
+    "LastUpdatedDate": "2010-01-13T09:17:24.953-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-12-21T08:09:14.33-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Default download has codeplex TFS bindings",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 4,
+    "Id": 6673
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "See recent discussion about this, please add comment about your experience there\r\nthank you ",
+      "PostedDate": "2009-12-22T11:31:50.44-08:00",
+      "Id": 29144
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Added test project for NUnit; all tests can now be run through both VS Test and NUnit",
+    "ClosedDate": "2010-11-12T15:38:21.083-08:00",
+    "CommentCount": 8,
+    "Custom": "",
+    "Description": "It would be much more useful to have the tests in something like nUnit, for an open source project.  I can't open or run the tests in VS 2008 without the test edition",
+    "LastUpdatedDate": "2010-11-12T15:38:21.083-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2008-12-15T22:11:05.793-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Use open source testing tool",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 3485
+  },
+  "FileAttachments": [
+    {
+      "FileId": 210345,
+      "FileName": "nunit-update.patch",
+      "DownloadUrl": ".\\210345"
+    },
+    {
+      "FileId": 210346,
+      "FileName": "nunit.framework.dll",
+      "DownloadUrl": ".\\210346"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "I second this request.",
+      "PostedDate": "2009-03-12T05:45:48.217-07:00",
+      "Id": 29093
+    },
+    {
+      "Message": "me too",
+      "PostedDate": "2009-05-18T04:14:06.897-07:00",
+      "Id": 29094
+    },
+    {
+      "Message": "I would also appreciate it.",
+      "PostedDate": "2009-12-16T12:23:28.527-08:00",
+      "Id": 29095
+    },
+    {
+      "Message": "I'll see what and when I can do. Sorry guys, I didn't realize it (when I moved from nUnit) that VS testing framework is not available to everybody. I was planning some rewrite of unit tests anyway, so I will look at moving to nUnit\r\n",
+      "PostedDate": "2009-12-16T14:58:40.26-08:00",
+      "Id": 29096
+    },
+    {
+      "Message": "Also voted for this :)",
+      "PostedDate": "2010-03-29T05:09:47.407-07:00",
+      "Id": 29097
+    },
+    {
+      "Message": "I would do this if rivantsov would accept the patch.  It would be easier to do if the project were in mercurial though (easier to accept pull requests than patches)",
+      "PostedDate": "2010-11-06T10:21:02.643-07:00",
+      "Id": 29098
+    },
+    {
+      "Message": "I am attaching a patch file to change the unit testing framework from mstest to nunit.  Note that after applying the patch if you do not see nunit.framework.dll in the lib folder at the top of the working folder then you can download nunit-2.5.5 and copt it into the lib folder from there.  Alternatively, email me and I will be happy to email you the copy I have",
+      "PostedDate": "2010-11-06T11:58:20.95-07:00",
+      "Id": 29099
+    },
+    {
+      "Message": "Actually, here is the nunit.framework.dll I was using  (NUnit 2.5.5)",
+      "PostedDate": "2010-11-06T11:59:09.02-07:00",
+      "Id": 29100
+    }
+  ]
+}

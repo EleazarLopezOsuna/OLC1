@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1495335",
+    "ThreadId": "662475",
+    "Html": "CodePlex is shutting down. Please migrate this repository to GitHub. I think the first step would be to ask Codeplex to convert the Mercury repository to a Git repository. Then migration to GitHub would be simple.<br />\n",
+    "PostedDate": "2017-04-10T01:27:24.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1497317",
+    "ThreadId": "662475",
+    "Html": "Agreed.  When will Irony be migrated to GitHub?<br />\n",
+    "PostedDate": "2017-07-05T04:48:26.483-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1497964",
+    "ThreadId": "662475",
+    "Html": "I have tried to contact the repository owner about moving to GitHub.\r<br />\n<br />\nI have created a fork of the source there at <a href=\"https://github.com/Nico-VanHaaster/Irony.Net\" rel=\"nofollow\">https://github.com/Nico-VanHaaster/Irony.Net</a>\r<br />\n<br />\nHappy to take this further as I use this framework a fair amount.<br />\n",
+    "PostedDate": "2017-09-07T15:25:26.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1498084",
+    "ThreadId": "662475",
+    "Html": "There is already an actively maintained fork on github - <a href=\"https://github.com/daxnet/irony\" rel=\"nofollow\">https://github.com/daxnet/irony</a><br />\n",
+    "PostedDate": "2017-09-21T07:11:14.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

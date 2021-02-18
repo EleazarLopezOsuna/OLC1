@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1327049",
+    "ThreadId": "573451",
+    "Html": "Hello!\r<br />\n<br />\nI using Irony to translate input text string to sql query. All fine, but when I trying to parse string <strong>&quot;some text:&quot;</strong> syntax tree building is broken. For some reasons code adding in the end of tokens list two terminals of ImpliedAnd type. Seems like code interpreted colon token (&quot;:&quot;) as some logical symbol. \r<br />\n<br />\nBut I need that colon symbol interpreted like part of input string. \r<br />\n<br />\nAnother words - now &quot;some text:&quot; string splitting on 5 tokens:\r<br />\n<strong>&quot;some&quot;</strong> - term\r<br />\nImpliedAnd \r<br />\n<strong>&quot;text&quot;</strong> - Term\r<br />\nImpliedAnd \r<br />\nImpliedAnd \r<br />\n<br />\nI need only three tokens:\r<br />\n<strong>&quot;some&quot;</strong> - term\r<br />\nImpliedAnd \r<br />\n<strong>&quot;text:&quot;</strong> - Term\r<br />\n<br />\nHow can I achieve this, is there some additional grammatic rules should be created or existing overwriting for correct tokens productions?<br />\n",
+    "PostedDate": "2014-11-28T07:23:40.967-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1327159",
+    "ThreadId": "573451",
+    "Html": "Look at parser trace, and try to understand what makes parser produce these extra tokens<br />\n",
+    "PostedDate": "2014-11-28T23:20:46.89-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "226946",
+    "ThreadId": "66763",
+    "Html": "<p>Hi,</p>\r\n<p>I just learned about Irony and would like to know if it handles this scenario:</p>\r\n<p>Given 2 strings: S<em>ystem.Int32</em> and <em>public static int Parse(string s);<br></em>I would like to get the MethodInfo of <em>int.Parse(string)</em>; or at least the data I need to get that MethodInfo using reflection.</p>\r\n<p>Thanks!</p>\r\n<p>LE: Yes it does :) :) :) It needs more than 2 strings but that's ok, it fits my purpose. Thank you for this wonderful tool!</p>",
+    "PostedDate": "2009-08-24T01:16:05.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "284199",
+    "ThreadId": "82716",
+    "Html": "<p>While defining the characters in identifier terminal, Irony grammar compares only with the first char identified and rest of the characters are scanned. Is there any way to compare all the character?</p>\r\n<p>For example, when the user define AllFirstChars as &quot;<span style=\"font-size:x-small;color:#008000\"><span style=\"font-size:x-small;color:#008000\">EFIMNRTYefimnrty</span></span>&quot; and AllChars as &quot;FIYfyi&quot; and AllPrefixChars as &quot;FIfi&quot; for the keyword &quot;FYI&quot; in IdentifierTerminal.</p>\r\n<p>Ambiguity occurs for flg keywords also.</p>\r\n<p>Is there anyway to solve this ambiguity?</p>\r\n<p>could you please suggest me the proper way of creating custom terminal in our latest version of Irony 1.0.0.0</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-02-01T03:39:30.333-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "284323",
+    "ThreadId": "82716",
+    "Html": "<p>Honestly, I don't quite understand the problem. Please describe in plain english what kind of identifiers you want to recognize and which you want to reject.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-02-01T09:47:05.033-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "284549",
+    "ThreadId": "82716",
+    "Html": "<p>Here is my example,</p>\r\n<p>S_fy1_mean,</p>\r\n<p>S_mean_fy1</p>\r\n<p>In the above mentioned string, &quot;fy1&quot; need to parse under the custom terminal. So I created one custom terminal as period terminal.</p>\r\n<p><span style=\"font-size:x-small;color:#0000ff\"><span style=\"font-size:x-small;color:#0000ff\">&lt;font size=&quot;2&quot; color=&quot;#0000ff&quot;&gt;&lt;font size=&quot;2&quot; color=&quot;#0000ff&quot;&gt;\r\n<p>public&nbsp;</p>\r\n&lt;/font&gt;&lt;/font&gt;</span>&lt;font size=&quot;2&quot; color=&quot;#0000ff&quot;&gt;\r\n<p>&nbsp;</p>\r\n&lt;/font&gt;</span></p>\r\n<p><span style=\"font-size:x-small\">PeriodTerminal(</span><span style=\"font-size:x-small;color:#0000ff\"><span style=\"font-size:x-small;color:#0000ff\">string</span></span><span style=\"font-size:x-small\"> name, </span><span style=\"font-size:x-small;color:#0000ff\"><span style=\"font-size:x-small;color:#0000ff\">string</span></span><span style=\"font-size:x-small\"> extraChars, </span><span style=\"font-size:x-small;color:#0000ff\"><span style=\"font-size:x-small;color:#0000ff\">string</span></span><span style=\"font-size:x-small\"> extraFirstChars):</span><span style=\"font-size:x-small;color:#0000ff\"><span style=\"font-size:x-small;color:#0000ff\">base</span></span><span style=\"font-size:x-small\">(name)</span><span style=\"font-size:x-small\">&nbsp;</span></p>\r\n<p>{</p>\r\n<p><span style=\"font-size:x-small\">AllFirstChars = <span style=\"font-size:x-small;color:#2b91af\"><span style=\"font-size:x-small;color:#2b91af\">Strings</span></span><span style=\"font-size:x-small\">.AllLatinLetters_Period + extraFirstChars;</span>\r\n<p>AllChars =<span style=\"font-size:x-small;color:#2b91af\"><span style=\"font-size:x-small;color:#2b91af\">Strings</span></span><span style=\"font-size:x-small\">.AllLatinLetters_Period + </span><span style=\"font-size:x-small;color:#2b91af\"><span style=\"font-size:x-small;color:#2b91af\">Strings</span></span><span style=\"font-size:x-small\">.DecimalDigits + extraChars;</span></p>\r\n<p>AllPrefixChars =<span style=\"font-size:x-small;color:#a31515\"><span style=\"font-size:x-small;color:#a31515\">&quot;fFiI&quot;</span></span><span style=\"font-size:x-small\">; </span></p>\r\n<p>&nbsp;</p>\r\n<p>}</p>\r\n<p>in which extraChars, extraFirstChars are&nbsp; &quot;_&quot; , <span style=\"font-size:x-small;color:#008000\"><span style=\"font-size:x-small;color:#008000\">public const string&nbsp;AllLatinLetters_Period = &quot;EFIMNRTYefimnrty&quot;;&nbsp; </span></span></p>\r\n<p><span style=\"font-size:x-small;color:#008000\"><span style=\"font-size:x-small;color:#008000\"><span style=\"font-size:x-small;color:#0000ff\"><span style=\"font-size:x-small;color:#0000ff\">p</span></span></span></span><span style=\"font-size:x-small;color:#008000\"><span style=\"font-size:x-small;color:#008000\"><span style=\"font-size:x-small;color:#0000ff\"><span style=\"font-size:x-small;color:#0000ff\">ublic</span></span><span style=\"font-size:x-small\"> </span><span style=\"font-size:x-small;color:#0000ff\"><span style=\"font-size:x-small;color:#0000ff\">const</span></span><span style=\"font-size:x-small\"> </span><span style=\"font-size:x-small;color:#0000ff\"><span style=\"font-size:x-small;color:#0000ff\">string</span></span><span style=\"font-size:x-small\"> DecimalDigits = </span><span style=\"font-size:x-small;color:#a31515\"><span style=\"font-size:x-small;color:#a31515\">&quot;1234567890&quot;</span></span><span style=\"font-size:x-small\">;</span></span></span></p>\r\n<p><span style=\"font-size:x-small;color:#008000\"><span style=\"font-size:x-small;color:#008000\">In&nbsp;S_fy1_mean, <strong>&quot;fy1&quot; </strong>are getting parsed as period terminal.&nbsp;\r\n<p>But other identifier terminals which starts from &quot;f&quot; are parsing under this period terminal. For example,</p>\r\n<p>&nbsp;In&nbsp;S_ci_flg_9, <strong>&quot;flg&quot;</strong>&nbsp; is an ordinary identifier terminal but its getting parsed under period terminal.</p>\r\n<p>Is there any way to recognise all the characters &quot;fy1&quot; in period terminal and others start from &quot;f&quot; as usual identifiers?</p>\r\n<p>Could u please suggest me a proper solution&nbsp;to create custom terminal&nbsp;and the&nbsp;identifier terminal to parse both the examples S_fy1_mean and S_ci_flg_mean?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</span></span></p>\r\n</span></p>",
+    "PostedDate": "2010-02-01T21:49:51.08-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "285870",
+    "ThreadId": "82716",
+    "Html": "<p>I still don't quite understand what you try to do, but it looks like if you want to catch the exact &quot;fy1&quot; string you have to use it as is, as KeyTerm, just as you use other string literals in the grammar; do not use custom terminal or identifier for this</p>",
+    "PostedDate": "2010-02-04T10:18:33.453-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1494629",
+    "ThreadId": "662206",
+    "Html": "I am resurrecting an old Irony project from 2011ish. Has this code to get the grammar AST as XML<br />\n<pre><code>            LanguageCompiler gaqlCompiler = new LanguageCompiler(new GaqlGrammar());\n            CompilerContext compilerContext = new CompilerContext(gaqlCompiler);\n            AstNode rootNode = gaqlCompiler.Parse(compilerContext, source);\n            XmlDocument xdoc = rootNode.XmlToDocument();\n</code></pre>\n\nI need to convert these four lines to the new semantics. Can anyone help?<br />\n",
+    "PostedDate": "2017-03-24T18:36:33.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1494680",
+    "ThreadId": "662206",
+    "Html": "I found parseTree.ToXmlDocument() and that gives me something that I can work with.<br />\n",
+    "PostedDate": "2017-03-26T10:17:37.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

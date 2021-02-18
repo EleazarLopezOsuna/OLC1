@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1170278",
+    "ThreadId": "501380",
+    "Html": "Hello,<br />\n<br />\nI would like to modify the expression grammar that comes with irony.<br />\n<br />\nI would like to specialize it for linear expressions.<br />\nThis means that expressions should be linear expressions with respect to the &quot;variables&quot;.<br />\nHowever, the expressions do not need to be linear with respect to &quot;parameters&quot;.<br />\nThe identifiers for parameters and for variables would be known at run time, when parsing.<br />\nTypically, parameters would be defined by some assignment statement while variables would not appear in an assignment.<br />\n<br />\nIs it possible to describe this in a grammar?<br />\nHow can I specialize the expression grammar to linear expressions?<br />\nHow could I distinguish between variables and parameters?<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2014-01-15T23:38:52.067-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1191422",
+    "ThreadId": "501380",
+    "Html": "what is 'linear expressions'?\r<br />\nnow, at what point you need to distinguish between vars and parameters? during parsing, or after parsing in AST tree, or during execution at runtime? The easiest would be at runtime (I guess, not knowing what exactly you need). At runtime you can mark assigned values as 'parameters' in some way (save them in dictionary); you'll have to modify the language runtime and related classes for this. At parse time - have no idea, based on info you provided. Please give an example, sample source and what kind of different treatment you want (and at which stage) for vars vs params.\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-01-22T10:50:40.48-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1191617",
+    "ThreadId": "501380",
+    "Html": "Thanks Roman.\r<br />\nI realized that I could resolve parameters before parsing.\r<br />\nTherefore, I would enjoy to make sure that the expressions being parsed are in the form a1<em>x1+a2</em>x2+...\r<br />\nwhere a1 and the like would be numbers and x1 and the like would be named variables.\r<br />\nOf course, the expression could also be created as a11*x1<em>a12 or a11/a12</em>x1/a12 and so on.\r<br />\nMaybe this should be resolved after parsing.\r<br />\nThanks again for this nice package.\r<br />\nMichel<br />\n",
+    "PostedDate": "2014-01-22T11:53:47.867-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "749947",
+    "ThreadId": "300958",
+    "Html": "\r\n<p>by default a '=' is considered an assignment operator ExpressionType.Assign, my language is purely an expression evaluation language and i need '=' to be an ExpressionType.Equal.&nbsp;</p>\r\n<p>Is this possible without changing the interpreter assembly? (i.e. to be defined in the grammar)</p>\r\n<p>Thanks</p>\r\n",
+    "PostedDate": "2012-02-09T14:01:20.787-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "750125",
+    "ThreadId": "300958",
+    "Html": "<p>there is a method in grammar CreateRuntime - try playing with it. When default runtime is returned, try changing operator mappings</p>",
+    "PostedDate": "2012-02-09T15:03:52.207-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

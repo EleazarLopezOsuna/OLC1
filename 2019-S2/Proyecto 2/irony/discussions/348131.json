@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "808586",
+    "ThreadId": "348131",
+    "Html": "<p>Hi Roman,</p>\n<p>I'm almost done with <a title=\"Fast Colored TextBox for Syntax Highlighting by Pavel Torgashov\" href=\"http://www.codeproject.com/Articles/161871/Fast-Colored-TextBox-for-syntax-highlighting\">FastColoredTextBox</a> integration (<a title=\"FastColoredTextBox in GrammarExplorer\" href=\"http://irony.codeplex.com/workitem/9869\">work item</a>).<br /> Here is a screenshot of the current version:</p>\n<p><img src=\"http://www.sharp-shooter.ru/misc/irony-grammar-explorer-fctb1.png\" alt=\"FCTB\" /></p>\n<p>It's a lot faster than RichTextBox and works quite stable.<br /> Notice brace matching: brace symbols are taken from LanguageData &mdash; Grammar.RegisterBracePair(&hellip;).</p>",
+    "PostedDate": "2012-03-10T13:04:08.96-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "808607",
+    "ThreadId": "348131",
+    "Html": "<p>Added a new feature: wavy-line highlighting for error tokens:</p>\n<p><img src=\"http://www.sharp-shooter.ru/misc/irony-grammar-explorer-fctb2.gif\" alt=\"FCTB Error Highlighting title=\" /></p>\n<p>I'm just pushed these changes to my fork:&nbsp;<a href=\"http://irony.codeplex.com/SourceControl/network/forks/yallie/IronyContrib\">http://irony.codeplex.com/SourceControl/network/forks/yallie/IronyContrib</a></p>\n<p>Please let me know if you find any problems.</p>\n<p>Regards, yallie.</p>",
+    "PostedDate": "2012-03-10T14:37:55.323-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "808658",
+    "ThreadId": "348131",
+    "Html": "<p>everybody who's following - please disregard my last message, mistakenly replied to notification message, so it got broadcasted</p>\r\n<p>my deep apologies</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-03-10T22:00:15.493-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

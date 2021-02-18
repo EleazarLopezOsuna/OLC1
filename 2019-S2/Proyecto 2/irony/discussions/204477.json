@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "416476",
+    "ThreadId": "204477",
+    "Html": "<p>Hello! &nbsp;I'm curious about three things: 1) Can a parser be reused to parse multiple scripts? 2) Is the parser thread safe? 3) If not, is the Grammar/LanguageData thread safe? &nbsp;Can I create 10 Parser instances off the same LanguageData and concurrently parse 10 scripts without issue?</p>\r\n<p>I've glanced over the source and I <em>think</em>&nbsp;these are the answers:</p>\r\n<p>1) You can reuse a Parser (Irony.Parsing.Parser) to parse multiple scripts.</p>\r\n<p>2) The parser is NOT thread safe.</p>\r\n<p>3) ? - Not sure without further analysis.</p>\r\n<p>I'm developing a server that will allow users to submit templates. &nbsp;Say there are 100 users logged in and 25 of them post a new template at roughly the same time. &nbsp;I will need to parse those concurrently (or at least, parse as many as I have threads available in the thread pool). &nbsp;Do I need to instantiate a new Grammar, LanguageData, and Parser for each of these operations? &nbsp;How expensive is it to instantiate these? &nbsp;Can I share the same LanguageData amongst all Parser instances?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks!</p>",
+    "PostedDate": "2010-03-10T10:02:35.257-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "416513",
+    "ThreadId": "204477",
+    "Html": "<p>Multi-threading story is the following: LanguageData is thread-safe and can be shared between threads, so you can create it once and place it into server-wide cache. Creating LanguageData is a large effort - it involves constructing parsing automaton. Every thread should create a Parser object using shared LanguageData and do the job. The Parser creation is a light job, not a big deal, it is just an object with a few fields.&nbsp;</p>",
+    "PostedDate": "2010-03-10T11:39:15.783-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "416530",
+    "ThreadId": "204477",
+    "Html": "<p>Awesome! &nbsp;That's exactly what I needed to know. &nbsp;Thanks!</p>",
+    "PostedDate": "2010-03-10T11:56:07.103-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "840194",
+    "ThreadId": "204477",
+    "Html": "\r\n<p>Is a Grammer thread-safe? I'm using Irony to enable inline simple C#-like text functions in view-engine sort of scheme for a website. I started out with a global instance of the Parser but quickly realized that was not thread-safe. Then I made just my FunctionGrammer\r\n global. That seems to work except that I've seen some weird errors like:</p>\r\n<pre>Exception: System.IndexOutOfRangeException\nMessage: Index was outside the bounds of the array.\nSource: mscorlib\n   at System.Array.Clear(Array array, Int32 index, Int32 length)\n   at System.Collections.Generic.List`1.Clear()\n   at Irony.Parsing.Construction.GrammarDataBuilder.CreateProductions() in C:\\code\\Irony\\Parsing\\Data\\Construction\\GrammarDataBuilder.cs:line 163\n   at Irony.Parsing.Construction.GrammarDataBuilder.Build() in C:\\code\\Irony\\Parsing\\Data\\Construction\\GrammarDataBuilder.cs:line 40\n   at Irony.Parsing.Construction.LanguageDataBuilder.Build() in C:\\code\\Irony\\Parsing\\Data\\Construction\\LanguageDataBuilder.cs:line 37\n   at Irony.Parsing.LanguageData.ConstructAll() in C:\\code\\Irony\\Parsing\\Data\\LanguageData.cs:line 38\n   at Irony.Parsing.LanguageData..ctor(Grammar grammar) in C:\\code\\Irony\\Parsing\\Data\\LanguageData.cs:line 34\n   at Irony.Parsing.Parser..ctor(Grammar grammar) in C:\\code\\Irony\\Parsing\\Parser\\Parser.cs:line 28\n\n</pre>\r\n<p>I should note that I'm using the last available .NET 3.5 version of Irony... Also, to create a LanguageData object, is it this simple?</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>        <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;summary&gt;</span>\n        <span style=\"color:gray\">///</span><span style=\"color:green\"> Call this and store it globally</span>\n        <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;/summary&gt;</span>\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">static</span> LanguageData LanguageData()\n        {\n            <span style=\"color:blue\">return</span> <span style=\"color:blue\">new</span> LanguageData(<span style=\"color:blue\">new</span> FunctionGrammer());\n        }\n</pre>\r\n</div>\r\n",
+    "PostedDate": "2012-05-23T18:54:30.597-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "840195",
+    "ThreadId": "204477",
+    "Html": "<p>LanguageData should be static object, created once and shared. ParsingContext is the one that should be created per-thread and per parsing job.</p>\r\n<p>Parser is also thread-safe (should be), but it is not expensive to construct, so you can create it on each thread as well.</p>\r\n<p>What do you mean \"you realized Parser is not thread-safe\"? it should be, as long as you create parsing context per thread.</p>",
+    "PostedDate": "2012-05-23T19:05:23.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "840423",
+    "ThreadId": "204477",
+    "Html": "<p>Thanks for the quick response!</p>\r\n<p>Regarding the Parser being thread-safe.. I meant that MY usage of Parser (as a static object) was not thread-safe, not necessarily the Parser object itself. This was entirely due to my lack of understanding of the Irony object model. Speaking of which...</p>\r\n<p>Can you point me to any samples/snippets of how to properly set up a Parser (static LanguageData and ParsingContext I presume) that will be used in a multi-threaded environment?</p>\r\n<p>Currently, I have my Grammer as a static object and create a new Parser for each text function i need to parse in a given thread (you can view the <a href=\"http://trac.sitecore.net/DataSetsModule/browser/Trunk/Sitecore.SharedSource.Text/FunctionInterpreter.cs\">source here</a>). So a thread might get a chunk of text like this:&nbsp;</p>\r\n<p>\r\n<hr />\r\n</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">h2</span><span style=\"color: blue;\">&gt;</span>\r\n @if([Start Date Override Text]==\"none\",@formatdate([Start Date],\"dddd MMMM d\"),[Start Date Override Text])\r\n<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">h2</span><span style=\"color: blue;\">&gt;</span>\r\n<span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">div</span><span style=\"color: blue;\">&gt;</span>\r\n  <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">p</span><span style=\"color: blue;\">&gt;</span>@if([More Info URL]==\"none\",\" \",\"<span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">a</span> <span style=\"color: red;\">href</span><span style=\"color: blue;\">=</span><span style=\"color: blue;\">'[More Info URL]'</span><span style=\"color: blue;\">&gt;</span>MORE INFO<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">a</span><span style=\"color: blue;\">&gt;</span>\")<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">p</span><span style=\"color: blue;\">&gt;</span>\r\n<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">div</span><span style=\"color: blue;\">&gt;</span>\r\n</pre>\r\n</div>\r\n<p>\r\n<hr />\r\n</p>\r\n<p>I first use Regex to grab the funtions to parse, in this case:</p>\r\n<ul>\r\n<li>@if([Start Date Override Text]==\"none\",@formatdate([Start Date],\"dddd MMMM d\"),[Start Date Override Text])</li>\r\n<li>@if([More Info URL]==\"none\",\" \",\"&lt;a href='[More Info URL]'&gt;MORE INFO&lt;/a&gt;\")</li>\r\n</ul>\r\n<p>These are then parsed with a new instance of the Parser per function. I then store the ParseTrees for each function (to avoid the cost of re-parsing the same function) in memory (static Dictionary).&nbsp;</p>\r\n<p>I'm sure there is plenty I could refactor in order to gain efficiency and stability, I'm open to any suggestions.&nbsp;</p>\r\n<p>Thanks!</p>",
+    "PostedDate": "2012-05-24T06:35:15.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "842627",
+    "ThreadId": "204477",
+    "Html": "<p>there are no specific samples to look at. Just a guideline - setup LanguageData once and make it static singleton, then reuse it with parser/parsing contexts created for specific tasks. To see some basic code how to do it, inspect the code in the main form in Grammar Explorer</p>",
+    "PostedDate": "2012-05-30T09:27:46.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

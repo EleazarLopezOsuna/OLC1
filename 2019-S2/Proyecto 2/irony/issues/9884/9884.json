@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "no need for this method - see comments",
+    "ClosedDate": "2013-08-23T15:11:54.683-07:00",
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "I repeatably find myself creating a lot of terminals using ToTerm(string text) and then later to revisit each one of them to set some TermFlags on them using BnfTerm.SetFlag(TermFlags flag). This can be done a lot faster and cleaner after adding an additional constructor to ToTerm: \r\n```\r\n public KeyTerm ToTerm(string text, TermFlags flags)\r\n    {\r\n       KeyTerm term = ToTerm(text, text);\r\n       if (null != term)\r\n         term.SetFlag(flags);\r\n       return term;\r\n    }\r\n```\r\nNow I can simply put into my code:\r\n```\r\n      var semicolon = ToTerm(\";\", TermFlags.IsPunctuation);\r\n      var ADD = ToTerm(\"ADD\", TermFlags.IsKeyword);\r\n      var AGGREGATE = ToTerm(\"AGGREGATE\", TermFlags.IsKeyword);\r\n      var ALL = ToTerm(\"ALL\", TermFlags.IsKeyword);\r\n```\r\nMakes my code better readable and it saves a lot of typing. Hope you can add it so more people can benefit.",
+    "LastUpdatedDate": "2013-08-23T15:11:54.683-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2013-08-22T11:34:51.557-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "suggestion to add constructor on ToTerm that includes setting Flags",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9884
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "well, first of all, if you scan all uses of TermFlags, you'll find out that in many cases this flag is set automatically by Irony. For example, IsKeyword is set for all key terms in grammar that start with letter. So you don't need to do it explicitly.\nFor flags like IsPunctuation there are group-set 'Mark*' methods to set this flag on mutliple terminals. I think this is a good approach, as you can see all your punctuation symbols marked together. \nNote that all the samples are ok without this overload...\nFinally, if you really need this overload, how about simply defining it in your custom grammar?! You create sub-class grammar anyway, so add this method there.\nClosing this issue as 'declined'",
+      "PostedDate": "2013-08-23T15:11:26.993-07:00",
+      "Id": 111010
+    }
+  ]
+}

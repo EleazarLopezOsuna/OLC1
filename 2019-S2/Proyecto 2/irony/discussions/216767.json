@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "458124",
+    "ThreadId": "216767",
+    "Html": "<p>Hello, &nbsp;I'm working on a parser that parses a particular subset of mediawiki markup: &nbsp;typically this looks like</p>\r\n<p>\r\n<pre>{{a|b|c|d}}</pre>\r\n</p>\r\n<p>Now, &nbsp;this is recursive so you can write something like</p>\r\n<p>\r\n<pre>{{a|b|{{e|f}}}d}}</pre>\r\n</p>\r\n<p>I've defined</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><pre>Template.Rule = &quot;{{&quot; + DelimData + &quot;}}&quot;;\r\nLink.Rule = &quot;[[&quot; + DelimData + &quot;]]&quot;;\r\nExternalLink.Rule = &quot;[&quot; + ExternalLinkDelim + &quot;]&quot;;\r\nRichText.Rule = Text | Link | Template | ExternalLink | RichText + RichText;\r\nDelimData.Rule = RichText\r\n                    | RichText + &quot;|&quot; + DelimData</pre>\r\n</pre>\r\n</div>\r\n</p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"font-family:Consolas, 'Courier New', Courier, monospace\"><span style=\"white-space:pre\">This sorta works,  so long as none of the field values are empty...  However,  the parser is failing in case where people use positional parameters that are empty,  for instance,\r\n<pre>{{|b|c|d}}\r\n{{a|b||d}}\r\n{{a|b|c|}}\r\n{{a|||d}}</pre>\r\n<pre>I've been able to add more branches to DelimData.Rule to some of the rules so I can parse Some of the things above,  for instance</pre>\r\n<pre><pre>DelimData.Rule = RichText\r\n                    | RichText + &quot;|&quot; + DelimData\r\n                    | &quot;|&quot; + DelimData\r\n                    | DelimData + &quot;|&quot;\r\n                    | &quot;|&quot;;</pre>\r\n<pre>accepts everything above except for the last one.  I'm sure there's a simple and general way to get the behavior I want but at the moment it eludes me.</pre>\r\n</pre>\r\n</span></span></p>",
+    "PostedDate": "2010-06-21T10:01:21.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "458130",
+    "ThreadId": "216767",
+    "Html": "My first guess would be to make rich text optional:\r\n\r\n\r\nRichText.Rule = Text | Link | Template | ExternalLink | RichText + RichText | Empty;\r\n\r\n(notice Empty at the end)\r\nWatch for grammar errors in this case, I suspect grammar may become ambiguous because of this &quot;RichText + RichText&quot; clause, you need to tweak rules then",
+    "PostedDate": "2010-06-21T10:09:01.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "458190",
+    "ThreadId": "216767",
+    "Html": "<p>What is &quot;Empty&quot; an instance of?&nbsp;</p>",
+    "PostedDate": "2010-06-21T12:12:12.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "458192",
+    "ThreadId": "216767",
+    "Html": "<p>...oops, &nbsp;I get it, &nbsp;Empty is a member of &quot;Grammar&quot;.</p>",
+    "PostedDate": "2010-06-21T12:13:27.873-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "458204",
+    "ThreadId": "216767",
+    "Html": "<p>Here's what I tried</p>\r\n<p>\r\n<pre>OptionalRichText.Rule = RichText | Empty;\r\nDelimData.Rule = OptionalRichText\r\n                | OptionalRichText + &quot;|&quot; + DelimData;</pre>\r\n</p>\r\n<p>Note that by &quot;wrapping&quot; RichText in OptionalRichText, &nbsp;I avoid the obvious problem that you can always find an Empty at the beginning or end of a RichText.</p>\r\n<p>Anyway, &nbsp;this seems to work, &nbsp;so far as parse rules go, &nbsp;but I find the behavior of Empty to be just a bit obnoxious. &nbsp;I marked OptionalRichText as a transient node so it wouldn't show up in the parse tree (make me rewrite everything). &nbsp;&quot;Empty&quot; itself seems to be transient, &nbsp;because I'm not actually seeing it in the parse tree. &nbsp;This makes my code that picks template apart just a little more ugly because there are more node structures I need to look at.</p>\r\n<p>So far I've also been avoiding the use of transient nodes because an important thing that my code needs to do is to&nbsp;re-serialize&nbsp;parts of the node graph. &nbsp;It would be really convenient if I could hide nodes that I don't care about semantically but that have a visible &quot;sign&quot;&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-21T12:45:11.443-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

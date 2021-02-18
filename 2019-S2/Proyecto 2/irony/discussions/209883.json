@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "433120",
+    "ThreadId": "209883",
+    "Html": "<p>Hello.I need to parse strings that contain structured data, like CSV.<br>Example:</p>\r\n<p>constant FBGA256 : PIN_MAP_STRING :=</p>\r\n<p>&nbsp;&nbsp; &nbsp;&quot;IOD3 &nbsp; : D3 &nbsp;, IOC2 &nbsp; : C2 &nbsp;, &quot;&amp;</p>\r\n<p>&nbsp;&nbsp; &nbsp;&quot;IOE3 &nbsp; : E3 &nbsp;, IOC3 &nbsp; : C3 &nbsp;, &quot;&amp;</p>\r\n<p>&nbsp;&nbsp; &nbsp;&quot;IOE4 &nbsp; : E4 &nbsp;, IOD2 &nbsp; : D2&quot;;</p>\r\n<p><br>Depending on constant's type, string may contain different data (not only CSV).</p>\r\n<p>&nbsp;</p>\r\n<p>What is the best way to implement such parsing?</p>\r\n<p>Is it possible to do that in one pass, with one grammar?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-20T03:44:13.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "433286",
+    "ThreadId": "209883",
+    "Html": "<p>Hey K0zer,</p>\r\n<p>Irony has a great Literal called DsvLiteral just for parsing Delimited Separated Values.&nbsp; An example of this can be found under Irony.Samples &gt; DataGrammars &gt; SampleCsvGrammar.cs.</p>\r\n<p>However, this may not be the best approach for your problem.&nbsp; I believe just a straight grammar with MakePlusRule should suffice for the mapping pairs. I have not tested the following but it may be a good start.</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>MAP_PAIR.Rule = IO_ID  + <span style=\"color:#a31515\">&quot;:&quot;</span> + ID;  <span style=\"color:green\">//  IOD3 : IOC2     [IO_ID and ID would have to be declared depending on your rules; these may require a CustomTerminal]</span><br><br>MAP_PAIR_SET.Rule = MakePlusRule(MAP_PAIR_SET, MAP_PAIR ,<span style=\"color:#a31515\">&quot;,&quot;</span>);  <span style=\"color:green\">//  IOD3   : D3  , IOC2   : C2</span><br><br>MAP_PAIR_STRING.Rule = ToTerm(<span style=\"color:#a31515\">&quot;\\&quot;&quot;</span>) + MAP_PAIR_SET + ToTerm(<span style=\"color:#a31515\">&quot;\\&quot;&quot;</span>);  <span style=\"color:green\">//  &quot;IOD3   : D3  , IOC2   : C2  , &quot;</span><br><br>MAP_PAIR_LINES.Rule = MakePlusRule(MAP_PAIR_LINES, MAP_PAIR_STRING, <span style=\"color:#a31515\">&quot;&amp;&quot;</span>);  <span style=\"color:green\">//  &quot;IOD3   : D3  , IOC2   : C2  , &quot; &amp; &quot;IOE3   : E3  , IOC3   : C3  , &quot;</span><br><br>MAP_TYPE.Rule = TYPE + (Empty | <span style=\"color:#a31515\">&quot;:=&quot;</span> + MAP_PAIR_LINES) + <span style=\"color:#a31515\">&quot;;&quot;</span><br><br>CONST_STMNT = ToTerm(<span style=\"color:#a31515\">&quot;constant&quot;</span>) + NAME + <span style=\"color:#a31515\">&quot;:&quot;</span> + MAP_TYPE;  <span style=\"color:green\">// NAME would probably be an IdentifierTerminal</span><br><br></pre>\r\n</div>\r\n<p>Let me know if you have any further questions.<br> <br> -MindCore</p>",
+    "PostedDate": "2010-04-20T11:26:35.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "433911",
+    "ThreadId": "209883",
+    "Html": "<p><span style=\"font-size:10pt;color:black\" lang=EN-US>The thing is, quoted string can be split not only by a comma, but in any place. And split strings content have to be parsed all together. </span></p>\r\n<p><span style=\"font-size:10pt;color:black\" lang=EN-US>Example:</span></p>\r\n<p><span style=\"font-size:10pt;color:black\" lang=EN-US>constant FBGA256 : PIN_MAP_STRING :=&quot;IOD3&nbsp;&nbsp; : D3 , IO&rdquo; &amp; &rdquo;C2&nbsp;&nbsp; : C2&rdquo;; // for &quot;IOD3: D3, IOC2: C2&quot;<br></span></p>\r\n<p><span style=\"font-size:10pt;color:black\" lang=EN-US>&nbsp;</span></p>\r\n<p><span style=\"font-size:10pt;color:black\" lang=EN-US>So grammar for string would be:</span></p>\r\n<p><span style=\"font-size:8pt;color:black\" lang=EN-US>MAP_PAIR.Rule = IO_ID + </span><span style=\"font-size:8pt;color:#a31515\" lang=EN-US>&quot;:&quot;</span><span style=\"font-size:8pt;color:black\" lang=EN-US> + ID;</span></p>\r\n<p><span style=\"font-size:8pt;color:black\" lang=EN-US>MAP_PAIR_SET.Rule = MakePlusRule(MAP_PAIR_SET, MAP_PAIR ,</span><span style=\"font-size:8pt;color:#a31515\" lang=EN-US>&quot;,&quot;</span><span style=\"font-size:8pt;color:black\" lang=EN-US>);</span></p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"font-size:10pt;color:black\" lang=EN-US>And grammar for constant statement:</span></p>\r\n<pre><span style=\"font-size:8pt;color:black\" lang=EN-US>CONST_STMNT = ToTerm(</span><span style=\"font-size:8pt;color:#a31515\" lang=EN-US>&quot;constant&quot;</span><span style=\"font-size:8pt;color:black\" lang=EN-US>) + NAME + </span><span style=\"font-size:8pt;color:#a31515\" lang=EN-US>&quot;:&quot;</span><span style=\"font-size:8pt;color:black\" lang=EN-US> + TYPE + &quot;:=&quot; + quotedStringConcat;</span></pre>\r\n<p>&nbsp;</p>\r\n<p>The question is, can I use a single grammar for the parsing of the entire expression in a one pass?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-21T15:44:12.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "434162",
+    "ThreadId": "209883",
+    "Html": "I believe this can be done in one pass; however to accomplish it you will have to create a CustomTerminal.  This terminal would trigger from the first double quote and terminate off the quote followed by a semicolon.  Next the character sets, such as IOD3 and D3 will create child Tokens to the parent token based on the colons and previous token.  The tree of tokens would look something like this:\r\n\r\nMAP\r\n  |_____ IOD3\r\n  |          |_______D3\r\n  |\r\n  |______IOC2\r\n             |_______C2\r\n\r\nThis would allow you to parse even concatenated strings in a single pass, however you would have to add additional logic to verify the the concatenation is create, and if not return an Error token (i.e. looks like &quot; & &quot;).\r\n\r\n-MindCore",
+    "PostedDate": "2010-04-22T05:24:05.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "587643",
+    "ThreadId": "251507",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>&nbsp;</p>\r\n<p>First thanks for a great project. Its definitely&nbsp;one of the open source projects I use the most.</p>\r\n<p>I was just looking at how Irony operates and I noticed something strange. When&nbsp;Parser object is instantiated I also add my grammar, so like:</p>\r\n<p>&nbsp;</p>\r\n<p>var myGrammar = new Parser(new MyGrammar());</p>\r\n<p>&nbsp;</p>\r\n<p>Constructor then somewhere in the background uses&nbsp;SymbolTable class to add symbols. It has a static property Symbols&nbsp;of the same type.</p>\r\n<p>&nbsp;</p>\r\n<p>Then when I parse text like:</p>\r\n<p>myGrammar.Parse(someText);</p>\r\n<p>&nbsp;</p>\r\n<p>It again uses SymoblTable, but the problem is that all identifiers are also added to the symbol dictionary, which is static.&nbsp;</p>\r\n<p>For example in IdentifierTerminal.cs file there is a method&nbsp;QuickParse and at the end there is the following line</p>\r\n<p>token.Symbol = SymbolTable.Symbols.TextToSymbol(token.ValueString);&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>Shouldn't this be&nbsp;</p>\r\n<p>token.Symbol = SymbolTable.Symbols.FindSymbol(token.ValueString);&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>I wanted to create a fix, but I have so little knowledge about how its written I figured I'd rather ask if this is intended or if its a bug.</p>\r\n<p>It feels strange that symbols are mixed with the query text. The biggest problem is that since it is static this is never collected until the app is closed.&nbsp;So if I parse a lot of text I will end up with a huge static dictionary.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks for a great project.</p>\r\n",
+    "PostedDate": "2011-03-28T08:24:32.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "587679",
+    "ThreadId": "251507",
+    "Html": "<p>I am interested in this one too.&nbsp; I wonder if this explains why when parsing one particular file of mine, I end up consuming 6Gb of memory before it finally crashes?&nbsp; Which is strange because I wouldnt expect it to have generated much more than a couple hundred Megabytes, allowing for some overheads after structuring the data.&nbsp;</p>\r\n<p>My intention was to try a new approach to get around this issue and split my text file down into small chunks and parse them individually.&nbsp; If what you are saying is true, then this approach wouldnt work either?&nbsp; (I would need to mount Irony as an App Domain for each chunk to be processed?)</p>\r\n<p>Will.</p>",
+    "PostedDate": "2011-03-28T09:15:18.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "587949",
+    "ThreadId": "251507",
+    "Html": "<p>Will look at this tonight</p>",
+    "PostedDate": "2011-03-28T17:53:42.433-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "588582",
+    "ThreadId": "251507",
+    "Html": "<p>unbelievable... that it's still there... unbe-freakin-lievable....&nbsp;</p>\r\n<p>I vaguely remember seeing/creating this static member before, but I was absolutely sure I fixed that loong time ago. Yes, it's a bug, or more like initial design shortcut that was never fixed. Thanks guys for finding this, I'm working on a fix.&nbsp;</p>\r\n<p>Additionally, looks like move to Mercurial messed up the sources in tip, lot of extra files/folders appear that should be long gone. Need to fix that.</p>\r\n<p>thanks again and sorry for this overlook</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-03-29T22:20:09.56-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "627433",
+    "ThreadId": "251507",
+    "Html": "<p>Hi Roman,</p>\r\n<p>Did you manage to get anywhere with a fix for this issue?</p>\r\n<p>Will</p>",
+    "PostedDate": "2011-06-14T04:28:01.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "627730",
+    "ThreadId": "251507",
+    "Html": "<p>Not yet, sorry. Had been busy with other things. I plan to get back to Irony in a week or two and fix all the outstanding issues that piled up. I think it's time to move to beta, finally</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-06-14T12:50:36.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

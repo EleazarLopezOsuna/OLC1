@@ -1,0 +1,2349 @@
+//
+// WhoCo.Development.Code.CP/Grammar
+//
+// Author:
+//   Nicholas Yearwood (nx@whoco.org)
+//
+// (C) WhoCo 2013 http://www.whoco.org
+//
+
+//
+// Copyright (C) 2013 WhoCo (http://www.whoco.org)
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+
+#if MONOS_BUILDSTRAP
+// using System.Collections.Generic;
+// using System.Linq;
+#else
+using Microsoft.Linq;
+#endif
+
+using System;
+using System.Text;
+using System.Collections;
+using System.Globalization;
+using WhoCo.Development.Code;
+using MonOS.Development.Code;
+using Irony.Parsing;
+
+namespace WhoCo.Development.Code.CP {
+	/// <summary>
+	/// 
+	/// </summary>
+	/// 
+	/// <notes who="Nx">
+	/// Linq query expressions are not implemented and, probably, never will be.
+	/// </notes>
+	/// 
+	/// <change who="Nx">Added syntax support for reference (in)equality operators
+	/// "===" &amp; "!==". This may not make it to C' 1.0.
+	/// </change>
+	/// 
+	/// <history>
+	/// <todo who="original Irony comment">
+	/// current conflicts explanations
+	///	Shift-reduce conflict in state S518,
+	///		reduce production: else_clause_opt -> on inputs: else
+	///		- "dangling ELSE conflict" well described in textbooks; preferring shift
+	///		is a correct behavior
+	///	</todo>
+	/// <todo who="original Irony comment">
+	/// Shift-reduce conflict in state S88,
+	///		reduce production: using_directives_opt -> on inputs: extern
+	///		- because of use of "extern" two places: in "extern alias someName;"
+	///		and as modifier of class members; this conflict is not in original c#
+	///		grammar, it is a result of grammar tweaking (merging modifiers definitions)
+	///		prefering shift is correct behavior
+	///	<remarks who="Nx">I think I have fixed this. We will see once the
+	///	parser is hooked into the compiler.</remarks>
+	///	<remarks who="Nx" date="20140215">The grammar has been completely
+	///	rewritten from scratch. The issues in the original Irony
+	///	implementation no longer apply.</remarks>
+	///	</todo>
+	///	<change who="Nx">
+	///	Added "assembly" to <code>attribute_target</code>.
+	/// </change>
+	/// </history>
+	[Language( "C'", "1.0", "C' Grammar" )]
+	public class Grammar : WhoCo.Development.Code.Grammar {
+		#region Fields
+
+	//	private TerminalSet _skip_tokens_in_preview = new TerminalSet(); //used in token preview for conflict resolution
+
+		#endregion
+
+		#region Construct
+
+		public Grammar( /* MemberBuilder<MemberInfo> */ IMemberBuilder builder )
+			: base( builder ) {
+			this.GrammarComments = "";
+			this.initialize();
+		}
+
+		protected void initialize() {
+			#region Keywords
+
+			KeyTerm @using = ToTerm( "using" );
+			KeyTerm @extern = ToTerm( "extern" );
+			KeyTerm @alias = ToTerm( "alias" );
+
+			KeyTerm @namespace = ToTerm( "namespace" );
+
+			KeyTerm @public = ToTerm( "public" );
+			KeyTerm @protected = ToTerm( "protected" );
+			KeyTerm @private = ToTerm( "private" );
+			KeyTerm @internal = ToTerm( "internal" );
+			KeyTerm @abstract = ToTerm( "abstract" );
+			KeyTerm @interface = ToTerm( "interface" );
+
+			KeyTerm @virtual = ToTerm( "virtual" );
+			KeyTerm @override = ToTerm( "override" );
+
+			KeyTerm @readonly = ToTerm( "readonly" );
+			KeyTerm @volatile = ToTerm( "volatile" );
+
+			KeyTerm @unsafe = ToTerm( "unsafe" );
+
+			KeyTerm @sealed = ToTerm( "sealed" );
+			KeyTerm @static = ToTerm( "static" );
+			KeyTerm @partial = ToTerm( "partial" );
+			
+			KeyTerm @class = ToTerm( "class" );
+			KeyTerm @struct = ToTerm( "struct" );
+			
+			KeyTerm @bool = ToTerm( "bool" );
+			KeyTerm @sbyte = ToTerm( "sbyte" );
+			KeyTerm @byte = ToTerm( "byte" );
+			KeyTerm @short = ToTerm( "short" );
+			KeyTerm @ushort = ToTerm( "ushort" );
+			KeyTerm @int = ToTerm( "int" );
+			KeyTerm @uint = ToTerm( "uint" );
+			KeyTerm @long = ToTerm( "long" );
+			KeyTerm @ulong = ToTerm( "ulong" );
+			KeyTerm @char = ToTerm( "char" );
+			
+			KeyTerm @enum = ToTerm( "enum" );
+
+			KeyTerm @float = ToTerm( "float" );
+			KeyTerm @double = ToTerm( "double" );
+		//	KeyTerm @decimal = ToTerm( "decimal" );
+			KeyTerm @real = ToTerm( "real" );
+
+			KeyTerm @object = ToTerm( "object" );
+			KeyTerm @dynamic = ToTerm( "dynamic" );
+			KeyTerm @string = ToTerm( "string" );
+			KeyTerm @void = ToTerm( "void" );
+
+			KeyTerm @var = ToTerm( "var" );
+
+			KeyTerm @true = ToTerm( "true" );
+			KeyTerm @false = ToTerm( "false" );
+
+			KeyTerm @in = ToTerm( "in" );
+			KeyTerm @out = ToTerm( "out" );
+			KeyTerm @ref = ToTerm( "ref" );
+
+			KeyTerm @params = ToTerm( "params" );
+
+			KeyTerm @where = ToTerm( "where" );
+
+			KeyTerm @field = ToTerm( "field" );
+			KeyTerm @event = ToTerm( "event" );
+			KeyTerm @method = ToTerm( "method" );
+			KeyTerm @param = ToTerm( "param" );
+			KeyTerm @property = ToTerm( "property" );
+			KeyTerm @assembly = ToTerm( "assembly" );
+			KeyTerm @type = ToTerm( "type" );
+		//	KeyTerm @module = ToTerm( "module" );
+
+			KeyTerm @get = ToTerm( "get" );
+			KeyTerm @set = ToTerm( "set" );
+			KeyTerm @add = ToTerm( "add" );
+			KeyTerm @remove = ToTerm( "remove" );
+
+			KeyTerm @new = ToTerm( "new" );
+
+			KeyTerm @operator = ToTerm( "operator" );
+			KeyTerm @implicit = ToTerm( "implicit" );
+			KeyTerm @explicit = ToTerm( "explicit" );
+
+			KeyTerm @this = ToTerm( "this" );
+			KeyTerm @base = ToTerm( "base" );
+
+			KeyTerm @typeof = ToTerm( "typeof" );
+			KeyTerm @sizeof = ToTerm( "sizeof" );
+
+			KeyTerm @is = ToTerm( "is", "is" );
+			KeyTerm @as = ToTerm( "as", "as" );
+
+			KeyTerm @checked = ToTerm( "checked" );
+			KeyTerm @unchecked = ToTerm( "unchecked" );
+
+			KeyTerm @default = ToTerm( "default" );
+
+			KeyTerm @delegate = ToTerm( "delegate" );
+			KeyTerm @const = ToTerm( "const" );
+
+			KeyTerm @if = ToTerm( "if" );
+			KeyTerm @else = ToTerm( "else" );
+
+			KeyTerm @do = ToTerm( "do" );
+			KeyTerm @while = ToTerm( "while" );
+			KeyTerm @for = ToTerm( "for" );
+			KeyTerm @foreach = ToTerm( "foreach" );
+			KeyTerm @break = ToTerm( "break" );
+			KeyTerm @continue = ToTerm( "continue" );
+			
+			KeyTerm @switch = ToTerm( "switch" );
+			KeyTerm @case = ToTerm( "case" );
+
+			KeyTerm @goto = ToTerm( "goto" );
+			KeyTerm @yield = ToTerm( "yield" );
+			KeyTerm @return = ToTerm( "return" );
+
+			KeyTerm @try = ToTerm( "try" );
+			KeyTerm @catch = ToTerm( "catch" );
+			KeyTerm @finally = ToTerm( "finally" );
+			KeyTerm @throw = ToTerm( "throw" );
+
+			KeyTerm @lock = ToTerm( "lock" );
+
+			KeyTerm @async = ToTerm( "async" );
+
+			#endregion
+
+			#region Symbols
+
+			KeyTerm at = ToTerm( "@", "@" );
+			KeyTerm colon = ToTerm( ":", "colon" );
+			KeyTerm colon_colon = ToTerm( "::", "colon_colon" );
+			KeyTerm semi = ToTerm( ";", "semi" );
+			KeyTerm dot = ToTerm( ".", "dot" );
+			KeyTerm comma = ToTerm( ",", "comma" );
+			NonTerminal commas = new NonTerminal( "commas" );
+				commas.Rule = MakeStarRule( commas, comma );
+			KeyTerm qmark = ToTerm( "?", "qmark" );
+			KeyTerm coalescing_qmark = ToTerm( "??", "coalescing_qmark" );
+			KeyTerm tilde = ToTerm( "~", "tilde" );
+			KeyTerm bang = ToTerm( "!", "bang" );
+
+			KeyTerm open_brace = ToTerm( "{" );
+			KeyTerm close_brace = ToTerm( "}" );
+			KeyTerm open_par = ToTerm( "(" );
+			KeyTerm close_par = ToTerm( ")" );
+			KeyTerm open_bracket = ToTerm( "[" );
+			KeyTerm close_bracket = ToTerm( "]" );
+			KeyTerm lt = ToTerm( "<" );
+			KeyTerm gt = ToTerm( ">" );
+
+		//	KeyTerm Lparx = ToTerm( "(*" );
+
+			KeyTerm value_equal = ToTerm( "==", "value_equal" );
+			KeyTerm value_not_equal = ToTerm( "!=", "not_value_equal" );
+			KeyTerm lt_or_equal = ToTerm( "<=" );
+			KeyTerm gt_or_equal = ToTerm( ">=" );
+
+			KeyTerm logical_or = ToTerm( "||", "logical_or" );
+			KeyTerm logical_and = ToTerm( "&&", "logical_and" );
+
+			KeyTerm plus = ToTerm( "+", "plus" );
+			KeyTerm minus = ToTerm( "-", "minus" );
+			KeyTerm astrisk = ToTerm( "*", "astrisk" );
+			KeyTerm divide = ToTerm( "/", "divide" );
+			KeyTerm ampersand = ToTerm( "&", "ampersand" );
+			KeyTerm bitwise_or = ToTerm( "|", "bitwise_or" );
+			KeyTerm caret = ToTerm( "^", "caret" );
+			KeyTerm left_shift = ToTerm( "<<", "left_shift" );
+			KeyTerm right_shift = ToTerm( ">>", "right_shift" );
+			KeyTerm modulus = ToTerm( "%", "modulus" );
+
+			KeyTerm reference_equal = ToTerm( "===", "reference_equal" );
+			KeyTerm reference_not_equal = ToTerm( "!==", "not_reference_equal" );
+
+			KeyTerm assignment = ToTerm( "=", "assignment" );
+			KeyTerm plus_assignment = ToTerm( "+=", "plus_assignment" );
+			KeyTerm minus_assignment = ToTerm( "-=", "minus_assignment" );
+			KeyTerm astrisk_assignment = ToTerm( "*=", "astrisk_assignment" );
+			KeyTerm divide_assignment = ToTerm( "/=", "divide_assignment" );
+			KeyTerm and_assignment = ToTerm( "&=", "and_assign" );
+			KeyTerm or_assignment = ToTerm( "|=", "or_assign" );
+			KeyTerm exclusive_or_assignment = ToTerm( "^=", "xor_assign" );
+			KeyTerm modulus_assignment = ToTerm( "%=", "modulus_assign" );
+			KeyTerm left_shift_assignment = ToTerm( "<<=", "left_shift_assign" );
+			KeyTerm right_shift_assignment = ToTerm( ">>=", "left_shift_assign" );
+
+			KeyTerm increment = ToTerm( "++", "increment" );
+			KeyTerm decrement = ToTerm( "--", "decrement" );
+
+			KeyTerm goes_to = ToTerm( "=>", "=>" );
+
+			KeyTerm doc_comment = ToTerm( "///", "doc_comment" );
+
+			#endregion
+
+			#region ...
+
+			var compilation_unit = new NonTerminal( "compilation_unit" );
+
+			#region documentation
+
+			var member_documentation = new NonTerminal( "member_documentation" );
+			var member_documentation_line = new NonTerminal( "member_documentation_line" );
+
+			#endregion
+
+			#region comments
+
+			CommentTerminal SingleLineComment = new CommentTerminal( "SingleLineComment", "//", "\r", "\n", "\u2085", "\u2028", "\u2029" );
+			CommentTerminal DelimitedComment = new CommentTerminal( "DelimitedComment", "/*", "*/" );
+			this.NonGrammarTerminals.Add( SingleLineComment );
+			this.NonGrammarTerminals.Add( DelimitedComment );
+			// Temporarily, treat preprocessor instructions like comments
+			CommentTerminal ppInstruction = new CommentTerminal( "ppInstruction", "#", "\n" );
+			this.NonGrammarTerminals.Add( ppInstruction );
+
+			#endregion
+
+			#region identifier
+
+			var identifier = new IdentifierTerminal( "identifier" );
+			identifier.AddPrefix( "@", IdOptions.IsNotKeyword );
+			//From spec:
+			//Start char is "_" or letter-character, which is a Unicode character of classes Lu, Ll, Lt, Lm, Lo, or Nl 
+			identifier.StartCharCategories.AddRange( new UnicodeCategory[] {
+				 UnicodeCategory.UppercaseLetter, //Ul
+				 UnicodeCategory.LowercaseLetter, //Ll
+				 UnicodeCategory.TitlecaseLetter, //Lt
+				 UnicodeCategory.ModifierLetter,  //Lm
+				 UnicodeCategory.OtherLetter,     //Lo
+				 UnicodeCategory.LetterNumber     //Nl
+			} );
+
+			//Internal chars
+			/* From spec:
+			identifier-part-character: letter-character | decimal-digit-character | connecting-character |  combining-character |
+				formatting-character
+			 */
+			identifier.CharCategories.AddRange( identifier.StartCharCategories ); //letter-character categories
+			identifier.CharCategories.AddRange( new UnicodeCategory[] {
+				UnicodeCategory.DecimalDigitNumber, //Nd
+				UnicodeCategory.ConnectorPunctuation, //Pc
+				UnicodeCategory.SpacingCombiningMark, //Mc
+				UnicodeCategory.NonSpacingMark,       //Mn
+				UnicodeCategory.Format                //Cf
+			} );
+
+			//Chars to remove from final identifier
+			identifier.CharsToRemoveCategories.Add( UnicodeCategory.Format );
+
+			var simple_name = new NonTerminal( "simple_name" );
+			var qualified_identifier = new NonTerminal( "qualified_identifier" );
+
+			#endregion
+
+			#region literal
+
+			NumberLiteral number = new NumberLiteral( "Number" );
+			number.DefaultIntTypes = new TypeCode[] { TypeCode.Int32, TypeCode.UInt32, TypeCode.Int64, TypeCode.UInt64 };
+			number.DefaultFloatType = TypeCode.Double;
+			number.AddPrefix( "0x", NumberOptions.Hex );
+			number.AddSuffix( "u", TypeCode.UInt32, TypeCode.UInt64 );
+			number.AddSuffix( "l", TypeCode.Int64, TypeCode.UInt64 );
+			number.AddSuffix( "ul", TypeCode.UInt64 );
+			number.AddSuffix( "f", TypeCode.Single );
+			number.AddSuffix( "d", TypeCode.Double );
+#if !MONOS_BUILDSTRAP
+		//	Number.AddSuffix( "r", typeof( real ) );
+#endif
+
+			StringLiteral string_literal = new StringLiteral( "StringLiteral", "\"", StringOptions.AllowsAllEscapes );
+			string_literal.AddPrefix( "@", StringOptions.NoEscapes | StringOptions.AllowsLineBreak | StringOptions.AllowsDoubledQuote );
+
+			StringLiteral char_literal = new StringLiteral( "CharLiteral", "'", StringOptions.IsChar | StringOptions.AllowsUEscapes | StringOptions.AllowsXEscapes );
+
+			var literal = new NonTerminal( "literal" );
+			literal.Rule = number | string_literal | char_literal | "true" | "false" | "null";
+
+			#endregion
+
+			var extern_alias_directive = new NonTerminal( "extern_alias_directive" );
+			var extern_alias_directives = new NonTerminal( "extern_alias_directives" );
+
+			var qualified_alias_member = new NonTerminal( "qualified_alias_member" );
+			var using_namespace_directive = new NonTerminal( "using_namespace_directive" );
+			var namespace_name = new NonTerminal( "namespace_name" );
+
+			var using_directives = new NonTerminal( "using_directives" );
+			var using_directive = new NonTerminal( "using_directive" );
+			var using_alias_directive = new NonTerminal( "using_alias_directive" );
+			var namespace_or_type_name = new NonTerminal( "namespace_or_type_name" );
+			var type_argument = new NonTerminal( "type_argument" );
+			var type_arguments = new NonTerminal( "type_arguments" );
+			var type_argument_list = new NonTerminal( "type_argument_list" );
+
+			#region types
+
+			var type_ref = new NonTerminal( "type_ref" );
+			var value_type = new NonTerminal( "value_type" );
+			var struct_type = new NonTerminal( "struct_type" );
+			var type_name = new NonTerminal( "type_name" );
+			var simple_type = new NonTerminal( "simple_type" );
+			var numeric_type = new NonTerminal( "numeric_type" );
+			var integral_type = new NonTerminal( "integral_type" );
+			var floating_point_type = new NonTerminal( "floating_point_type" );
+			var unmanaged_type = new NonTerminal( "unmanaged_type" );
+			var nullable_type = new NonTerminal( "nullable_type" );
+			var non_nullable_value_type = new NonTerminal( "non_nullable_value_type" );
+			var enum_type = new NonTerminal( "enum_type" );
+			var reference_type = new NonTerminal( "reference_type" );
+			var class_type = new NonTerminal( "class_type" );
+			var interface_type = new NonTerminal( "interface_type" );
+			var array_type = new NonTerminal( "array_type" );
+			var pointer_type = new NonTerminal( "pointer_type" );
+		//	var list_type = new NonTerminal( "list_type" );
+			var non_array_type = new NonTerminal( "array_type" );
+			var delegate_type = new NonTerminal( "delegate_type" );
+			var predefined_type = new NonTerminal( "predefined_type" );
+			var type_parameter = new NonTerminal( "type_parameter" );
+
+			#endregion
+
+			#region array rank
+
+			var rank_specifier = new NonTerminal( "rank_specifier" );
+			var rank_specifiers = new NonTerminal( "rank_specifiers" );
+			var dim_separators = new NonTerminal( "dim_separators" );
+
+			#endregion
+
+			#region attributes
+
+			var global_attribute = new NonTerminal( "global_attribute" );
+			var global_attributes = new NonTerminal( "global_attributes" );
+		//	var global_attribute_section = new NonTerminal( "global_attribute_section" );
+		//	var global_attribute_sections = new NonTerminal( "global_attribute_sections" );
+
+			var global_attribute_target = new NonTerminal( "global_attribute_target" );
+			var global_attribute_target_specifier = new NonTerminal( "global_attribute_target_specifier" );
+
+			var attribute = new NonTerminal( "attribute" );
+			var attribute_name = new NonTerminal( "attribute_name" );
+			var attribute_list = new NonTerminal( "attribute_list" );
+		//	var attribute_arguments = new NonTerminal( "attribute_arguments" );
+
+			var attributes = new NonTerminal( "attributes" );
+			var attribute_section = new NonTerminal( "attribute_section" );
+			var attribute_sections = new NonTerminal( "attribute_sections" );
+			var attribute_target = new NonTerminal( "attribute_target" );
+			var attribute_target_specifier = new NonTerminal( "attribute_target_specifier" );
+
+			#endregion
+
+			#region arguments
+
+			var positional_argument = new NonTerminal( "positional_argument" );
+			var positional_argument_list = new NonTerminal( "positional_argument_list" );
+
+			var named_argument = new NonTerminal( "named_argument" );
+			var named_argument_list = new NonTerminal( "named_argument_list" );
+
+		//	var argument = new NonTerminal( "argument" );
+		//	var argument_name = new NonTerminal( "argument_name" );
+			var attribute_argument_expression = new NonTerminal( "attribute_argument_expression" );
+
+			var argument_list = new NonTerminal( "argument_list" );
+		//	var argument_value = new NonTerminal( "argument_value" );
+
+			#endregion
+
+			#region expressions
+
+			var expression = new NonTerminal( "expression" );
+			var expression_list = new NonTerminal( "expression_list" );
+			var parenthesized_expression = new NonTerminal( "parenthesized_expression" );
+			var non_assignment_expression = new NonTerminal( "non_assignment_expression" );
+			var conditional_expression = new NonTerminal( "conditional_expression" );
+			var null_coalescing_expression = new NonTerminal( "null_coalescing_expression" );
+			var conditional_or_expression = new NonTerminal( "conditional_or_expression" );
+			var conditional_and_expression = new NonTerminal( "conditional_and_expression" );
+			var exclusive_or_expression = new NonTerminal( "exclusive_or_expression" );
+			var inclusive_or_expression = new NonTerminal( "inclusive_or_expression" );
+			var and_expression = new NonTerminal( "and_expression" );
+			var equality_expression = new NonTerminal( "equality_expression" );
+			var relational_expression = new NonTerminal( "relational_expression" );
+			var shift_expression = new NonTerminal( "shift_expression" );
+			var additive_expression = new NonTerminal( "additive_expression" );
+			var multiplicative_expression = new NonTerminal( "multiplicative_expression" );
+			var unary_expression = new NonTerminal( "unary_expression" );
+			var primary_expression = new NonTerminal( "primary_expression" );
+			var primary_no_array_creation_expression = new NonTerminal( "primary_no_array_creation_expression" );
+			var invocation_expression = new NonTerminal( "invocation_expression" );
+
+			var pre_increment_expression = new NonTerminal( "pre_increment_expression" );
+			var pre_decrement_expression = new NonTerminal( "pre_decrement_expression" );
+			var post_increment_expression = new NonTerminal( "post_increment_expression" );
+			var post_decrement_expression = new NonTerminal( "post_decrement_expression" );
+
+			var object_creation_expression = new NonTerminal( "object_creation_expression" );
+			var delegate_creation_expression = new NonTerminal( "delegate_creation_expression" );
+			var anonymous_object_creation_expression = new NonTerminal( "anonymous_object_creation_expression" );
+
+			var typeof_expression = new NonTerminal( "typeof_expression" );
+			var addressof_expression = new NonTerminal( "addressof_expression" );
+			var sizeof_expression = new NonTerminal( "sizeof_expression" );
+
+			var checked_expression = new NonTerminal( "checked_expression" );
+			var unchecked_expression = new NonTerminal( "unchecked_expression" );
+
+			var default_value_expression = new NonTerminal( "default_value_expression" );
+			var anonymous_method_expression = new NonTerminal( "anonymous_method_expression" );
+
+			var statement_expression = new NonTerminal( "statement_expression" );
+			var assignment_expression = new NonTerminal( "assignment_expression" );
+
+			var array_creation_expression = new NonTerminal( "array_creation_expression" );
+			var cast_expression = new NonTerminal( "cast_expression" );
+			var multiplicative_operator = new NonTerminal( "multiplicative_operator" );
+			var additive_operator = new NonTerminal( "additive_operator" );
+			var shift_operator = new NonTerminal( "shift_operator" );
+			var relational_operator = new NonTerminal( "relational_operator" );
+			var lambda_expression = new NonTerminal( "lambda_expression" );
+
+			#endregion
+
+		//	var variable_reference = new NonTerminal( "variable_reference" );
+
+			#region member access
+
+			var member_access = new NonTerminal( "member_access" );
+			var element_access = new NonTerminal( "element_access" );
+			var this_access = new NonTerminal( "this_access" );
+			var base_access = new NonTerminal( "base_access" );
+
+			#endregion
+
+			#region initializer
+
+			var object_or_collection_initializer = new NonTerminal( "object_or_collection_initializer" );
+			var object_initializer = new NonTerminal( "object_initializer" );
+			var member_initializer = new NonTerminal( "member_initializer" );
+			var member_initializer_list = new NonTerminal( "member_initializer_list" );
+			var initializer_value = new NonTerminal( "initializer_value" );
+			var collection_initializer = new NonTerminal( "collection_initializer" );
+			var element_initializer = new NonTerminal( "element_initializer" );
+			var element_initializer_list = new NonTerminal( "element_initializer_list" );
+			var anonymous_object_initializer = new NonTerminal( "anonymous_object_initializer" );
+
+			#endregion
+
+			#region class definition
+
+			var member_declarator_list = new NonTerminal( "member_declarator_list" );
+
+			#endregion
+
+			var member_declarator = new NonTerminal( "member_declarator" );
+			var unbound_type_name = new NonTerminal( "unbound_type_name" );
+			var generic_dimension_specifier = new NonTerminal( "generic_dimension_specifier" );
+
+			#region anonymous functions
+
+			var explicit_anonymous_function_signature = new NonTerminal( "explicit_anonymous_function_signature" );
+			var explicit_anonymous_function_parameter = new NonTerminal( "explicit_anonymous_function_parameter" );
+			var explicit_anonymous_function_parameter_list = new NonTerminal( "explicit_anonymous_function_parameter_list" );
+			var anonymous_function_parameter_modifier = new NonTerminal( "anonymous_function_parameter_modifier" );
+
+			var anonymous_function_signature = new NonTerminal( "anonymous_function_signature" );
+			var implicit_anonymous_function_signature = new NonTerminal( "implicit_anonymous_function_signature" );
+			var implicit_anonymous_function_parameter = new NonTerminal( "implicit_anonymous_function_parameter" );
+			var implicit_anonymous_function_parameter_list = new NonTerminal( "implicit_anonymous_function_parameter_list" );
+			var anonymous_function_body = new NonTerminal( "anonymous_function_body" );
+	
+			#endregion
+
+			#region statements
+
+			var block = new NonTerminal( "block" );
+			var statement = new NonTerminal( "statement" );
+			var statement_list = new NonTerminal( "statement_list" );
+			var labeled_statement = new NonTerminal( "labeled_statement" );
+			var declaration_statement = new NonTerminal( "declaration_statement" );
+			var local_variable_declaration = new NonTerminal( "local_variable_declaration" );
+			var local_variable_type = new NonTerminal( "local_variable_type" );
+			var local_variable_declarators = new NonTerminal( "local_variable_declarators" );
+			var local_variable_declarator = new NonTerminal( "local_variable_declarator" );
+			var local_variable_initializer = new NonTerminal( "local_variable_initializer" );
+
+			var embedded_statement = new NonTerminal( "embedded_statement" );
+			var empty_statement = new NonTerminal( "empty_statement" );
+			var expression_statement = new NonTerminal( "expression_statement" );
+
+			var checked_statement = new NonTerminal( "checked_statement" );
+			var unchecked_statement = new NonTerminal( "unchecked_statement" );
+			var lock_statement = new NonTerminal( "lock_statement" );
+			var using_statement = new NonTerminal( "using_statement" );
+			var resource_acquisition = new NonTerminal( "resource_acquisition" );
+			var yield_statement = new NonTerminal( "yield_statement" );
+
+			#endregion
+
+			var array_initializer = new NonTerminal( "array_initializer" );
+			var variable_initializer = new NonTerminal( "variable_initializer" );
+			var variable_initializer_list = new NonTerminal( "variable_initializer_list" );
+			var local_constant_declaration = new NonTerminal( "local_constant_declaration" );
+			var constant_declarator = new NonTerminal( "constant_declarator" );
+			var constant_declarators = new NonTerminal( "constant_declarators" );
+			var constant_expression = new NonTerminal( "constant_expression" );
+			var assignment_operator = new NonTerminal( "assignment_operator" );
+
+			#region selections
+
+			var selection_statement = new NonTerminal( "selection_statement" );
+			var if_statement = new NonTerminal( "if_statement" );
+			var boolean_expression = new NonTerminal( "boolean_expression" );
+			var switch_statement = new NonTerminal( "switch_statement" );
+			var switch_block = new NonTerminal( "switch_block" );
+			var switch_section = new NonTerminal( "switch_section" );
+			var switch_sections = new NonTerminal( "switch_sections" );
+			var switch_label = new NonTerminal( "switch_label" );
+			var switch_labels = new NonTerminal( "switch_labels" );
+
+			#endregion
+
+			#region iterators
+
+			var iteration_statement = new NonTerminal( "iteration_statement" );
+			var while_statement = new NonTerminal( "while_statement" );
+			var do_statement = new NonTerminal( "do_statement" );
+			var for_statement = new NonTerminal( "for_statement" );
+			var for_initializer = new NonTerminal( "for_initializer" );
+			var statement_expression_list = new NonTerminal( "statement_expression_list" );
+			var for_condition = new NonTerminal( "for_condition" );
+			var for_iterator = new NonTerminal( "for_iterator" );
+			var foreach_statement = new NonTerminal( "foreach_statement" );
+
+			#endregion
+
+			#region flow control
+
+			var jump_statement = new NonTerminal( "jump_statement" );
+			var break_statement = new NonTerminal( "break_statement" );
+			var continue_statement = new NonTerminal( "continue_statement" );
+			var goto_statement = new NonTerminal( "goto_statement" );
+			var return_statement = new NonTerminal( "return_statement" );
+
+			#endregion
+
+			#region exceptions
+
+			var throw_statement = new NonTerminal( "throw_statement" );
+			var try_statement = new NonTerminal( "try_statement" );
+			var catch_clauses = new NonTerminal( "catch_clauses" );
+			var specific_catch_clause = new NonTerminal( "specific_catch_clause" );
+			var specific_catch_clauses = new NonTerminal( "specific_catch_clauses" );
+			var general_catch_clause = new NonTerminal( "general_catch_clause" );
+			var finally_clause = new NonTerminal( "finally_clause" );
+
+			#endregion
+
+			#region member declarations
+
+			var member_name = new NonTerminal( "member_name" );
+
+			var member_modifier = new NonTerminal( "member_modifier" );
+			var member_modifiers = new NonTerminal( "member_modifiers" );
+
+			var member_header = new NonTerminal( "member_header" );
+
+			var namespace_declaration = new NonTerminal( "namespace_declaration" );
+			var namespace_declarations = new NonTerminal( "namespace_declarations" );
+			var namespace_member_declaration = new NonTerminal( "namespace_member_declaration" );
+			var namespace_member_declarations = new NonTerminal( "namespace_member_declarations" );
+			var namespace_body = new NonTerminal( "namespace_body" );
+
+			var type_declaration = new NonTerminal( "type_declaration" );
+			var type_parameters = new NonTerminal( "type_parameters" );
+			var type_parameter_list = new NonTerminal( "type_parameter_list" );
+			var type_parameter_constraints_clause = new NonTerminal( "type_parameter_constraints_clause" );
+			var type_parameter_constraints_clauses = new NonTerminal( "type_parameter_constraints_clauses" );
+			var type_parameter_constraint = new NonTerminal( "type_parameter_constraint" );
+			var type_parameter_constraints = new NonTerminal( "type_parameter_constraints" );
+			var primary_constraint = new NonTerminal( "primary_constraint" );
+			var secondary_constraints = new NonTerminal( "secondary_constraints" );
+			var constructor_constraint = new NonTerminal( "constructor_constraint" );
+
+			var class_declaration = new NonTerminal( "class_declaration" );
+		//	var class_modifier = new NonTerminal( "class_modifier" );
+		//	var class_modifiers = new NonTerminal( "class_modifiers" );
+			var class_base = new NonTerminal( "class_base" );
+			var interface_type_list = new NonTerminal( "interface_type_list" );
+			var class_body = new NonTerminal( "class_body" );
+			var class_member_declaration = new NonTerminal( "class_member_declaration" );
+			var class_member_declarations = new NonTerminal( "class_member_declarations" );
+
+			var constant_declaration = new NonTerminal( "constant_declaration" );
+		//	var constant_modifier = new NonTerminal( "constant_modifier" );
+		//	var constant_modifiers = new NonTerminal( "constant_modifiers" );
+
+			var field_declaration = new NonTerminal( "field_declaration" );
+		//	var field_modifier = new NonTerminal( "field_modifier" );
+		//	var field_modifiers = new NonTerminal( "field_modifiers" );
+
+			var variable_declarator = new NonTerminal( "variable_declarator" );
+			var variable_declarators = new NonTerminal( "variable_declarators" );
+
+			var fixed_parameter = new NonTerminal( "fixed_parameter" );
+			var fixed_parameters = new NonTerminal( "fixed_parameters" );
+			var formal_parameter_list = new NonTerminal( "formal_parameter_list" );
+			var parameter_modifier = new NonTerminal( "parameter_modifier" );
+
+			var method_header = new NonTerminal( "method_header" );
+			var method_declaration = new NonTerminal( "method_declaration" );
+		//	var method_modifier = new NonTerminal( "method_modifier" );
+		//	var method_modifiers = new NonTerminal( "method_modifiers" );
+			var return_type = new NonTerminal( "return_type" );
+			var default_argument = new NonTerminal( "default_argument" );
+			var parameter_array = new NonTerminal( "parameter_array" );
+			var method_arguments = new NonTerminal( "method_arguments" );
+			var method_body = new NonTerminal( "method_body" );
+
+			var property_declaration = new NonTerminal( "property_declaration" );
+		//	var property_modifier = new NonTerminal( "property_modifier" );
+		//	var property_modifiers = new NonTerminal( "property_modifiers" );
+			var accessor_name = new NonTerminal( "accessor_name" );
+			var accessor_declaration = new NonTerminal( "accessor_declaration" );
+			var accessor_declarations = new NonTerminal( "accessor_declarations" );
+		//	var accessor_modifier = new NonTerminal( "accessor_modifier" );
+		//	var get_accessor_declaration = new NonTerminal( "get_accessor_declaration" );
+		//	var set_accessor_declaration = new NonTerminal( "set_accessor_declaration" );
+		//	var accessor_body = new NonTerminal( "accessor_body" );
+
+			var event_declaration = new NonTerminal( "event_declaration" );
+		//	var event_modifier = new NonTerminal( "event_modifier" );
+		//	var event_modifiers = new NonTerminal( "event_modifiers" );
+			var event_accessor_declarations = new NonTerminal( "event_accessor_declarations" );
+			var add_accessor_declaration = new NonTerminal( "add_accessor_declaration" );
+			var remove_accessor_declaration = new NonTerminal( "remove_accessor_declaration" );
+
+			var indexer_declaration = new NonTerminal( "indexer_declaration" );
+		//	var indexer_modifier = new NonTerminal( "indexer_modifier" );
+		//	var indexer_modifiers = new NonTerminal( "indexer_modifiers" );
+			var indexer_declarator = new NonTerminal( "indexer_declarator" );
+
+			var operator_declaration = new NonTerminal( "operator_declaration" );
+		//	var operator_modifier = new NonTerminal( "operator_modifier" );
+		//	var operator_modifiers = new NonTerminal( "operator_modifiers" );
+			var operator_declarator = new NonTerminal( "operator_declarator" );
+			var unary_operator_declarator = new NonTerminal( "unary_operator_declarator" );
+			var overloadable_unary_operator = new NonTerminal( "overloadable_unary_operator" );
+			var binary_operator_declarator = new NonTerminal( "binary_operator_declarator" );
+			var equality_operator = new NonTerminal( "equality_operator" );
+			var overloadable_binary_operator = new NonTerminal( "overloadable_binary_operator" );
+			var conversion_operator_declarator = new NonTerminal( "conversion_operator_declarator" );
+		//	var operator_body = new NonTerminal( "operator_body" );
+
+			var constructor_declaration = new NonTerminal( "constructor_declaration" );
+		//	var constructor_modifier = new NonTerminal( "constructor_modifier" );
+		//	var constructor_modifiers = new NonTerminal( "constructor_modifiers" );
+			var constructor_declarator = new NonTerminal( "constructor_declarator" );
+			var constructor_initializer = new NonTerminal( "constructor_initializer" );
+		//	var constructor_body = new NonTerminal( "constructor_body" );
+
+			var destructor_declaration = new NonTerminal( "destructor_declaration" );
+		//	var destructor_body = new NonTerminal( "destructor_body" );
+
+		//	var static_constructor_declaration = new NonTerminal( "static_constructor_declaration" );
+		//	var static_constructor_modifier = new NonTerminal( "static_constructor_modifier" );
+		//	var static_constructor_modifiers = new NonTerminal( "static_constructor_modifiers" );
+		//	var static_constructor_body = new NonTerminal( "static_constructor_body" );
+
+			var struct_declaration = new NonTerminal( "struct_declaration" );
+		//	var struct_modifier = new NonTerminal( "struct_modifier" );
+		//	var struct_modifiers = new NonTerminal( "struct_modifiers" );
+			var struct_interfaces = new NonTerminal( "struct_interfaces" );
+			var struct_body = new NonTerminal( "struct_body" );
+			var struct_member_declaration = new NonTerminal( "struct_member_declaration" );
+			var struct_member_declarations = new NonTerminal( "struct_member_declarations" );
+
+			var interface_declaration = new NonTerminal( "interface_declaration" );
+		//	var interface_modifier = new NonTerminal( "interface_modifier" );
+		//	var interface_modifiers = new NonTerminal( "interface_modifiers" );
+			var variant_type_parameter = new NonTerminal( "variant_type_parameter" );
+			var variant_type_parameters = new NonTerminal( "variant_type_parameters" );
+			var variant_type_parameter_list = new NonTerminal( "variant_type_parameter_list" );
+			var variance_annotation = new NonTerminal( "variance_annotation" );
+			var interface_base = new NonTerminal( "interface_base" );
+			var interface_body = new NonTerminal( "interface_body" );
+			var interface_member_declaration = new NonTerminal( "interface_member_declaration" );
+			var interface_member_declarations = new NonTerminal( "interface_member_declarations" );
+			var interface_method_declaration = new NonTerminal( "interface_method_declaration" );
+			var interface_property_declaration = new NonTerminal( "interface_property_declaration" );
+			var interface_accessor = new NonTerminal( "interface_accessor" );
+			var interface_accessors = new NonTerminal( "interface_accessors" );
+			var interface_event_declaration = new NonTerminal( "interface_event_declaration" );
+			var interface_indexer_declaration = new NonTerminal( "interface_indexer_declaration" );
+
+			var enum_declaration = new NonTerminal( "enum_declaration" );
+		//	var enum_modifier = new NonTerminal( "enum_modifier" );
+		//	var enum_modifiers = new NonTerminal( "enum_modifiers" );
+			var enum_base = new NonTerminal( "enum_base" );
+			var enum_body = new NonTerminal( "enum_body" );
+			var enum_member_declaration = new NonTerminal( "enum_member_declaration" );
+			var enum_member_declarations = new NonTerminal( "enum_member_declarations" );
+
+			var delegate_declaration = new NonTerminal( "delegate_declaration" );
+		//	var delegate_modifier = new NonTerminal( "delegate_modifier" );
+		//	var delegate_modifiers = new NonTerminal( "delegate_modifiers" );
+
+			#endregion
+
+			#endregion // ...
+
+			#region Rules
+
+			compilation_unit.Rule = 
+				extern_alias_directives.Q() + using_directives.Q() + global_attributes.Q() + namespace_declarations;
+
+			qualified_alias_member.Rule =
+				identifier + colon_colon + identifier + type_argument_list.Q();
+
+			#region extern alias
+
+			extern_alias_directive.Rule = 
+				@extern + @alias + identifier + semi;
+
+			extern_alias_directives.Rule =
+				MakePlusRule( extern_alias_directives, extern_alias_directive );
+
+			#endregion
+
+			#region using
+
+			using_directives.Rule =
+				MakePlusRule( using_directives, using_directive );
+
+			using_directive.Rule =
+				using_alias_directive |
+				using_namespace_directive;
+
+			using_alias_directive.Rule =
+				@using + identifier + assignment + namespace_or_type_name + semi;
+
+			using_namespace_directive.Rule =
+				@using + namespace_name + semi;
+
+			#endregion
+
+			#region types
+
+			simple_name.Rule =
+				identifier + type_argument_list.Q();
+
+			predefined_type.Rule =
+				@bool |
+				@char |
+			//	@sbyte |
+				@int |
+				@short |
+				@long |
+				@byte |
+				@ushort |
+				@uint |
+				@ulong |
+				@float |
+				@double |
+			//	@decimal |
+				@real |
+				@string |
+				@object;
+
+			type_parameter.Rule =
+				attributes /* .Q() */ + identifier;
+
+			type_argument.Rule =
+				type_ref;
+
+			type_arguments.Rule =
+				MakePlusRule( type_arguments, comma, type_argument );
+
+			type_argument_list.Rule =
+				lt + type_arguments + gt;
+
+			namespace_name.Rule =
+				namespace_or_type_name;
+
+			namespace_or_type_name.Rule =
+				identifier + type_argument_list.Q() |
+				namespace_or_type_name + dot + identifier + type_argument_list.Q() |
+				qualified_alias_member;
+			//	( identifier + type_argument_list.Q() | qualified_alias_member ) + MakeStarRule( namespace_or_type_name, dot + identifier + type_argument_list.Q() );
+			//	qualified_alias_member.Q() + MakeStarRule( namespace_or_type_name, dot, simple_name );
+
+			type_ref.Rule =
+				value_type |
+				reference_type |
+				type_parameter;
+
+			value_type.Rule =
+				struct_type |
+				enum_type |
+				pointer_type;
+
+			struct_type.Rule =
+				type_name |
+				simple_type |
+				nullable_type;
+
+			type_name.Rule =
+				namespace_or_type_name;
+
+			simple_type.Rule =
+				numeric_type |
+				@bool;
+
+			numeric_type.Rule =
+				integral_type |
+				floating_point_type |
+			//	@decimal |
+				@real;
+
+			// <remarks who="Nx">@char should not be an integral type</remarks>
+			// <remarks who="Nx"><code>sbyte<code> should be <code>Obsolete<code>d.</remarks>
+			integral_type.Rule =
+				@sbyte | @byte |
+				@short | @ushort |
+				@int | @uint |
+				@long | @ulong |
+				@char;
+
+			floating_point_type.Rule =
+				@float |
+				@double;
+
+			unmanaged_type.Rule =
+				integral_type |
+				floating_point_type |
+				@char |
+				@bool;
+
+			nullable_type.Rule =
+				non_nullable_value_type + qmark;
+
+			non_nullable_value_type.Rule =
+				type_ref;
+
+			enum_type.Rule =
+				type_name;
+
+			reference_type.Rule =
+				class_type |
+				interface_type |
+				array_type |
+				delegate_type;
+
+			class_type.Rule =
+				type_name |
+				@object |
+				@dynamic |
+				@string;
+
+			interface_type.Rule =
+				type_name;
+
+			array_type.Rule =
+				type_ref + rank_specifiers;
+
+			pointer_type.Rule =
+				unmanaged_type + astrisk |
+				@void + astrisk;
+
+		//	list_type.Rule =
+		//		array_type |
+		//		type;
+
+			non_array_type.Rule =
+				type_ref;
+
+			delegate_type.Rule =
+				type_name;
+
+			#endregion
+
+			#region array
+
+			rank_specifier.Rule =
+				open_bracket + dim_separators /* .Q() */ + close_bracket;
+
+			rank_specifiers.Rule =
+				MakePlusRule( rank_specifiers, rank_specifier );
+
+			dim_separators.Rule =
+			//	this.MakeStarRule( comma, null, comma );
+			//	dim_separators ","
+				commas;
+
+			#endregion
+
+			#region attributes
+
+			global_attribute.Rule =
+				open_bracket + global_attribute_target_specifier + attribute_list + comma.Q() + close_bracket;
+
+			global_attributes.Rule =
+			//	global_attribute_sections;
+				MakeStarRule( global_attributes, global_attribute );
+
+		//	global_attribute_sections.Rule =
+		//		MakePlusRule( global_attribute_sections, global_attribute_section );
+
+		//	global_attribute_section.Rule =
+			//	l_bracket + global_attribute_target_specifier + attribute_list + r_bracket |
+			//	l_bracket + global_attribute_target_specifier + attribute_list + comma + r_bracket;
+		//		open_bracket + global_attribute_target_specifier + attribute_list + comma.Q() + close_bracket;
+
+			global_attribute_target_specifier.Rule =
+				global_attribute_target + colon;
+
+			global_attribute_target.Rule =
+				@assembly /* |
+				@module */
+				;
+
+			attributes.Rule =
+			//	attribute_sections;
+				MakeStarRule( attributes, attribute_section );
+
+		//	attribute_sections.Rule =
+		//		MakePlusRule( attribute_sections, attribute_section );
+
+			attribute_section.Rule =
+			//	l_bracket + attribute_target_specifier.Q() + attribute_list + r_bracket |
+				open_bracket + attribute_target_specifier.Q() + attribute_list /* + comma.Q() */ + close_bracket;
+
+			attribute_target_specifier.Rule =
+				attribute_target + colon;
+
+			attribute_target.Rule =
+				@field |
+				@event |
+				@method |
+				@param |
+				@property |
+				@return |
+				@type;
+
+			attribute_list.Rule =
+				MakePlusRule( attribute_list, comma, attribute );
+
+			attribute_name.Rule =
+				type_name;
+
+			attribute.Rule =
+				attribute_name + /* attribute_arguments.Q() */ method_arguments.Q();
+
+		//	attribute_arguments.Rule =
+			//	open_par + positional_argument_list.Q() + close_par |
+			//	open_par + positional_argument_list + comma + named_argument_list + close_par |
+			//	open_par + named_argument_list + close_par;
+		//		open_par + argument_list.Q() + close_par;
+
+			#endregion
+
+			#region arguments
+
+			positional_argument.Rule =
+				/* argument_name.Q() + */ attribute_argument_expression;
+
+			positional_argument_list.Rule =
+				MakeStarRule( positional_argument_list, comma, positional_argument );
+
+			named_argument.Rule =
+				identifier + assignment + attribute_argument_expression;
+
+			named_argument_list.Rule =
+				MakeStarRule( named_argument_list, comma, named_argument );
+
+			attribute_argument_expression.Rule =
+				expression;
+
+		/*
+			argument_name.Rule =
+				identifier + colon;
+
+			argument.Rule =
+				argument_name.Q() + argument_value;
+		*/
+
+			argument_list.Rule =
+			//	MakePlusRule( argument_list, comma, argument );
+				positional_argument_list |
+				positional_argument_list + comma + named_argument_list |
+				named_argument_list;
+
+		/*
+			argument_value.Rule =
+				expression |
+				@ref + variable_reference |
+				@out + variable_reference;
+		*/
+
+		/*
+			variable_reference.Rule =
+				expression;
+		*/
+			#endregion
+
+			#region expressions
+
+			expression.Rule =
+				non_assignment_expression |
+				assignment_expression;
+
+			expression_list.Rule =
+				MakePlusRule( expression_list, comma, expression );
+
+			parenthesized_expression.Rule =
+				open_par + expression + close_par;
+
+			non_assignment_expression.Rule =
+			//	unary_expression |
+				conditional_expression |
+			//	null_coalescing_expression |
+			//	conditional_or_expression |
+			//	conditional_and_expression |
+			//	inclusive_or_expression |
+			//	exclusive_or_expression |
+			//	and_expression |
+			//	equality_expression |
+			//	relational_expression |
+			//	shift_expression |
+			//	additive_expression |
+			//	multiplicative_expression |
+			//	cast_expression |
+				lambda_expression /* |
+				query_expression */;
+
+			conditional_expression.Rule =
+				null_coalescing_expression |
+				null_coalescing_expression + qmark + expression + colon + expression;
+
+			null_coalescing_expression.Rule =
+				conditional_or_expression |
+				conditional_or_expression + coalescing_qmark + null_coalescing_expression;
+
+			conditional_or_expression.Rule =
+				conditional_and_expression |
+				conditional_or_expression + logical_or + conditional_and_expression;
+
+			conditional_and_expression.Rule =
+				inclusive_or_expression |
+				conditional_and_expression + logical_and + inclusive_or_expression;
+
+			inclusive_or_expression.Rule =
+				exclusive_or_expression |
+				inclusive_or_expression + bitwise_or + exclusive_or_expression;
+
+			exclusive_or_expression.Rule =
+			//	and_expression |
+			//	exclusive_or_expression + caret + and_expression;
+				MakePlusRule( and_expression, caret, and_expression );
+
+			and_expression.Rule =
+			//	equality_expression |
+			//	and_expression + ampersand + equality_expression;
+				MakePlusRule( equality_expression, ampersand, equality_expression );
+
+			equality_expression.Rule =
+			//	relational_expression |
+			//	equality_expression + value_equal + relational_expression |
+			//	equality_expression + value_not_equal + relational_expression;
+				MakePlusRule( relational_expression, equality_operator, relational_expression );
+
+			relational_expression.Rule =
+			//	PreferShiftHere() |
+			//	shift_expression |
+			//	relational_expression + lt + shift_expression |
+			//	relational_expression + gt + shift_expression |
+			//	relational_expression + lt_or_equal + shift_expression |
+			//	relational_expression + gt_or_equal + shift_expression |
+				MakePlusRule( shift_expression, relational_operator, shift_expression ) |
+			//	relational_expression + @is + type_ref |
+			//	relational_expression + @as + type_ref;
+				shift_expression + @is + type_ref |
+				shift_expression + @as + type_ref;
+
+			shift_expression.Rule =
+			//	additive_expression |
+			//	shift_expression + left_shift + additive_expression |
+			//	shift_expression + right_shift + additive_expression;
+				MakePlusRule( additive_expression, shift_operator, additive_expression );
+
+			additive_expression.Rule =
+			//	multiplicative_expression |
+			//	additive_expression + plus + multiplicative_expression |
+			//	additive_expression + minus + multiplicative_expression;
+				MakePlusRule( multiplicative_expression, additive_operator, multiplicative_expression );
+
+			multiplicative_expression.Rule =
+			//	unary_expression |
+			//	multiplicative_expression + astrisk + unary_expression |
+			//	multiplicative_expression + divide + unary_expression |
+			//	multiplicative_expression + modulus + unary_expression;
+				MakePlusRule( unary_expression, multiplicative_operator, unary_expression );
+
+			cast_expression.Rule =
+				open_par + type_ref + close_par + unary_expression;
+
+			unary_expression.Rule =
+				primary_expression |
+				plus + unary_expression |
+				minus + unary_expression |
+				bang + unary_expression |
+				tilde + unary_expression |
+				pre_increment_expression |
+				pre_decrement_expression |
+				cast_expression |
+				addressof_expression;
+
+			primary_expression.Rule =
+				primary_no_array_creation_expression |
+				array_creation_expression;
+
+			primary_no_array_creation_expression.Rule =
+				literal |
+				simple_name |
+				parenthesized_expression |
+				member_access |
+				invocation_expression |
+				element_access |
+				this_access |
+				base_access |
+				post_increment_expression |
+				post_decrement_expression |
+				object_creation_expression |
+				delegate_creation_expression |
+				anonymous_object_creation_expression |
+				typeof_expression |
+				checked_expression |
+				unchecked_expression |
+				default_value_expression |
+				anonymous_method_expression |
+				sizeof_expression;
+
+			pre_increment_expression.Rule =
+				increment + unary_expression;
+
+			pre_decrement_expression.Rule =
+				decrement + unary_expression;
+
+			post_increment_expression.Rule =
+				primary_expression + increment;
+
+			post_decrement_expression.Rule =
+				primary_expression + decrement;
+
+			invocation_expression.Rule =
+				async.Q() + primary_expression + /* open_par + argument_list.Q() + close_par */ method_arguments;
+
+			object_creation_expression.Rule =
+			//	@new + type_ref + /* open_par + argument_list.Q() + close_par */ method_arguments + object_or_collection_initializer.Q() |
+			//	@new + type_ref + object_or_collection_initializer;
+				@new + type_ref + method_arguments.Q() + object_or_collection_initializer.Q();
+
+			delegate_creation_expression.Rule =
+				@new + delegate_type + open_par + expression + close_par;
+
+			anonymous_object_creation_expression.Rule =
+				@new + anonymous_object_initializer;
+
+			typeof_expression.Rule =
+				@typeof + open_par + type_ref + close_par |
+				@typeof + open_par + unbound_type_name + close_par |
+				@typeof + open_par + @void + close_par;
+
+			addressof_expression.Rule =
+				ampersand + unary_expression;
+
+			sizeof_expression.Rule =
+				@sizeof + open_par + unmanaged_type + close_par;
+
+			checked_expression.Rule =
+				@checked + open_par + expression + close_par;
+
+			unchecked_expression.Rule =
+				@unchecked + open_par + expression + close_par;
+
+			default_value_expression.Rule =
+				@default + open_par + type_ref + close_par;
+
+			anonymous_method_expression.Rule =
+				@delegate + explicit_anonymous_function_signature.Q() + block;
+
+			constant_expression.Rule =
+				expression;
+
+			array_creation_expression.Rule =
+				@new + non_array_type + open_bracket + expression_list + close_bracket + rank_specifiers.Q() + array_initializer.Q() |
+				@new + array_type + array_initializer |
+				@new + rank_specifier + array_initializer;
+
+			lambda_expression.Rule =
+				anonymous_function_signature + goes_to + anonymous_function_body;
+
+			#endregion
+
+			#region initializers
+
+			object_or_collection_initializer.Rule =
+				object_initializer |
+				collection_initializer;
+
+			object_initializer.Rule =
+			//	open_brace + member_initializer_list.Q() + close_brace |
+			//	open_brace + member_initializer_list + comma + close_brace;
+				open_brace + member_initializer_list.Q() + comma.Q() + close_brace;
+
+			member_initializer.Rule =
+				identifier + assignment + initializer_value;
+
+			member_initializer_list.Rule =
+				MakePlusRule( member_initializer_list, comma, member_initializer );
+
+			initializer_value.Rule =
+				expression |
+				object_or_collection_initializer;
+
+			collection_initializer.Rule =
+			//	open_brace + element_initializer_list + close_brace |
+			//	open_brace + element_initializer_list + comma + close_brace;
+				open_brace + element_initializer_list + comma.Q() + close_brace;
+			
+			element_initializer.Rule =
+				non_assignment_expression |
+				open_brace + expression_list + close_brace;
+
+			element_initializer_list.Rule =
+				MakePlusRule( element_initializer_list, comma, element_initializer );
+
+			anonymous_object_initializer.Rule =
+			//	open_brace + member_declarator_list.Q() + close_brace |
+			//	open_brace + member_declarator_list + comma + close_brace;
+				open_brace + member_declarator_list.Q() + comma.Q() + close_brace;
+
+			#endregion
+
+			#region member access
+
+			member_access.Rule =
+				primary_expression + dot + identifier + type_argument_list.Q() |
+				predefined_type + dot + identifier + type_argument_list.Q() |
+				qualified_alias_member + dot + identifier;
+
+			element_access.Rule =
+				primary_no_array_creation_expression + open_bracket + argument_list + open_bracket;
+
+			this_access.Rule =
+				@this;
+
+			base_access.Rule =
+				@base + dot + identifier |
+				@base + open_bracket + argument_list + close_bracket;
+
+			#endregion
+
+			#region statements
+
+			member_declarator_list.Rule =
+				MakePlusRule( member_declarator_list, comma, member_declarator );
+
+			member_declarator.Rule =
+				simple_name |
+				member_access |
+				identifier + assignment + expression;
+
+			unbound_type_name.Rule =
+				identifier + generic_dimension_specifier.Q() |
+				identifier + colon_colon + identifier + generic_dimension_specifier.Q() |
+				unbound_type_name + dot + identifier + generic_dimension_specifier.Q();
+
+			generic_dimension_specifier.Rule =
+				lt + commas.Q() + gt;
+
+			block.Rule =
+				open_brace + statement_list.Q() + close_brace;
+
+			statement.Rule =
+				labeled_statement |
+				declaration_statement |
+				embedded_statement;
+
+			statement_list.Rule =
+				MakePlusRule( statement_list, statement );
+
+			labeled_statement.Rule =
+				identifier + colon + statement;
+
+			declaration_statement.Rule =
+				local_variable_declaration + semi |
+				local_constant_declaration + semi;
+
+			local_variable_declaration.Rule =
+				local_variable_type + local_variable_declarators;
+
+			local_variable_type.Rule =
+				type_ref | @var;
+
+			local_variable_declarators.Rule =
+				MakePlusRule( local_variable_declarators, comma, local_variable_declarator );
+
+			local_variable_declarator.Rule =
+			//	identifier |
+			//	identifier + assignment + local_variable_initializer;
+				identifier + ( assignment + local_variable_initializer ).Q();
+
+			local_variable_initializer.Rule =
+				expression |
+				array_initializer;
+
+			array_initializer.Rule =
+			//	open_brace + variable_initializer_list.Q() + close_brace |
+				open_brace + variable_initializer_list + comma.Q() + close_brace;
+
+			variable_initializer.Rule =
+				expression |
+				array_initializer;
+
+			variable_initializer_list.Rule =
+				MakePlusRule( variable_initializer_list, comma, variable_initializer );
+
+			local_constant_declaration.Rule =
+				@const + type_ref + constant_declarators;
+
+			constant_declarator.Rule =
+				identifier + assignment + constant_expression;
+
+			constant_declarators.Rule =
+				MakePlusRule( constant_declarators, comma, constant_declarator );
+
+			embedded_statement.Rule =
+				block |
+				empty_statement |
+				expression_statement |
+				selection_statement |
+				iteration_statement |
+				jump_statement |
+				try_statement |
+				checked_statement |
+				unchecked_statement |
+				lock_statement |
+				using_statement |
+				yield_statement;
+
+			empty_statement.Rule =
+				semi;
+
+			expression_statement.Rule =
+				statement_expression + semi;
+
+			statement_expression.Rule =
+				invocation_expression |
+				object_creation_expression |
+				assignment_expression |
+				post_increment_expression |
+				post_decrement_expression |
+				pre_increment_expression |
+				pre_decrement_expression;
+
+			assignment_expression.Rule =
+				unary_expression + assignment_operator + expression;
+
+			assignment_operator.Rule =
+				assignment |
+				plus_assignment |
+				minus_assignment |
+				astrisk_assignment |
+				divide_assignment |
+				modulus_assignment |
+				and_assignment |
+				or_assignment |
+				exclusive_or_assignment |
+				left_shift_assignment |
+				right_shift_assignment;
+
+			selection_statement.Rule =
+				if_statement |
+				switch_statement;
+
+			if_statement.Rule =
+				@if + open_par + boolean_expression + close_par + embedded_statement /* + PreferShiftHere() */ |
+				@if + open_par + boolean_expression + close_par + embedded_statement /* + PreferShiftHere() */ + @else + embedded_statement;
+
+			boolean_expression.Rule =
+				expression;
+
+			switch_statement.Rule =
+				@switch + open_par + expression + close_par + switch_block;
+
+			switch_block.Rule =
+				open_brace + switch_sections.Q() + close_brace;
+
+			switch_section.Rule =
+				switch_labels + statement_list;
+
+			switch_sections.Rule =
+				MakePlusRule( switch_sections, switch_section );
+
+			switch_label.Rule =
+				@case + constant_expression + colon |
+				@default + colon;
+
+			switch_labels.Rule =
+				MakePlusRule( switch_labels, null, switch_label );
+
+			iteration_statement.Rule =
+				while_statement |
+				do_statement |
+				for_statement |
+				foreach_statement;
+
+			while_statement.Rule =
+				@while + open_par + boolean_expression + close_par + embedded_statement;
+
+			do_statement.Rule =
+				@do + embedded_statement + @while + open_par + boolean_expression + close_par + semi;
+
+			for_statement.Rule =
+				@for + open_par + for_initializer.Q() + semi + for_condition.Q() + semi + for_iterator.Q() + close_par + embedded_statement;
+
+			for_initializer.Rule =
+				local_variable_declaration |
+				statement_expression_list;
+
+			statement_expression_list.Rule =
+				MakePlusRule( statement_expression_list, comma, statement_expression );
+
+			for_condition.Rule =
+				boolean_expression;
+
+			for_iterator.Rule =
+				statement_expression_list;
+
+			foreach_statement.Rule =
+				@foreach + open_par + local_variable_type + identifier + @in + expression + close_par + embedded_statement;
+
+			checked_statement.Rule =
+				@checked + block;
+
+			unchecked_statement.Rule =
+				@unchecked + block;
+
+			lock_statement.Rule =
+				@lock + open_par + expression + close_par + embedded_statement;
+
+			using_statement.Rule =
+				@using + open_par + resource_acquisition + close_par + embedded_statement;
+
+			resource_acquisition.Rule =
+				local_variable_declaration |
+				expression;
+
+			yield_statement.Rule =
+				@yield + @return + expression + semi |
+				@yield + @break + semi;
+
+			#endregion
+
+			#region anonymous functions
+
+			explicit_anonymous_function_signature.Rule =
+				open_par + explicit_anonymous_function_parameter_list.Q() + close_par;
+
+			explicit_anonymous_function_parameter_list.Rule =
+				MakePlusRule( explicit_anonymous_function_parameter_list, comma, explicit_anonymous_function_parameter );
+
+			explicit_anonymous_function_parameter.Rule =
+				anonymous_function_parameter_modifier.Q() + type_ref + identifier;
+
+			anonymous_function_parameter_modifier.Rule =
+				@ref | @out;
+
+			anonymous_function_signature.Rule =
+				explicit_anonymous_function_signature |
+				implicit_anonymous_function_signature;
+
+			implicit_anonymous_function_signature.Rule =
+				open_par + implicit_anonymous_function_parameter_list.Q() + close_par |
+				implicit_anonymous_function_parameter;
+
+			implicit_anonymous_function_parameter_list.Rule =
+				MakePlusRule( implicit_anonymous_function_parameter_list, comma, implicit_anonymous_function_parameter );
+
+			implicit_anonymous_function_parameter.Rule =
+				identifier;
+
+			anonymous_function_body.Rule =
+				expression | block;
+
+			#endregion
+
+			#region flow control
+
+			jump_statement.Rule =
+				break_statement |
+				continue_statement |
+				goto_statement |
+				return_statement |
+				throw_statement;
+
+			break_statement.Rule =
+				@break + semi;
+
+			continue_statement.Rule =
+				@continue + semi;
+
+			goto_statement.Rule =
+				@goto + identifier + semi |
+				@goto + @case + constant_expression + semi |
+				@goto + @default + semi;
+
+			return_statement.Rule =
+				@return + expression.Q() + semi;
+
+			#endregion
+
+			#region exceptions
+
+			throw_statement.Rule =
+				@throw + expression.Q() + semi;
+
+			try_statement.Rule =
+			//	@try + block + catch_clauses |
+			//	@try + block + finally_clause |
+			//	@try + block + catch_clauses + finally_clause;
+				@try + block + catch_clauses.Q() + finally_clause.Q();
+
+			catch_clauses.Rule =
+				specific_catch_clauses + general_catch_clause.Q() |
+			//	specific_catch_clauses.Q() + general_catch_clause;
+				general_catch_clause.Q();
+
+			specific_catch_clause.Rule =
+				@catch + open_par + class_type + identifier.Q() + close_par + block;
+
+			specific_catch_clauses.Rule =
+				MakePlusRule( specific_catch_clauses, null, specific_catch_clause );
+
+			general_catch_clause.Rule =
+				@catch + block;
+
+			finally_clause.Rule =
+				@finally + block;
+
+			#endregion
+
+			#region documentation
+
+			member_documentation.Rule =
+				MakePlusRule( member_documentation, member_documentation_line );
+
+			member_documentation_line.Rule =
+				doc_comment + expression;
+
+			#endregion
+
+			// explicit interface implementation is bad. -- Nx
+			member_name.Rule =
+				identifier /* | interface_type + dot + identifier */;
+
+			member_modifier.Rule =
+			//	@new |
+				@public | @protected | @internal | @private |
+				@sealed |
+				@static |
+				@readonly |
+				@volatile |
+				@abstract |
+				@virtual |
+				@override |
+				@extern |
+				@partial |
+				@unsafe;
+
+			member_modifiers.Rule =
+				MakeStarRule( member_modifiers, member_modifier );
+
+			member_header.Rule =
+				attributes /* .Q() */ + member_modifiers;
+
+			// ----------------------------------------------- //
+
+			// <remarks who="Nx">Added method declaration to acceptable namespace members.</remarks>
+			namespace_member_declaration.Rule =
+				namespace_declaration |
+				method_declaration |
+				type_declaration;
+
+			namespace_member_declarations.Rule =
+				MakeStarRule( namespace_member_declarations, namespace_member_declaration );
+
+			namespace_declaration.Rule =
+				@namespace + qualified_identifier + namespace_body + semi.Q();
+
+			namespace_declarations.Rule =
+				MakeStarRule( namespace_declarations, namespace_declaration );
+
+			qualified_identifier.Rule =
+				MakePlusRule( qualified_identifier, dot, identifier );
+
+			namespace_body.Rule =
+				open_brace + extern_alias_directives.Q() + using_directives.Q() + namespace_member_declarations + close_brace;
+
+			// -------------------------------------------------- //
+
+			type_declaration.Rule =
+				class_declaration |
+				struct_declaration |
+				interface_declaration |
+				enum_declaration |
+				delegate_declaration;
+
+			// --------------------------------------------------- //
+
+			type_parameters.Rule =
+			//	attributes /* .Q() */ + type_parameter |
+			//	type_parameters + comma + attributes /* .Q() */ + type_parameter;
+				MakePlusRule( type_parameters, comma, /* attributes.Q() + */ type_parameter );
+
+			type_parameter_list.Rule =
+				lt + type_parameters + gt;
+
+			type_parameter_constraints_clause.Rule =
+				@where + type_parameter + colon + type_parameter_constraints;
+
+			type_parameter_constraints_clauses.Rule =
+				MakePlusRule( type_parameter_constraints_clauses, type_parameter_constraints_clause );
+
+			type_parameter_constraints.Rule =
+#if false // old
+			//	primary_constraint |
+			//	secondary_constraints |
+			//	constructor_constraint |
+			//	primary_constraint + comma + secondary_constraints |
+			//	primary_constraint + comma + constructor_constraint |
+			//	secondary_constraints + comma + constructor_constraint |
+			//	primary_constraint + comma + secondary_constraints + comma + constructor_constraint;
+#else // new
+				primary_constraint + ( comma + secondary_constraints ).Q() + ( comma + constructor_constraint ).Q();
+			//	MakePlusRule( type_parameter_constraints, comma, type_parameter_constraint );
+#endif
+
+			type_parameter_constraint.Rule =
+				class_type |
+				@class |
+				@struct |
+				interface_type |
+				constructor_constraint;
+
+			primary_constraint.Rule =
+				class_type |
+				@class |
+				@struct;
+
+			secondary_constraints.Rule =
+			//	interface_type |
+			//	type_parameter |
+			//	secondary_constraints + comma + interface_type |
+			//	secondary_constraints + comma + type_parameter;
+				MakeStarRule( secondary_constraints, comma, interface_type );
+
+			constructor_constraint.Rule =
+				@new + open_par + close_par;
+
+			// --------------------------------------------------- //
+
+			class_declaration.Rule =
+				/* attributes.Q() + member_modifiers.Q() */ member_header /* + @partial.Q() */ + @class + identifier + type_parameter_list.Q() + class_base.Q() + type_parameter_constraints_clauses.Q() + class_body + semi.Q();
+
+		/*
+			class_modifier.Rule =
+				@new |
+				@public |
+				@protected |
+				@internal |
+				@private |
+				@abstract |
+				@sealed |
+				@static |
+				@unsafe;
+
+			class_modifiers.Rule =
+				MakePlusRule( class_modifiers, class_modifier );
+		*/
+
+			class_base.Rule =
+			//	colon + class_type |
+			//	colon + interface_type_list |
+			//	colon + class_type + comma + interface_type_list;
+				colon + class_type + ( comma + interface_type_list ).Q();
+
+			interface_type_list.Rule =
+				MakePlusRule( interface_type_list, comma, interface_type );
+
+			class_body.Rule =
+				open_brace + class_member_declarations + close_brace;
+
+			class_member_declaration.Rule =
+				constant_declaration |
+				field_declaration |
+			//	static_constructor_declaration |
+				constructor_declaration |
+				destructor_declaration |
+				property_declaration |
+				event_declaration |
+				indexer_declaration |
+				method_declaration |
+				operator_declaration |
+				type_declaration;
+
+			class_member_declarations.Rule =
+				MakeStarRule( class_member_declarations, class_member_declaration );
+
+			// -------------------------------------------------- //
+
+			constant_declaration.Rule =
+				/* attributes.Q() + member_modifiers.Q() */ member_header + @const + type_ref + constant_declarators + semi;
+		/*
+			constant_modifier.Rule =
+				@new |
+				@public |
+				@protected |
+				@internal |
+				@private;
+
+			constant_modifiers.Rule =
+				MakePlusRule( constant_modifiers, constant_modifier );
+		*/
+			field_declaration.Rule =
+				/* attributes.Q() + member_modifiers.Q() */ member_header + type_ref + variable_declarators + semi;
+		/*
+			field_modifier.Rule =
+				@new |
+				@public |
+				@protected |
+				@internal |
+				@private |
+				@static |
+				@readonly |
+				@volatile;
+
+			field_modifiers.Rule =
+				MakePlusRule( field_modifiers, field_modifier );
+		*/
+			variable_declarator.Rule =
+				identifier |
+				identifier + assignment + variable_initializer;
+
+			variable_declarators.Rule =
+				MakePlusRule( variable_declarators, comma, variable_declarator );
+
+			method_header.Rule =
+				/* attributes.Q()+ member_modifiers.Q() */ member_header /* + @partial.Q() */ + return_type + member_name + type_parameter_list.Q() + open_par + formal_parameter_list.Q() + close_par + type_parameter_constraints_clauses.Q();
+
+			method_declaration.Rule =
+				method_header + method_body;
+			//	member_header + return_type + member_name + type_parameter_list.Q() + open_par + formal_parameter_list.Q() + close_par + type_parameter_constraints_clauses.Q() + method_body;
+		/*
+			method_modifier.Rule =
+				@new |
+				@public |
+				@protected |
+				@internal |
+				@private |
+				@static |
+				@virtual |
+				@sealed |
+				@override |
+				@abstract |
+				@extern |
+				@unsafe;
+
+			method_modifiers.Rule =
+				MakePlusRule( method_modifiers, method_modifier );
+		*/
+			return_type.Rule =
+				type_ref | @void;
+
+			fixed_parameter.Rule =
+				attributes /* .Q() */ + parameter_modifier.Q() + type_ref + identifier + default_argument.Q();
+
+			fixed_parameters.Rule =
+				MakePlusRule( fixed_parameters, comma, fixed_parameter );
+
+			formal_parameter_list.Rule =
+				fixed_parameters |
+				fixed_parameters + comma + parameter_array |
+				parameter_array;
+			//	fixed_parameters + ( comma + parameter_array ).Q();
+
+			parameter_modifier.Rule =
+				@ref | @out | @this;
+
+			default_argument.Rule =
+				assignment + expression;
+
+			parameter_array.Rule =
+				attributes /* .Q() */ + @params + /* list_type */ array_type + identifier;
+
+			method_arguments.Rule =
+				open_par + argument_list.Q() + close_par;
+
+			method_body.Rule =
+				block |
+			//	try_statement |
+				semi;
+
+			// ----------------------------------------------- //
+
+			property_declaration.Rule =
+				/* attributes.Q() + member_modifiers.Q() */ member_header + type_ref + member_name + open_brace + accessor_declarations + close_brace;
+
+		/*
+			property_modifier.Rule =
+				@new |
+				@public |
+				@protected |
+				@internal |
+				@private |
+				@static |
+				@virtual |
+				@sealed |
+				@override |
+				@abstract |
+				@extern;
+
+			property_modifiers.Rule =
+				MakePlusRule( property_modifiers, property_modifier );
+		*/
+			accessor_name.Rule =
+				@get | @set;
+
+			accessor_declaration.Rule =
+				/* attributes.Q() + member_modifiers.Q() */ member_header + accessor_name + /* accessor_body */ method_body;
+
+			accessor_declarations.Rule =
+			//	get_accessor_declaration + set_accessor_declaration.Q() |
+			//	set_accessor_declaration + get_accessor_declaration.Q();
+				MakePlusRule( accessor_declarations, accessor_declaration );
+		/*
+			accessor_modifier.Rule =
+				@protected |
+				@internal |
+				@private |
+				@protected + @internal |
+				@internal + @protected;
+		*/
+		//	get_accessor_declaration.Rule =
+		//		attributes /* .Q() */ + accessor_modifier.Q() + @get + accessor_body;
+
+		//	set_accessor_declaration.Rule =
+		//		attributes /* .Q() */ + accessor_modifier.Q() + @set + accessor_body;
+
+		//	accessor_body.Rule =
+		//		block | /* try_statement | */ semi;
+
+			// --------------------------------------------------//
+
+			event_declaration.Rule =
+				/* attributes.Q() + member_modifiers.Q() */ member_header + @event + type_ref + variable_declarators + semi |
+				/* attributes.Q() + member_modifiers.Q() */ member_header + @event + type_ref + member_name + open_brace + event_accessor_declarations + close_brace;
+		/*
+			event_modifier.Rule =
+				@new |
+				@public |
+				@protected |
+				@internal |
+				@private |
+				@static |
+				@virtual |
+				@sealed |
+				@override |
+				@abstract |
+				@extern;
+
+			event_modifiers.Rule =
+				MakePlusRule( event_modifiers, event_modifier );
+		*/
+			event_accessor_declarations.Rule =
+				add_accessor_declaration + remove_accessor_declaration |
+				remove_accessor_declaration + add_accessor_declaration;
+
+			add_accessor_declaration.Rule =
+				attributes /* .Q() */ + @add + block;
+
+			remove_accessor_declaration.Rule =
+				attributes /* .Q() */ + @remove + block;
+
+			// ------------------------------------------------------//
+
+			indexer_declaration.Rule =
+				/* attributes.Q() + member_modifiers.Q() */ member_header + indexer_declarator + open_brace + accessor_declarations + close_brace;
+		/*
+			indexer_modifier.Rule =
+				@new |
+				@public |
+				@protected |
+				@internal |
+				@private |
+				@virtual |
+				@sealed |
+				@override |
+				@abstract |
+				@extern;
+
+			indexer_modifiers.Rule =
+				MakePlusRule( indexer_modifiers, indexer_modifier );
+		*/
+			// explicit interface implementations are not allowed.
+			indexer_declarator.Rule =
+			//	type_ref + @this + open_bracket + formal_parameter_list + close_bracket |
+			//	type_ref + interface_type + dot + @this + open_bracket + formal_parameter_list + close_bracket;
+				type_ref + @this + open_bracket + formal_parameter_list + close_bracket;
+
+			operator_declaration.Rule =
+				attributes /* .Q() */ + member_modifiers + operator_declarator + /* operator_body */ method_body;
+		/*
+			operator_modifier.Rule =
+				@public |
+				@static |
+				@extern;
+
+			operator_modifiers.Rule =
+				MakePlusRule( operator_modifiers, operator_modifier );
+		*/
+			operator_declarator.Rule =
+				unary_operator_declarator |
+				binary_operator_declarator |
+				conversion_operator_declarator;
+
+			unary_operator_declarator.Rule =
+				member_header + type_ref + @operator + overloadable_unary_operator + open_par + type_ref + identifier + close_par;
+
+			overloadable_unary_operator.Rule =
+				plus |
+				minus |
+				bang |
+				tilde |
+				increment |
+				decrement |
+				@true |
+				@false;
+
+			binary_operator_declarator.Rule =
+				member_header + type_ref + @operator + overloadable_binary_operator + open_par + type_ref + identifier + comma + type_ref + identifier + close_par;
+
+			overloadable_binary_operator.Rule =
+				plus |
+				minus |
+				astrisk |
+				divide |
+				modulus |
+				ampersand |
+				bitwise_or |
+				caret |
+				left_shift |
+				right_shift |
+				value_equal |
+				value_not_equal |
+				gt |
+				lt |
+				gt_or_equal |
+				lt_or_equal;
+
+			multiplicative_operator.Rule =
+				astrisk |
+				divide |
+				modulus;
+
+			additive_operator.Rule =
+				plus |
+				minus;
+
+			shift_operator.Rule =
+				left_shift |
+				right_shift;
+
+			equality_operator.Rule =
+				value_equal |
+				value_not_equal |
+				reference_equal |
+				reference_not_equal;
+
+			relational_operator.Rule =
+				lt |
+				gt |
+				lt_or_equal |
+				gt_or_equal;
+
+			conversion_operator_declarator.Rule =
+				member_header + @implicit + @operator + type_ref + open_par + type_ref + identifier + close_par |
+				member_header + @explicit + @operator + type_ref + open_par + type_ref + identifier + close_par;
+
+		//	operator_body.Rule =
+		//		block | /* try_statement | */ semi;
+
+			// ---------------------------------------------- //
+		/*
+			constructor_modifier.Rule =
+				@public |
+				@protected |
+				@internal |
+				@private |
+				@extern;
+
+			constructor_modifiers.Rule =
+				MakePlusRule( constructor_modifiers, constructor_modifier );
+		*/
+			constructor_declaration.Rule =
+				/* attributes.Q() + member_modifiers.Q() */ member_header + constructor_declarator + /* constructor_body */ method_body;
+
+			constructor_declarator.Rule =
+				identifier + open_par + formal_parameter_list.Q() + close_par + constructor_initializer.Q();
+
+			constructor_initializer.Rule =
+				colon + @base + /* open_par + argument_list.Q() + close_par */ method_arguments |
+				colon + @this + /* open_par + argument_list.Q() + close_par */ method_arguments;
+
+		//	constructor_body.Rule =
+		//		block | /* try_statement | */ semi;
+
+			// ---------------------------------------------------- //
+
+			destructor_declaration.Rule =
+				attributes /* .Q() */ + @extern.Q() + tilde + identifier + open_par + close_par + /* destructor_body */ method_body;
+
+		//	destructor_body.Rule =
+		//		block | /* try_statement | */ semi;
+
+			// ---------------------------------------------------- //
+
+		/*
+			static_constructor_declaration.Rule =
+				attributes.Q()+ member_modifiers + identifier + open_par + close_par + method_body;
+
+			static_constructor_modifiers.Rule =
+				@extern.Q() + @static |
+				@static + @extern.Q();
+		*/
+
+			// ------------------------------------------------ //
+
+			struct_declaration.Rule =
+				/* attributes.Q() + member_modifiers.Q() */ member_header /* + @partial.Q() */ + @struct + identifier + type_parameter_list.Q() + struct_interfaces.Q() + type_parameter_constraints_clauses.Q() + struct_body + semi.Q();
+
+		/*
+			struct_modifier.Rule =
+				@new |
+				@public |
+				@protected |
+				@internal |
+				@private |
+				@unsafe;
+
+			struct_modifiers.Rule =
+				MakePlusRule( struct_modifiers, struct_modifier );
+		*/
+			struct_interfaces.Rule =
+				colon + interface_type_list;
+
+			struct_body.Rule =
+				open_brace + struct_member_declarations + close_brace;
+
+			struct_member_declaration.Rule =
+				constant_declaration |
+				field_declaration |
+				constructor_declaration |
+			//	static_constructor_declaration |
+				property_declaration |
+				event_declaration |
+				indexer_declaration |
+				method_declaration |
+				operator_declaration |
+				type_declaration;
+
+			struct_member_declarations.Rule =
+				MakeStarRule( struct_member_declarations, struct_member_declaration );
+
+			// ------------------------------------------------ //
+
+			interface_declaration.Rule =
+				/* attributes.Q() + member_modifiers.Q() */ member_header /* + @partial.Q() */ + @interface + identifier + variant_type_parameter_list.Q() + interface_base.Q() + type_parameter_constraints_clauses.Q() + interface_body + semi.Q();
+
+		/*
+			interface_modifier.Rule =
+				@new |
+				@public |
+				@protected |
+				@internal |
+				@private;
+
+			interface_modifiers.Rule =
+				MakePlusRule( interface_modifiers, interface_modifier );
+		*/
+
+			variant_type_parameter.Rule =
+				attributes /* .Q() */ + variance_annotation.Q() + type_parameter;
+
+			variant_type_parameters.Rule =
+			//	attributes /* .Q() */ + variance_annotation.Q() + type_parameter |
+			//	variant_type_parameters + comma + attributes /* .Q() */ + variance_annotation.Q() + type_parameter;
+				MakePlusRule( variant_type_parameters, variant_type_parameter );
+
+			variant_type_parameter_list.Rule =
+				lt + variant_type_parameters + gt;
+
+			variance_annotation.Rule =
+				@in | @out;
+
+			interface_base.Rule =
+				colon + interface_type_list;
+
+			interface_body.Rule =
+				open_brace + interface_member_declarations + close_brace;
+
+			interface_member_declaration.Rule =
+				interface_method_declaration |
+				interface_property_declaration |
+				interface_event_declaration |
+				interface_indexer_declaration;
+
+			interface_member_declarations.Rule =
+				MakeStarRule( interface_member_declarations, interface_member_declaration );
+
+			interface_method_declaration.Rule =
+				attributes /* .Q() */ + @new.Q() + return_type + identifier + type_parameter_list.Q() + open_par + formal_parameter_list.Q() + close_par + type_parameter_constraints_clauses.Q() + semi;
+
+			interface_property_declaration.Rule =
+				attributes /* .Q() */ + @new.Q() + type_ref + identifier + open_brace + interface_accessors + close_brace;
+
+			interface_accessor.Rule =
+				attributes /* .Q() */ + accessor_name + semi;
+
+			interface_accessors.Rule =
+			//	attributes /* .Q() */ + @get + semi |
+			//	attributes /* .Q() */ + @set + semi |
+			//	attributes /* .Q() */ + @get + semi + attributes /* .Q() */ + @set + semi |
+			//	attributes /* .Q() */ + @set + semi + attributes /* .Q() */ + @get + semi;
+				MakePlusRule( interface_accessors, interface_accessor );
+
+			interface_event_declaration.Rule =
+				attributes /* .Q() */ + @new.Q() + @event + type_ref + identifier + semi;
+
+			interface_indexer_declaration.Rule =
+				attributes /* .Q() */ + @new.Q() + type_ref + @this + open_bracket + formal_parameter_list + close_bracket + open_brace + interface_accessors + close_brace;
+
+			// ------------------------------------------- //
+
+			enum_declaration.Rule =
+				/* attributes.Q() + member_modifiers.Q() */ member_header + @enum + identifier + enum_base.Q() + enum_body + semi.Q();
+		/*
+			enum_modifier.Rule =
+				@new |
+				@public |
+				@protected |
+				@internal |
+				@private;
+
+			enum_modifiers.Rule =
+				MakePlusRule( enum_modifiers, enum_modifier );
+		*/
+			enum_base.Rule =
+				colon + integral_type;
+
+			enum_body.Rule =
+				open_brace + enum_member_declarations + comma.Q() + close_brace;
+
+			enum_member_declaration.Rule =
+				attributes /* .Q() */ + identifier |
+				attributes /* .Q() */ + identifier + assignment + constant_expression;
+
+			enum_member_declarations.Rule =
+				MakeStarRule( enum_member_declarations, comma, enum_member_declaration );
+
+			// -------------------------------------------- //
+
+			delegate_declaration.Rule =
+				/* attributes.Q() + member_modifiers.Q() */ member_header + @delegate + return_type + identifier + variant_type_parameter_list.Q() + open_par + formal_parameter_list.Q() + close_par + type_parameter_constraints_clauses.Q() + semi;
+
+		/*
+			delegate_modifier.Rule =
+				@new |
+				@public |
+				@protected |
+				@internal |
+				@private;
+
+			delegate_modifiers.Rule =
+				MakePlusRule( delegate_modifiers, delegate_modifier );
+		*/
+			#endregion // Rules
+
+			RegisterOperators( 1, logical_or );
+			RegisterOperators( 2, logical_and );
+			RegisterOperators( 3, bitwise_or );
+			RegisterOperators( 4, caret );
+			RegisterOperators( 5, ampersand );
+			RegisterOperators( 6, value_equal, value_not_equal, reference_equal, reference_not_equal );
+			RegisterOperators( 7, lt, gt, lt_or_equal, gt_or_equal, @is, @as );
+			RegisterOperators( 8, left_shift, right_shift );
+			RegisterOperators( 9, plus, minus );
+			RegisterOperators( 10, astrisk, divide, modulus );
+			//	RegisterOperators(11, ".");
+			//	RegisterOperators(12, "++", "--");
+
+			RegisterOperators( -3, assignment, plus_assignment, minus_assignment, astrisk_assignment, divide_assignment, modulus_assignment, and_assignment, or_assignment, exclusive_or_assignment, left_shift_assignment, right_shift_assignment );
+			RegisterOperators( -2, qmark );
+			RegisterOperators( -1, coalescing_qmark );
+
+			this.MarkPunctuation( semi, comma, open_par, close_par, open_brace, close_brace, open_bracket, close_bracket, colon );
+
+		/*
+			this.MarkTransient(
+				namespace_member_declaration,
+				class_member_declaration,
+			//	member_declarator,
+				type_declaration,
+				statement,
+				embedded_statement,
+				expression,
+				literal,
+			//	bin_op,
+				overloadable_binary_operator,
+				primary_expression,
+				expression );
+		*/
+			this.Root = compilation_unit;
+		}
+
+		#endregion
+	}
+}
+

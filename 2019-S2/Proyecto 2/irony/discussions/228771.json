@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "499148",
+    "ThreadId": "228771",
+    "Html": "<p>Hello,</p>\r\n<p>I am having trouble adding an error rule to recover from an unexpected EOF so that outlining continues to work when the file does not parse correctly. Please find below the top-level snippet of my grammar. For example, when having one syntactically correct CFB Math block followed by one that is not due to missing #END_CFB; I lose outlining. I have tried a myriad of error rules and nothing seems to work! Another pair of eyes and some insight would be greatly appreciated.</p>\r\n<p>var CFB_BEGIN = Keyword(&quot;#CFB&quot;); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>var CFB_END = Keyword(&quot;#END_CFB&quot;);&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>var INIT = Keyword(&quot;init&quot;);</p>\r\n<p>NonTerminal BodyPortion = new NonTerminal(&quot;body portion&quot;); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>NonTerminal CFBMathBlock = new NonTerminal(&quot;CFB Math Block&quot;);&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>NonTerminal InitPortion = new NonTerminal(&quot;init portion&quot;);&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>NonTerminal TimerDeclaration = new NonTerminal(&quot;Timer Declaration&quot;);</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.Root = ProgramContent;<br>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ProgramContent.Rule = (CFBMathBlock).Star();&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DeclarationSection.Rule = (DeclarationSection.Rule | TimerDeclaration).Star();<br>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;TimerDeclaration.Rule = TIMER + (SLOW | FAST).Q() + &quot;:&quot; + NameList + EQ + INTEGERNUMBER + &quot;,&quot; + INTEGERNUMBER + &quot;,&quot; + BOOL.Q() + &quot;,&quot; + BOOL.Q() + &quot;;&quot;;</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ExecutableSection.Rule = InitPortion | BodyPortionNoInit | (InitPortion + BodyPortion);</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// BodyPortionNoInit defined in the CommonGrammar<br>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;InitPortion.Rule = INIT + (Statement).Plus();<br>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BodyPortion.Rule = BODY + (Statement).Plus();</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;CFBMathBlock.Rule = <br><span style=\"white-space:pre\"> </span>CFB_BEGIN + Name +&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br><span style=\"white-space:pre\"> </span>CodeSpecifierSection.Q() +&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br><span style=\"white-space:pre\"> </span>DeclarationSection.Q() +&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br><span style=\"white-space:pre\"> </span>BEGIN +&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br><span style=\"white-space:pre\"> </span>ExecutableSection.Q() +&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br><span style=\"white-space:pre\"> </span>CFB_END + &quot;;&quot;;</p>\r\n<p>Many Thanks,</p>\r\n<p>Mohamed</p>",
+    "PostedDate": "2010-09-27T14:01:40.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "499207",
+    "ThreadId": "228771",
+    "Html": "<p>First of all, please get rid of all Star(), Plus() and Q() functions - they are deprecated because they don't work properly in many cases; use MakeStarRule, MakePlusRule instead. Also, please define explicit non-terminals for sub-expressions (like SLOW|FAST)</p>\r\n<p>I don't see any error rules setup</p>",
+    "PostedDate": "2010-09-27T16:10:50.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "499537",
+    "ThreadId": "228771",
+    "Html": "<p>Thanks a lot for the tip about the deprectated API. I have modified the grammar to use Empty, MakeStarRule, and MakePlusRule.</p>\r\n<p>The reason I did not include any error rules is that the only place that would make sense for an unexpected EOF situation is the top-most rule, which has EOF by default. However, it did not work. I was also wondering why the expected set was null instead of one that includes &quot;#end_cfb&quot;.</p>\r\n<p>So after implementing your suggestions above I dug into the CoreParser class, specifically, the private method TryRecoverFromError(). this method basically prevents recovery when hitting an unexpected EOF. I wonder if this is correct behavior. For example, it causes the entire tree to be lost when all of your source is correct with the exception of a missing &quot;close&quot; (e.g. #end_cfb) at the end of the file. I am including the updated grammar below. May be it can help with pointing me in the right direction. I really appreciate all your help.</p>\r\n<p>var CFB_BEGIN = Keyword(&quot;#CFB&quot;);&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>var CFB_END = Keyword(&quot;#end_CFB&quot;);&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>var INIT = Keyword(&quot;init&quot;);</p>\r\n<p><br>NonTerminal BodyPortion = new NonTerminal(&quot;body portion&quot;);<br>NonTerminal CFBDeclaration = new NonTerminal(&quot;CFB Declaration&quot;);&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>NonTerminal CFBDeclarations = new NonTerminal(&quot;CFB Declarations&quot;); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>NonTerminal CFBMathBlock = new NonTerminal(&quot;CFB Math Block&quot;); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>NonTerminal CFBMathBlocks = new NonTerminal(&quot;CFB Math Blocks&quot;); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>NonTerminal InitPortion = new NonTerminal(&quot;init portion&quot;); &nbsp; &nbsp; &nbsp;<br>NonTerminal NonEmptyStatmentList = new NonTerminal(&quot;Statement+&quot;);&nbsp;&nbsp; &nbsp; &nbsp;</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.Root = ProgramContent;</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ProgramContent.Rule = CFBMathBlocks; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br><span style=\"white-space:pre\"> </span>&nbsp;&nbsp; &nbsp;ProgramContent.ErrorRule = SyntaxError + Eof;</p>\r\n<p><span style=\"white-space:pre\"> </span>&nbsp;&nbsp; &nbsp;CFBMathBlock.Rule = CFB_BEGIN + Name + CodeSpecifierSection + CFBDeclarations + BEGIN + ExecutableSection + CFB_END + &quot;;&quot;;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br><span style=\"white-space:pre\"> </span>&nbsp;&nbsp; &nbsp;CFBMathBlock.ErrorRule = SyntaxError + &quot;;&quot;;<br><br>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;CFBMathBlocks.Rule = MakeStarRule(CFBMathBlocks, CFBMathBlock);</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// DeclarationSection defined in the CommonGrammar<br>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;CFBDeclaration.Rule = DeclarationSection;<br><span style=\"white-space:pre\"> </span>&nbsp;&nbsp; &nbsp;CFBDeclarations.Rule = MakeStarRule(CFBDeclarations, CFBDeclaration);&nbsp;</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;NonEmptyStatmentList.Rule = MakePlusRule(NonEmptyStatmentList, Statement);</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ExecutableSection.Rule = Empty | InitPortion | BodyPortionNoInit | (InitPortion + BodyPortion);</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// BodyPortionNoInit defined in the CommonGrammar<br><br>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;InitPortion.Rule = INIT + NonEmptyStatmentList;<br>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BodyPortion.Rule = BODY + NonEmptyStatmentList;</p>\r\n<p>Mohamed</p>",
+    "PostedDate": "2010-09-28T09:34:06.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "506418",
+    "ThreadId": "228771",
+    "Html": "<p>Well, very interesting question, and i don't have an immediate answer. This is a valid, real scenario (explicit program end token) - but Irony's error recovery does not support this out of the box. You may try to write token filter that injects this &quot;end_CFB&quot; token at the end of file - when 1) we are in error recovery 2) end_cfb is not there</p>\r\n<p>Then your error recovery rules would work - I guess</p>\r\n<p>&nbsp;</p>\r\n<p>PS sorry for the delay with response</p>",
+    "PostedDate": "2010-10-12T22:57:47.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "850238",
+    "ThreadId": "228771",
+    "Html": "<p>Mohamed,</p>\r\n<p>Did you write the token filter ?</p>\r\n<p>Or did you find a work around ?</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2012-06-18T02:57:37.23-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "938007",
+    "ThreadId": "228771",
+    "Html": "<p>Hi!</p>\r\n<p>Sorry to open up this rather old thread, but I also found the above scenario quite disturbing. Parsing (with syntaxerror) works quite fine - with the exception of the \"out most construct\", e.g. a missing \"end;\" or whatever prohibits the \"Recovered\" state.</p>\r\n<p>So I was wandering... why not just change the one return statement in ErrorRecoveryParserAction.cs::TryRecoverFromError() from \"return false\" to \"return true\" in case Eof is encountered? This would allow us to use the ParseTree we have so far - in case of Syntax errors no one would expect the tree to be perfect, but in many cases I prefer a broken tree over no tree at all.</p>\r\n<p>I guess I'm missing something important here, otherwise you'd surely have the changed the code accordingly yourself by now :-)</p>\r\n<p>Anyway, regards,</p>\r\n<p>Max</p>",
+    "PostedDate": "2012-11-07T08:39:08.073-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939266",
+    "ThreadId": "228771",
+    "Html": "<p>there is a bigger and more general problem with error recovery. Currently implemented scheme is in line with file-based compilation. The purpose of recovery is to move to some next point where compiler can continue and find more errors. And nobody cares about parse tree once the error is encountered. That's the way it was originally built, following standard recipes from compiler books. The result is what you see - on EOF, there's no reason the recover, nothing else left to compile.</p>\r\n<p>However, syntax highlighting and intellisense in text editor is a completely different story. The recovery should try to produce some kind of parse tree no matter what, to allow for intellisense to work as user enters the code in the editor. The general mechanism should be to inject \"missing\" tokens to complete the structures (like statements, methods, classes), so some kind of tree might be produced and analyzed, so name lists can be provided to intellisense dropdowns as an example. This recovery with missing token injection is something in the future. Until then - just invent some workarounds</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-11-09T10:21:50.497-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939316",
+    "ThreadId": "228771",
+    "Html": "<p>Hmm, looking at it that way seems reasonable :-)</p>\r\n<p>Nevertheless, and for completeness, I want to mention my (preliminary) solution. At this state, I cannot say if it will work under all circumstances (and especially as the USER would expect it to work), but putting away the future problems, that's what I did (using the modification I suggested above, because I want a tree even if EOF is reached). The advantage, as far as I am concerned, is that I don't need to inject missing tokens (which I guess would be far more complicated):</p>\r\n<p>(a) When someone writes code, the \"nice\" thing is that most of the time (between user modifications) the file compiles. This is the point in time when a correct parse-tree can be generated. While the user modifies the file, the code usually won't compile, thus the generated parsetree has errors, which I can check by calling _parseTree.HasErrors(). In that case, I stick to the correct (old) tree, so intellisense still works with all the symbols from the correct file. As soon as the code compiles again, the parsetree is updated with a new, error-free version. This scenario works fine if the user manually types code. Making larger changes using copy-paste is a problem, because the pasted code (in case it contains, e.g. new variable definitions) will not be part of intellisense until the parsetree is correct again.</p>\r\n<p>(a - remark) Always using the latest parsetree, even if incorrect, is a bad idea, because syntax errors can render many symbol definitions invalid, thus intellisense would definitely not work as the user would expect.</p>\r\n<p>(b) Starting with an erroneous file that doesn't compile, works quite the same way, but I always have to use an erroneous tree, as there's nothing else available. In that case, I can always update the tree once I have a new one. The question whether the old one was better than the new one is difficult if not impossible to answer.</p>\r\n<p>(c) To make things more sophisticated, it is also possible to use symbols from both the old and the new parse-tree. That would solve some problems, but make things not only more complicated, but would also need doulbe the performance for scanning the parsetrees for symbols, and then look up the symbols in two different symbol sets.</p>\r\n<p>Regards,<br />Max</p>",
+    "PostedDate": "2012-11-09T11:54:50.657-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939342",
+    "ThreadId": "228771",
+    "Html": "<p>there are several problems with this... first, \"... until code compiles again...\" - this might never happen, or not happen for a long time. Imagine, user edits some class file, messes up around method #1, while there's some syntax error at the end of the file. User might complete the method #1 (making it correct) and start typing method #2, but method1's name will never appear in intellisense - because the error at the end prevents entire file from being ever correct.&nbsp;</p>\r\n<p>Another, very typical scenario. User starts typing new class from scratch: opens namespace, declares class, method, starts typing body... while nothing appears after the typing point, so all closing braces are missing. No way parser can build a parse tree (without injecting missing closing braces). But Intellisense should work in this case - at least in VS it works, just checked. &nbsp;</p>\r\n<p>So i think it needs more tweaking. Erroneous parse tree must be able to \"expose\" names that are estimated to be correct (like finished and correct property, field definitions) even when they are mixed up with complete garbage.</p>",
+    "PostedDate": "2012-11-09T12:48:34.443-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

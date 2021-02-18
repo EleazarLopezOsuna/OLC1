@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "949546",
+    "ThreadId": "405165",
+    "Html": "\r\n<p>I created a function call in my grammer and it's working great!&nbsp; However, I can't figure out how to define variables so they do not cause 'unknown symbol' errors.&nbsp; The only way that I have been able to get around the error is to put the variable\r\n name in the Globals dictionary, i.e.</p>\r\n<p>myEvaluator.Globals.Add( &quot;Day&quot;, &quot;Day&quot; );</p>\r\n<p>Any hints on what I'm missing?&nbsp;</p>\r\n<p>Here is an example of one function:</p>\r\n<p>DateDiff(Day, 07/07/2011, 07/14/2011) - this should return &quot;7&quot;</p>\r\n",
+    "PostedDate": "2012-11-30T07:05:05.38-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "949613",
+    "ThreadId": "405165",
+    "Html": "\r\n<p>Found it!</p>\r\n<p>ConstantTerminal with a typeof LiteralValueNode</p>\r\n<p>Now if I could just figure out how to identify and pass a dateformat I would be set!</p>\r\n<p>Any ideas on how to identify 'mm/dd/yyyy' as a date format and pass it as a string?</p>\r\n",
+    "PostedDate": "2012-11-30T09:30:47.783-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "950249",
+    "ThreadId": "405165",
+    "Html": "\r\n<p>don't quite understand your last question about date format - what exactly you're trying to do...</p>\r\n<p>But back to your original problem, your solution by adding a function implementation to Globals was correct and in fact, the suggested way to extend expression evaluator with custom function. You can even create a static class, put all your custom functions\r\n there (as static methods), and then add all of them in one line. Look how expression evaluator sample does this with System.Math methods.</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2012-12-02T15:00:50.843-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "950543",
+    "ThreadId": "405165",
+    "Html": "\r\n<p>I have a function called 'IsValidDate' which returns a boolean value, i.e. IsValidDate(01/01/2012) = True.&nbsp; Or the 'DateDiff' function above.&nbsp; I want the user to be able to pass in a date without requiring that it be escaped with quotes.</p>\r\n<p>I was able to get it to work by defining another class based on ASTNode like the LiteralValueNode.&nbsp; The init function parses the ChildNodes and builds a date string then it validates it.</p>\r\n<p>Thank you for the response, I'll take a look at the expression evaluator sample again.</p>\r\n",
+    "PostedDate": "2012-12-03T05:52:41.74-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

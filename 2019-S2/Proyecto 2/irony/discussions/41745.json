@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "138554",
+    "ThreadId": "41745",
+    "Html": "Hi,<br>\r\n<br>\r\ncan somebody help me in solving this Proplem. <br>\r\nI need to parse a Statement like this:<br>\r\n<p><span style=\"font-size:13px;color:#0000ff\">Derived</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#0000ff\">From<br>\r\n</span><span style=\"font-size:13px;color:#0000ff\">    Class</span><span style=\"font-size:13px\">: Klasse0<br>\r\n</span><span style=\"font-size:13px;color:#0000ff\">    Class</span><span style=\"font-size:13px\">: Klasse1<br>\r\n</span><span style=\"font-size:13px;color:#0000ff\">Class</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#0000ff\"><span style=\"font-size:13px;color:#0000ff\">Variables\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</span>\r\n<p>&nbsp;</p>\r\n</span></p>\r\n<p>&nbsp;</p>\r\nI useed the following Rule:<br>\r\n<span style=\"font-size:13px\">\r\n<p>derived.Rule = _class+colon + identifier;<br>\r\nderived_list.Rule = MakePlusRule(derived_list, derived);<br>\r\nderived_list_opt.Rule = Empty | derived_list;<br>\r\nderived_header.Rule = _derived + _from + derived_list_opt;<br>\r\n<br>\r\nNow It seems that Class from &quot;Class Variables&quot;, will be recognized as member of derived_list.</p>\r\n</span>\r\n<p><span style=\"font-size:13px\">How solve that problem.<br>\r\n<br>\r\nThanks in advance<br>\r\n<br>\r\nWolfram\r\n<p>&nbsp;</p>\r\n</span></p>\r\n",
+    "PostedDate": "2008-12-08T04:31:20.47-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138635",
+    "ThreadId": "41745",
+    "Html": "How parser should recognize the fact that Variables is not class name? <br>\r\nIs your language indentation sensitive, so it recognizes that derived list is over because there's no indentation on this line? In this case you should use CodeOutllineFilter token filter, and add Indent, Unindent terminals into grammar rules.  <br>\r\nIf your language is not indentation sensitive and &quot;Variables&quot; is a keyword, so class name cannot be Variables, then try to add &quot;Variables&quot; to the list of keywords:<br>\r\n this.AddKeywords(&quot;Variables&quot;); <br>\r\n<br>\r\nBy the way, you can create derived_list_opt directly:<br>\r\nderived_list_opt.Rule = MakeStarRule(derived_list_opt, derived);<br>\r\n",
+    "PostedDate": "2008-12-08T08:57:38.757-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138898",
+    "ThreadId": "41745",
+    "Html": "Thanks for you're reply.<br>\r\n<br>\r\nfirst I was hopefull that I can use --&gt;Class:&lt;--  as Symbol so that it's different to --&gt;Class&lt;--,<br>\r\nbut you're presumption is correct. That language is indent based so I did as you advised<br>\r\nBut I have to say without any success.<br>\r\n<br>\r\nI break down already with the first line I want to parse.<br>\r\n<br>\r\n<span style=\"font-size:13px;color:#0000ff\">\r\n<p>Functional Class: TEST <br>\r\n    Description: ddsfsd<br>\r\n<br>\r\n<span style=\"font-size:13px\"><span style=\"font-size:13px;color:#2b91af\">NonTerminal</span><span style=\"font-size:13px\"> functional_class_header = </span><span style=\"font-size:13px;color:#0000ff\">new</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">NonTerminal</span><span style=\"font-size:13px\">(</span><span style=\"font-size:13px;color:#a31515\">&quot;functional_class_header&quot;</span><span style=\"font-size:13px\">);<br>\r\nfunctional_class_header.Rule = _functional + _class +colon + identifier;</span><br>\r\ndescription_comment.Rule = </span><span style=\"font-size:13px;color:#2b91af\">Grammar</span><span style=\"font-size:13px\">.Indent + _description + colon + identifier + </span><span style=\"font-size:13px;color:#2b91af\">Grammar</span><span style=\"font-size:13px\">.NewLine;<br>\r\n<span style=\"font-size:13px\">TokenFilters.Add(</span><span style=\"font-size:13px;color:#0000ff\">new</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">CodeOutlineFilter</span><span style=\"font-size:13px\">(</span><span style=\"font-size:13px;color:#0000ff\">true</span><span style=\"font-size:13px\">));\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</span>\r\n<p>ErrorMessage from Grammar Explorer:<br>\r\n<br>\r\nSyntax error. (parser state: S11)<br>\r\n (L:C = L0:C23)<br>\r\n<br>\r\nSorry I do not know how to handle this.<br>\r\n<br>\r\nWolfram</p>\r\n</span></p>\r\n</span>\r\n",
+    "PostedDate": "2008-12-09T03:46:33.657-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138974",
+    "ThreadId": "41745",
+    "Html": "Looks like you forgot NewLine at the end of functional_class_header; something is missing - where is this.Root assignment? what is a root element of the grammar?  \r\n",
+    "PostedDate": "2008-12-09T08:12:20.86-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "139321",
+    "ThreadId": "41745",
+    "Html": "I have decided to club the Termional &quot;Class&quot; and &quot;Variables&quot; together so that I get the terminal = ClassVariables. <br>\r\nSo the parser can see a difference. I think  it's possible to use the indent technique later on, when I'm more familiar with irony.net.<br>\r\n<br>\r\nthanks.<br>\r\n<br>\r\n",
+    "PostedDate": "2008-12-10T08:35:16.21-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

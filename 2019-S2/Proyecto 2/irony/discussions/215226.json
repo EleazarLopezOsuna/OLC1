@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "452569",
+    "ThreadId": "215226",
+    "Html": "<p>In the&nbsp;language I'm building a grammar for, all the reserved words are decorated with a % sign at the beginning.&nbsp; If I build the grammar without this, the syntax highlighting works fine, but doesn't work with the %prefix.&nbsp; If I remember correctly, it actually still parses just fine, it's just the syntax highlighting.&nbsp; Does anyone have an idea as to why?&nbsp; All my reserved words are just the standard KeyTerm type terminal.&nbsp; Do I need a custom terminal?&nbsp; Or is there some other property I can set on the standard KeyTerm terminal to do it?</p>\r\n<p>Thanks.</p>\r\n<p>AJG</p>",
+    "PostedDate": "2010-06-07T10:34:40.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "452577",
+    "ThreadId": "215226",
+    "Html": "I think the reason is the default guess that Irony makes about keywords. All key symbols used in grammar Irony treats as special terms that it marks either as &quot;keyword&quot; (like &quot;if&quot;, &quot;while&quot; &quot;for&quot;) or key symbol - special symbol which is not a word, like &quot;{&quot;, &quot;}&quot; etc. In your case it looks like Irony decides that all these %-starting words are key symbols, so it does not mark them as keywords. You need to set the IsKeyword flag explicitly. You can either explicitly set it on each of your %-words, or make some automatic loop at the end of grammar constructor and go thru all Symbol terminals and sets this flag if symbol starts with %. I don't have the source on my machine here, so I can't give more explicit instructions, but you can easily find it out I hope\r\n\r\nRoman",
+    "PostedDate": "2010-06-07T10:55:30.457-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "452918",
+    "ThreadId": "215226",
+    "Html": "<p>That did the trick.&nbsp; Thanks.</p>",
+    "PostedDate": "2010-06-08T04:38:14.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

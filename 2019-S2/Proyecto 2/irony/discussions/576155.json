@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1336840",
+    "ThreadId": "576155",
+    "Html": "I constructed a grammar that works and has no conflict issues at this point, however I'm wondering if there is a way I can push the parser to match one expression over another.  I have been trying a number of tweaks to my grammar to no avail.  I'm hoping there is a simple method call I can introduce into my grammar to solve this.  In my scripting language I have an expression that appears as follows:\r<br />\n3d6+#16?+1d6e1+5\r<br />\n<br />\nThe parser sees this as:\r<br />\n(((3d6)+#16?)+1d6e1) + 5  ... matching this to a binary expression.\r<br />\n<br />\nI want the parser to instead match the expression as follows:\r<br />\n((3d6)+#16?+) (1d6e1 + 5)  .. such that 1d6e1 + 5 is seen as a binary expression.\r<br />\n<br />\nI have a basic binary expression rule in my language that functions as you might expect with two expressions and a binary operator between them.  I basically want the expression that follows the ?+ (what I call a conditional expression) to match the largest possible expression (in this case a binary expression adding the expressions 1d6e1 and 5).  I know you are probably very busy, especially with the holidays, so any help or hint to point me in the right direction would be very much appreciated.  Thanks again for such a nice project and Merry Christmas.<br />\n",
+    "PostedDate": "2014-12-23T12:02:33.377-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1336842",
+    "ThreadId": "576155",
+    "Html": "So looks like '?+' is an operator of its own meaning? then you should declare it as an operator and separate terminal. Even if you have ? and + also defined as operators, scanner should always prefer longer alternative so it will pick '?+' vs two separate symbols. \r<br />\nStart with this and then see how it goes\r<br />\nMerry Christmas!\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-12-23T12:08:19.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1336847",
+    "ThreadId": "576155",
+    "Html": "Actually the ?+ are separate operators.  The conditional expression has a rule as follows:\r<br />\nconditionalExpr.Rule = thresholdExpr + conditionalOp + min_opt + binOp + expression;  ... where conditionalOp matches ?, min_opt matches a number or an empty value and binOp matches a binary operator).  So ?+ is valid, but so is ?3+.  The expression rule is:\r<br />\n<br />\nexpression.Rule = parExpression | thresholdExpr | conditionalExpr | binExpr | complexDiceRollExpr | number;\r<br />\n<br />\nCurrently the expression after the binary operator is matching to a complexDiceRollExpr (1d6e1), instead of to a binExpr (binary expression - &gt; 1d6e1 + 5).  Similarly if the right hand side were 1d6e1 + 5 * 20 I would want it to match to a binary expression containing another binary expression, but right now I have to enclose the entire thing in () to get those results.  I'm not sure if it affects this particular issue, but you had me mark my binary operator terminal as transient quite some time back to work around an old bug that was still present in the library.<br />\n",
+    "PostedDate": "2014-12-23T12:29:47.467-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1336944",
+    "ThreadId": "576155",
+    "Html": "no, it has nothing to do with this transient thing - the transient flag allows operator precedence to work properly, that's it. \r<br />\nI'm not sure I understand your language, but it seems to me the trouble is in improper operator precedence values. If you have a bunch of expressions connected with binary operator without parenthesis, and parser groups them the wrong way - it means you have bad operator precedence values. At least, provided you have some reasonable precedence rules in the language (formulated clearly). But so far I can't figure out what they are\r<br />\nyou show an example, the tree that parser makes and then the way you want it - on a particular string. But what is the formal rule parser can/should use to prefer the second variant?! The rule abstracted from a concrete example. So far I can't figure it out what it can be<br />\n",
+    "PostedDate": "2014-12-24T00:22:20.09-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1336948",
+    "ThreadId": "576155",
+    "Html": "try putting the lowest precedence on conditional op '?', lower than +<br />\n",
+    "PostedDate": "2014-12-24T00:52:27.727-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1336985",
+    "ThreadId": "576155",
+    "Html": "Alright, I will try changing the operator precedence and see how that goes.  Thank you for your help and I hope you have a nice Christmas :)<br />\n",
+    "PostedDate": "2014-12-24T05:04:24.777-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1337338",
+    "ThreadId": "576155",
+    "Html": "Well I tried a number of different changes and noticed some interesting results.  First, changing the precedence of the ? operator had no effect, but the issue is operator related.  I believe it is an issue of operator ambiguity.  Because a binary expression and my conditional expression both use the common binary operators, there are two possible ways the parser can view the overall expression.  I will explain my example since I'm sure my grammar looks odd compared to many.  The grammar itself is used to express dice rolls.  Using the following example I will break down the meaning.<br />\n<pre><code>1d6+#4?+1d6+5</code></pre>\n\n<ul>\n<li>1d6 means roll 1 six sided die</li>\n<li>+# is a special operator that means to compare the sum of the previous expression (the value on the die) against the number following the operator (in this case 4).  So, in this case, if the sum is greater than or equal to 4, the expression 1d6+#4 proves true.</li>\n<li>\n? is an operator that says to evaluate the preceding expression and if true add/subtract/multiply/divide (depending on the binary operator) the expression following the binary operator.  In this case add 1d6 + 5 (meaning, roll a single six sided die and add 5 to the result).<br />\n</li>\n</ul>\nSo the whole expression means roll a six sided die and if the result on the die is 4 or higher add another six sided die roll plus 5 to the result.\r<br />\n<br />\nIn the current case of the parser it sees this expression as<br />\n<pre><code>(1d6+#4?+1d6)+5</code></pre>\n\nrather than <br />\n<pre><code>1d6+#4?+(1d6+5)</code></pre>\n\nwhich is what I was expecting.  I have however noticed that if I change the expression to<br />\n<pre><code>1d6+#4?+1d6*5</code></pre>\n\nit parses correctly, because the * operator has higher precedence than +, so it sees <code>1d6*5</code> as a binary expression, rather than seeing <code>(1d6+#4?+1d6)*5</code> as the binary expression.  I also noticed that if I change the language to use some other characters than the standard binary operators after my conditional expression it then also parses the way I would expect (though that isn't a desirable solution).  I just need to somehow tell the parser to choose one match over the other possible match.  I thought this might be similar to a dangling else in a way.\r<br />\n<br />\nIncidentally during testing out these different approaches I noticed the grammar explorer was not refreshing the grammar properly either via auto-refresh, when I pressed the refresh button or when I manually removed and re-added the grammar.  Only when I closed the grammar explorer and re-opened the application did it pick up the changes in my grammar.  This of course led to some incorrect results during my testing before I figured out what was going on.  I was not sure if you were aware of this bug but I thought I should mention it in case you were not.<br />\n",
+    "PostedDate": "2014-12-26T14:23:41.927-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

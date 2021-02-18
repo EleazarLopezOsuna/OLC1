@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "277245",
+    "ThreadId": "80859",
+    "Html": "<p>I am really new to Irony... and I would appreciate your help.</p>\r\n<p>My code looks like this:</p>\r\n<p style=\"margin:0.0px 0.0px 0.0px 0.0px;font:10.0px Helvetica\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;<span style=\"color:#1700ff\">var</span> t_string = <span style=\"color:#1700ff\">new</span> <span style=\"color:#00a4c0\">StringLiteral</span>(<span style=\"color:#c10000\">&quot;String&quot;</span>,<span style=\"color:#c10000\">&quot;\\&quot;&quot;</span>);</p>\r\n<p style=\"margin:0.0px 0.0px 0.0px 0.0px;font:10.0px Helvetica\">&nbsp; &nbsp; &nbsp; &nbsp; t_string.AddStartEnd(<span style=\"color:#c10000\">&quot;{&quot;</span>, <span style=\"color:#c10000\">&quot;}&quot;</span>, <span style=\"color:#00a4c0\">StringFlags</span>.None);</p>\r\n<div></div>\r\n<div><span style=\"font-family:Helvetica, 'Microsoft Sans Serif', Arial, Geneva, sans-serif;font-size:x-small\"><span>And the following examples work ok:</span></span></div>\r\n<div></div>\r\n<div><span style=\"font-family:Helvetica, 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span style=\"font-size:x-small\">&quot;my string1&quot;</span></span></div>\r\n<div><span style=\"font-family:Helvetica, 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span style=\"font-size:x-small\">{my string1}</span></span></div>\r\n<div></div>\r\n<div>Question 1:</div>\r\n<div>However, when I try something like this, it doesn't work:</div>\r\n<div></div>\r\n<div>\r\n<div><span style=\"font-family:Helvetica, 'Microsoft Sans Serif', Arial, Geneva, sans-serif;font-size:x-small\">{my {test} string1}</span></div>\r\n<div><span style=\"font-family:Helvetica, 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span style=\"font-size:xx-small\"><br></span></span></div>\r\n</div>\r\n<div><span style=\"font-size:small\">As it is not counting the number of open brackets. How should I express that with Irony?</span></div>\r\n<div></div>\r\n<div><span style=\"font-size:small\">Thanks in advance.</span></div>\r\n<div><span style=\"font-family:Helvetica, 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span><span style=\"font-family:'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><br></span></span></span></div>",
+    "PostedDate": "2010-01-14T10:58:16.913-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277260",
+    "ThreadId": "80859",
+    "Html": "<p>currently StringLiteral does not support nesting, it is quite an unusual case - what language is this? I will think about adding support for this. As for now, you'll have to write a custom Terminal class</p>",
+    "PostedDate": "2010-01-14T11:24:43.03-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277266",
+    "ThreadId": "80859",
+    "Html": "<p>I am trying to parse bibtex entries.</p>\r\n<pre style=\"color:#222222;background-color:#eeeeee;font-size:small;font-family:Courier;padding:4px;margin:0px;border:1px solid #aaaacc\">@Article{key03,\r\n  title = &quot;A {bunch {of} braces {in}} title&quot;\r\n}</pre>\r\n<p>You can find some information here:&nbsp;</p>\r\n<p>http://artis.imag.fr/~Xavier.Decoret/resources/xdkbibtex/bibtex_summary.html</p>\r\n<p>By the way, you've done an excellent work !</p>",
+    "PostedDate": "2010-01-14T11:30:39.963-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277280",
+    "ThreadId": "80859",
+    "Html": "<p>Any tips on how should I start? I guess I could extend the StringLiteral class...</p>\r\n<p>Do you have any documentation apart from the source code? I still don't have a complete idea of how the code is structured.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-14T12:07:30-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277329",
+    "ThreadId": "80859",
+    "Html": "<p style=\"margin:0.0px 0.0px 0.0px 0.0px;font:10.0px Helvetica;color:#009700\">&nbsp;</p>\r\n<div><span style=\"font-family:Helvetica, 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span style=\"font-size:xx-small\"><span style=\"font-family:'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif;font-size:small\"><span>I could solve the problem using this lines:</span></span></span></span></div>\r\n<div><span style=\"font-family:Helvetica, 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span style=\"font-size:xx-small\"><span style=\"font-family:'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif;font-size:small\"><span><br></span></span></span></span></div>\r\n<p style=\"margin:0.0px 0.0px 0.0px 0.0px;font:10.0px Helvetica;color:#009700\"><span style=\"color:#000000\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;</span>// Check this link for more information: http://blog.stevenlevithan.com/archives/balancing-groups</p>\r\n<p style=\"margin:0.0px 0.0px 0.0px 0.0px;font:10.0px Helvetica;color:#c10000\"><span style=\"color:#000000\">&nbsp; &nbsp; &nbsp; &nbsp; </span><span style=\"color:#1700ff\">var</span><span style=\"color:#000000\"> t_string1 = </span><span style=\"color:#1700ff\">new</span><span style=\"color:#000000\"> </span><span style=\"color:#00a4c0\">RegexBasedTerminal</span><span style=\"color:#000000\">(</span>&quot;String1&quot;<span style=\"color:#000000\">, </span>@&quot;\\{(?&gt;[^{}]+|\\{(?&lt;Depth&gt;)|\\}(?&lt;-Depth&gt;))*(?(Depth)(?!))\\}&quot;<span style=\"color:#000000\">);</span></p>\r\n<div></div>\r\n<div><span style=\"font-family:Helvetica, 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span style=\"font-size:xx-small\"><span style=\"font-family:'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif;font-size:small\"><span>This line is matching any number of nested { } brackets.</span></span></span></span></div>\r\n<div><span style=\"font-family:Helvetica, 'Microsoft Sans Serif', Arial, Geneva, sans-serif\"><span style=\"font-size:xx-small\"><span style=\"font-family:'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif;font-size:small\"><span><br></span></span></span></span></div>",
+    "PostedDate": "2010-01-14T13:58:06.667-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

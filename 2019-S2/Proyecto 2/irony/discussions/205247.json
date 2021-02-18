@@ -1,0 +1,106 @@
+[
+  {
+    "Id": "419211",
+    "ThreadId": "205247",
+    "Html": "<p>Hi, Roman!</p>\r\n<p>Seems like non-grammar terminals have the highest priority in the latest code drop.</p>\r\n<p>My grammar allows single-line comments starting with the star symbol (*). The same symbol is used in arithmetic expressions for multiplication operator.</p>\r\n<p>In Jan-24 version of Irony I just lowered the priority for LineCommentTerminal to make things work. The trick doesn't work anymore because of this:</p>\r\n<pre><span style=\"color:Green\">/* Scanner.cs, line 100 */</span>\r\n\r\n<span style=\"color:Green\">//Scans the source text and constructs a new token</span>\r\n<span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> ScanToken() {\r\n    <span style=\"color:Blue\">if</span> (!MatchNonGrammarTerminals())\r\n        MatchRegularToken();      \r\n    <span style=\"color:Green\">//...</span>\r\n}\r\n</pre>\r\n<p>Do you have any suggestions on how to overcome this issue? I don't think it's a good idea to make custom comment terminal for such a small problem :)</p>",
+    "PostedDate": "2010-03-17T06:38:33.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "419214",
+    "ThreadId": "205247",
+    "Html": "<p>What is the ultimate rule to distinguish the star starting comment and star as arithm operator?</p>\r\n<p>There are some good reasons behind this change of handling non-grammar terminals, it now allows grammars using indentation (and CodeOutlineFilter) like Python to use scanner-parser link - when scanner uses the current parser state to resolve ambiguities.&nbsp;</p>",
+    "PostedDate": "2010-03-17T06:45:37.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "419220",
+    "ThreadId": "205247",
+    "Html": "<p>The ultimate rule is just a priority ;)</p>\r\n<p>If the star can be part of an expression, then it is star terminal. If isn't, then it's a part of a comment. In pseudocode:</p>\r\n<ol>\r\n<li>try to match non-grammar terminals</li>\r\n<li>try to match regular tokens (is it where the parser state is used to resolve ambiguities?)</li>\r\n<li>select terminal with the highest priority</li>\r\n</ol>",
+    "PostedDate": "2010-03-17T06:56:18.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "419227",
+    "ThreadId": "205247",
+    "Html": "<p>Hmmm, making decision like this isn't safe. It seems to be language design flaw.</p>\r\n<p>If I had a comment that looks like an expression, it will be compiled as a part of an expression, leading to mysterious bugs :)</p>\r\n<p>So there must be some more reliable rule...</p>\r\n<p>Is there any way to specify where non-grammar terminals can be applied? I can think of two options:</p>\r\n<ol>\r\n<li>Star comments are allowed outside methods (or outside statements, for example), but not within.</li>\r\n<li>Star comments are only allowed at the beginnings of lines (after newline + whitespace). This is much more restrictive.</li>\r\n</ol>\r\n<p>Is it possible to implement either option using standard features of CommentTerminal? Or maybe it can be done with some custom token filter?</p>\r\n<ol> </ol>",
+    "PostedDate": "2010-03-17T07:17:25.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "419281",
+    "ThreadId": "205247",
+    "Html": "<p>You can hook into ValidateToken event of comment terminal and reject it if it does not appear in the right position. One possibility: in the event handler you can check current parser state, and see if it expects &quot;*&quot; as operator - these are places inside arithm expressions. If parser expects star operator, you reject Comment token and let scanner rescan it as operator</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-03-17T09:16:37.72-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "419355",
+    "ThreadId": "205247",
+    "Html": "<p>Thanks a lot for this suggestion!</p>\r\n<p>I added validation event handler, but it didn't work:</p>\r\n<pre><span style=\"color:Blue\">void</span> LineComment_ValidateToken(<span style=\"color:Blue\">object</span> sender, ParsingEventArgs args)\r\n{\r\n  <span style=\"color:Green\">// if &quot;*&quot; is allowed in the current parser state, suppress comments starting with &quot;*&quot;</span>\r\n  <span style=\"color:Blue\">var</span> parserState = args.Context.CurrentParserState;\r\n  <span style=\"color:Blue\">if</span> (parserState.ExpectedTerminals.Contains(ToTerm(<span style=\"color:#A31515\">&quot;*&quot;</span>)))\r\n  {\r\n    <span style=\"color:Green\">// rewind input stream and reject the token</span>\r\n    args.Context.SetSourceLocation(args.Context.CurrentToken.Location);\r\n    args.Context.CurrentToken = <span style=\"color:Blue\">null</span>;\r\n  }\r\n}\r\n</pre>\r\n<p>Then I found that scanner don't validate non-grammar tokens. So I added token validation and everything went ok.</p>\r\n<p>Here is a tiny patch for Scanner.cs:</p>\r\n<pre>Index: Scanner.cs\r\n<span style=\"background:#ffc\">===================================================================\r\n--- Scanner.cs\t(revision 47769)\r\n+++ Scanner.cs\t(working copy)</span>\r\n@@ -121,6 +121,8 @@\r\n         return false;\r\n       foreach(var term in terms) {\r\n         Context.CurrentToken = term.TryMatch(Context, Context.Source);\r\n<span style=\"background:#cfc\">+        if (Context.CurrentToken != null) \r\n+          term.InvokeValidateToken(Context);</span>\r\n         if (Context.CurrentToken != null) return true; \r\n       }\r\n       return false;</pre>",
+    "PostedDate": "2010-03-17T11:23:06.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "419358",
+    "ThreadId": "205247",
+    "Html": "<p>Good catch, will add this piece</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-03-17T11:28:25.11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "419360",
+    "ThreadId": "205247",
+    "Html": "<p>One more thing - you don't need to reset location when you reject the token, scanner will do it automatically</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-03-17T11:32:49.967-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "419361",
+    "ThreadId": "205247",
+    "Html": "<p>I thought so.</p>\r\n<p>But the handler didn't work until I added SetSourceLocation(&hellip;).</p>",
+    "PostedDate": "2010-03-17T11:46:33.53-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "419392",
+    "ThreadId": "205247",
+    "Html": "<p>Oopss.. then I'll fix that too</p>",
+    "PostedDate": "2010-03-17T13:03:41.413-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "437936",
+    "ThreadId": "205247",
+    "Html": "<p>Fixed</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-05-01T16:45:21.983-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "438005",
+    "ThreadId": "205247",
+    "Html": "<p>Hi Roman, just found the project -- it's fantastic, thanks for it!</p>\r\n<p>Also, wondering if I found a bug or I'm just confused. In the operator parsing code, we get to this section (pasted below) which seems to march up the stack looking to see if there's an operator of higher precedence, and if so it does a reduce. But, it will transverse delimiters like close-parentheses, close braces, etc. Shouldn't it stop when it encounters one of those?</p>\r\n<p>Thanks,</p>\r\n<p>Matt</p>\r\n<p>&nbsp;</p>\r\n<p>private ParserActionType GetActionTypeForOperation(ParserAction action) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = Context.ParserStack.Count - 1; i &gt;= 0; i--) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var&nbsp; prevNode = Context.ParserStack[i];<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (prevNode == null) continue; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (prevNode.Precedence == BnfTerm.NoPrecedence) continue;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ParserActionType result;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //if previous operator has the same precedence then use associativity<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var input = Context.CurrentParserInput;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (prevNode.Precedence == input.Precedence)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = input.Associativity == Associativity.Left ? ParserActionType.Reduce : ParserActionType.Shift;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = prevNode.Precedence &gt; input.Precedence&nbsp; ? ParserActionType.Reduce : ParserActionType.Shift;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //If no operators found on the stack, do simple shift<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return ParserActionType.Shift;<br>&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-05-02T02:53:03.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "438412",
+    "ThreadId": "205247",
+    "Html": "<p>No, it is not a bug and I would say you're a bit confused :) I would admit, this traversal of ALL child nodes is not optimal, and can be optimized to check only certain nodes that can be operators, based on productions in the current state. But in any case, the traversal of all is correct in general. You would not see a close parenthesis in traversal - these should have been already reduced and sitting in parser stack as simply Expr node or smth like this. Just step thru in debugger in ExprEvaluator sample with test expression like &quot;1 + (2 + 3) * 4 * 5 &quot;. Put a breakpoint in this method and inspect the contents of Context.ParserStack and see what nodes are sitting there at each stop - you would see clearly how it works.&nbsp;</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-05-03T09:06:09.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

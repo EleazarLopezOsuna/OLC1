@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1283829",
+    "ThreadId": "557738",
+    "Html": "This node is a subtree that holds multiple identifiers.  All the things I'd expect to give me the full match only show the first identifier.  I'm getting the job done right now with the slightly homely<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">var</span> matchedSource = source.Substring(node.Span.Location.Position, node.Span.Length);\r\n</pre></div>Am I missing something?<br />\n",
+    "PostedDate": "2014-08-03T11:00:56.113-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1284407",
+    "ThreadId": "557738",
+    "Html": "don't quite understand your problem, or what surprises you. your node holds a list of identifiers in Child nodes list. To get the full source for a node, you use the expr for matcheSource - yes, it's correct... The node itself never holds full underlying source as a string - that would be quite a waste of memory.<br />\n",
+    "PostedDate": "2014-08-04T00:46:17.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1284481",
+    "ThreadId": "557738",
+    "Html": "No large problem, I just wanted to know I wasn't reinventing some helper code that already existed to mediate between the source and the parse tree.  Thanks!<br />\n",
+    "PostedDate": "2014-08-04T04:02:15.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

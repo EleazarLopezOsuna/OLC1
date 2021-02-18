@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1240323",
+    "ThreadId": "543984",
+    "Html": "Hi guys,\r<br />\n<br />\nI can't really see how active the development is here. It looks like the project might have been abandoned. The last release is from September last year, more than 8 months back. The last commit is from December last year and thus 5 months back roughly.\r<br />\n<br />\nIrony looks like something I could most definitely use, but if it isn't being developed anymore I don't want to use it.\r<br />\n<br />\nAny insight?<br />\n",
+    "PostedDate": "2014-05-01T10:50:57.373-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1240330",
+    "ThreadId": "543984",
+    "Html": "I've been quiet for a while, but for the last 3+ months, at late nights I've been working on a bunch of new facilities for Irony, which (if implemented) will result in a complete overhaul of the project. Will be something like Irony 2.0. It is mostly research/prototyping now, but looks really promising. I gave up on fixing little things and making marginal improvement of current version, to pursue this new vision. Not sure when you guys will see this code, hopefully this year, but for now - the work continues, a couple of hours a day, day after day, week after week. \r<br />\nBut.. even if it never happens - what's the difference concerning current version? it's good enough for many things, and in many areas way better tool than alternative technologies. So, why not continue using it?\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-05-01T11:25:44.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1240335",
+    "ThreadId": "543984",
+    "Html": "Hi Roman!\r<br />\n<br />\nThanks for the update.\r<br />\n<br />\nI am planning to implement filtering in a REST api, and base the filtering syntax on the MongoDb query syntax (<a href=\"http://docs.mongodb.org/manual/reference/operator/query/\" rel=\"nofollow\">http://docs.mongodb.org/manual/reference/operator/query/</a>).\r<br />\n<br />\nParsing that querystring seemed like a sensible thing to do using Irony. Irony is out in Beta at the moment, but it sounds like you would recommend it for production environments.<br />\n",
+    "PostedDate": "2014-05-01T11:47:06.11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

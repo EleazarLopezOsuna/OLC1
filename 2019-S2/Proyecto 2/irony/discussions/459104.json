@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1099095",
+    "ThreadId": "459104",
+    "Html": "My grammar is generated programmatically. I'd like to analyze the generated grammar. Is there some existing way to generate BNF from the Grammar class? Any code to recurse through the grammar itself?<br />\n",
+    "PostedDate": "2013-09-25T09:07:46.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1099328",
+    "ThreadId": "459104",
+    "Html": "Well, you can either work with original grammar.Root nonterminal - this is the root of the tree, and iterate through Rule property of all nonterms\r<br />\nOr you can construct the ParserData (when you create parser) and use the GrammarData instance (it is 'processed' data) to iterate thru, just like Parser builder does. <br />\n",
+    "PostedDate": "2013-09-25T12:38:02.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1100381",
+    "ThreadId": "459104",
+    "Html": "you can use the static methods of ParserDataPrinter class to print/save to file the terminal /non terminal :<br />\nThe methods are:<br />\n<ul>\n<li>PrintTerminals  \n</li>\n<li>PrintNonTerminals  \n</li>\n<li>PrintStateList  \n</li>\n</ul>\n",
+    "PostedDate": "2013-09-28T04:44:08.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

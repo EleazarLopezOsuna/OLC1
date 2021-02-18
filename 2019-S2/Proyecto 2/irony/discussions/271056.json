@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "665929",
+    "ThreadId": "271056",
+    "Html": "\r\n<p>Hello, just discovered this project and I am curious to know if there exists a grammar for T-SQL?</p>\r\n<p>Thanks in advanced,</p>\r\n<p>Matt</p>\r\n",
+    "PostedDate": "2011-08-31T12:10:57.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "665963",
+    "ThreadId": "271056",
+    "Html": "<p>Perhaps if you someone could show me how to add some functions to the existing SQL grammar? &nbsp;I would like to add LEFT, RIGHT, ROUND, etc. &nbsp;If someone could just show me a sample that did one of these, I would be very grateful.</p>\r\n<p>Matt</p>",
+    "PostedDate": "2011-08-31T13:12:57.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "665975",
+    "ThreadId": "271056",
+    "Html": "<p>OKay,</p>\r\n<p>So I added this to the columnSource.Rule and created a new set of rules for string functions in T-SQL:</p>\r\n<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;columnSource.Rule&nbsp;=&nbsp;aggregate&nbsp;|&nbsp;stringFunction&nbsp;|&nbsp;Id;</pre>\r\n<pre>      ...<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stringFunction.Rule&nbsp;=&nbsp;stringFunctionName&nbsp;+&nbsp;<span>\"(\"</span>&nbsp;+&nbsp;stringFunctionArg&nbsp;+&nbsp;<span>\")\"</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stringFunctionArg.Rule&nbsp;=&nbsp;term&nbsp;+&nbsp;<span>\",\"</span>&nbsp;+&nbsp;number;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stringFunctionName.Rule&nbsp;=&nbsp;COUNT&nbsp;|&nbsp;<span>\"Difference\"</span>&nbsp;|&nbsp;<span>\"Left\"</span>&nbsp;|&nbsp;<span>\"Right\"</span>;<br /></pre>\r\n<p>When I run the Irony Grammar Explorer, I can Parse my sample query but I notice that I am getting a Grammar Error of level \"Conflict\":</p>\r\n<p>\"Reduce-reduce conflict. &nbsp;State S50, lookaheads: (. Selected reduce on first production in conflict set.\"</p>\r\n<p>I am not sure what I need to do to fix this? &nbsp;Any advice?</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2011-08-31T13:40:44.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "666087",
+    "ThreadId": "271056",
+    "Html": "<p>the conflict is obviously from the fact that aggregate and stringfunction definitions are identical. You should join these declarations; for ex, add your function names to aggregate names. For clarity, you can rename aggregate element into funOrAggregate.</p>",
+    "PostedDate": "2011-08-31T20:18:38.183-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "666218",
+    "ThreadId": "271056",
+    "Html": "<p>Thanks for you response! &nbsp;I am not quite sure how you know that they are identical? &nbsp;The rules are different. &nbsp;I will need several versions of this since I want to support functions that have a different number of parameters or ones that are optional. &nbsp;Could you explain how you were able to see that they were identical? &nbsp;I would also like to know the best way to define functions that have different number of parameters that may or may not be optional.</p>\r\n<p>Thanks again for your response!</p>",
+    "PostedDate": "2011-09-01T05:13:09.413-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "666369",
+    "ThreadId": "271056",
+    "Html": "<p>Look at mini-Python grammar, function call element</p>",
+    "PostedDate": "2011-09-01T10:17:44.677-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "666409",
+    "ThreadId": "271056",
+    "Html": "<p>Thank you very much for pointing me in the right direction. &nbsp;That's what I was looking for.</p>",
+    "PostedDate": "2011-09-01T11:15:49.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

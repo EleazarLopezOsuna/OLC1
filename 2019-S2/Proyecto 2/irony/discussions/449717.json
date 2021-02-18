@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "1067157",
+    "ThreadId": "449717",
+    "Html": "Hi,\r<br />\n<br />\nI'm having trouble with operator precedence. Observe the following grammar: <br />\n<pre><code>            // 1. Terminals\n            var number = TerminalFactory.CreateCSharpNumber(&quot;number&quot;);\n            number.AstConfig.NodeType = typeof(NumberNode);\n\n            // 2. Non-terminals\n            var expr = new NonTerminal(&quot;Expression&quot;, typeof(ExpressionNode));\n            var binOp = new NonTerminal(&quot;BinOp&quot;, typeof(BinOpNode));\n            var binExpr = new NonTerminal(&quot;BinExpr&quot;, typeof(BinExprNode));\n\n            // 3. BNF rules\n            expr.Rule = number | binExpr | &quot;(&quot; + expr + &quot;)&quot;;\n            binExpr.Rule = expr + binOp + expr;\n\n            KeyTerm plus = ToTerm(&quot;+&quot;);\n            KeyTerm minus = ToTerm(&quot;-&quot;);\n            KeyTerm mult = ToTerm(&quot;*&quot;);\n            KeyTerm div = ToTerm(&quot;/&quot;);\n            binOp.Rule = plus | minus | mult | div;\n\n            // 5. Operators precedence\n            RegisterOperators(1, plus, minus);\n            RegisterOperators(2, mult, div);\n\n            // 6. Miscellaneous: punctuation, braces, transient nodes\n            MarkPunctuation(&quot;(&quot;, &quot;)&quot;, &quot;:&quot;);\n            RegisterBracePair(&quot;(&quot;, &quot;)&quot;);\n\n            this.Root = expr;\n            this.LanguageFlags = LanguageFlags.NewLineBeforeEOF | LanguageFlags.CreateAst;\n</code></pre>\n\nIf I use this grammar to parse the expression: \r<br />\n<br />\n3 * 4 + 5\r<br />\n<br />\nI'd assume that I get parse tree with the binary expression with + as the root of the tree, because * has higher precedence than +. However, that is not the case. I actually get a parse tree with the * as the root expression. \r<br />\n<br />\nHave I misunderstood how precedence work in Irony, or is something wrong? \r<br />\n<br />\nBest regards, \r<br />\nPer Rasmussen <br />\n",
+    "PostedDate": "2013-07-11T10:57:13.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1067360",
+    "ThreadId": "449717",
+    "Html": "ha... really??... yep... a bug.. <br />\nto make it work, just add this:<br />\n<pre><code>  this.MarkTransient(binOp, expr);\n</code></pre>\n\nwithout it, when operators are hidden under extra binOp node, parser fails to find precedence values.. but with this line, parse tree looks better anyway with transients removed<br />\nwil fix it - thanks and sorry for trouble<br />\nRoman<br />\n",
+    "PostedDate": "2013-07-11T22:54:22.177-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1067361",
+    "ThreadId": "449717",
+    "Html": "PS Please create an issue (on Issues page), so I won't forget\r<br />\nthanks<br />\n",
+    "PostedDate": "2013-07-11T22:56:18.177-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1067675",
+    "ThreadId": "449717",
+    "Html": "Hi Roman. Thank you very much. I've created an issue for this bug. Perhaps I could take a crack at fixing it. In that case I have two questions: <br />\n<ol>\n<li>If I write a fix for this, can I simply commit the changes, or how does that work? </li>\n<li>\nCan you provide a hint or two about where in the code I should be looking and what I'm looking for? <br />\n</li>\n</ol>\nPer<br />\n",
+    "PostedDate": "2013-07-12T13:10:17.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1067680",
+    "ThreadId": "449717",
+    "Html": "no problem. don't worry about fixing it, the code is messy there, it used to work but I removed the case that handled it properly in one of the refactorings. I would be simpler for me to fix it myself\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-07-12T13:21:29.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1068670",
+    "ThreadId": "449717",
+    "Html": "Yes, I have noticed that there are parts of the codebase that aren't too pretty (no offense, bro) :)\r<br />\n<br />\nBut perhaps I could contribute in some other way. For example, I've been thinking about making a new way to create an AST. I'm not really a fan of the current solution, but I have a few ideas. \r<br />\n<br />\nPer<br />\n",
+    "PostedDate": "2013-07-15T14:22:08.32-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1069664",
+    "ThreadId": "449717",
+    "Html": "go ahead and work out smth if you know you can do something better. The standard way is to clone the repo, and then submit a pull request. Alternatively, if your code is just a bunch of extra classes in a separate folder, you can just zip and email it to me\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-07-17T11:26:50.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1205498",
+    "ThreadId": "449717",
+    "Html": "I'm having the same trouble. Marking nodes as transient solves it, but I still waiting for fix :)<br />\n",
+    "PostedDate": "2014-02-09T01:39:26.05-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

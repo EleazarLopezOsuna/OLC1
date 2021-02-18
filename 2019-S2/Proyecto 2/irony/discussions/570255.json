@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1314976",
+    "ThreadId": "570255",
+    "Html": "I'm new to Irony.\r<br />\nI'm studing some examples that use Irony.Interpreter.ScriptInterpreter but this class is not present in the last release.\r<br />\nWhat can I use to execute a script?\r<br />\n<br />\nThanks\r<br />\nvanni<br />\n",
+    "PostedDate": "2014-10-20T07:11:51.343-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1316607",
+    "ThreadId": "570255",
+    "Html": "run Grammar explorer app, try running samples and see code inside grammar explr main window, it shows it all. <br />\n",
+    "PostedDate": "2014-10-26T11:50:31.413-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

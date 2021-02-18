@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "891545",
+    "ThreadId": "389099",
+    "Html": "\r\n<p>I have a question about TermType in the SearchGrammar sample.&nbsp;If this is the wrong forum for this, please forgive.&nbsp;</p>\r\n<p>It seems to me that TermType will always be Inflectional for AND'ed terms, no matter what TermType you hand ConvertQuery()</p>\r\n<p>Example with FTS TermType=Exact:</p>\r\n<p>AND Query:&nbsp;classical music<br>\r\nFts: &nbsp;( FORMSOF (INFLECTIONAL, classical) &nbsp;AND &nbsp;FORMSOF (INFLECTIONAL, music) )</p>\r\n<p>OR Query: classical | music<br>\r\nFts: &nbsp;(classical OR music)</p>\r\n<p>In line 121 of SearchGrammar.cs, the TermType is set explicitly to Inflectional&nbsp;for AND but not for negation or OR.&nbsp;</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>              <span style=\"color:blue\">switch</span>(op) {\r\n                <span style=\"color:blue\">case</span> <span style=\"color:#a31515\">&quot;&quot;</span>:  <span style=\"color:blue\">case</span> <span style=\"color:#a31515\">&quot;&amp;&quot;</span>:  <span style=\"color:blue\">case</span> <span style=\"color:#a31515\">&quot;and&quot;</span>:\r\n                  sqlOp = <span style=\"color:#a31515\">&quot; AND &quot;</span>;\r\n                  type = TermType.Inflectional;\r\n                  <span style=\"color:blue\">break</span>;\r\n                <span style=\"color:blue\">case</span> <span style=\"color:#a31515\">&quot;-&quot;</span>:\r\n                  sqlOp = <span style=\"color:#a31515\">&quot; AND NOT &quot;</span>;\r\n                  <span style=\"color:blue\">break</span>;\r\n                <span style=\"color:blue\">case</span> <span style=\"color:#a31515\">&quot;|&quot;</span>:   <span style=\"color:blue\">case</span> <span style=\"color:#a31515\">&quot;or&quot;</span>:\r\n                  sqlOp = <span style=\"color:#a31515\">&quot; OR &quot;</span>;\r\n                  <span style=\"color:blue\">break</span>;\r\n              }<span style=\"color:green\">//switch</span>\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>Is there a reason for this, am I missing something?</p>\r\n<p>Really, really nice work, by the way.&nbsp;</p>\r\n",
+    "PostedDate": "2012-07-26T02:08:19.623-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "891842",
+    "ThreadId": "389099",
+    "Html": "<p>Here is a fragment from original Michal's code:</p>\r\n<p>&nbsp;</p>\r\n<pre class=\"code\"><pre class=\"code\">case \"OrExpression\":\r\n\t\t\t\tresult = \"(\" + ConvertQuery(node.ChildNodes[0], type) + \" OR \" +\r\n\t\t\t\tConvertQuery(node.ChildNodes[2]) + \")\";\r\n\t\t\t\tbreak;</pre>\r\ncase \"AndExpression\": \t\t\t\tAstNode tmp2 = node.ChildNodes[1]; \t\t\t\tstring opName = tmp2.Term.Name; \t\t\t\tstring andop = \"\";  \t\t\t\tif (opName == \"-\") \t\t\t\t{ \t\t\t\t\tandop += \" AND NOT \"; \t\t\t\t} \t\t\t\telse \t\t\t\t{ \t\t\t\t\tandop = \" AND \"; \t\t\t\t\ttype = TermType.Inflectional; \t\t\t\t} \t\t\t\tresult = \"(\" + ConvertQuery(node.ChildNodes[0], type) + andop + \t\t\t\tConvertQuery(node.ChildNodes[2]) + \")\"; \t\t\t\ttype = TermType.Inflectional; \t\t\t\tbreak;</pre>\r\n<p>&nbsp;</p>\r\n<p>I \"blindly\" copied his code with some refactoring, but as you see, the same thing happens for AND expression only, but not for OR. Ask Michael Coles himself on SQL Central forum for the article:</p>\r\n<p><a href=\"http://www.sqlservercentral.com/articles/Full-Text+Search+(2008)/64248/\">http://www.sqlservercentral.com/articles/Full-Text+Search+(2008)/64248/</a></p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-07-26T09:56:11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

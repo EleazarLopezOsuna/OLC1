@@ -1,0 +1,24 @@
+digraph G {
+rankdir = LR;
+node[shape=plaintext];
+vacio[label="", pos="0,0!"];
+terminal_letras[shape=record, label="letras", pos="1,0!"];
+terminal_numeros[shape=record, label="numeros", pos="2,0!"];
+terminal__[shape=record, label="_", pos="3,0!"];
+transicion_1_2[label="2", pos="1,-1!"];
+transicion_1_5[label="5", pos="2,-1!"];
+transicion_1_4[label="4", pos="3,-1!"];
+estado_1[shape = circle, color=green, style= filled, label="1", pos="0,-1!"];
+transicion_2_2[label="2", pos="1,-2!"];
+transicion_2_3[label="3", pos="2,-2!"];
+transicion_2_4[label="4", pos="3,-2!"];
+estado_2[color=green, style= filled, label="2", pos="0,-2!"];
+transicion_3_2[label="2", pos="1,-3!"];
+transicion_3_3[label="3", pos="2,-3!"];
+transicion_3_4[label="4", pos="3,-3!"];
+estado_3[color=green, style= filled, label="3", pos="0,-3!"];
+estado_4[color=green, style= filled, label="4", pos="0,-4!"];
+transicion_5_5[label="5", pos="2,-5!"];
+transicion_5_4[label="4", pos="3,-5!"];
+estado_5[color=green, style= filled, label="5", pos="0,-5!"];
+}

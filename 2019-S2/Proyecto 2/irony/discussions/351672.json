@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "821565",
+    "ThreadId": "351672",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Given the following grammar, my intent is to match an unlimited&nbsp;occurrence&nbsp;of &quot;a&quot;, unless the pattern is &quot;aab&quot; then reduce that to the &quot;aab&quot; rule.&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> document = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;document&quot;</span>);\r\n<span style=\"color:blue\">var</span> inline = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;inline&quot;</span>);\r\n<span style=\"color:blue\">var</span> a = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;a&quot;</span>);\r\n<span style=\"color:blue\">var</span> aab = <span style=\"color:blue\">new</span> NonTerminal(<span style=\"color:#a31515\">&quot;aab&quot;</span>);\r\n\r\ndocument.Rule =\r\n  MakeStarRule(document, inline);\r\n\r\ninline.Rule =\r\n  a\r\n  | aab;\r\n\r\na.Rule =\r\n  <span style=\"color:#a31515\">&quot;a&quot;</span>;\r\n\r\naab.Rule =\r\n  ToTerm(<span style=\"color:#a31515\">&quot;a&quot;</span>) &#43; <span style=\"color:#a31515\">&quot;a&quot;</span> &#43; <span style=\"color:#a31515\">&quot;b&quot;</span>;\r\n\r\nRoot = document;\r\n</pre>\r\n</div>\r\n<p>When I attempt to parse &quot;aa&quot; I get an &quot;Invalid character: 'a'&quot; error. &nbsp;What do I need to rearrange to get this to work accordingly?</p>\r\n<p>Thanks,</p>\r\n<p>Cain</p>\r\n",
+    "PostedDate": "2012-04-09T07:30:29.74-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "822042",
+    "ThreadId": "351672",
+    "Html": "<p>read this thread:</p>\r\n<p><a href=\"http://irony.codeplex.com/discussions/350596\">http://irony.codeplex.com/discussions/350596</a></p>\r\n<p>you need to use this flag if your terms follow each other without spacing or delimiters</p>",
+    "PostedDate": "2012-04-10T09:45:33.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "822216",
+    "ThreadId": "351672",
+    "Html": "<p>This matches \"a\" and \"aab\" but doesnt match \"aa\" as two inline a rules?</p>\n<p>Effectively what I am trying to do is match a &lt;space&gt; character and unlimited number of times, unless the rule is &lt;space&gt; &lt;space&gt; &lt;NewLine&gt;</p>\n<p>Any thoughts on how I can do this?</p>\n<p>Thanks,</p>\n<p>Cain</p>",
+    "PostedDate": "2012-04-10T20:49:29.903-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "822239",
+    "ThreadId": "351672",
+    "Html": "<p>does it show any conflicts in grammar errors page? In general, this is not a typical use for LALR parser, to parse elements without delimitors and spacing. These kinds of things are probably better handled by regex's. So I wouldn't be surprised if there's some unpredictable behavior. Is it a real life case of you're just playing with Irony? Did you look at using Regex instead?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-04-10T22:10:03.833-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "822256",
+    "ThreadId": "351672",
+    "Html": "<p>Hi Roman,</p>\r\n<p>Thanks for your replies.</p>\r\n<p>I am actually trying to parse Markdown, in particular the line break which occurs when you end a line with two blank spaces.&nbsp;I can create the line break as a Terminal rather than a NonTerminal and it works fine, so I will stick with that. I tried playnig around with adding a CustomAction to assist in the Shifting/Reducing, but the Terminal option is by far the easiest.</p>\r\n<p>Thanks,</p>\r\n<p>Cain&nbsp;</p>",
+    "PostedDate": "2012-04-11T00:08:17.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

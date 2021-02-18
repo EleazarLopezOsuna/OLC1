@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1429395",
+    "ThreadId": "639604",
+    "Html": "First, great job on this tool: it's excellent.\r<br />\n<br />\nI'm using it to implement a custom language compiler for my final year BSC project. I've been making good progress adapting the minipython sample, but am stuck on one thing: I would like to have multiline lists without the line continuation symbol or having the list in braces. An example of a code snippet that I can't get to parse:<br />\n<pre><code>class foo of T, \n    F</code></pre>\n\nThis gives the syntax error expected: identifier.\r<br />\n<br />\nThe following two pieces of code parse correctly:<br />\n<pre><code>class foo of T, \\\n    F\n\nclass foo of (T, \n    F)</code></pre>\n\nI feel like I'm missing something obvious. Is there a way to tell the parser that if a line ends in a comma, continue onto the next line regardless of whether we're currently inside parantheses?<br />\n",
+    "PostedDate": "2015-06-06T13:48:49.11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1429486",
+    "ThreadId": "639604",
+    "Html": "you might try to hook to ValidateToken event of NewLine terminal - you can analyse the parsing state in code (last processed token, and stack of braces) and let NewLine pass to Parser automaton, or reject it (skip it) - you may need to move source position beyond the new line chars. <br />\n",
+    "PostedDate": "2015-06-07T22:37:57.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1429515",
+    "ThreadId": "639604",
+    "Html": "Thanks for the reply!\r<br />\n<br />\nIt doesn't seem that the ValidateTokent even for NewLine (or Eos, which I also tried) triggers. I was able to get it to trigger with other tokens. I imagine that this is an issue with whitespaced parsing?\r<br />\n<br />\nRegardless, it's alright: I reworked the syntax so that the scenario I described doesn't happen, and I actually prefer the change.<br />\n",
+    "PostedDate": "2015-06-08T03:04:21.643-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1429634",
+    "ThreadId": "639604",
+    "Html": "Hello again, just figured I'd mention, in case any one else encounters this scenario:\r<br />\n<br />\nThe problem is fixed by registering the comma as an operator, and having OutlineOptions.CheckOperator set in the CodeOutlineFilter (see the minipython example to see where this is). Comma separated lists still appear to work, and at the same time, when the parser encounters a comma at the end of a line, it automatically continues on the next line. Kind of a cheap hack, but it works so I'm happy :)<br />\n",
+    "PostedDate": "2015-06-08T20:05:08.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

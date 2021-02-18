@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1111195",
+    "ThreadId": "463300",
+    "Html": "Hello:\r<br />\nSo what I'm trying to do is read parasolids export (x_t) files, which contain 3d cad data in text format. Mostly keyword-value pairs, and comments. As you read the file, the data has to be translated into the internal cad structure. Would irony be a good fit for this application, or is it overkill?<br />\n",
+    "PostedDate": "2013-10-23T11:30:43.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111216",
+    "ThreadId": "463300",
+    "Html": "well, looking at one example I could find -\r<br />\n<a href=\"http://www.solidsmack.com/wp-content/uploads/2009/06/bracket-example.x_t\" rel=\"nofollow\">http://www.solidsmack.com/wp-content/uploads/2009/06/bracket-example.x_t</a><br />\n<ul>\n<li>it appears the file has some complex but regular structure that is fit for describing by formal BNF grammar; so it's worth trying with Irony. Give it a shot.\r<br />\nRoman</li>\n</ul>\n",
+    "PostedDate": "2013-10-23T12:10:47.43-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111242",
+    "ThreadId": "463300",
+    "Html": "great, thanks! i'll give it a shot.<br />\n",
+    "PostedDate": "2013-10-23T13:06:18.093-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

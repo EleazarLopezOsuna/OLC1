@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "no easy fix for now - for supporting multiple languages at the same time (in one app). Will look at this in new version",
+    "ClosedDate": "2013-02-25T21:15:02.687-08:00",
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "I was willing to translate errors message when I noticed a major bug (at least for us) !\r\n\r\nChanging Resources.Culture in constructor of ParsingContext is way too early (therefore almost completely useless) since several grammar using different culture can be instantiated before being actually used for parsing (latest instance always win with current implementation). \r\n\r\nREM: This has nothing to do with multi-threading mentioned in the code comments, as it is also fully affect single threaded application.\r\n\r\nResources.Culture should be changed just before accessing the resource (for eg: in OnValidateToken) or even better to also evolve toward solving multi-threading issues by refining custom methods (to preserve strong typing) such as:\r\n\r\n    /// <summary>\r\n    /// Convert a lambda expression as property name\r\n    /// </summary>\r\n    /// <typeparam name=\"T\"></typeparam>\r\n    /// <param name=\"expression\"></param>\r\n    /// <returns></returns>\r\n    private static string ConvertAsPropertyName<T>(Expression<Func<T>> expression)\r\n    {\r\n       if (expression == null)\r\n       {\r\n          throw new ArgumentNullException(\"expression\");\r\n       }\r\n\r\n       var body = expression.Body as MemberExpression;\r\n       if (body == null)\r\n       {\r\n          throw new ArgumentException(\"Lambda expression must return a property\");\r\n       }\r\n\r\n       return body.Member.Name;\r\n    }\r\n\r\n    private string LookupResource(Expression<Func<string>> resourceNameExpr)\r\n    {\r\n       string resourceName = ConvertAsPropertyName(resourceNameExpr);\r\n       return Resources.ResourceManager.GetString(resourceName, this.Culture);\r\n    }\r\n\r\n    public Token CreateErrorToken(Expression<Func<string>> resourceNameExpr, params object[] args) {\r\n       string propertyName = LookupResource(resourceNameExpr);\r\n\r\n       string message = \"\";\r\n\r\n      if (args != null && args.Length > 0)\r\n        message = string.Format(message, args);\r\n      return Source.CreateToken(Language.Grammar.SyntaxError, message);\r\n    }\r\n\r\nCall later becomes for example:\r\n  context.CurrentToken = context.CreateErrorToken(() => Resources.ErrNoLetterAfterNum);\r\n\r\nFor now I'm not implementing the suggested fix (too much work that is outside my project) and I will try to quickly dirty fix it otherwise to move on :/",
+    "LastUpdatedDate": "2013-02-25T21:15:02.687-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2012-04-05T05:26:46.233-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ParsingContext.Culture should be used when retrieving error message",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9871
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "CreateErrorToken should obviously be:\n\n    public Token CreateErrorToken(Expression<Func<string>> resourceNameExpr, params object[] args) {\n      string message = LookupResource(resourceNameExpr);\n      if (args != null && args.Length > 0)\n        message = string.Format(message, args);\n      return Source.CreateToken(Language.Grammar.SyntaxError, message);\n    }\n",
+      "PostedDate": "2012-04-05T05:29:07.57-07:00",
+      "Id": 61596
+    }
+  ]
+}

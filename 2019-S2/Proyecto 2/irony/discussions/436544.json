@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1014915",
+    "ThreadId": "436544",
+    "Html": "I've been trying to write a simple XML grammar using Irony. The grammar is defined as follows:<br />\n<pre><code>this.Root = tagList;\ntagList.Rule = this.MakeStarRule(tagList, tag);\ntag.Rule = conditionBlock;\n\nifTagOpen.Rule = &lt; + &quot;if&quot; + &quot;condition&quot; + equals + &quot;'a'&quot; + &gt;;\nifTagClose.Rule = &lt; + slash + &quot;if&quot; + &gt;;\nelseIfTag.Rule = &lt; + &quot;else&quot; + &quot;if&quot; + equals + &quot;'a'&quot; + &gt;;\nelseTagClose.Rule = &lt; + slash + &quot;else&quot; + &gt;;\n\nconditionBlock.Rule = ifTagOpen + ifTagCloseElseIf | ifTagOpen + tag + ifTagCloseElseIf;\nelseIfTagBlock.Rule = elseIfTag + elseTagClose;\nifTagCloseElseIf.Rule = ifTagClose | ifTagClose + elseIfTagBlock | Empty;</code></pre>\n\nNow, I want Irony to parse code like this (which works):<br />\n<pre><code>&lt;if condition='a'&gt;&lt;if condition='a'&gt;&lt;/if&gt;&lt;else if='a'&gt;&lt;/else&gt;&lt;/if&gt;</code></pre>\n\nBut, I also want something like that to be parsable:<br />\n<pre><code>&lt;if condition='a'&gt;&lt;if condition='a'&gt;&lt;/if&gt;&lt;/if&gt;</code></pre>\n\nand this is where I got stuck as this won't parse because of the last rule:<br />\n<pre><code>ifTagCloseElseIf.Rule = ifTagClose | ifTagClose + __elseIfTagBlock__ | Empty;</code></pre>\n\nI suspect the reason is that Irony looks ahead only one token at a time and when it encounters<br />\n<pre><code>...&lt;/if&gt;__&lt;/if&gt;__...</code></pre>\n\nit applies the rule ifTagClose + <strong>elseIfTagBlock</strong> instead of the plain ifTagClose because of the following &lt; token and as a result it expects &lt;/if&gt;&lt;else if='a'&gt;.<br />\n<br />\nMy question is, is there any workaround to this? Or should I use something else instead of Irony?<br />\n",
+    "PostedDate": "2013-03-13T16:50:36.6-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1014962",
+    "ThreadId": "436544",
+    "Html": "Quite strange way to express this. I'm pretty sure you have grammar conflicts (are there in grammar explorer?!), and one for sure is 'dangling-else' type (google it); Look at how if-then-else is expressed in one of sample languages (like c# or miniPython), and do similar thing\r<br />\nRoman <br />\n",
+    "PostedDate": "2013-03-13T19:20:59.14-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1015269",
+    "ThreadId": "436544",
+    "Html": "Thank you for you answer. There are no grammar conflicts. Are you sure that it's a dangling-else problem? Because if it were, there would be conflicts if my understanding of dangling-else problem is correct. Also, if I change the fourth to seventh rule as follows:<br />\n<pre><code>ifTagOpen.Rule = &lt;  + &quot;a&quot; + &quot;condition&quot; + equals + &quot;'i'&quot; + &gt;;\nifTagClose.Rule = &lt;  + slash + &quot;a&quot; + &gt;;\nelseIfTag.Rule = &lt;  + &quot;b&quot; + &quot;a&quot; + equals + &quot;'i'&quot; + &gt;;\nelseTagClose.Rule = &lt;  + slash + &quot;a&quot; + &gt;;</code></pre>\n\nit still doesn't perform as expected even though there are no &quot;if&quot; and/or &quot;else&quot; keywords. I think the problem lies in the &quot;&lt;&quot; sign at the start of every terminal. To my mind, this is similar to the problem with generic types (List&lt;string&gt;) as defined in c# grammar shipped with Irony. Am I at least close?<br />\n",
+    "PostedDate": "2013-03-14T06:59:52.017-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1015415",
+    "ThreadId": "436544",
+    "Html": "I think I found the reason why it doesn't work. There  indeed is a conflict, but Irony Grammar Explorer doesn't show it. I tried to define the grammar in GOLD parser, which found the conflict and even solved it correctly. So if I'm right, I need to replace the last rule with this one:<br />\n<pre><code>ifTagCloseElseIf.Rule = ifTagClose | ifTagClose + this.PreferShiftHere() + elseIfTagBlock | Empty;</code></pre>\n\nThat, however, does not solve the problem. Am I doing something wrong, or is this maybe a bug in Irony?<br />\n",
+    "PostedDate": "2013-03-14T10:00:33.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1015670",
+    "ThreadId": "436544",
+    "Html": "At first sight, problem lays down in literals concatenation. For example, &quot;a&quot; + &quot;condition&quot; will be &quot;acondition&quot; and &quot;b&quot;+&quot;a&quot; will be &quot;ba&quot;. I don't think that it's what you wanted. Try using ToTerm(&quot;b&quot;) + ToTerm(&quot;a&quot;) instead.<br />\n",
+    "PostedDate": "2013-03-14T19:58:32.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1018663",
+    "ThreadId": "436544",
+    "Html": "from your sample above, you want to parse smth like this:\r<br />\n&lt;if condition='a'&gt;&lt;if condition='a'&gt;&lt;/if&gt;&lt;else if='a'&gt;&lt;/else&gt;&lt;/if&gt;\r<br />\n<br />\nwell, this is really messy arrangement, IMHO. In one case 'if' is element name, in other - it is attribute name. This is the root of your problems that results in messy rules that you can't figure out (and I couldn't, honestly)\r<br />\nI can suggest a grammar that parses 'If' elements that have nested if's and optional 'else' blocks:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n      <span style=\"color:Blue;\">var</span> stmtList = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;stmtlist&quot;</span>);\n      <span style=\"color:Blue;\">var</span> stmt = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;stmt&quot;</span>);\n      <span style=\"color:Blue;\">var</span> stmtOpt = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;stmtOpt&quot;</span>);\n      <span style=\"color:Blue;\">var</span> ifStmt = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;ifStmt&quot;</span>);\n      <span style=\"color:Blue;\">var</span> ifHead = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;ifHead&quot;</span>);\n      <span style=\"color:Blue;\">var</span> elseBlockOpt = <span style=\"color:Blue;\">new</span> NonTerminal(<span style=\"color:#A31515;\">&quot;elseBlock&quot;</span>);\n\n      <span style=\"color:Blue;\">var</span> openIf = ToTerm(<span style=\"color:#A31515;\">&quot;&lt;if&quot;</span>);\n      <span style=\"color:Blue;\">var</span> endIf = ToTerm(<span style=\"color:#A31515;\">&quot;&lt;/if&gt;&quot;</span>);\n      <span style=\"color:Blue;\">var</span> elseTag = ToTerm(<span style=\"color:#A31515;\">&quot;&lt;else/&gt;&quot;</span>);\n      <span style=\"color:Blue;\">var</span> beep = ToTerm(<span style=\"color:#A31515;\">&quot;&lt;beep/&gt;&quot;</span>);\n      <span style=\"color:Blue;\">var</span> condExpr = ToTerm(<span style=\"color:#A31515;\">&quot;&#39;a&#39;&quot;</span>);\n\n      <span style=\"color:Blue;\">this</span>.Root = stmtList;\n      stmtList.Rule = <span style=\"color:Blue;\">this</span>.MakeStarRule(stmtList, stmt);\n      \n      stmt.Rule = ifStmt | beep;\n      stmtOpt.Rule = stmt | Empty; \n      ifStmt.Rule = ifHead + stmtOpt + elseBlockOpt + endIf;\n      ifHead.Rule = openIf + <span style=\"color:#A31515;\">&quot;condition&quot;</span> + <span style=\"color:#A31515;\">&quot;=&quot;</span> + condExpr + <span style=\"color:#A31515;\">&quot;&gt;&quot;</span>;\n      elseBlockOpt.Rule = Empty | elseTag + stmtOpt;\n\r\n</pre></div>it parses successfully the following input:\r<br />\n<br />\n&lt;if condition='a'&gt;\r<br />\n  &lt;if condition='a'&gt;&lt;/if&gt;\r<br />\n&lt;else/&gt; \r<br />\n  &lt;if condition='a'&gt;&lt;beep/&gt;&lt;/if&gt;\r<br />\n&lt;/if&gt;<br />\n",
+    "PostedDate": "2013-03-20T21:20:48.46-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

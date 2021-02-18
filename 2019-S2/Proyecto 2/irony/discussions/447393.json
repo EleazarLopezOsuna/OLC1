@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1058106",
+    "ThreadId": "447393",
+    "Html": "CompileDefaultNodeCreator can be simplified from using an ILGenerator to unsing LINQ expressions<br />\n<pre><code>using System.Linq.Expressions;\nDefaultAstNodeCreator CompileDefaultNodeCreator(Type nodeType)\n{\n    var ctor = Expression.New(nodeType);\n    var lamda = Expression.Lambda&lt;DefaultAstNodeCreator&gt;(ctor);\n    return lamda.Compile();\n}</code></pre>\n\nI tested this within GrammerExplorer with MiniPython and all appeared to be as it should be.<br />\n",
+    "PostedDate": "2013-06-18T03:01:21.143-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1059447",
+    "ThreadId": "447393",
+    "Html": "Not sure it is simplification, the current version is simple enough already. You just invoke code in expression engine - which in the end does the same, but the expression stuff itself is a bit foreign here<br />\n",
+    "PostedDate": "2013-06-20T19:17:24.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

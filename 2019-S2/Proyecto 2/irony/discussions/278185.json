@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "693278",
+    "ThreadId": "278185",
+    "Html": "\r\n<p>We making a grammar to parse a syntax construct of Russian language.</p>\r\n<p>We want our grammar to accept an arbitrary string at the beginning of the line, then the whitespace, then the rest of the line. How can we achieve that? Neither FreeTextLiteral or StringLiteral doesn't seem to work in our case. Please hlp</p>\r\n",
+    "PostedDate": "2011-11-03T06:10:49.22-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "693411",
+    "ThreadId": "278185",
+    "Html": "<p>FreeTextLiteral should work. You need 2 instances of this terminal, one for the first word with space as a terminator, and another for the rest of the line with \\r\\n as a terminator. You'd need to setup option flags properly on each of them.</p>",
+    "PostedDate": "2011-11-03T09:13:01.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

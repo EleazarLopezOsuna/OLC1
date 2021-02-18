@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "181536",
+    "ThreadId": "53914",
+    "Html": "Hi,<div><br></div><div>in my current project I need to parse a specific file format and I thought give Irony a try. It was quite easy to define the grammar in Irony and to test it via the explorer. The problem is that I need the parser in Silverlight. So I started to copy the Irony code into a SL library. I had to fix some problems where methods are not available or had different signatures but not big issues. The problem is when I instantiate a compiler with a given grammar it takes forever. I could drill down the problem to the PropagateLookaheads() method in the ParserControlDataBuilder class.</div><div>The currentList gets never a zero items and the while loop runs forever. I tried with my own grammar as well as the calcgrammar from the tutorial project.</div><div>Any ideas? Or maybe a irony dll compiled against the SL runtime?</div><div><br></div><div>Cheers</div><div>Jan</div><div><br></div><div><div>private void PropagateLookaheads() {</div><div>      LRItemList currentList = new LRItemList();</div><div>      //first collect all items</div><div>      foreach (ParserState state in Data.States)</div><div>        currentList.AddRange(state.Items);</div><div>      //Main loop - propagate until done</div><div>      while (currentList.Count &gt; 0) {</div><div>        LRItemList newList = new LRItemList();</div><div>        foreach (LRItem item in currentList) {</div><div>          if (item.NewLookaheads.Count == 0) continue;</div><div>          int oldCount = item.Lookaheads.Count;</div><div>          item.Lookaheads.AddRange(item.NewLookaheads);</div><div>          if (item.Lookaheads.Count != oldCount) {</div><div>            foreach (LRItem targetItem in item.PropagateTargets) {</div><div>              targetItem.NewLookaheads.AddRange(item.NewLookaheads);</div><div>              newList.Add(targetItem);</div><div>            }//foreach targetItem</div><div>          }//if</div><div>          item.NewLookaheads.Clear();</div><div>        }//foreach item</div><div>        currentList = newList;</div><div>      }//while         </div><div>    }//method</div></div>",
+    "PostedDate": "2009-04-20T15:44:16.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "181565",
+    "ThreadId": "53914",
+    "Html": "The only guess I can make is that during &quot;refactoring&quot; for SL you changed item.Lookaheads or item.NewLookaheads from Hashset/StringSet to List&lt;&gt;. In this case you for sure will get ever growing lists...<br>\r\n",
+    "PostedDate": "2009-04-20T19:03:24.983-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "181604",
+    "ThreadId": "53914",
+    "Html": "Good guess! I changed at some point a HasshSet&lt;&gt; to a List&lt;&gt; because there is no HashSet in SL. Than I have to implement my own SL HashSet&lt;&gt;.<div>I will check this and give a feedback here.</div><div><br></div><div>Many thanks!!!</div><div>Jan</div>",
+    "PostedDate": "2009-04-20T23:15:42.097-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "181614",
+    "ThreadId": "53914",
+    "Html": "Instead of reimplementing hashset, just use Dictionary&lt;string, int&gt;; you'll be using just Keys set of the dictionary; when adding string &quot;abc&quot; to the dict, add it as value 1 with key &quot;abc&quot;; then all works just as with hashsets<br>\r\n \r\n",
+    "PostedDate": "2009-04-20T23:33:04.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "181788",
+    "ThreadId": "53914",
+    "Html": "you might want to consider a different approach.<br>\r\n<br>\r\nso what happens when the next version of irony comes out... would you merge again all the changes? - sounds like a lot of work IMHO<br>\r\n<br>\r\nInstead i would consider exposing a wcf service that provides the parser on the server side and returns the evaluated input back to silverlight.<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2009-04-21T07:40:38.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "181863",
+    "ThreadId": "53914",
+    "Html": "<div><p><span style=\"font-family:calibri, sans-serif;font-size:11pt;color:rgb(31, 73, 125)\">I already thought about this approach in case I couldn’t fix theproblem. But in my case I just use Irony for parsing a string format fordescribing trees. A kind of overkill but this time I thought I use my knowledgefrom my study and use a grammar to get a clean and robust parser instead ofjuggling with recursive string operations. When you look at the grammar it’squite easy to implement it in Irony but it can be a mess with handcrafted parser.</span></p><p><span style=\"font-family:calibri, sans-serif;font-size:11pt;color:rgb(31, 73, 125)\"> </span></p><p><span style=\"font-family:calibri, sans-serif;font-size:11pt;color:rgb(31, 73, 125)\"> </span></p><p><span style=\"font-family:calibri, sans-serif;font-size:11pt;color:rgb(31, 73, 125)\">   Tree --&gt; Subtree &quot;;&quot;</span></p><p><span style=\"font-family:calibri, sans-serif;font-size:11pt;color:rgb(31, 73, 125)\">   Subtree --&gt; Leaf | Internal</span></p><p><span style=\"font-family:calibri, sans-serif;font-size:11pt;color:rgb(31, 73, 125)\">   Leaf --&gt; Name</span></p><p><span style=\"font-family:calibri, sans-serif;font-size:11pt;color:rgb(31, 73, 125)\">   Internal --&gt; &quot;(&quot; BranchList &quot;)&quot; Name</span></p><p><span style=\"font-family:calibri, sans-serif;font-size:11pt;color:rgb(31, 73, 125)\">   BranchList --&gt; Branch | Branch &quot;,&quot; BranchList</span></p><p><span style=\"font-family:calibri, sans-serif;font-size:11pt;color:rgb(31, 73, 125)\">   Branch --&gt; Subtree Length</span></p><p><span style=\"font-family:calibri, sans-serif;font-size:11pt;color:rgb(31, 73, 125)\">   Name --&gt; empty | string</span></p><p><span style=\"font-family:calibri, sans-serif;font-size:11pt;color:rgb(31, 73, 125)\">   Length --&gt; empty | &quot;:&quot; number</span></p><p><span style=\"font-family:calibri, sans-serif;font-size:11pt;color:rgb(31, 73, 125)\"> </span></p><p><span style=\"font-family:calibri, sans-serif;font-size:11pt;color:rgb(31, 73, 125)\">Btw, how can I define action in order to build object tree whilea string is parsed by Irony. Whenever a Branch is found I get a inner node ofthe tree and leaf of course when Leaf was found.<br></span></p><div style=\"border-right-style:none;border-bottom-style:none;border-left-style:none;border-width:initial;border-color:initial;border-top-style:solid;border-top-color:rgb(204, 204, 204);border-top-width:1pt;padding-top:0cm;padding-right:0cm;padding-bottom:0cm;padding-left:0cm\" id=ThreadNotificationFooter></div></div>",
+    "PostedDate": "2009-04-21T09:46:13.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

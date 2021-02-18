@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1130555",
+    "ThreadId": "471598",
+    "Html": "Hi,\r<br />\n<br />\nwhen I set UseNewLine to false in my grammar it is overridden in the Init Method of the NewLineTerminal. How can I set UseNewLine to false that this will be mentioned?\r<br />\n<br />\nThanks\r<br />\nMichael<br />\n",
+    "PostedDate": "2013-11-30T13:21:44.023-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1131544",
+    "ThreadId": "471598",
+    "Html": "it is not. The comment there in NewLineTerminal.Init method clearly explains that this flag, if set to true, tells scanner to treat new line char in input stream not as whitespace, like space char, but as meaningful character. This flag should be set to false in languages like c# and to true in languages like VB.NET. You are supposed to set this in your grammar. To make your life easier, Irony tries to detect the value automatically. If you used NewLine terminal anywhere in your grammar, it indicates that newLine char is a meaningful symbol, so NewLine's Init sets this flag. Simple automatic logic. Don't see any problem here. \r<br />\nRegards\r<br />\nRoman\r<br />\nPS sorry for later reply<br />\n",
+    "PostedDate": "2013-12-03T23:02:17.807-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1131638",
+    "ThreadId": "471598",
+    "Html": "Ah ok, that make sense.\r<br />\n<br />\nI was wondering that the UseNewLine property was overridden by the NewLineTerminal. Without the NewLineTerminal in the grammar it now works as expected.\r<br />\n<br />\nThanks for your answer\r<br />\n<br />\nMichael<br />\n",
+    "PostedDate": "2013-12-04T03:52:56.443-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

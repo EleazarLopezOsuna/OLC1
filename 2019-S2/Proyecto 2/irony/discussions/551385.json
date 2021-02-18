@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1265173",
+    "ThreadId": "551385",
+    "Html": "Hi guys,\r<br />\n<br />\nI have written a grammar where I have defined the following escape sequence because I use parentheses to group expressions, but want to handle that string values can contain parentheses also:<br />\n<pre><code>value.Escapes.Add(@&quot;))&quot;, &quot;)&quot;);\n</code></pre>\n\nBut when I read the value of the parsed token, it still contains the two parentheses. The parser hasn't replaced the escape sequence. \r<br />\n<br />\nIs it supposed to, or should I do that myself? I was expecting it to.\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2014-07-12T13:40:05.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1265177",
+    "ThreadId": "551385",
+    "Html": "Token has Text and Value properties - Text is 'as is', and Value should be escaped text. Are you checking the Value?<br />\n",
+    "PostedDate": "2014-07-12T14:18:43.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1265267",
+    "ThreadId": "551385",
+    "Html": "I am actually using the ValueString property. I need a string.<br />\n",
+    "PostedDate": "2014-07-13T08:06:23.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1265271",
+    "ThreadId": "551385",
+    "Html": "In the debugger I see that Text, Value and ValueString properties are all the same.\r<br />\n<br />\nThis is how value is defined:<br />\n<pre><code>var value = new FreeTextLiteral(&quot;value&quot;, FreeTextOptions.AllowEof, &quot;$&quot;, &quot;)&quot;);</code></pre>\n\n",
+    "PostedDate": "2014-07-13T08:16:32.057-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1265596",
+    "ThreadId": "551385",
+    "Html": "FreeTextLiteral?! I'm not sure I'm not even sure I thought about this scenario. And using &quot;)&quot; as end char seems strange. I think you should re-evaluate your options and your language constructs. As for finding why it does not work - just step thru the code, see if escaping is even enabled for free text literal. <br />\n",
+    "PostedDate": "2014-07-14T11:05:53.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1265603",
+    "ThreadId": "551385",
+    "Html": "It might very well be that I am doing this wrong.\r<br />\n<br />\nI am implementing a query api, where a single line of text is parsed to apply a filter. \r<br />\n<br />\nThe string could be:<br />\n<pre><code>name$eq:Ron$and:age$gt:25\n</code></pre>\n\nAnd using parentheses is supported as well to force affinity. eg.<br />\n<pre><code>name$eq:Ron$and:(age$gt:25$or:weight$gt:100)\n</code></pre>\n\nI have an identifier and a value separated by an operator, and possibly surrounded by parentheses.<br />\n<pre><code>var identifier = TerminalFactory.CreateCSharpIdentifier(&quot;identifier&quot;);\nvar value = new FreeTextLiteral(&quot;value&quot;, FreeTextOptions.AllowEof, &quot;$&quot;, &quot;)&quot;);\n</code></pre>\n\nThe value can be any type, and contain spaces if need be. This all works, but as explained the escaping of the end parentheses somehow doesn't. It will throw an exception if mathing start and end parentheses don't exist, and haven't been properly escaped. But it won't remove escaping from the string.\r<br />\n<br />\nAs I understood it, I would have to tell the freetext literal that when it encountered either a $ or a ) then a new token started.<br />\n",
+    "PostedDate": "2014-07-14T11:18:00.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1266129",
+    "ThreadId": "551385",
+    "Html": "you made up quite unusual rules. So you want literals to be of either type, ints or strings, but strings without any quotes. And you want to catch the end of literal by certain 'special' chars. In this case, I would suggest to drop the escaping of 'double-parenth'; for one thing, you might have double parenth symbol as parenth, closing two nested parenth expressions. Secondly, think about readability of the expression by a human (it is humans who write these, right?). This escaping rule might be really confusing and hard to analyse the expression structure - even if your parser is capable of doing this using some formal rules. <br />\n",
+    "PostedDate": "2014-07-15T23:42:18.41-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

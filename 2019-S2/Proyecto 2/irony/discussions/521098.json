@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1191633",
+    "ThreadId": "521098",
+    "Html": "I would like to create an <em>ExcelIdentifier</em> that would match Excel-like cell references, that is,<br />\n<ul>\n<li>(correct) A1</li>\n<li>(correct) B12</li>\n<li>(correct) A3B7</li>\n<li>(incorrect) A0</li>\n<li>(incorrect) B1A1</li>\n<li>\n(incorrect) A7B2<br />\n</li>\n</ul>\nWho would you proceed to do this with Irony? I have looked at the implementation of the usual C# or Python identifiers, but it does not really feel relevant.<br />\n",
+    "PostedDate": "2014-01-22T11:58:15.753-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1191655",
+    "ThreadId": "521098",
+    "Html": "define identifier as 'usual' and then hook to identifier.ValidateToken event and write code that validates the identifier according to your rules<br />\n",
+    "PostedDate": "2014-01-22T12:04:56.153-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1192851",
+    "ThreadId": "521098",
+    "Html": "Thanks a lot! It works.<br />\n",
+    "PostedDate": "2014-01-22T23:06:13.083-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

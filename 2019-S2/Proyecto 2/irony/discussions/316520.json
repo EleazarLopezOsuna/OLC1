@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "767655",
+    "ThreadId": "316520",
+    "Html": "\r\n<p>Hi Roman,</p>\r\n<p>I would like to bind a custom type property (or field), exposed on an instanciated type injected in the LanguageRuntime at construction time, and being able to index access it directly in the expression script.</p>\r\n<p>For example :</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>MyCollection[1].TotalAmount &gt;= 1200</pre>\r\n</div>\r\n<p></p>\r\n<p>Where MyCollection is a List&lt;T&gt; property of my custom type.</p>\r\n<p>I found the method binding pattern (BuiltIns.AddMethod). However, if i use this approach, i would have to use a method call syntax in the script (with parenthesis).&nbsp;</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>MyCollection(1).TotalAmount &gt;= 1200\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>or</p>\r\n<pre>x = MyCollection()\r\nx[1].TotalAmount &gt;= 1200</pre>\r\n<p>Both previous syntax are a bit overwhelming. Direct access to the collection type in the script would be super cool.</p>\r\n<p>Do you have any suggestion ?</p>\r\n<p>&nbsp;</p>\r\n<p></p>\r\n<pre><br></pre>\r\n<p></p>\r\n",
+    "PostedDate": "2012-02-15T07:15:16.33-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "767729",
+    "ThreadId": "316520",
+    "Html": "<p>there's Globals collection for all global variables - add the object there</p>",
+    "PostedDate": "2012-02-15T07:59:11.32-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "767761",
+    "ThreadId": "316520",
+    "Html": "<p>Awesome, works like a charm.</p>\r\n<p>Thanks for your quick answer!</p>",
+    "PostedDate": "2012-02-15T08:17:14.85-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

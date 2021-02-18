@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1416573",
+    "ThreadId": "632088",
+    "Html": "I need to extract the text written inside comments. Is there any specific method to do it?\r<br />\n<br />\nI am able to get the comments using <br />\n<pre><code>var comments = compiler.Context.Language.Grammar.NonGrammarTerminals;</code></pre>\n\nThe next step is to get the text inside the comments. Can anyone please help me regarding this?\r<br />\n<br />\nThanks,\r<br />\nSreeja.<br />\n",
+    "PostedDate": "2015-04-21T23:58:20.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1416875",
+    "ThreadId": "632088",
+    "Html": "The result of parsing is ParseTree consisting of ParseTreeNode objects. Each node has Comments property - list of all comments preceding this node.<br />\n",
+    "PostedDate": "2015-04-22T09:12:57.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2015-04-22T21:50:31.45-07:00"
+  }
+]

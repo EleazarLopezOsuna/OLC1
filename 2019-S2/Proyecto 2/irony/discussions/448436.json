@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1062087",
+    "ThreadId": "448436",
+    "Html": "Is there a reason why the likes of Grammar.Empty and other such generic terminals are instance fields, and not static (ie, class) fields? I can't think of an immediate reason why a grammar would need to personalize Empty, SyntaxError, etc.\r<br />\n<br />\nAlso, the Hint utilities (and consequently Make* methods) and some Make* methods are all protected, non-virtual, but don't use any Grammar instance fields. Is there any particular reason why these aren't static as well?\r<br />\n<br />\nBesides the unused 'this' parameter (which I realize is counting pennies, bare with me), this setup makes it impossible to formulate boilerplate code/extensions without having to define a 'common' base Grammar class (on top of Irony's Grammar), and it also means that CurrentGrammar has to be accessed (which is per-thread based, which is a potentially unneeded TLS lookup under the hood)\r<br />\n<br />\n<br />\nOn a somewhat related note (okay, not really), is there a reason why you don't use XMLdoc for the documentation which does exist? Eg, one has to goto-definition for Grammar.LineStartTerminal to read the actual documentation. Probably a weak example, but as a 3rd party library it's typically helpful if end-coders don't have to leave their 'line-of-code-sight' in order to refer to a member's description<br />\n",
+    "PostedDate": "2013-06-27T10:30:07.46-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1062547",
+    "ThreadId": "448436",
+    "Html": "hi\r<br />\nThe reason for predefined terminals being instance-bound, not static, is because the terminal is instance-bound itself (it has a reference to Grammar/parser data), so even if those terminals do not use it directly, it might be inconsistent. I thought about this, certainly making them static would make sense, but decided not to do the switch to statics\r<br />\nHint utilities, and Make methods-  same logic, some of them use Empty terminal which is instance-bound. I know, some arrangements might look strange today, but they  are there mostly for 'historical' reasons - it just happened.\r<br />\nXml comments - I know, I need to do better on these. My approach is usually is: write non-xml comments to explain tech details which do not need to show up in hint when the function is clear from the name of the element itself. \r<br />\nI know, lot of things to be improved, but just busy-busy-busy with many other things, and there's a list of priorities, and these are not on the top - we can live with that for now, right?\r<br />\nthanks for the suggestions, will try to improve what I can\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-06-28T10:06:49.71-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

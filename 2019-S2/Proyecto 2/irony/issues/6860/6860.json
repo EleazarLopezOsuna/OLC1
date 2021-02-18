@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Continued as a thread in Discussions page",
+    "ClosedDate": "2010-01-12T21:31:37.117-08:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "As far as I can tell, everything works beautifully when all possible \"options\" that a NonTerminal can be parsed as are known when the NonTerminal's Rule is set.  For example:\nSomeNonTerminal.Rule = Thing1 | Thing2 | Thing3;\n\nHowever, adding extra \"options\" later does not work.  For an example of this situation, consider a base grammar with some derived grammars.  The derived grammars may want to \"add\" extra \"options\" to the base grammar's NonTerminal in order to provide more productions that allow for more \"features\".\n\nThese do NOT work: (using: NonTerminal testingNT = new NonTerminal(\"TestingNT\");)\n1) testingNT.Rule = testingNT.Rule | SomeOtherNT;\n* testingNT's Rule appears to be left unchanged (whatever it was before this statement).\n\n2) testingNT.Rule |= SomeOtherNT;\n* Same as #1.\n\nThis SEEMS to work: (For parsing only)\n3) testingNT.Rule = SomeOtherNT | testingNT.Rule;\n* The \"ToString\" version of the rule shows the correct representation, and it can parse input correctly.  However, when constructing the parse tree, some mysterious extra nodes appear with names such as \"NT1\" or \"NT2\" (etc.).  These nodes have a null reference for \"AstNode\" which causes the construction of the AST to fail.\n\nI have not tested the And operator (+) for similar problems yet.",
+    "LastUpdatedDate": "2010-01-12T21:31:37.117-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2010-01-05T08:04:05.73-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Or Operator Problems",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 6860
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi\r\nIt does not seem really an \"issue\" (like a bug, a problem) - you are trying to do something that I'm not even sure how to interpet. For example, \r\n\r\ntestingNT.Rule = testingNT.Rule | SomeOtherNT;\r\n\r\n- this expression is a bit unusual for me, and I'm not sure if operator overload can handle this the way you mean it. It is unusual expression, doing \"Rule|NT\" and definitely not indented use of this operator. \r\nI also don't understand why you need this kind of tricks. Are you doing this in your grammar constructor? or programmatically? \r\nLet's start from scratch, please open a discussion and explain your scenario, from \"use and purpose\" point of view, then let's see how it can be done\r\n",
+      "PostedDate": "2010-01-06T16:48:24.773-08:00",
+      "Id": 29148
+    },
+    {
+      "Message": "I just opened a discussion topic for this title \"Or Operator\".\r\nhttp://irony.codeplex.com/Thread/View.aspx?ThreadId=80451\r\n\r\nThough in the discussion thread, I seem to have forgotten to list the problems with using the syntax \"Rule = Rule | NT;\" that are listed here.",
+      "PostedDate": "2010-01-11T09:18:02.82-08:00",
+      "Id": 29149
+    }
+  ]
+}

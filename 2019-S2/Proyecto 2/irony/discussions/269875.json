@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "661280",
+    "ThreadId": "269875",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>i am trying to build a stat engine with sql. i have created the langugae for it, i am thinking of parallel execution of a code part. for example</p>\r\n<p>........</p>\r\n<p>%map i=1 to 10</p>\r\n<p>&nbsp;&nbsp; &nbsp;%let x=i-1</p>\r\n<p>&nbsp;&nbsp; &nbsp;insert into temp_summary (sal, count_emp)</p>\r\n<p>&nbsp;&nbsp; &nbsp;select sal, count(distinct empid) from empid where emp like '%{x}';</p>\r\n<p>%collate</p>\r\n<p>&nbsp;&nbsp; &nbsp;insert into summary (sal, count_emp)</p>\r\n<p>&nbsp;&nbsp; &nbsp;select sum(ysal), sum(count_emp) from temp_summary);</p>\r\n<p>&nbsp;</p>\r\n<p>%end</p>\r\n<p>&nbsp;</p>\r\n<p>map command should start execution of the nested script in different threads and %map will wait till all the threads complete and then execute the nested script till % end command</p>\r\n",
+    "PostedDate": "2011-08-21T12:50:29.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661349",
+    "ThreadId": "269875",
+    "Html": "<p>I don't understand - are asking a question? what is the problem, if there's any? or you just make an announcement? :)</p>",
+    "PostedDate": "2011-08-21T19:23:46.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661453",
+    "ThreadId": "269875",
+    "Html": "<p>Sorry, I mised the question.</p>\r\n<p>I am wondering how the parser can be modified to to achieve this, any help would be appreciated.</p>\r\n<p>Regards.</p>",
+    "PostedDate": "2011-08-22T02:33:42.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661494",
+    "ThreadId": "269875",
+    "Html": "<p>The parser certainly remains the same, you would need a special interpreter. You may continue to use Interpreter class from Irony (better stick to version 2, in sources currently, early preview). In any case you'd need a set of special AST nodes for your constructs. So in these custom AST nodes implement Evaluate behavior with this multi-threading stuff.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-08-22T05:18:23.233-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

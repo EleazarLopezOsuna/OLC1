@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "725133",
+    "ThreadId": "286139",
+    "Html": "<p>Hi</p>\n<p>Think this is a simple one ... but I can't see it.</p>\n<p>I am writing a simple sql dialect to permit none, one or multiple joins</p>\n<p>SELECT..</p>\n<p>FROM a</p>\n<p>JOIN b</p>\n<p>JOIN C</p>\n<p>I think, the offending part of my grammar is here</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>fromClause.Rule = FROM + eventIdentifier + joinClauseList;\njoinClause.Rule = JOIN + eventIdentifier;\njoinClauseList.Rule = MakeStarRule(joinClauseList, joinClause);\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>If I reference the joinClause in the fromClause it is fine, but the joinClauseList seems to be problematic. The parser states indicated in the ambiguity are</p>\n<p style=\"padding-left: 30px;\">State S31<br /> &nbsp; Reduce items:<br /> &nbsp;&nbsp;&nbsp; JoinClauseListOptional -&gt; JoinClauseListOptional JoinClause &middot;<br /> &nbsp; Transitions: <br /> <br /> State S32<br /> &nbsp; Shift items:<br /> &nbsp;&nbsp;&nbsp; JoinClause -&gt; JOIN &middot;eventIdentifier <br /> &nbsp;&nbsp;&nbsp; eventIdentifier -&gt; &middot;standardIdentifier <br /> &nbsp;&nbsp;&nbsp; standardIdentifier -&gt; &middot;id_simple <br /> &nbsp; Transitions: eventIdentifier-&gt;S49, standardIdentifier-&gt;S24, id_simple-&gt;S10<br /> <br /> State S33 (Inadequate)<br /> &nbsp; Shift items:<br /> &nbsp;&nbsp;&nbsp; JoinClauseListOptional -&gt; JoinClauseListOptional &middot;JoinClause <br /> &nbsp;&nbsp;&nbsp; JoinClause -&gt; &middot;JOIN eventIdentifier <br /> &nbsp; Reduce items:<br /> &nbsp;&nbsp;&nbsp; fromClause -&gt; FROM eventIdentifier JoinClauseListOptional &middot; [WHERE JOIN EOF]<br /> &nbsp; Transitions: JoinClause-&gt;S31, JOIN-&gt;S32</p>\n<p>I'd be grateful if someone could just explain how I should read these parser states to understand the ambiguity. AFAICS, if the parser comes across a JOIN token if doesn't know where to go next. Is that correct or is it telling me something else?</p>\n<p>Many thx</p>\n<p>S</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2012-01-14T04:28:31.113-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "725248",
+    "ThreadId": "286139",
+    "Html": "<p>I see that JOIN appears as a lookahead in reduce item in state S33. That's the problem, so where it's coming from? My guess is that your language allows (Select ... From) as join element, so the following is legal:</p>\n<p>Select From A Join B Join Select From C Join D.&nbsp;</p>\n<p>If this is the case, then parser conflict is that it does not know what D is joined to - to C only, or to A-B-(SelectFromC)</p>\n<p>Same thing as with dangling else. You can fix it by adding PreferShiftHere() before Join in the rule for JoinClause. This will tell parser to interpret the sample as \"(C JOIN D)\", so we join to the smallest ending chunk of expression.</p>\n<p>&nbsp;</p>\n<p>If my guess is wrong, then trace where this JOIN lookahead is coming from - this is the source of ambiguity. Or publish more details.</p>\n<p>Roman</p>",
+    "PostedDate": "2012-01-14T10:17:59.453-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "725368",
+    "ThreadId": "286139",
+    "Html": "<p>Thx very much again, Roman. Very helpful. That worked well. Can I just ask you a further question about this?<br /><br />I found another discussion here speaking to the same issue<br /><br /><a href=\"Thx very much again, Roman. Very helpful. That worked well.Can I just ask you a further question about this?  I found another discussion here speaking to the same issue  http://irony.codeplex.com/discussions/61182  In there you suggest to use a ReduceHere() at the end of the join  Join a Join b Join c  gets parsed as (a Join b) Join c  a) does using a ReduceHere() at the end of the join statement equate to the PreferShiftHere() at the start b) what would I need to do to achieve a join (b join c)? fyi, I'm still not sure which I need for my grammar  Many thx again, for the excellent tool.  S\">http://irony.codeplex.com/discussions/61182</a><br /><br />In there you suggest to use a ReduceHere() at the end of the join<br /><br />Join a<br />Join b<br />Join c<br /><br />gets parsed as (a Join b) Join c<br /><br />a) does using a ReduceHere() at the end of the join statement equate to the PreferShiftHere() at the start?<br />b) what would I need to do to achieve a join (b join c)? fyi, I'm still not sure which I need for my grammar<br /><br />Many thx again, for the excellent tool.<br /><br />S</p>",
+    "PostedDate": "2012-01-15T00:24:36.87-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "725546",
+    "ThreadId": "286139",
+    "Html": "<p>Hi</p>\r\n<p>answering your questions. Yes, my advice in previous post is really opposite in effect to what I just advised. For some reason, at this time long ago I thought this was more \"natural\" join, while today it seems to me the other way is more appropriate. Time to see SQL standard I think. You can do it either way.&nbsp;</p>\r\n<p>Your question a. : putting ReduceHere and PreferShiftHere have an OPPOSITE effect, each telling parser to do opposite things in conflict state.&nbsp;</p>\r\n<p>b. to achieve \"a join (b join c)\" you need to put ReduceThis() at the end of joinClause expression</p>",
+    "PostedDate": "2012-01-15T18:18:52.41-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "725594",
+    "ThreadId": "286139",
+    "Html": "<p>Excellent. Thx very much once again.</p>\r\n<p>S</p>",
+    "PostedDate": "2012-01-15T22:46:14.853-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,56 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": null,
+    "Description": "Please see attachment.  \r\n\r\nIf I understand the process correctly, I wish to use the ResolveInCode option to control the decision at S119 by peeking at an extra token.    So a few hints were added for a few of the NonTerminal Rules that I though are near S119 like so:\r\n\r\noptNot.Rule = GrammarHint(HintType.ResolveInCode, null) + Empty | not;\r\n\r\nHowever the OnResolvingConflict(...) override that I provided within the Grammar class is never called.  \r\n\r\nBy looking at the state 119, how to determine on which Rule to place the hint so that it is called (or is there some additional requirements)?  Or should I be trying to use the \"Recovering...looking for state with error shift\" feature?  \r\n\r\n( There are no grammar errors but some inadequate's which have not been a problem except for this particular input. )\r\n\r\nThanks,\r\nChris",
+    "LastUpdatedDate": "2014-04-10T11:26:51.4-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2014-04-09T21:32:05.36-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "How to resolve Reduce/Shift with extra look ahead",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9894
+  },
+  "FileAttachments": [
+    {
+      "FileId": 825908,
+      "FileName": "IronyResolveToShift.jpg",
+      "DownloadUrl": ".\\825908"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Here is what ended up working.  Please comment on any bad practices:\n\nThanks,\nChris\n\n\noptNot.Rule = Empty | (new GrammarHint(HintType.ResolveInCode, null) + not);\n\n// Allows use of a look ahead to resolve a questionably defined grammar sections\npublic override void OnResolvingConflict(ConflictResolutionArgs args)\n{\n    bool foundMatch = false;\n    switch (args.Context.CurrentParserInput.Term.Name)\n    {\n        case Term.not:\n\n            // Want to limit to just the state with the issue (but not by State#)\n            //\n            if (args.ReduceProduction.LValue.Name == Term.valueTerm) \n            {\n                args.Scanner.BeginPreview();\n                var preview = args.Scanner.GetToken();\n                string termName = preview.KeyTerm.Text;\n                args.Result = termName == Term.in_ ? ParserActionType.Reduce : ParserActionType.Shift;\n                args.Scanner.EndPreview(true);\n                foundMatch = true;\n             }\n             break;\n    }\n}",
+      "PostedDate": "2014-04-10T11:25:16.053-07:00",
+      "Id": 141402
+    },
+    {
+      "Message": "Here is what ended up working.  Please comment on any bad practices:\n\nThanks,\nChris\n\n\n```\noptNot.Rule = Empty | (new GrammarHint(HintType.ResolveInCode, null) + not);\n\n// Allows use of a look ahead to resolve a questionably defined grammar sections\npublic override void OnResolvingConflict(ConflictResolutionArgs args)\n{\n    bool foundMatch = false;\n    switch (args.Context.CurrentParserInput.Term.Name)\n    {\n        case Term.not:\n\n            // Want to limit to just the state with the issue (but not by State#)\n            //\n            if (args.ReduceProduction.LValue.Name == Term.valueTerm) \n            {\n                args.Scanner.BeginPreview();\n                var preview = args.Scanner.GetToken();\n                string termName = preview.KeyTerm.Text;\n                args.Result = termName == Term.in_ ? ParserActionType.Reduce : ParserActionType.Shift;\n                args.Scanner.EndPreview(true);\n                foundMatch = true;\n             }\n             break;\n    }\n}\n```",
+      "PostedDate": "2014-04-10T11:26:51.4-07:00",
+      "Id": 141403
+    }
+  ]
+}

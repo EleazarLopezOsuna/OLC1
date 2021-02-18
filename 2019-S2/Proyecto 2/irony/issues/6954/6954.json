@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-12T17:08:40.743-08:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "Hi Roman, \n\nFirst thanks for releasing this great work. I am having trouble to open and compile the solution. VS2008 is complaining about source control binding and most projects loaded with the unavailable status. I have tried to unbind the source control but still no luck. (This may not be the reason, but I am using 64bit Windows 7 environment.) Is there a way you can release the source code not biding to source control? Thanks\n\nDuncan",
+    "LastUpdatedDate": "2010-03-12T17:08:40.743-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2010-01-30T21:29:11.397-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Cannot compile the solution",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 6954
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Roman, please ignore my last post. I am new to codeplex, and just notice the source control feature. I should give it a try first. \r\n\r\nD",
+      "PostedDate": "2010-01-30T21:39:07.293-08:00",
+      "Id": 29156
+    },
+    {
+      "Message": "Well, getting source codes via source control client does not fix the problem. So still in the same problem cannot compile the solution. \r\n\r\nD  ",
+      "PostedDate": "2010-01-30T22:05:01.69-08:00",
+      "Id": 29157
+    },
+    {
+      "Message": "try downloading release version - I removed bindings and updated the zip",
+      "PostedDate": "2010-01-31T20:25:21.027-08:00",
+      "Id": 29158
+    },
+    {
+      "Message": "Thanks Roman. It works for me now. ",
+      "PostedDate": "2010-02-01T19:06:15.683-08:00",
+      "Id": 29159
+    }
+  ]
+}

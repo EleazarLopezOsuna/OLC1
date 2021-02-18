@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2009-11-09T14:56:23.497-08:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Hi!\n\nI am using IdentifierTerminal\nvar identifier = new IdentifierTerminal(\"Term\", \"!@#$%^*_'.?\", \"!@#$%^*_'.?0123456789\")\n\nI have to add polish chars like ąĄćĆęĘłŁóÓńŃżŻźŹ so i changed declaration to:\nvar identifier = new IdentifierTerminal(\"Term\", \"!@#$%^*_'.?ąĄćĆęĘłŁóÓńŃżŻźŹ\", \"!@#$%^*_'.?0123456789ąĄćĆęĘłŁóÓńŃżŻźŹ\")\n\nIrony still not works with my polish chars. Maybe its problem with unicodes?\n            \nKamil",
+    "LastUpdatedDate": "2009-11-09T14:56:23.497-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-11-09T04:01:24.803-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Polish charset",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 6174
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "You can delete this ticket. I make mistake:)",
+      "PostedDate": "2009-11-09T11:14:05.833-08:00",
+      "Id": 29138
+    }
+  ]
+}

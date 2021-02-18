@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "186087",
+    "ThreadId": "55123",
+    "Html": "I have started a blog about Irony: <a href=\"http://irony-roman.blogspot.com/\">http://irony-roman.blogspot.com/</a> . <br>\r\n<p>The purpose of this blog is to communicate what I'm doing in Irony and why, to explain and discuss design decisions and all things that come up as the project goes ahead. Certainly, the blog is not a replacement for a real documentation and user or programmer guides - this will come eventually. The main trouble with documentation is that it does not make much sense to document things that continue to change - and at least until now - April 2009 - the Irony code and public API-s were quite unstable and changing all the time. Now it looks like things get settled and pretty soon I will start thinking about documenting it. This future documentation will eventually explain how to use it and how it works to some extent. This blog on the other hand will be providing some background explanations why things were done in a certain way. </p>\r\nThe first post is about April code update - improvements and changes. Enjoy it!<br>\r\n",
+    "PostedDate": "2009-05-02T01:20:28.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "186098",
+    "ThreadId": "55123",
+    "Html": "Very interesting. I've read your blog and it seems that the wait was worth it! I'm still waiting for a new stable release before I consider moving to the next version since the old release still works fine for my project.<br>\r\n",
+    "PostedDate": "2009-05-02T04:10:47.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

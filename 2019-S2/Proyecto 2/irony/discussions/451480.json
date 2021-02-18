@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1073352",
+    "ThreadId": "451480",
+    "Html": "Hello,\r<br />\n<br />\nFirst of all, I love Irony and I found it very easy to use.\r<br />\nBasically I have the following:<br />\n<pre><code>x = normal(0,1)  \ny = uniform(0,5) // custom functions defined to return normally or uniformly distributed random numbers\nf = x * y // just an example</code></pre>\n\nIn my small app I want to be able to run that formula for say 100 times in order to generate an artificial dataset with x,y,f.\r<br />\n<br />\nSo my question is, besides the actual evaluation of f, is there any way to also get the values of x and y? I tried inspecting the ast node in debug mode but could not find where such a value is stored.\r<br />\n<br />\nThank you,\r<br />\nBogdan<br />\n",
+    "PostedDate": "2013-07-26T01:08:41.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1073614",
+    "ThreadId": "451480",
+    "Html": "well, not clear what does 'get the values of x and y' mean exactly? See the values in VS debugger when you stop somewhere? If this is what you want, then Ast node is not the place. A running program has 2 segments - code and data. AstNode at runtime is 'code', while data is stored in the stack of scopes/frames - available in execution context. Look there for the values, but note that they are stored in plain object arrays (not dictionaries). <br />\n",
+    "PostedDate": "2013-07-26T11:43:48.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1073659",
+    "ThreadId": "451480",
+    "Html": "Thank you for your answer, that was exactly what I meant. I will look around for the execution context but in the mean time I was able to retrieve the values from the dictionary <code>evaluator.App.Globals</code>. <br />\n",
+    "PostedDate": "2013-07-26T13:19:19.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1264947",
+    "ThreadId": "551315",
+    "Html": "I have this rules:<br />\n<pre><code>boolNot.Rule = ToTerm(&quot;!&quot;) + expr | ToTerm(&quot;!&quot;) + &quot;(&quot; + expr + &quot;)&quot;;\nexpr.Rule = directAccess | call | identifier | boolNot | booleanExpression;\nbooleanExpression.Rule = expr + &quot;&amp;&amp;&quot; + expr | expr + &quot;||&quot; + expr | expr;</code></pre>\n\nSometimes, input looks like this:<br />\n<pre><code>!isDefined(test) &amp;&amp; test</code></pre>\n\nIn this case this line parsed like boolNot node which contains 2 nodes: &quot;!&quot; and booleanExpression, but this line should be parsed like booleanExpression which contains boolNot node and etc. So if parser guess that expr contains booleanExpression or boolNot, he should prefer booleanExpression. Is this possible?<br />\n",
+    "PostedDate": "2014-07-11T12:25:53.06-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1264962",
+    "ThreadId": "551315",
+    "Html": "as far as i can understand, the issue is operator precedence - you should register ! operator and give it higher precedence than &amp;&amp;<br />\n",
+    "PostedDate": "2014-07-11T12:55:59.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

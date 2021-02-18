@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "570313",
+    "ThreadId": "247102",
+    "Html": "\r\n<p>I'm trying to write a grammar that will accept unknown tokens in multiple places, to construct db searches from spoken queries.</p>\r\n<p>The basic structure of a query would be:</p>\r\n<p>[ColorName] [ItemName]</p>\r\n<p>&nbsp; [in [CategoryName] ]</p>\r\n<p>&nbsp; [with [AttributeName] ]</p>\r\n<p>&nbsp; [and [AttributeName] ] . . .</p>\r\n<p>ColorName comes from a list of known colors, but ItemName, CategoryName and AttributeName are all free-form phrases.</p>\r\n<p>Is there a way in Irony to define tokens consisting of one or more unknown words, using the known words &quot;in, with, and&quot; as separators?</p>\r\n<p>With my initial attempt at a grammar I can only get it to work with single-word unknowns.</p>\r\n",
+    "PostedDate": "2011-02-22T10:37:23.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "570422",
+    "ThreadId": "247102",
+    "Html": "<p>I assume that [CategoryName] phrase does not actually have brackets around this.&nbsp;</p>\r\n<p>I think the best way to go is to represent CategoryName and other names as non-terminal which is a list of words (identifiers); you should also mark \"in\", \"with\", \"and\" as reserved words.</p>\r\n<p>So it will be like this:</p>\r\n<p>var word = new IdentifierTerminal(\"word\");&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>var compoundName = new NonTermina(\"compoundName);</p>\r\n<p>compoundName.Rule = MakePlusRule(compoundName, word);&nbsp;</p>\r\n<p>colorName.Rule = ToTerm(\"red\") | \"blue\" | \"green\";</p>\r\n<p>colorSpec.Rule = colorName + compoundName + \"in\" + compoundName + \"with\" + compoundName + \"and\" + compoundName;&nbsp;</p>\r\n<p>MarkReservedWords(\"in\", \"with\", \"and\");</p>\r\n<p>&nbsp;</p>\r\n<p>If you have with-clause optional, you need to create a separate terminal for it:&nbsp;</p>\r\n<p>withClause.Rule = \"with\" + compoundName | Empty;&nbsp;</p>\r\n<p>and use it in expression for colorSpec. Same with other clauses</p>\r\n<p>Hope this helps</p>",
+    "PostedDate": "2011-02-22T13:31:57.073-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "570503",
+    "ThreadId": "247102",
+    "Html": "<p>Thank you! Yes, the brackets just indicate optional items.</p>\r\n<p>I was doing some more work on this today and came up with this:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">var</span> search = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"search\"</span>);\r\n<span style=\"color: blue;\">var</span> conditionList = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"conditionList\"</span>);\r\n\t<span style=\"color: blue;\">var</span> condition = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"condition\"</span>);\r\n\t<span style=\"color: blue;\">var</span> nameCondition = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"nameCondition\"</span>);\r\n\t<span style=\"color: blue;\">var</span> categoryCondition = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"categoryCondition\"</span>);\r\n\t<span style=\"color: blue;\">var</span> keywordCondition = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"keywordCondition\"</span>);\r\n\r\n\t<span style=\"color: blue;\">var</span> term = CreateTerm(<span style=\"color: #a31515;\">\"term\"</span>);\r\n\t<span style=\"color: blue;\">var</span> color = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"color\"</span>);\r\n\t<span style=\"color: blue;\">var</span> name = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"name\"</span>);\r\n\t<span style=\"color: blue;\">var</span> keyword = <span style=\"color: blue;\">new</span> NonTerminal(<span style=\"color: #a31515;\">\"keyword\"</span>);\r\n\r\n\tMakePlusRule(name, term);\r\n\r\n\tsearch.Rule = conditionList;\r\n\tconditionList.Rule = MakePlusRule(conditionList, <span style=\"color: blue;\">null</span>, condition);\r\n\tcondition.Rule = color | nameCondition | categoryCondition | keywordCondition;\r\n\r\n\tcolor.Rule = (ToTerm(<span style=\"color: #a31515;\">\"red\"</span>) | <span style=\"color: #a31515;\">\"green\"</span> | <span style=\"color: #a31515;\">\"blue\"</span> | <span style=\"color: #a31515;\">\"white\"</span> | <span style=\"color: #a31515;\">\"black\"</span> | <span style=\"color: #a31515;\">\"colorless\"</span>);\r\n\tnameCondition.Rule = name;\r\n\tcategoryCondition.Rule = (ToTerm(<span style=\"color: #a31515;\">\"from\"</span>) | <span style=\"color: #a31515;\">\"in\"</span>) + name;\r\n\tkeywordCondition.Rule = (ToTerm(<span style=\"color: #a31515;\">\"with\"</span>) | <span style=\"color: #a31515;\">\"having\"</span> | <span style=\"color: #a31515;\">\"that\"</span> + (ToTerm(<span style=\"color: #a31515;\">\"has\"</span>) | <span style=\"color: #a31515;\">\"have\"</span> | <span style=\"color: #a31515;\">\"can\"</span> | <span style=\"color: #a31515;\">\"are\"</span> )) + name;\r\n\r\n\t<span style=\"color: blue;\">this</span>.Root = search;\r\n</pre>\r\n</div>\r\n<p>This code works but produces leaf nodes that are individual terms that must be concatenated after parsing. For example, if the input is \"students in main enrollment with special needs\" -- where \"main enrollment\" is the name of a category and \"special needs\" is a keyword, right now my grammar generates a <strong>categoryCondition</strong> node with 2 <strong>term </strong>nodes \"main\" and \"enrollment\", and a <strong>keywordCondition </strong>node with 2 <strong>term </strong>nodes \"special\" and \"needs\". In both cases the term nodes must be concatenated by post-processing code before they can be used. I am trying to make the parser generate a <strong>categoryCondition </strong>node with value \"main enrollment\" and a <strong>keywordCondition </strong>with value \"special needs\". But I'm not sure this is possible if categoryCondition and keywordCondition are composed of smaller terms.</p>\r\n<p>I will try the approach you mentioned above, and I greatly appreciate your advice!</p>",
+    "PostedDate": "2011-02-22T15:56:24.63-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "570530",
+    "ThreadId": "247102",
+    "Html": "<p>Well, in my solution it is the same - you'll get a list of identifier nodes that must be concatenated in post-processing. I don't think it is actually a big deal, and any alternative would be any better or easier - at least, it wouldn't be easier to \"explain to parser\" that we need concatenated stuff :)</p>",
+    "PostedDate": "2011-02-22T17:14:10.77-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

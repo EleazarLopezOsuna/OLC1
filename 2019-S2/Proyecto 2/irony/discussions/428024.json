@@ -1,0 +1,122 @@
+[
+  {
+    "Id": "981703",
+    "ThreadId": "428024",
+    "Html": "\r\n<p>Hi.&nbsp;<br>\r\n<br>\r\nDue to the now out of date articles at CodeProject and other locations, am a bit confused as to what is actually needed to get a fully functional sample working.<br>\r\n<br>\r\nDo we need Irony.dll AND Irony.Interpretor.dll?</p>\r\n<p>I'm asking because AstNode, which I thought was integral to the concept of parsing, is not in Irony.dll, but in the Interpreter dll...</p>\r\n<p>For a proprietarary DSL of chained commands (eg: &quot;Ring Bell;Go Left;Show the desktop;&quot;) can one build with only the Irony.dll? Or has the project grown such that both dll's are needed for most grammars, even if not evaluated?</p>\r\n<p>Thanks,</p>\r\n<p>Sky&nbsp;</p>\r\n",
+    "PostedDate": "2012-12-29T19:54:28.203-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "982089",
+    "ThreadId": "428024",
+    "Html": "\r\n<p><strong>SkySegal</strong>,</p>\r\n<p>I am in the same boat as you are.&nbsp; You need to bean expert in C#, BNF, Comiler theory and other areas in order to 'wrap your head around it'.</p>\r\n<p>Just follow the (very accurate, alas not for the lowest level beginner) instructions provided by Roman.&nbsp; The code, samples, and everything you need is right there.&nbsp; All samples work as advertised.</p>\r\n<p>Roman did an amazing job at writing the (FREE) code but he is not tech-support nor extremely patient.</p>\r\n<p><strong>Suggestion</strong>: Do more work on your own first.&nbsp; Irony has now been used by many others to show folks like you and me how to do simple stuff.&nbsp; Many of those projects have running sample code so you can explore how the engine work beyond adding\r\n numbers.</p>\r\n<p>Google can get you pretty far.</p>\r\n<p><strong>Roman</strong>,</p>\r\n<p>Most of us are not nearly as smart as you, just ignore the question you deem stupid and have a happy new year.</p>\r\n<p>&nbsp;</p>\r\n<p>Bey</p>\r\n",
+    "PostedDate": "2013-01-01T06:47:10.613-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "985579",
+    "ThreadId": "428024",
+    "Html": "\r\n<p>Hi Roman,</p>\r\n<p>Happy New Year!</p>\r\n<p>Yes, it's okay to be pissed, but it doesn't help to wear your heart on your sleeve so often. Again, thank you for the great (FREE)) toolkit. We all appreciate it. It's a five-star effort in my books, even with its warts.</p>\r\n<p>Part of the issue is the dichotomy between the ease and elegance of producing a first parse-tree, and the relative (even extreme) difficulty of then producing an AST using the (non-intuitive) Visitor Design pattern of your examples. Not knowing of the Visitor\r\n design pattern, I completely rewrote the AST code without it&nbsp;as <a href=\"http://pgirony.codeplex.com/\">\r\nhttp://pgirony.codeplex.com/</a>. It's unelegant, and probably overly compelx, but it is more intuitive and uses generics. It also works\r\n<em><strong>out of the box</strong></em> for making an AST. Anyone struggling (as I did) to make an AST, and who is unfamiliar with the Visitor Design Pattern, could probaly do worse than to check out\r\n<a href=\"http://pgirony.codeplex.com/\">http://pgirony.codeplex.com/</a>. If nothing else, looking at how&nbsp;an alternate structure was built on the bare skeleton of Roman's Visitor pattern might help in using the later.</p>\r\n<p>Cheers,</p>\r\n<p>Pieter</p>\r\n",
+    "PostedDate": "2013-01-11T10:38:34.693-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "985723",
+    "ThreadId": "428024",
+    "Html": "\r\n<p>@<a href=\"http://www.codeplex.com/site/users/view/rivantsov\">rivantsov</a>:</p>\r\n<p>My sincere apologies for wearing my frustrations on my sleeve&nbsp;when posting a less than 5 star review. The inability to connect the dots in between earlier articles and the current state of the library in order to unlock the power of Irony is certainly more\r\n of a reflection of my own ignorance in this particular field and lack of time to become an expert in parsing.&nbsp;As stated elsewhere, I believe the Irony library shows great promise, and clearly already of value to many. &nbsp;</p>\r\n<p>Regarding the rating I gave: I was not commenting on just the functionality -- which is clearly valuable to many -- but as stated, on the whole experience of downloading the kit, referring to the Documentation tab, prior Code Project articles, Googling,\r\n and attempting to understand enough of how it worked to modify it. &nbsp;With the available information, it was certainly more frustrating than other open source libraries I've encountered.</p>\r\n<p>But I also certainly understand the major effort invested by you, at no cost to others, sustained only by positive comments. It's important to have reasons to continue.&nbsp;For that reason -- as&nbsp;It appears that comments and rating can be updated or deleted --\r\n I am happy to delete my 3-star entry stating that there was insufficient documentation to use the library effectively in the week's time I had available. &nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>@<a href=\"http://www.codeplex.com/site/users/view/beymelamed\">beymelamed</a></p>\r\n<p><a href=\"http://www.codeplex.com/site/users/view/beymelamed\"></a>Thanks for the encouraging statement that all samples are up to date: it was clear that the samples in the Kit all compile and work, and parse grammars.<br>\r\nWhat was not clear from the kit what to do with them after that. Next break I get, I'll give it another shot.<br>\r\n<br>\r\n</p>\r\n<p>@pgeerkens:</p>\r\n<p>I think you expressed clearly what I was bumping into: &quot;<span>Part of the issue is the dichotomy between the ease and elegance of producing a first parse-tree, and the relative (even extreme) difficulty of then producing an AST using the (non-intuitive)\r\n Visitor Design pattern of your examples.&quot; I'll look again at your helper library more in depth at some point in the future.</span></p>\r\n<p>As you obviously have slogged through it and understand at this point the pitfalls that newcomers would face when first approaching the library, maybe you might consider offering to collaborate with&nbsp;<a href=\"http://www.codeplex.com/site/users/view/rivantsov\">rivantsov</a>&nbsp;to\r\n provide some pages for the Documentation tab? The subject matter that Irony encapsulates is uncommon, and any assistance to make it more accessible to newbies would be valuable. For example,&nbsp;It would be most interesting to understand first&nbsp;how to do it with\r\n just the base libraries -- with out all of the Kit's helper classes already in play, and then why the addition of your library makes the process more intuitive?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2013-01-11T15:55:41.27-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986304",
+    "ThreadId": "428024",
+    "Html": "\r\n<p><span style=\"font-size:10pt\">I would like to try to explain why Irony often seems so difficult - and frustrating - for newbies. The reason is what is known as 'abstraction leak'. A sudden, unexpected, quite horrifying leak. Here's what happens, and what\r\n happened to you.</span></p>\r\n<p><span style=\"font-size:10pt\">&nbsp;Parsing and compiler construction in general is quite complex area. There is a lot of math behind it (not very advanced, but quite considerable in volume). To start doing something in this area, you have to pay your dues\r\n - spend some time learning the theory. You have to read at least one book on compiler construction, carefully, page by page. You cannot learn it on the job as you go, like other programming areas. You have to know the theory. It is not a secret for anybody\r\n who graduated from computer science - a course on compiler construction is required, and if anything, you remember this is a big and difficult area. For unlucky guys without computer science degree (like myself, I did electrical engineering and learned programming\r\n mostly by myself) - this is a fact to be discovered later. I myself spent several months struggling thru Dragon book.&nbsp;</span></p>\r\n<p>As far as I know, for any other parser construction tool (Lex/Yacc, Antlr, Gold, SableCc et), knowing the theory is an upfront requirement. That is, you have no chance of understanding anything about the tool, or how samples work, without knowing what is\r\n LR/LARL/LL, shift/reduce, lookahead and other stuff. The parsing automaton is right on the surface, with all its complexities.</p>\r\n<p>Irony, however, might give a different impression to a newcomer. You download it, run the GrammarExplorer, then try the samples. Ok, it parses stuff, shows you the output as a nice tree. It even evaluates some expressions. You look at sample grammars, and\r\n it seems like you understand what's going on and how it's done. The reason I think is that Irony defines a set of 'abstractions' which hide LALR parsing complexities. Terminal, NonTerminal classes, and definition rules - these are all abstractions hiding a\r\n lot of things behind. Basic abstractions are implemented in such a way that language definitions seem easy on the eye - which might give a wrong impression that the engine behind it is easy as well.&nbsp;</p>\r\n<p>No, it's not, and troubleshooting it is not easy either. &nbsp;Let's say our newbie, after exploring samples, decides to implement his own language and grammar. Definitely, initial version would have some imperfections. Irony would react with something quite\r\n unexpected - cryptic messages like 'shift-reduce conflict in State S100 for lookaheads X,Y,Z' - which give a little shock to the programmer. The name for this is ABSTRACTION LEAK. Irony's abstractions leak - and what is leaked is the manifestation of LALR\r\n complexities behind it. At this point our hypothetical newbie is lost, and starts blaming lack of documentation, no xml comments, etc.&nbsp;</p>\r\n<p>By contrast, for programmers with prior experience/knowledge of parsing (especially when they come from other parsing kits) - shift-reduce conflict is not a showstopper. They know what it is, and how to fix it. And they appreciate Irony's decent diagnostic\r\n facilities - like states printout, parsing log with immediate navigation to parser state, and integration with VS in general - you can debug through parser engine if you need to. Many folks out there use Irony in their projects, and some even share their experiences\r\n in articles and blog posts - which proves that Irony's lack of documentation is not a showstopper, but only if you are not newbie for parsing. &nbsp;&nbsp;</p>\r\n<p>No documentation - I know it's bad, and I'm not trying to say it's not needed. But here's the trouble. There is no way for Irony to fix the abstraction leak and shield the programmer from these theory-heavy error messages - at least I don't know any. It\r\n cannot convert them into something like 'change X rule in such-and-such way'. The only way is to give a clear message in terms of LALR theory, help identify the trouble (state productions printout); and give an advice - if you don't know what this mean, then\r\n go read the Dragon book. No other way, period. So even if I documented every class/method/property in Irony code base, that would not help at all if you don't know how LALR parser works.&nbsp;<br>\r\n<br>\r\nAnd Irony's quick start quide might look like the following:<br>\r\nPart 1. Single statement: If you don't know what LALR(1) is, go read the Dragon book, or any modern book on compiler construction.<br>\r\nPart 2. A few pages describing mapping of LALR(1) concepts into c# classes in Irony.</p>\r\n<p>Other thing, about problems with Interpreter. I don't think Visitor pattern is a core problem here. I should emphasize that Irony's interpreter and evaluator of arithmetic expressions should be viewed as an extended working example, not definitive guide\r\n of 'how to define AST'. There are many-many-many ways that programs can be 'executed': consider for example, Json grammar - defines in fact data format and json deserializer; Wiki grammar/parser - example of converter from one text into another; expression\r\n evaluator - evaluate all as arithmetic expressions. And there are many other languages that define program 'execution' as completely 'other' things. So Irony's Interpreter and a set of AST nodes is just one case of 'program execution' concept, using a very\r\n common use case - expression evaluation. It's AST node set and the whole concept is VERY specific to the expression evaluation. The message is: here's how to do it in this particular case; invent your own for your language, Irony hopefully can support this.&nbsp;</p>\r\n<p>It's past midnight Sunday here in Seattle as I'm writing this. That's the time I can spend on Irony. Tomorrow morning I will drive to work, and will be doing things that have nothing to do with parsing. It's life - it sucks without documentation, and without\r\n many other things, but that's all I can offer.</p>\r\n<p>Respectfully&nbsp;<br>\r\nRoman&nbsp;<br>\r\n<br>\r\n<br>\r\n<br>\r\n<br>\r\n</p>\r\n",
+    "PostedDate": "2013-01-14T00:51:04.407-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986442",
+    "ThreadId": "428024",
+    "Html": "\r\n<p>Excellent explanation Roman, I&nbsp;completely&nbsp;agree with you; and of course documentation has importance, but in this case documenting the library will not hide the complexities behind compiler construction and grammar specifications. Irony, even with\r\n a full&nbsp;fledged&nbsp;documentation cannot become a repetition of the dragon book, and in the epoch of Google... well... you need to go and do your homework instead of taxing someone else for not watering down the problem to a level that I can understand.&nbsp;Studying&nbsp;is\r\n a personal&nbsp;responsibility.</p>\r\n<p>Just as a curiosity, something that cough my eye, and related more to design choices than nothing else. Why to include a regex terminal? It feels weird to me to mix parsing paradigms.</p>\r\n<p>Respectfully</p>\r\n<p>Jorge</p>\r\n",
+    "PostedDate": "2013-01-14T06:19:18.497-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986478",
+    "ThreadId": "428024",
+    "Html": "\r\n<p>Roman,</p>\r\n<p>I fully appreciate everything you mentioned and have great respect for what you have done.</p>\r\n<p>One of the greatest aspects of your legacy is enabling folks who are less informed about the complexities of grammar, parsing, etc. to be able to use Irony.</p>\r\n<p>Sky (and I) are in that crowd.</p>\r\n<p>With that, the audience to which you play is larger, more diverse and with a lower average level of comprehension of your work.</p>\r\n<p>I did not mean to be mean or sarcastic and I appreciate the time you took to respond.</p>\r\n<p>Bey</p>\r\n",
+    "PostedDate": "2013-01-14T07:38:17.58-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986739",
+    "ThreadId": "428024",
+    "Html": "\r\n<p>Jorgeleo -&nbsp;</p>\r\n<p>about RegexExpression. Why not? It's not mixing of paradigms, just particular tricky terminals can be handled by regexes. Not like other solutions that rely heavily on regexes.&nbsp;<span style=\"font-size:10pt\">There might be situations when it solves a problem\r\n easier than any alternative (custom terminal) so it's handy when perf is not critical. Read this thread, at the end:</span></p>\r\n<p>http://irony.codeplex.com/discussions/402457</p>\r\n<p>There are folks that prefer RegexTerminal!</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2013-01-14T14:48:58.903-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986744",
+    "ThreadId": "428024",
+    "Html": "\r\n<p>So syntax sugar for people that cannot be bother with:</p>\r\n<p>float := Integer + &quot;.&quot; + Integer</p>\r\n<p>While is not mathematically correct because ti does not considers scientific notation, it will cover his example</p>\r\n<p>You know what? I understand you, I do support your original argument on that thread, and I still think that regex terminals is the goto of the parser, but if it saves some&nbsp;aggravation with some tricky terminals, I'll do the same.&nbsp;</p>\r\n<p>But then beymelamed is correct in the sense that Irony is such advance and simple tool to use that it fools people into thinking that there is no need to learn grammar theory, or that there is no need for though process shifting. And that puts Irony in the\r\n hot seat.</p>\r\n<p>Still looking for help with the documentation? If you give me a week or so, I'll prepare a simple document with the basics on the grammar construction for you to review and publish if you wish.</p>\r\n",
+    "PostedDate": "2013-01-14T15:06:34.31-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986758",
+    "ThreadId": "428024",
+    "Html": "\r\n<p>documentation - that would be great! Let's start building doc tab, one piece at a time</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2013-01-14T15:47:11.95-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986781",
+    "ThreadId": "428024",
+    "Html": "\r\n<p>In the meantime, until the Documentation tab gets filled in...I'll go order some books.</p>\r\n<p>You mentioned the dragon book. Which it appears to me to be getting me in deeper than just languages.\r\n<br>\r\nWith finite time and all, what is your opinion as to focusing just on languages/parsers? Maybe something like http://www.amazon.com/dp/1441919015/ref=rdr_ext_tmb ?&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2013-01-14T16:42:36.203-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986784",
+    "ThreadId": "428024",
+    "Html": "\r\n<p>This is an excellent book, and in fact the one that describes the advanced parser construction method used by Irony - it explains it in details. It does an excellent job of explaining LALR, better than Dragon book IMHO. But still, it's not an easy ride,\r\n warn you.</p>\r\n",
+    "PostedDate": "2013-01-14T16:50:50.217-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986786",
+    "ThreadId": "428024",
+    "Html": "\r\n<p>Make sure you get 2nd edition, 1st does not have this DeRemer/Penello algorithm that Irony uses.</p>\r\n",
+    "PostedDate": "2013-01-14T16:52:03.95-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986790",
+    "ThreadId": "428024",
+    "Html": "\r\n<p>Just wrote a 5-star review for this book - I owe it to these guys. Enjoy it too as I did.</p>\r\n",
+    "PostedDate": "2013-01-14T17:07:40.263-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "987096",
+    "ThreadId": "428024",
+    "Html": "\r\n<p>And then this:</p>\r\n<p>http://matt.might.net/articles/grammars-bnf-ebnf/</p>\r\n",
+    "PostedDate": "2013-01-15T07:12:10.427-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

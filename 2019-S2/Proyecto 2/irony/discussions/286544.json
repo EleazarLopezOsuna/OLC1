@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "727025",
+    "ThreadId": "286544",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I'm new to this whole area, and haven't yet used Irony or anything similar.</p>\r\n<p>What I'd like to do is parse a specified OData <a title=\"$orderby system query option\" href=\"http://www.odata.org/developers/protocols/uri-conventions#OrderBySystemQueryOption\" target=\"_blank\">\r\n$orderby system query option</a> (simple) and an OData <a title=\"$filter system query option\" href=\"http://www.odata.org/developers/protocols/uri-conventions#FilterSystemQueryOption\" target=\"_blank\">\r\n$filter system query option</a> (non-simple, but I only need to parse/implement a small subset).</p>\r\n<p>Has anyone done this with Irony?&nbsp; or have any pointers?</p>\r\n<p>TIA</p>\r\n",
+    "PostedDate": "2012-01-18T05:34:52.017-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "746115",
+    "ThreadId": "286544",
+    "Html": "<p>I think it is similar to expression grammar, except comparison operators are \"eq\" and alike two-char symbols, instead of special chars \"&lt;\"</p>\r\n<p>try starting with expr grammar and change operator symbols as needed.</p>",
+    "PostedDate": "2012-02-07T16:56:50.007-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

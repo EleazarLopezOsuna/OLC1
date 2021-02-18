@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Added AllowEof flag, makes FreeTextLiteral accept EOF as terminator",
+    "ClosedDate": "2009-12-20T02:36:23.153-08:00",
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "Hi,\n\nI wanted to use FreeTextLiteral in my grammar, but I got some weird errors during parsing.  Turns out that in my case, EOF is a legitimate terminator, but there’s no way to tell that to FreeTextLiteral.\nI checked, and these lines in FreeTextLiteral.TryMatch don’t check for EOF:\n        var newPos = source.Text.IndexOfAny(_stopChars, source.PreviewPosition);\n        if (newPos == -1) return null;\n\nI’m not sure what should be the correct way to fix this: either by adding EOF as a valid terminator somehow, or by always assuming EOF is a terminator (by fixing the above 2 lines to unconditionally check for EOF).  \nThe first option might be the best.\n\nIn the meantime I get by using a CustomTerminal and doing basically the same thing in its custom method, so it’s not a big issue.",
+    "LastUpdatedDate": "2009-12-20T02:36:23.153-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-12-17T11:15:49.743-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "FreeTextLiteral doesn’t have a way to add EOF as a terminator",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 6653
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

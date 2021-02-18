@@ -1,0 +1,56 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "Hello All,\r\n  I am implementing a language in Irony similar (for now) to C#. It was implemented from the C# 4.0 specification. It has issues when parsing method declarations. Specifically, it is failing to reduce to __return_type__. I have tested changing the __return_type__ in __method_header__ to __type_ref__ and it then recognizes the declaration, but it fails for a __void__ return type (for obvious reasons). I feel I am missing something and could use some other eyes on this. Any help would be greatly appreciated.\r\n  I have attached the complete grammar. and the important bits are detailed below.\r\n\r\n// NonTerminals\r\ntype_ref, return_type, method_header, method_declaration\r\n\r\n__KeyTerm__ @void = ToTerm( \"void\" );\r\ntype_ref.Rule = value_type | reference_type | type_parameter;\r\nreturn_type.Rule = type_ref | @void;\r\n\r\nmethod_header.Rule = member_header + return_type + member_name + type_parameter_list.Q() + open_par + formal_parameter_list.Q() + close_par + type_parameter_constraints_clauses.Q();\r\nmethod_declaration.Rule = method_header + method_body;\r\n",
+    "LastUpdatedDate": "2014-02-18T09:05:55.233-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2014-02-18T08:55:18.053-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Maybe I am missing something...",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9891
+  },
+  "FileAttachments": [
+    {
+      "FileId": 801153,
+      "FileName": "CPGrammar.cs",
+      "DownloadUrl": ".\\801153"
+    },
+    {
+      "FileId": 801154,
+      "FileName": "Object.cs",
+      "DownloadUrl": ".\\801154"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "I have attached the __Object__.cs class file I have been testing with.",
+      "PostedDate": "2014-02-18T09:05:55.233-08:00",
+      "Id": 133943
+    }
+  ]
+}

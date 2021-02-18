@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1054557",
+    "ThreadId": "446474",
+    "Html": "Hi, \r<br />\nI am trying to translate a string to a FTS query. (Full Text Search)\r<br />\nCan Irony assist me in it? \r<br />\nCan I use one of the examples in the archive I just downloaded to see it?\r<br />\nThanks.<br />\n",
+    "PostedDate": "2013-06-09T08:10:23.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1054677",
+    "ThreadId": "446474",
+    "Html": "here's a link to original article about this:\r<br />\n<a href=\"http://www.sqlservercentral.com/articles/Full-Text+Search+(2008)/64248/\" rel=\"nofollow\">http://www.sqlservercentral.com/articles/Full-Text+Search+(2008)/64248/</a>\r<br />\nIrony samples include FTS grammar/converter with up-to-date code (synced with latest version of Irony)<br />\n",
+    "PostedDate": "2013-06-09T19:52:09.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

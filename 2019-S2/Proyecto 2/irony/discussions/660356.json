@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1490336",
+    "ThreadId": "660356",
+    "Html": "Hello,<br />\n<br />\ni get the variable BnfExpression x = binOp.Q();.<br />\nNo I want to add it to the method MarkTransient. How can i do that? How can i cast this bnfexpression to nonterminal?<br />\n",
+    "PostedDate": "2016-12-27T11:29:16.597-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1293260",
+    "ThreadId": "562079",
+    "Html": "Hi all.<br />\n<br />\nThe question is simple. I can easily use variables (a.k.a <strong>Identifiers</strong>) and do whatever I want with them - incrementing, assigning, etc. But what I have not yet figured out is how to use identifier with assigned value in functions (<strong>FunctionNode</strong> nodes). Let me show what I mean:<br />\n<br />\nThis fragment is being parsed properly:<br />\n<pre><code>x = 1\ny = Min(3, 1)</code></pre>\n\nand return value is 1 (I use custom <strong>FunctionNode</strong> to provide an implementation for <strong>Min</strong> function). What I tried to do is:<br />\n<pre><code>x = 1\ny = Min(3, x)</code></pre>\n\nThis either throws exception or returns 3. Node value for 3 is <strong>{expr: 3}</strong> and for <strong>x</strong> is <strong>{expr: }</strong> <br />\nI tried to modify given example in <strong>ExpressionEvaluatorGrammar</strong> file but failed.<br />\n<br />\nIs there a right way to do this? Maybe I can somehow get the list of adentifiers? Or it is not possible within current code state?<br />\n<br />\nP.S. Tiny offtop question: &quot;Shifting to S65&quot; - is this some sort of state machine for working with Identifiers and their states? Some insights?<br />\n<br />\nThanks!<br />\n",
+    "PostedDate": "2014-08-25T13:47:05.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1293263",
+    "ThreadId": "562079",
+    "Html": "I don't understand. Just ran your code in SampleExpressionEvaluator and it works correctly. Changed 'x=6', and it returns 3 now. \r<br />\n??<br />\n",
+    "PostedDate": "2014-08-25T13:52:41.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1293273",
+    "ThreadId": "562079",
+    "Html": "Thanks for the fast reply.<br />\n<br />\nI believe the problem is in my misunderstanding of how I should use <strong>FunctionCallNode</strong> node type. I started playing with <strong>ExpressionEvaluatorGrammar</strong> class (by coping it into my own) and tried to evaluate <strong>Min(3, 1)</strong> function (provide a simple string containing &quot;Min&quot; function). After I got exception &quot;Unknown symbol 'Min'.&quot;, I decided to implement my own <strong>FunctionCallNode</strong> class and provide a function implementation in there. I made it much simplier - just parse arguments and get the node name (a.k.a. Function Name).<br />\n<br />\nI tried SampleExpressionEvaluator and it worked. Am I missing smth? Where is Min (and any other standard function) being imlemented?<br />\n<br />\n<strong>Update</strong>: Got it. It works through ClrInterup and default Math module. Obviously... But it doesn't work if I ran the same implementation from custom code. I believe the matter is in some inner state that lost while not running in <em>native</em> environment...<br />\n<br />\n<strong>Update 2</strong>: Never mind, I figured all out. <br />\n<br />\nTHanks!<br />\n",
+    "PostedDate": "2014-08-25T14:08:22.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

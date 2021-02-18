@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": null,
+    "Description": "Hi,\r\n\r\nI define FreeText literal for this script \"SELECT * FROM dbo.Person WHERE Country.City.Id = ?\". I tried to get \"Country.City.Id\" word. works ok. but  Every token marks mirror. I mean WHERE looks mirror.\r\n\r\n            var mirror = new FreeTextLiteral(\"mirror\", FreeTextOptions.AllowEof, \" \");\r\n            mirror.SetFlag(TermFlags.IsNonGrammar);\r\n\r\n            Id.Rule =  MakePlusRule(Id, dot, mirror)\r\n\r\n is there any way to fix this.          ",
+    "LastUpdatedDate": "2016-06-07T13:02:42.28-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2016-06-06T13:03:11.163-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Freetext literal",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9903
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "remove \nmirror.SetFlag(....)\nthis causes this terminal to catch everything\nbut I am not sure FreeTextLiteral is appropriate here. ",
+      "PostedDate": "2016-06-06T14:29:01.503-07:00",
+      "Id": 199967
+    },
+    {
+      "Message": "> Thank you for replay. I changed IdentifierTerminal with  prefix works perfect. \n",
+      "PostedDate": "2016-06-07T13:02:42.28-07:00",
+      "Id": 199984
+    }
+  ]
+}

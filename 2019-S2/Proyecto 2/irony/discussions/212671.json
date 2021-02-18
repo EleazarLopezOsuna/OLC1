@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "442953",
+    "ThreadId": "212671",
+    "Html": "<p>Hello.</p>\r\n<p>My grammar can have 2 statements: real_number + &quot;SEC&quot; or int_number + &quot;CLK&quot;.</p>\r\n<p>real_number forms are 1, 1E0, 1E+0, 1E-0, 1.0, 1.0E0, 1.0E+0, and 1.0E-0.<br>Grammar handles statements &quot;1.0 sec&quot; and&nbsp;&quot;1 clk&quot;.</p>\r\n<p>But&nbsp;&quot;1 sec&quot; (should be valid)&nbsp;causes a syntax&nbsp;error&nbsp;(expected: clk).</p>\r\n<p>How to solve this problem?</p>\r\n<p>&nbsp;&nbsp;&nbsp; [Language(&quot;test&quot;)]<br>&nbsp;&nbsp;&nbsp; public class TryGrammar : Grammar<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public TryGrammar() : base(false)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var real_number = new NumberLiteral(&quot;real_number&quot;);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var int_number = new NumberLiteral(&quot;int_number&quot;, NumberOptions.IntOnly);</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var sec_stmt = new NonTerminal(&quot;sec_stmt&quot;);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var clk_stmt = new NonTerminal(&quot;clk_stmt&quot;);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var stmt = new NonTerminal(&quot;expr&quot;);</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sec_stmt.Rule = real_number + &quot;SEC&quot;;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; clk_stmt.Rule = int_number + &quot;CLK&quot;;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stmt.Rule = sec_stmt | clk_stmt;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // ok: 1.0 sec<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // ok: 1 clk<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // error: 1 sec</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Root = stmt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }</p>",
+    "PostedDate": "2010-05-14T08:40:34.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "444433",
+    "ThreadId": "212671",
+    "Html": "The reason it fails is because your scanner settings are ambiguous. Scanner cannot decide for sure between real number and integer in case of &quot;1&quot;, so it chooses int_number, and then parser fails. This ambiguity cannot be clearly detected automatically, so it's not reported after grammar analysis. You have to reformulate your grammar, using one number literal (real_number), and then validate during or after parsing that for &quot;CLK&quot; expression the number is int.\r\n",
+    "PostedDate": "2010-05-18T10:13:37.38-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "448064",
+    "ThreadId": "212671",
+    "Html": "<p>Thanks for reply.</p>\r\n<p>&nbsp;sec_stmt.Rule = (int_number | real_number) + &quot;SEC&quot;; // worked in my case</p>",
+    "PostedDate": "2010-05-27T02:16:47.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

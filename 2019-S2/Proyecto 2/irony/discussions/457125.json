@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "1093332",
+    "ThreadId": "457125",
+    "Html": "Any interest in pushing a NuGet package for this? If not, I'm going to be making my own in a moment.... would be better if ya'll would. :0<br />\n",
+    "PostedDate": "2013-09-16T15:36:55.55-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1093637",
+    "ThreadId": "457125",
+    "Html": "go ahead. I'm kinda skeptical about this nuget thing, find it annoying the way it works, installing whole bunch a crap into Packages folder. I usually have to go, clean it up and move stuff to more permanent location.<br />\nIMHO it might be a life saver for LAMP-based c/ruby/whatever packs with zillion dependencies/frameworks but for .NET - I doubt it is always beneficial.  At least for Irony I don't think it brings a lot of bang - just a single assembly as a dependency. But most likely you need GrammarExplorer to debug your grammar, so it makes sense simply to download the entire package directly from here.\r<br />\nthanks\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-09-17T09:45:53.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1093687",
+    "ThreadId": "457125",
+    "Html": "The thing is that I want to write things that depend ON Irony. Grammars, utilities, etc. Not necessarily that I need Irony to be dependent upon something. Yeah, the thing makes sense when you have huge dependency hierarchies. For instance, ASP.Net is now\r<br />\n distributed on NuGet. The number of dependencies that has is massive.<br />\n",
+    "PostedDate": "2013-09-17T11:32:31.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1093734",
+    "ThreadId": "457125",
+    "Html": "I understand about 'depend ON Irony', and that's what I was saying - to have Irony as a dependency is not a big deal I think<br />\n",
+    "PostedDate": "2013-09-17T13:52:01.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1093788",
+    "ThreadId": "457125",
+    "Html": "Yeah, I got ya. Okay. I'll upload the package then and then set you as a co-owner so you can do whatever with it if you ever have the desire. You'll need to go make an account, though and get me your username. In case I vanish from the face of the earth\r<br />\n you should have access to it. Also, Irony doesn't really have an icon, does it? Nor does it seem to have any sort of versioning scheme. The icon doesn't matter. I'd like to clear the versioning thing as much as possible before I upload it. Unless you just\r<br />\n want to version it by date: 0.2013.9.17-alpha, for instance. I guess if you don't want to think about this now, that's fine. Leaving the left-most value as '0' will be fine so as not to get in trouble if you actually ever release a 1.0. From the minor experience\r<br />\n I've had using it I'd certainly say it is beyond alpha quality. The thing works flawlessly. Project seems to be super mature (not to mention old, at this point!) By the way, I'm doing this because I want looking for a grammar parser a few days ago, and of\r<br />\n course, the first thing I did was pop open NuGet and type 'grammar' and 'BNF'. Found a couple dozen. Some like Irony, using C# to express the syntax with overloads. Some just wrappers around ANTLR. Not a one of them was anything close to mature (except ANTLR).\r<br />\n As far as I could tell, there was no reason for these people to have even made their parsers: Irony is more than good enough, just as free, and much more mature. I suspect that these people made their parsers mostly because they never discovered Irony, because\r<br />\n they probably went about looking the same way I did: searching NuGet. My good deed for the month will be helping those people. ;) I think I got lucky stumbling onto it. Also, it's awesome. Amazing job. Much thanks.<br />\n",
+    "PostedDate": "2013-09-17T17:07:21.59-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1093868",
+    "ThreadId": "457125",
+    "Html": "thanks man\r<br />\nversion - let's make it 0.9; it is in fact beta, will change it everywhere\r<br />\nas for why people build more parsers while there's Irony - allow me to disagree. I don't think anybody starting a new .NET parser did just nuget search and did not google - and googling '.NET parser' brings Irony as first result. So I guess people do it just for fun, or to research different parser methods; you might notice that most these nuget parsers use exotic approaches like PEG or whatever - people exploring stuff, for fun, curiosity or more serious research. \r<br />\nBut nuget package will certainly be useful for Irony anyway, even with google finding it so quickly\r<br />\nthanks again\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-09-17T23:13:47.21-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1099802",
+    "ThreadId": "457125",
+    "Html": "sorry, did not get to it yet, got stuck with a lot of other stuff, including home repair/renovation that sort of ran out of hand, just like app dev - took way longer than expected. Will get to this nuget thing soon<br />\n",
+    "PostedDate": "2013-09-26T12:03:57.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1114957",
+    "ThreadId": "457125",
+    "Html": "I wanted to use published NuGet package but unfortunately I need package for .NET 4.0 and there is version only for 4.5.<br />\nWould it be problem to publish also Irony package for lower .NET versions?<br />\n",
+    "PostedDate": "2013-10-31T02:49:13.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1126346",
+    "ThreadId": "457125",
+    "Html": "I just published a prerelease version, 0.9.0-net40, which is built for .Net 4.0.<br />\n<br />\nIt looks like irony is perfectly compatible with Net 4.0 right now. I'll push 4.0 packages from this point forward until some new incompatibility is hit.<br />\n",
+    "PostedDate": "2013-11-18T20:50:13.15-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1126370",
+    "ThreadId": "457125",
+    "Html": "Thanks a lot, helped so much.<br />\n",
+    "PostedDate": "2013-11-18T22:46:10.39-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1127161",
+    "ThreadId": "457125",
+    "Html": "sorry for long time silence, will try to get to it soon\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-11-20T09:52:37.527-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

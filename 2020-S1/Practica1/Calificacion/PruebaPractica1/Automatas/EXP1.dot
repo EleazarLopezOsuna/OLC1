@@ -1,0 +1,11 @@
+digraph{
+rankdir = LR;
+S0 -> S1[label="vocales_min"];
+S1 -> S3[label=" "];
+S1 -> S2[label="minusculas"];
+S1 -> S3[label="logicos"];
+S1 -> S1[label="vocales_may"];
+S1[shape=doublecircle];
+S3 -> S1[label="relacionales"];
+S2 -> S1[label="mayusculas"];
+}

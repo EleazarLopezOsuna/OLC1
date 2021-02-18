@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1070916",
+    "ThreadId": "450712",
+    "Html": "It throws exception when the parser is  generating the ast. \r<br />\nJust the same as the question here:\r<br />\n<a href=\"http://stackoverflow.com/questions/10541289/irony-ast-generation-throws-nullreference-excepttion\" rel=\"nofollow\">http://stackoverflow.com/questions/10541289/irony-ast-generation-throws-nullreference-excepttion</a>\r<br />\n<br />\nIs there a fix for this?<br />\n",
+    "PostedDate": "2013-07-21T00:41:49.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1071033",
+    "ThreadId": "450712",
+    "Html": "just stop in the debugger on exc, see for what node (nonterminal) it happens, and assign AstNodeType for this NT in grammar constructor<br />\n",
+    "PostedDate": "2013-07-21T14:21:25.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

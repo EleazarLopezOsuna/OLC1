@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "187619",
+    "ThreadId": "55559",
+    "Html": "Hi,<div><br></div><div>I'm looking to use Irony in my next project - can you tell me if it supports the compact framework?</div>",
+    "PostedDate": "2009-05-07T00:16:49.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "187807",
+    "ThreadId": "55559",
+    "Html": "Have no idea - never tried. Try to compile it with refs to compact version, but likely you'll find some problems\r\n",
+    "PostedDate": "2009-05-07T10:56:45.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

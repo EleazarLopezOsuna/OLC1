@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "916237",
+    "ThreadId": "396545",
+    "Html": "\r\n<p>I was looking at how to better highlight context sensitive errors such as <em>\r\n&quot;Octave must be between 0 and 8&quot;</em>, by passing a <em>SourceSpan </em>to <strong>\r\n<em>new LogMessage(...)</em> </strong>instead of a <em>SourceLocation. </em>The result of this was that my highlighting routine could do the following to display the entire erroneous token instead of just it's first character:</p>\r\n<pre> ShowSourcePosition(err.Location.Position,</pre>\r\n<pre>    err.Location is SourceSpan ? ((SourceSpan)err.Location).Length : 1);</pre>\r\n<p>The simplest way I found to achieve this was:</p>\r\n<ol>\r\n<li>Convert <em>SourceLocation </em>and <em>SourceSpan </em>to classes, sub-classing\r\n<em>SourceSpan </em>from <em>SourceLocation</em>. </li><li>Adding <em>empty</em> and <em>copy</em> constructors to <em>SourceLocation</em>.\r\n</li><li>Changing readonly field <strong><em>Location</em> </strong>in <em>SourceSpan </em>\r\nto a get-only property. </li><li>Changing line 1 of<em> Parser.ParseTree</em> to initialize <em><strong>loc </strong>\r\n</em>with <br>\r\n<em>&nbsp;&nbsp;&nbsp; new SourceLocation()</em> <br>\r\ninstead of <br>\r\n&nbsp;&nbsp;&nbsp; <em>default(SourceLocation)</em>. </li></ol>\r\n<p>Is there a bettwer way to get this result?</p>\r\n<p>Of course, the same result is possible by:</p>\r\n<ol>\r\n<li>Renaming struct <em>SourceLocation </em>to <em>ConcreteSourceLocation</em>; </li><li>Defining an interface <em>SourceLocation </em>to be implemented by both <em>ConcreteSourceLocation</em> and\r\n<em>SourceSpan</em>; and finally </li><li>Fighting one's way through all the consequent code changes. </li></ol>\r\n<p>but I didn't want to tackle that unless you felt it worthwhile.</p>\r\n",
+    "PostedDate": "2012-09-23T02:38:30.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917940",
+    "ThreadId": "396545",
+    "Html": "<p>hm... will think about this (having span instead location in error message)</p>",
+    "PostedDate": "2012-09-26T09:44:39.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917961",
+    "ThreadId": "396545",
+    "Html": "<p>I am happy to make the coding changes once you make the design decision above.</p>",
+    "PostedDate": "2012-09-26T10:02:08.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

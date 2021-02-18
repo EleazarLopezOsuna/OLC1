@@ -1,0 +1,8 @@
+digraph{
+node[shape=record];
+Nodo_0[label="1 | {<lH>F|{<lL>.}} | 2"];
+Nodo_0:lL -> Nodo_1:lH;
+Nodo_0:lL -> Nodo_2:lH;
+Nodo_1[label="1 | {<lH>F|{!}|{<lL>1}} | 1"];
+Nodo_2[label="2 | {<lH>F|{#}|{<lL>2}} | 2"];
+}

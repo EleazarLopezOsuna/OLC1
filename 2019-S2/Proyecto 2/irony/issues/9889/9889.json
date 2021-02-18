@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Depending upon case sensitivity of the filesystem you are using in Linux, there is a file naming mismatch contained within the 010.Irony.2012 project file for two source files being referenced. This is not an issue on OS-X/Windows/Samba/UNC/.. based filesystems using Mono/Xbuild or Monodevelop, just Linux filesystems like 'ext4'.\r\n\r\nEither the two source files need renamed, or two lines in the project file need changed to allow the build to complete.\r\n\r\n```\r\n010.Irony.2012 project file ->\r\n<Compile Include=\"Parsing\\Terminals\\RegexLiteral.cs\" />\r\n<Compile Include=\"Parsing\\Terminals\\RegexBasedTerminal.cs\" />\r\n```\r\n```\r\nubuntu:~/Documents/Projects/Irony2/Irony/Parsing/Terminals$ ls -l Reg*\r\n-rw-r--r-- 1 niteware niteware 2541 Dec 19 19:45 RegExBasedTerminal.cs\r\n-rw-r--r-- 1 niteware niteware 5913 Dec 19 19:45 RegExLiteral.cs\r\n```\r\n\r\n```\r\n/home/niteware/Documents/Projects/Irony2/Irony/010.Irony.2012.csproj (Build) ->\r\n/home/niteware/opt/mono/lib/mono/4.0/Microsoft.CSharp.targets (CoreCompile target) ->\r\n\r\n\t: error CS2001: Source file `Parsing/Terminals/RegexLiteral.cs' could not be found\r\n\t: error CS2001: Source file `Parsing/Terminals/RegexBasedTerminal.cs' could not be found\r\n\r\n\t 0 Warning(s)\r\n\t 2 Error(s)\r\n\r\nTime Elapsed 00:00:01.8838520\r\n\r\n---------------------- Done ----------------------\r\n\r\nBuild: 2 errors, 0 warnings\r\n```",
+    "LastUpdatedDate": "2013-12-19T20:27:12.373-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2013-12-19T20:27:12.373-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Linux: Build failure / Filesystem case sensitivity issue",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 9889
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

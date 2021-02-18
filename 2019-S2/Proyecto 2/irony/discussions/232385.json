@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "512810",
+    "ThreadId": "232385",
+    "Html": "\r\n<p>Hi, I'm using the SearchGrammar and wondering if its possible to allow invalid user query to generate correct CONTAINS query.</p>\r\n<p>&nbsp;</p>\r\n<p>Following query gave me a Syntax Error when parsing, but I'm not sure how to set the ErrorRule so that it will ignore the error and still generate a usable CONTAINS query.</p>\r\n<p>&quot; space &quot; ; astronaut</p>\r\n<p>&nbsp;</p>\r\n<p>The error happens right before paring ; where the space before is recognized as ImpliedAnd but ; fails to be parsed. Th error indicates:</p>\r\n<table>\r\n<tbody>\r\n<tr>\r\n<td>\r\n<p>Syntax error, expected: Term ~ &#43; ( Phrase &lt;</p>\r\n<p>I've tried adding Root.ErrorRule = SyntaxError &#43; Eos; but it doesn't seem to be able to generate a&nbsp;usable&nbsp;AST root.</p>\r\n<p>Any help is&nbsp;appreciated!</p>\r\n<p>&nbsp;</p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n",
+    "PostedDate": "2010-10-26T09:43:00.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "512837",
+    "ThreadId": "232385",
+    "Html": "\r\n<p>You can try the following. Create a custom terminal that represents any erroneous string. In its TryMatch method, consume all until next whitespace. Set its priority to (LowestPriority) so it is called to produce token only when all other terminals fail\r\n to produce token. Then in query conversion recognize this terminal and handle it in proper way (ignore or assume it TRUE in &quot;AND&quot; expressions). You may need to play with priority, as ImpliedSymbol terminal also has lowest priority and they may interfere.</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2010-10-26T10:24:58.053-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "512850",
+    "ThreadId": "232385",
+    "Html": "\r\n<p>In fact you can probably use FreeTextLiteral for this error terminal, with space as a terminator.</p>\r\n",
+    "PostedDate": "2010-10-26T10:38:41.14-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "512894",
+    "ThreadId": "232385",
+    "Html": "\r\n<p>Thanks for the suggestion, I actually tried something like this and its giving me okay results (I'm not sure if it's the correct way of doing things since I'm pretty new to Irony)</p>\r\n<ol>\r\n<li>var Junk = new RegexBasedTerminal(&quot;Junk&quot;, &quot;\\\\W*&quot;); // this catches any no chars junks that's prob not what user wants to search for\r\n</li><li>Modify&nbsp;Expression.Rule so it includes the Junk.\r\n<div style=\"color:black; background-color:white\">\r\n<pre>Expression.Rule = PrimaryExpression | BinaryExpression | Junk;\r\n</pre>\r\n</div>\r\n</li><li>Add following so Junk is returning an empty string and modify BinaryExpression so that when constructing the result, we check if either side is empty string.\r\n</li></ol>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>            <span style=\"color:blue\">case</span> <span style=\"color:#a31515\">&quot;Junk&quot;</span>:\r\n                result = <span style=\"color:blue\">string</span>.Empty;\r\n                  <span style=\"color:blue\">break</span>;\r\n            <span style=\"color:blue\">case</span> <span style=\"color:#a31515\">&quot;BinaryExpression&quot;</span>:\r\n              <span style=\"color:blue\">string</span> opSym = <span style=\"color:blue\">string</span>.Empty;\r\n              <span style=\"color:blue\">string</span> op = node.ChildNodes[1].FindTokenAndGetText().ToLower(); \r\n              <span style=\"color:blue\">string</span> sqlOp = <span style=\"color:#a31515\">&quot;&quot;</span>;\r\n              <span style=\"color:blue\">switch</span>(op) {\r\n                <span style=\"color:blue\">case</span> <span style=\"color:#a31515\">&quot;&quot;</span>:  <span style=\"color:blue\">case</span> <span style=\"color:#a31515\">&quot;&amp;&quot;</span>:  <span style=\"color:blue\">case</span> <span style=\"color:#a31515\">&quot;and&quot;</span>:\r\n                  sqlOp = <span style=\"color:#a31515\">&quot; AND &quot;</span>;\r\n                  type = TermType.Inflectional;\r\n                  <span style=\"color:blue\">break</span>;\r\n                <span style=\"color:blue\">case</span> <span style=\"color:#a31515\">&quot;-&quot;</span>:\r\n                  sqlOp = <span style=\"color:#a31515\">&quot; AND NOT &quot;</span>;\r\n                  <span style=\"color:blue\">break</span>;\r\n                <span style=\"color:blue\">case</span> <span style=\"color:#a31515\">&quot;|&quot;</span>:   <span style=\"color:blue\">case</span> <span style=\"color:#a31515\">&quot;or&quot;</span>:\r\n                  sqlOp = <span style=\"color:#a31515\">&quot; OR &quot;</span>;\r\n                  <span style=\"color:blue\">break</span>;\r\n              }<span style=\"color:green\">//switch</span>\r\n\r\n                  <span style=\"color:blue\">var</span> left = ConvertQuery(node.ChildNodes[0], type);\r\n                  <span style=\"color:blue\">var</span> right = ConvertQuery(node.ChildNodes[2], type);\r\n                  <span style=\"color:blue\">if</span> (<span style=\"color:blue\">string</span>.IsNullOrEmpty(left))\r\n                  {\r\n                      result = right;\r\n                  } <span style=\"color:blue\">else</span> <span style=\"color:blue\">if</span> (<span style=\"color:blue\">string</span>.IsNullOrEmpty(right))\r\n                  {\r\n                      result = left;\r\n                  } <span style=\"color:blue\">else</span>\r\n                  {\r\n                      result = <span style=\"color:#a31515\">&quot;(&quot;</span> &#43; left &#43; sqlOp &#43; right &#43; <span style=\"color:#a31515\">&quot;)&quot;</span>;\r\n                  }\r\n              <span style=\"color:blue\">break</span>;\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-10-26T11:25:00.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "512933",
+    "ThreadId": "232385",
+    "Html": "\r\n<p>Looks good.. I'm just wondering - why treat stand-alone &quot;;&quot; as an error? what if user wants to search for this symbol as well?</p>\r\n<p>Would it be more reasonable to expand allowed first/all symbols in Term definition, so that special chars like this (and strings of these chars) are treated as legit terms?</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-10-26T12:37:13.37-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "512948",
+    "ThreadId": "232385",
+    "Html": "\r\n<p>That's a very good point, I'll experiment and try out some different scenarios.</p>\r\n",
+    "PostedDate": "2010-10-26T13:00:43.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

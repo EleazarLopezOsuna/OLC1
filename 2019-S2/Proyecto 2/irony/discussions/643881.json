@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1440984",
+    "ThreadId": "643881",
+    "Html": "I'm using Irony for parsing a grammar, and at one point I have a rule defined like this:<br />\n<blockquote>\nQualId ::= id {‘.’ id}<br />\n</blockquote>\nWhere id is an identifier. In my code, I have something like the code segment below, but it gives me an error, saying that it cannot convert identifier to a nonterminal.<br />\n<blockquote>\nIdentifierTerminal id = new IdentifierTerminal(&quot;id&quot;);<br />\n<br />\nNonTerminal QualId = new NonTerminal(&quot;QualId&quot;);<br />\nQualId.Rule = MakePlusRule(id, Dot, id);<br />\n</blockquote>\nAny idea how to solve the problem?<br />\n",
+    "PostedDate": "2015-08-18T14:43:18.093-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1441323",
+    "ThreadId": "643881",
+    "Html": "I believe your call is wrong:<br />\n<pre><code>QualId.Rule = MakePlusRule(QualId, &quot;.&quot;, id);</code></pre>\n\n",
+    "PostedDate": "2015-08-21T12:55:36.343-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

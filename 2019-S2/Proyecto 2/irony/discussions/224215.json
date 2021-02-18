@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "482652",
+    "ThreadId": "224215",
+    "Html": "<p>Hi all,</p>\r\n<p>I need Sql Parser in C# for detect if sql files are correct.</p>\r\n<p>I need parser of INSERT,&nbsp; UPDATE, DELETE statements, better is ORACLE, but dont mind sql server, mssql, standard sql.</p>\r\n<p>any help ? please, any sample code for my issue ?<br><br>&nbsp;where I can download Grammars for Irony ?? <br><br>Thanks.</p>",
+    "PostedDate": "2010-08-20T02:39:59.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "482790",
+    "ThreadId": "224215",
+    "Html": "<p>Currently all sample grammars come included with the Irony solution. There are even samples of code for these grammars.</p>\r\n<p>Check the project 020.Irony.Samples in the Irony solution.</p>",
+    "PostedDate": "2010-08-20T07:18:16.04-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

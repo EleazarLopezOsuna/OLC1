@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "822031",
+    "ThreadId": "351815",
+    "Html": "\r\n<p>hello,</p>\r\n<p>here is my problem.</p>\r\n<p>When i use the following grammar</p>\r\n<p>IdentifierTerminal id = new IdentifierTerminal(&quot;Id&quot; );<br>\r\nNonTerminal variable = new NonTerminal(&quot;variable&quot;);<br>\r\nNonTerminal method = new NonTerminal(&quot;method&quot;);<br>\r\n<br>\r\nvariable.Rule = MakePlusRule(variable, ToTerm(&quot;.&quot;), id);<br>\r\nmethod.Rule = variable &#43; ToTerm(&quot;.&quot;) &#43; id &#43; &quot;()&quot;;<br>\r\n<br>\r\nthis.Root = method;</p>\r\n<p>&nbsp;</p>\r\n<p>i can parse &nbsp;a.b() and a.b.c()</p>\r\n<p>but not with this one &nbsp;:</p>\r\n<p>&nbsp;</p>\r\n<p>IdentifierTerminal id = new IdentifierTerminal(&quot;Id&quot; );<br>\r\nNonTerminal variable = new NonTerminal(&quot;variable&quot;);<br>\r\nNonTerminal unused = new NonTerminal(&quot;unused&quot;);<br>\r\nNonTerminal method = new NonTerminal(&quot;method&quot;);<br>\r\n<br>\r\nvariable.Rule = MakePlusRule(variable, ToTerm(&quot;.&quot;), id);<br>\r\nunused.Rule = variable;<br>\r\nmethod.Rule = unused &#43; ToTerm(&quot;.&quot;) &#43; id &#43; &quot;()&quot;;<br>\r\n<br>\r\nthis.Root = method;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>thank you for &nbsp;your help.</p>\r\n<p>Guillaume</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-04-10T09:01:08.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "822041",
+    "ThreadId": "351815",
+    "Html": "<p>I bet the second version shows a shift-reduce conflict shown in Grammar errors tab - this is the problem; the parser needs to decide to reduce \"unused\" rule when it sees variable followed by dot, and it is not enough information. Do not try to use the grammar until you resolve all conflicts!</p>",
+    "PostedDate": "2012-04-10T09:43:51.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "824289",
+    "ThreadId": "351815",
+    "Html": "<p>you are right, i have a conflit in the grammar.</p>\r\n<p>thank you for your answer.</p>",
+    "PostedDate": "2012-04-16T02:16:34.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

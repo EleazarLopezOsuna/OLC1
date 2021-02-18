@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "447363",
+    "ThreadId": "213847",
+    "Html": "<p>Has anyone used the StringTemplate option in StringLiteral? &nbsp;If so, how do I set ExpressionRoot? &nbsp;I'm not sure what it's supposed to be set to. &nbsp;I've extended StringLiteral and set the other properties for the StringTemplateSettings, but not sure what to do with ExpressionRoot.</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> MyStringLiteral : StringLiteral\r\n    {\r\n        <span style=\"color:blue\">public</span> MyStringLiteral(<span style=\"color:blue\">string</span> name, <span style=\"color:blue\">string</span> startEndSymbol)\r\n            : <span style=\"color:blue\">base</span>(name, startEndSymbol, StringOptions.IsTemplate)\r\n        {\r\n            StringTemplateSettings settings = <span style=\"color:blue\">new</span> StringTemplateSettings();\r\n            settings.StartTag = <span style=\"color:#a31515\">&quot;{&quot;</span>;\r\n            settings.EndTag = <span style=\"color:#a31515\">&quot;}&quot;</span>;\r\n\r\n            <span style=\"color:blue\">this</span>.AstNodeConfig = settings;\r\n        }\r\n    }\r\n</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2010-05-25T17:24:13.643-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "447397",
+    "ThreadId": "213847",
+    "Html": "<p>Look at ExpressionEvaluatorGrammar, it uses this facility for Ruby-like string templates; also read about it in the latest entry in my blog, I discuss this facility briefly. Link to log is on home page</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-05-25T20:01:32.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "448295",
+    "ThreadId": "213847",
+    "Html": "<p>Thanks. &nbsp;I should have known as most of the answers can be found by referencing that example. &nbsp;I've looked it a million times, but of course, never noticed that part of it.</p>",
+    "PostedDate": "2010-05-27T10:38:02.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

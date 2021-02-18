@@ -1,0 +1,264 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item dropdown">
+				<button type="button" class="btn btn-success" id="openTrigg">Abrir</button>
+			</li>
+			<li>
+				<input id="nombreNuevo" type="text" class="form-control" placeholder="Nombre del Archivo" aria-label="Recipient's username" aria-describedby="basic-addon2">
+			</li>
+			<li>
+				<button type="button" class="btn btn-success" onclick="crearNuevo()">Crear</button>
+			</li>
+      <li class="nav-item dropdown">
+				<button type="button" class="btn btn-primary" onclick="compilar()">Compilar</button>
+			</li>
+			<li class="nav-item dropdown">
+				<button type="button" class="btn btn-danger">Errores Lexicos</button>
+			</li>
+			<li class="nav-item dropdown">
+				<button type="button" class="btn btn-warning">Errores Sintacticos</button>
+			</li>
+			<li>
+				<input id="nombreGuardar" type="text" class="form-control" placeholder="Guardar Como" aria-label="Recipient's username" aria-describedby="basic-addon2">
+			</li>
+			<li>
+				<button type="button" class="btn btn-success" onclick="guardarNuevo()">Guardar</button>
+			</li>
+    </ul>
+  </div>
+</nav>
+<ul class="nav">
+	<li style="margin: 0;">
+		<div style="margin: 0;">
+			<ul id="archivosActivos" class="nav nav-tabs">
+			</ul>
+			<div id="areasTexto" class="tab-content" style="margin: 0;">
+				<div id="home" class="tab-pane fade in active" style="margin: 0;">
+					<div style="margin: 0; width: 680px;">
+						<label>Posicion Actual: </label><input id="sel_in" style="border-style:none" readonly>
+						<br>
+						<textarea class="rownr" rows="10" cols="3" value="1" readonly></textarea>
+							<textarea id = "codigo" class="txt" rows="10" cols="150" nowrap="nowrap" wrap="off" autocomplete="off" autocorrect="off" autocapitalize="off"
+								spellcheck="false" onclick="input_changed(this)" onkeyup="keyup(this,event)" oninput="input_changed(this)"
+								onscroll="scroll_changed(this)"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+	</li>
+  <li class="nav-item">
+		<div class="tab-content">
+			<div class="tab-pane fade in active">
+				<label>Traduccion </label>
+				<br>
+    		<textarea name="" id="traduccion" cols="30" rows="10" style="width: 660px;" disabled></textarea>
+			</div>
+		</div>
+  </li>
+</ul>
+
+<ul class="nav">
+	<li>
+		<div class="tab-content">
+			<div class="tab-pane fade in active">
+				<div style="margin: 0; width: 680px;">
+					<label>Variables </label>
+					<br>
+					<table id="variables" class="table table-bordered table-dark" style="width: 100%;">
+						<thead>
+							<tr id="cabeceras">
+								
+							</tr>
+						</thead>
+						<tbody id="cuerpo">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</li>
+  <li class="nav-item">
+		<div style="margin: 0;">
+			<ul id="archivosActivos" class="nav nav-tabs">
+				<li><a href="#" onclick="cargarHtml()">HTML</a></li>
+				<li><a href="#" onclick="cargarJson()">JSON</a></li>
+			</ul>
+			<div id="areasTexto" class="tab-content" style="margin: 0;">
+				<div id="html" class="tab-pane fade in active" style="margin: 0;">
+					<div class="tab-content">
+						<div class="tab-pane fade in active">
+							<br>
+							<textarea name="" id="htmljson" cols="30" rows="10" style="width: 660px;" disabled></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+  </li>
+</ul>
+
+<input id="fileInput" type="file" hidden accept=".cs"/>
+<script>
+	var textoHtml = ""
+	var textoJson = ""
+	
+	function cargarHtml(){
+		document.getElementById('htmljson').value = textoHtml
+	}
+
+	function cargarJson(){
+		document.getElementById('htmljson').value = textoJson
+	}
+
+	function compilar(){
+		iniciarAnalisisLexico(document.getElementById('codigo').value);
+		var tokens = obtenerTokens();
+		var errores = obtenerErrores();
+		var comentarios = obtenerComentarios();
+
+		if(errores.length > 0){
+			alert("Texto Erroneo")
+			reportarErrores(errores)
+		}else{
+			var contadorErrores = errores.length
+			var resultado = iniciarAnalisisSintactico(tokens, errores, comentarios)
+			errores = resultado[0]
+
+			if(errores.length === contadorErrores){
+				agregarVariables(resultado[1]);
+				document.getElementById('traduccion').value = traducirPython(resultado[1], "")
+				textoHtml = document.getElementById('htmljson').value = recorrerHtml(resultado[1]).replace(/'/gm, "").replace(/></gm, ">\n<")
+				var a = traducirJson(textoHtml.replace(/\n/gm, ""), "")[0].split("\n")
+				for(var i = 0; i < a.length; i++){
+					if(!a[i].match(/^\s+$/)){
+						textoJson += a[i] + "\n"
+					}
+				}
+			}else{
+				alert("Texto Erroneo")
+				reportarErrores(errores)
+			}
+
+			/*for(var i = 0; i < tokens.length; i++){
+				console.log("Nombre: " + tokens[i].nombre + " Valor: " + tokens[i].lexema)
+			}
+
+			for(var i = 0; i < errores.length; i++){
+				console.log(errores[i].mensaje + errores[i].lexema + " linea: " + errores[i].linea + " columna: " + errores[i].columna)
+			}*/
+		}
+	}
+
+	function reportarErrores(errores){
+		var child = document.getElementById('cabeceras').lastElementChild;  
+  	while (child) { 
+    	document.getElementById('cabeceras').removeChild(child); 
+    	child = document.getElementById('cabeceras').lastElementChild; 
+  	}
+
+  	child = document.getElementById('cuerpo').lastElementChild;  
+  	while (child) { 
+    	document.getElementById('cuerpo').removeChild(child); 
+    	child = document.getElementById('cuerpo').lastElementChild; 
+  	}
+
+
+		var tipo = document.createElement('th')
+		var linea = document.createElement('th')
+		var columna = document.createElement('th')
+		var error = document.createElement('th')
+
+		tipo.scope = "col"
+		linea.scope = "col"
+		columna.scope = "col"
+		error.scope = "col"
+
+		tipo.textContent = "Tipo"
+		linea.textContent = "Linea"
+		columna.textContent = "Columna"
+		error.textContent = "Error"
+
+		document.getElementById('cabeceras').appendChild(tipo)
+		document.getElementById('cabeceras').appendChild(linea)
+		document.getElementById('cabeceras').appendChild(columna)
+		document.getElementById('cabeceras').appendChild(error)
+
+		for(var i = 0; i < errores.length; i++){
+			var nuevoTr = document.createElement('tr')
+			var nuevoTipo = document.createElement('td')
+			var nuevoLinea = document.createElement('td')
+			var nuevoColumna = document.createElement('td')
+			var nuevoError = document.createElement('td')
+
+			nuevoTipo.scope = "col"
+			nuevoLinea.scope = "col"
+			nuevoColumna.scope = "col"
+			nuevoError.scope = "col"
+
+			nuevoTipo.textContent = errores[i].tipo
+			nuevoLinea.textContent = errores[i].linea
+			nuevoColumna.textContent = errores[i].columna
+			nuevoError.textContent = errores[i].mensaje + errores[i].lexema
+
+			nuevoTr.appendChild(nuevoTipo)
+			nuevoTr.appendChild(nuevoLinea)
+			nuevoTr.appendChild(nuevoColumna)
+			nuevoTr.appendChild(nuevoError)
+
+			document.getElementById('cuerpo').appendChild(nuevoTr)
+		}
+	}
+
+	document.getElementById('openTrigg').addEventListener('click', () => {
+  	document.getElementById('fileInput').click()
+	});
+
+	const input = document.getElementById('fileInput')
+	input.addEventListener('change', function(e){
+		const reader = new FileReader()
+		reader.readAsText(input.files[0])
+		reader.onload = function(){
+			agregar(input.files[0].name, reader.result)
+		}
+	}, false)
+
+	var txt = "";
+
+	function crearNuevo(){
+		var pom = document.createElement('a');
+  	pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + 
+
+		encodeURIComponent());
+  	pom.setAttribute('download', document.getElementById('nombreNuevo').value + ".cs");
+
+  	pom.style.display = 'none';
+  	document.body.appendChild(pom);
+
+		pom.click();
+		
+		document.body.removeChild(pom);
+		
+		if(document.getElementById("areasTexto").hidden === true){
+    	document.getElementById("areasTexto").hidden = false;
+		}
+		agregar(document.getElementById('nombreNuevo').value + ".cs", "")
+	}
+
+	function guardarNuevo(){
+		var pom = document.createElement('a');
+  	pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + 
+
+		encodeURIComponent(document.getElementById('codigo').value));
+  	pom.setAttribute('download', document.getElementById('nombreGuardar').value + ".cs");
+
+  	pom.style.display = 'none';
+  	document.body.appendChild(pom);
+
+		pom.click();
+		
+		document.body.removeChild(pom);
+		agregar(document.getElementById('nombreGuardar').value + ".cs", document.getElementById('codigo').value)
+	}
+</script>

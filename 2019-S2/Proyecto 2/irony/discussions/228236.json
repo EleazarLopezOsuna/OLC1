@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "497261",
+    "ThreadId": "228236",
+    "Html": "<p>I'm working with a proprietary language that well dates my time at the  company. It's defined using LEX and YACC thankfully, but I would like to  create a visual studio language service using Irony. Does anyone have  any tips for converting from LEX and YACC to Irony? <br><br>Regards,<br>Colin</p>",
+    "PostedDate": "2010-09-22T15:43:27.137-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "497862",
+    "ThreadId": "228236",
+    "Html": "<p>I believe I've got this close enough to what I need.</p>\r\n<p>&nbsp;</p>\r\n<p>Cheers,</p>\r\n<p>Colin</p>",
+    "PostedDate": "2010-09-23T18:26:52.407-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

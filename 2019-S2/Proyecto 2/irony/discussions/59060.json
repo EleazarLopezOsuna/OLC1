@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "199966",
+    "ThreadId": "59060",
+    "Html": "<p>Hey, it's me again with another problem (not of the software, but with my understanding of using it)<a href=\"http://dict.leo.org/ende?lp=ende&p=thMx..&search=comprehension\"><br></a></p>\r\n<p>I'm trying to generate a XML document out of the AST. When I was using the Irony version of December 2008, (almost) everything worked fine. I took the tutorial from http://www.codeproject.com/KB/recipes/YourFirstDSLPart2.aspx and adapted the source code for my needs. What I actually did was to implement a own class for every non-terminal node which inherited from the AstNode class as well as from an interface. Then I went through the whole tree and handled the nodes/tokens.</p>\r\n<p>Now, with the newest version of Irony, I just can't figure out how I can solve my problem. I kept all the custom AstNode classes and implemented the IAstNodeInit interface. The Init() methods are blank. I also use the SetLanguageFlags(LanguageFlags.CreateAst, true). So far so good. But how can I go through all AstNode's for generating my XML document? Do I have to use AST, or is the ParseTree sufficient for my purpose?</p>\r\n<p>By the way, I want to use .NET's XmlSerialization. I'm happy about every single hint.</p>",
+    "PostedDate": "2009-06-10T05:58:27.667-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "200043",
+    "ThreadId": "59060",
+    "Html": "<p>In latest source from Source Code page, the AST nodes and all scripting functionality&nbsp;are not brought back to life after refactoring. If all you need is generate XML, then ParseTree is sufficient to do this, you don't need to create AST nodes. Just traverse the parse tree and generate XML</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-06-10T08:47:39.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

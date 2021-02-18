@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "981067",
+    "ThreadId": "427859",
+    "Html": "\r\n<p>Has anyone had any luck in using Irony as a Class Library for Windows RT development (ie. development in &quot;Modern UI&quot; apps, which use the Windows RunTime?). Irony is absolutely ideal for the math expression project I am working on, but I've been\r\n facing some major problems in trying to recompile the source with proper dependancies. I don't think that supporting Windows RT should be a problem; after all, Irony doesn't use System.Data or System.Windows.Forms. However, my in-depth understanding of the\r\n Irony source code is somewhat limited at the moment and I'm interested in hearing anyone else's thoughts on this.</p>\r\n",
+    "PostedDate": "2012-12-27T17:47:56.517-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "982085",
+    "ThreadId": "427859",
+    "Html": "\r\n<p>Hi Kurti,</p>\r\n<p>I am a QA Automation guy with little (as in low level hacking) coding skill who recently tried to replicate something done (by me) 12 years ago, that is DDT (stands for Data Driven Testing).</p>\r\n<p>Not sure whether the term is accurate but the idea is to enable a QA Automation tool to be used by QA staff, not programmers, in order to create and run tests.</p>\r\n<p>In my search i veered towards DSL then Irony and other options.</p>\r\n<p>Most of the code i read is way over my simplistic head.</p>\r\n<p>One good example (from which i plagiarized some ideas) is here:</p>\r\n<p><a title=\"Dynamic Dispatcher\" href=\"http://www.codeproject.com/Articles/203453/Dynamic-Method-Dispatcher\" target=\"_self\">http://www.codeproject.com/Articles/203453/Dynamic-Method-Dispatcher</a></p>\r\n<p>I think it is relevant to your topic</p>\r\n",
+    "PostedDate": "2013-01-01T06:26:06.083-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1238033",
+    "ThreadId": "427859",
+    "Html": "Sorry for digging up an old thread but I am also looking into using Irony in a Windows Runtime environment and was wondering if anyone has had any success with this?<br />\n",
+    "PostedDate": "2014-04-25T07:01:06.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

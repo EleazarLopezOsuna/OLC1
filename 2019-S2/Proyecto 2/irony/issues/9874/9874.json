@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2013-02-25T20:37:28.27-08:00",
+    "CommentCount": 3,
+    "Custom": null,
+    "Description": "It's about latest version of Irony — \"Mar 15, 2012\"\r\nIf we define NumberLiteral and add \"0\" (zero) as octal prefix:\r\n\r\nterm.AddPrefix(\"0\", NumberOptions.Octal);\r\n\r\nThen single \"0\" (zero) number won't be parsed, causing \"Invalid character: '0'.\" parser error.\r\nSee \"MiniPython, version 2.0\" if you want to reproduce bug quickly.",
+    "LastUpdatedDate": "2013-02-25T20:37:28.27-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2012-07-25T06:12:38.547-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "NumberLiteral issue with octal prefix defined",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9874
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "looks like an error, will fix it\nthanks",
+      "PostedDate": "2012-07-25T09:57:00.697-07:00",
+      "Id": 72372
+    },
+    {
+      "Message": "It would be really great. Thanks.\n\nAnother related issue is that numbers like \"08234\", that are apparently not an octal ones, are not automatically recognized as decimals. Questionable thing though.",
+      "PostedDate": "2012-07-25T10:30:10.937-07:00",
+      "Id": 72373
+    },
+    {
+      "Message": "\"08234\" - i think it should be rejected as syntax error",
+      "PostedDate": "2012-07-25T11:16:33.24-07:00",
+      "Id": 72374
+    }
+  ]
+}

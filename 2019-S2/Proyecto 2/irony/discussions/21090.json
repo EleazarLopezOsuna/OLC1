@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "70173",
+    "ThreadId": "21090",
+    "Html": "\r\nAn Excel formula is a lot like an expression except there are cell references to consider.  At one level a cell reference is an identifier so the reference to the cell in column A, row 1 can be represented as an IdentifierTerminal.  However the cell can be $A1 or A$1 or $A$1.  These different option can be expressed in in Irony using a statement such as:<br /><br />CELL.Expression =\tCOLUMN<i>REFERENCE + ROW</i>REFERENCE |<br />\t\t\"$\" + COLUMN<i>REFERENCE + ROW</i>REFERENCE | <br />\t\tCOLUMN<i>REFERENCE + \"$\" + ROW</i>REFERENCE | <br />\t\t\"$\" + COLUMN<i>REFERENCE + \"$\" + ROW</i>REFERENCE;<br /><br />Which provides a more accurate description and would result in better information in the node list.  However, Irony seems to want to return A1.  It parses A correctly as a COLUMN<i>REFERENCE and finds 1 to be a ROW</i>REFERENCE.  It then finds that 1 is also a number and seems to take this in preference.  As a result it cannot match the types COLUMN_REFERENCE + NUMBER with any available grammar definition.  It then works out that A1 is also valid (as IDENTIFIER) and is the longest so is preferred.<br /><br />How can I stop the process from trying to match 1 as a number when its already found the match with ROW_REFERENCE?  I can't take NUMBER away because they are valid elsewhere in an expression.<br /><br />Thanks<br /><br />Bill<br />",
+    "PostedDate": "2008-01-26T18:21:25.337-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "70178",
+    "ThreadId": "21090",
+    "Html": "\r\nHi<br />You should create custom terminal for recognition of cell references instead of trying to assemble it from parts in grammar rules. This makes sense, as cell reference is in fact a single entity, and it participates in formulas as a whole, not by parts. From your post in Issues section I see you already follow this path. <br />Roman<br />",
+    "PostedDate": "2008-01-26T20:54:33.977-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "70212",
+    "ThreadId": "21090",
+    "Html": "\r\nThanks for the reply.  <br /><br />I'm really using an Excel formula as a tool to learn the functionality available via Irony.  Excel formulas have quirks so it's useful to me to see what issues I run into.  <br /><br />There are a two motivation for wanting to define \"cell\" via grammar definition statements.  One is that being able to define the structure of a cell declaritively is great.  The second is that while cell is a self contained entity at one level, it's not really.  A reference to $A$1 will always indicate the upper left corner of a sheet.  Each of the other combinations is really a specification of one cell relative to the \"current\" cell.  If the current cell is B2 then A1 really means R-1C-1; $A1 means R-1C1 and finally A$1 means R1C-1 (Excel has an option to view formulas in the \"R1C1\" style instead of the more usual A1 format).  When Excel saves a formula it does so using a stream of tokens and these tokens include separate elements for the row and column reference types which is useful.  It seems that using a custom terminal to identify a whole cell reference means that the structure of a cell reference will be lost.<br /><br />If I create a \"CellTerminal\" class, I'll be able to parse the cell and, presumably, record whatever I want about the cell reference, right?<br /><br />Bill<br />",
+    "PostedDate": "2008-01-27T04:12:35.553-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "70514",
+    "ThreadId": "21090",
+    "Html": "\r\nHi<br />Sorry for not replying for some time; my answers are in different post in other discussion thread you started<br />thanks<br />Roman<br />",
+    "PostedDate": "2008-01-28T22:19:44.45-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

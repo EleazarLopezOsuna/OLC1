@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "478326",
+    "ThreadId": "222991",
+    "Html": "<p>I'd like to parse a large negative int. The following test fails (place in NumberLiteralTest), but I expected it to pass.&nbsp;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>    [TestMethod]\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> LargeNegativeNumberTest()\r\n    {\r\n        NumberLiteral number = <span style=\"color:blue\">new</span> NumberLiteral(<span style=\"color:#a31515\">&quot;Number&quot;</span>, NumberOptions.AllowSign);\r\n        SetTerminal(number);\r\n        TryMatch(<span style=\"color:#a31515\">&quot;-2147483648&quot;</span>);\r\n        CheckType(<span style=\"color:blue\">typeof</span>(<span style=\"color:blue\">int</span>));\r\n        Assert.IsTrue((<span style=\"color:blue\">int</span>)_token.Value == -2147483648, <span style=\"color:#a31515\">&quot;Failed to read int value&quot;</span>);\r\n    }\r\n\r\n</pre>\r\n</div>\r\n<p>\r\n<div>Assert.IsTrue&nbsp;failed.&nbsp;Invalid&nbsp;target&nbsp;type,&nbsp;expected&nbsp;System.Int32,&nbsp;found:&nbsp;&nbsp;System.String</div>\r\n<div>at <span><span style=\"color:#00008b\">Irony.Tests.TerminalTestsBase</span></span>.<span><span style=\"color:#008b8b\">CheckType</span></span>(<span style=\"color:#00008b\"><span><span style=\"color:#00008b\">Type</span></span></span>&nbsp;<span style=\"color:#000000\">type</span>) in <a>_TerminalTestBase.cs:&nbsp;line&nbsp;37</a><br>at  <span><span style=\"color:#00008b\">Irony.Tests.NumberLiteralTests</span></span>.<span><span style=\"color:#008b8b\">LargeNegativeNumberTest</span></span>() in <a>NumberLiteralTests.cs:&nbsp;line&nbsp;37</a></div>\r\n</p>\r\n<p>It looks like I can workaround this by allowing the BigInteger type.</p>\r\n<p>Thanks,<br>Brian</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-09T16:02:08.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "478669",
+    "ThreadId": "222991",
+    "Html": "Definitely a bug, will see how to fix it or get a simplest workaround ",
+    "PostedDate": "2010-08-10T09:33:38.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533246",
+    "ThreadId": "222991",
+    "Html": "\r\n<p>Should be fixed now</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2010-12-08T23:03:57.547-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "1445157",
+    "ThreadId": "645258",
+    "Html": "Hi All\r<br />\nI'm approaching to build a simple procedural language which would replace workflow foundation in my project - WF is a massive  overkill for what I need - I'm trying to find the best way to add presistance to the runtime. Have any of you done something like that?\r<br />\nThanks.<br />\n",
+    "PostedDate": "2015-09-21T03:10:58.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445421",
+    "ThreadId": "645258",
+    "Html": "what exactly do you mean by persistence in runtime?!<br />\n",
+    "PostedDate": "2015-09-22T10:54:19.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445424",
+    "ThreadId": "645258",
+    "Html": "Serialization maybe?<br />\n",
+    "PostedDate": "2015-09-22T11:07:59.733-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445517",
+    "ThreadId": "645258",
+    "Html": "The system I'm thinking about apart from using the code to perform relatively fast operations (like simple math, string operations, xml transformations etc.) needs to allow delegation of some tasks to a specialised external service ie. to analyse content of a large file, or simply schedule a task for a person, then collect the result data. Such operation may take hours  or days and I would not like to keep this thread in memory for all that time - I may want to pause all threads to shut the system down for maintenance then resume from the last 'snapshot', I may also want to free resources for other threads while long external task is running, simply I want to pause it just to see the state of variables, or make it possible for another machine to pick the thread up when the long running task completes.\r<br />\n<br />\nIn theory most of my requirements could be fulfilled by a WWF or a BPML software, but what I need is to be able to code the workflow rather than draw lines and join boxes.. eventually I could just grab the AST and transform into WWF XAML, however I find this way not very elegant..\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2015-09-23T01:45:58.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445520",
+    "ThreadId": "645258",
+    "Html": "So (de)serialization.\r<br />\n<br />\nIrony doesn't have the specific .NET serialization attributes/methods, but think about it: serialization is converting a object to a byte[] or string representation.\r<br />\nWhat is a string representation of the Irony Parse Tree / AST? The original parsed string! Thus parsing is more or less the same operation as deserialization.\r<br />\n<br />\nIf you can keep the original parse string around you can store that, or you could implement a &quot;pretty-printer&quot;, which converts a parse tree / AST to a string formula, akin to serialization.<br />\n",
+    "PostedDate": "2015-09-23T02:03:52.507-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445521",
+    "ThreadId": "645258",
+    "Html": "What I'm looking for is rather a pause-&gt;persist-&gt;restore-&gt;resume scenario rather than serialisation..<br />\n",
+    "PostedDate": "2015-09-23T02:24:25.847-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1445677",
+    "ThreadId": "645258",
+    "Html": "I don't think it's a right approach. You are thinking about interrupting computation in the middle, taking all active call stacks and persisting them, to load back at later time and continue execution as nothing happened. Something like Hibernate option in OS shutdown. While it's doable theoretically, but this is a huuuge challenge. But I don't think it's even needed. Workflow is a state machine, with state persisting at every step, like after transitions from state to state. Transitions happen when certain evaluation code is invoked after something happened (like user approved some doc), and WF state changes. It is immediately persisted, the state shifts to new &quot;position&quot;, and new evaluation methods are invoked. \r<br />\nThe evaluation methods are atomic, they are executed and then system goes to sleep, until next external signal or timer tick. The operations can shut down in any moment (better after a little wait to let active evaluations complete), and can be restarted later - after workflow state is reloaded from database. \r<br />\nI understand what trick you have in mind: Coding entire workflow as one continuous method that calls some &quot;waitForSignal&quot; method to pause. The workflow state is encoded in the current execution position plus all local variables. So you do not declare explicit state object that is persisted, but rather want Runtime to persist the execution stack. While this sounds nice, there are 2 problems: first, implementation is extremely challenging; second - even if you succeed, the way the workflow is stored is bad - it is a black box, you cannot easily query the current state in database. \r<br />\nThis is a mistake they made in WF - they serialize the whole state as a blob. Nice, but what about visibility? ! A running system might have hundreds of workflows (instances) in progress, and manager should be able to see the states of all of them - how many docs are stuck (waiting for smth), and where. If workflow states are just blobs - you're in trouble. It's up to a programmer to implement another mechanism to store 'visible' state - Tokens, flows, token locations, local conditions (results of actions like approved/rejected) etc. But if you have this second 'visible' storage (which is in fact relational, a few tables would make it) - if you have this then you don't need this blob serialization nonsense. \r<br />\nSo I suggest to rethink the approach<br />\n",
+    "PostedDate": "2015-09-24T00:43:20.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1446144",
+    "ThreadId": "645258",
+    "Html": "I guess the reason Microsoft's makes the state of the workflow obfuscated is simply security, imagine certain variable contains credit card or bank details... But that's why I don't want to go this route, this would make really hard to add any detailed monitoring to the process..... \r<br />\nI believe I simply need to limit the grammar a bit al allow only simple sequential execution with just a single level scope, and try to add presistance to each step... I'll see how it goes. Thanks for all your input, it helped me re-evaluate my requirements :)\r<br />\nThanks<br />\n",
+    "PostedDate": "2015-09-28T01:52:53.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "482059",
+    "ThreadId": "224015",
+    "Html": "<p>Hello,</p>\r\n<p>Thanks for the tool, very helpful.</p>\r\n<p>I am integrating a language into VS2010. I am working on support for outlining. As long as the code is syntactically correct, outlining works perfect. However, if it is not, the Parser.Parse() method returns a ParseTree with a null Root, which forces me to continue to re-parse until I get a correct AST that I can then feed to the regions computation. Additionally, if I am opening the file for the first time and it has a syntax error I can't display any outlining until it is fixed. I was wondering if I could get some help on modifying the behavior of the Parse() method to return a ParseTree with a non-null root of the tree even when the parse status is Error. I am assuming that when the parser recovers, in the end a parse tree with a non-null ParseTreeNode root must be there somewhere but not exposed. Any help with this is greatly appreciated.</p>\r\n<p>&nbsp;</p>\r\n<p>Mohamed</p>",
+    "PostedDate": "2010-08-18T14:33:52.017-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "482179",
+    "ThreadId": "224015",
+    "Html": "<p>Are you using error recovery rules? There's ErrorRule property in NonTerminal, similar to Rule; in ErrorRule you specify how to recover from errors to continue parsing. Have a look at c# grammar and how it parses; it has ErrorRule set in some key NonTerminals (like Statement), so parser is able to recover and continue, so even incorrect source is colorized</p>",
+    "PostedDate": "2010-08-19T00:24:50.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "490935",
+    "ThreadId": "224015",
+    "Html": "<p>Thanks a lot, Roman, for the suggestion.</p>\r\n<p>I am using error rules and syntax coloring has been working fine. However, outlining (code regions) does not seem to work. Specifically, if I open the file after it was saved with syntax errors the outliner fails to find the regions in the code because it cannot get a tree with a non-null root to traverse. Once I correct the code, outlining works perfect. Any ideas here would be greatly appreciated.</p>\r\n<p>Mohamed</p>",
+    "PostedDate": "2010-09-08T14:55:03.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "490938",
+    "ThreadId": "224015",
+    "Html": "<p>well, try to figure out what's different about parsing after opening the file, compared to parsing on-the-fly while typing... it's hard to say from here what can be wrong. It might be some bug in recovery code, it's possible, so try to trace it through.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-09-08T15:04:36.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "493380",
+    "ThreadId": "224015",
+    "Html": "<p>You were right. A couple of error rules were a little off. Thanks for lending the insight, Roman!</p>\r\n<p>&nbsp;</p>\r\n<p>Mohamed</p>",
+    "PostedDate": "2010-09-14T09:15:42.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

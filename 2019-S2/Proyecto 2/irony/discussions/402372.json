@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "938432",
+    "ThreadId": "402372",
+    "Html": "\r\n<p>Hi!</p>\r\n<p>Syntax highlighting - in Visual Studio - is done by repeatetly calling to </p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>IScanner.ScanTokenAndProvideInfoAboutIt(TokenInfo, <span style=\"color:blue\">ref</span> <span style=\"color:blue\">int</span>)\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>So far so good, but all identifiers are colored the same way. Suppose I want to use a different color for, e.g., Types, Functions, Variables, etc., how would I do that?</p>\r\n<p>The parser already works, so I actually have a list of types, functions, variables available. The problem is, however, that I cannot simply perform a string comparison, because the scope is important. A local variable defined in a function must not be highlighted\r\n as variable outside this very function... But in the ScanTokenAndProvideInfoAboutInt, there is no way of telling the current scope. This is OK I think, because the linescanner shall be QUICK for syntax highlighting. Anyway, I'm missing the connection to coloring\r\n user defined types depending on the current scope.</p>\r\n<p>Thanks,</p>\r\n<p>Markus</p>\r\n",
+    "PostedDate": "2012-11-08T03:09:11.97-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "938581",
+    "ThreadId": "402372",
+    "Html": "<p>The only way I figured out so far is to keep track of the scope while parsing, thus generating some kind of \"scope tree\" for the current file. Later, for syntax-highlighting, one can look up the scope of the current token and retrieve the respective symbols for this very scope.</p>",
+    "PostedDate": "2012-11-08T07:44:52.677-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939257",
+    "ThreadId": "402372",
+    "Html": "<p>Associating names with variables in scopes is part of \"semantics\", semantic analysis that is a separate step that works with the entire parse tree. So when scanning at line level, the proper way is to hook to previously prepared semantic info on the entire text in the editor (which should be refreshed regularly). How to do this in details - have no immediate detailed recipe, sorry.</p>",
+    "PostedDate": "2012-11-09T10:11:58.953-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "939302",
+    "ThreadId": "402372",
+    "Html": "<p>Hi!</p>\r\n<p>Thanks for the quick reply. I just wanted some confirmation that this is the correct way to go, and that I'm not missing some already existing link.</p>\r\n<p>BTW, when I was working on a respective solution for semantic-based coloring, I came about this issue: <a title=\"Linescanner provides false line numbers - bug? \" href=\"http://irony.codeplex.com/discussions/402545#post939249\" target=\"_blank\">http://irony.codeplex.com/discussions/402545#post939249</a>.<br />If you want to incorporate semantics at LineScanning-level, you need the correct location of the currently processed token, in order to retrieve the current context's scope (for symbol visibility).</p>\r\n<p>Regards,<br />Max</p>",
+    "PostedDate": "2012-11-09T11:31:51.77-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

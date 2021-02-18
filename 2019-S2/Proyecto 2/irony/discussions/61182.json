@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "207472",
+    "ThreadId": "61182",
+    "Html": "<p>There seems to be a lot of us... &nbsp;Probably because Irony makes it look feasible to use grammar parsing even for us that don't REALLY understand what we are doing... :-)</p>\r\n<p>I am trying to build a tool that is supposed to help me translate a rather big database structure from MSSQL to MySQL. I have started to extend and rebuild the SQL sample grammar from Irony, and have actually managed to create a grammar that seems to properly parse my rather large SQL file that i get when doing &quot;Create database scripts&quot; from SQL-server. (Luckily it doesn't use any really hairy SQL constructs)</p>\r\n<p>So I have a parseTree.</p>\r\n<p>What now?</p>\r\n<p>I understand that I in some way should build an AST-tree with classes that is able to emit corresponding&nbsp;MySQL&nbsp;code, but I don't just get how I am supposed to do this...&nbsp;</p>\r\n<p>I know that i can add classtypes for corresponding AST objects on the nonTerminals, or use the creator interface, and end up with a parsetree with attached AST objects, but then what? How do I use this? I have looked at the Scheme implementation, but that didn't really help...</p>\r\n<p>My plan is to create one AST-class for each command type that have different syntax in MySQL,one general that just emits what it was fed for those that have the same syntax, and one that emits the source commented out for those that doesn't translate at all..</p>\r\n<p>Any really super simple example would help a lot, just to get the idea.</p>\r\n<p>&nbsp;</p>\r\n<p>Another thing that puzzles me is that the parse tree gets simplified in the process, and how that works if I were to attach AST objects to the nonterminals that doesn't show.</p>\r\n<p>Like:</p>\r\n<p>&nbsp;</p>\r\n<p>selectStmt</p>\r\n<p>&nbsp;&nbsp; selectStmt -&gt; select selRestrOpt selTopOpt selList intoClauseOpt fromClauseOpt whereClauseOpt groupClauseOpt orderClauseOpt unionClause&nbsp;</p>\r\n<p>selList</p>\r\n<p>&nbsp;&nbsp; selList -&gt; columnItemList&nbsp;</p>\r\n<p>&nbsp;&nbsp; selList -&gt; *&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>If I parse a statement that starts &quot;SELECT * FROM&quot; it doesnt't give me a parsenode for &quot;selList &quot;, just a Symbol node in its place for the &quot;*&quot; , so if i want to handle all kinds of selList by an AST object attached to the&nbsp;selList NonTerminal, how do I do?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-01T03:38:15.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "207660",
+    "ThreadId": "61182",
+    "Html": "<p>Hi</p>\r\n<p>For your scenario, you probably don't need to create AST tree, but instead directly traverse the tree and spit out SQL as you go. Your task is very similar to the one of SearchGrammar - to convert query&nbsp;from one format to another. So have a look at SearchGrammar sample, and do something simililar. You'll probably need to do the following:</p>\r\n<p>1. From the parse tree, select all the nodes containing some&nbsp;top-level statements like &quot;Create Table&quot;, Create Index, or whatever you have there, and put all these nodes into a plain list</p>\r\n<p>2. Iterate the list, and write out SQL for each statement type using some specialized methods in the same class or module, without creating any AST node subclasses. These methods should know what to expect in child nodes, how to get details of the result SQL from child parse tree, and form the output SQL accordingly</p>\r\n<p>I think this would work.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-07-01T11:31:17.733-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "207761",
+    "ThreadId": "61182",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for your answer. I will try that strategy.</p>\r\n<p>brgds</p>\r\n<p>J&ouml;rgen</p>",
+    "PostedDate": "2009-07-01T16:56:26.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "208536",
+    "ThreadId": "61182",
+    "Html": "<p>Hi,</p>\r\n<p>Another problem popped up when I added something seemingly quite separate from what the error mentions (Tried to add handling of exec statement.):&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>------------------------------------------------------------------------<br>Shift-reduce conflict. State SN728, lookaheads: joinKindOpt applyJoinOp<br>Shift-reduce conflict. State SN748, lookaheads: )</p>\r\n<p>Parser builder detected parsing conflicts that can be resolved by restructuring.<br>Add WrapTail() hint method in place of '.' to the following productions in original grammar:&nbsp;<br>joined_table -&gt; table_source &middot;joinKindOpt join table_source on logExpression&nbsp;<br>joined_table -&gt; table_source &middot;applyJoinOp apply table_source&nbsp;<br>parSelectStmt -&gt; ( selectStmt &middot;)&nbsp;<br>compExpression -&gt; expression notOpt in ( funArgs &middot;)&nbsp;<br>--------------------------------------------------------------------------</p>\r\n<p>The mentioned states:</p>\r\n<p>&nbsp;</p>\r\n<pre>State SN728 (Inadequate)\r\n  Shift items:\r\n    joined_table -&gt; table_source &middot;joinKindOpt join table_source on logExpression \r\n    joinKindOpt -&gt; &middot;right outer \r\n    joinKindOpt -&gt; &middot;left outer \r\n    joinKindOpt -&gt; &middot;full \r\n    joinKindOpt -&gt; &middot;inner \r\n    joined_table -&gt; table_source &middot;applyJoinOp apply table_source \r\n    applyJoinOp -&gt; &middot;cross \r\n    applyJoinOp -&gt; &middot;outer \r\n  Reduce items:\r\n    joined_table -&gt; table_source applyJoinOp apply table_source &middot; [, ) on applyJoinOp joinKindOpt where group order union]\r\n  Shifts: joinKindOpt-&gt;SN670, applyJoinOp-&gt;SN675, \r\n  Jump to non-canonical state  SN756 on lookaheads: right left full inner cross outer<br>--------------------------------------------------------------------------<br>State SN748 (Inadequate)\r\n  Shift items:\r\n    parSelectStmt -&gt; ( selectStmt &middot;) \r\n  Reduce items:\r\n    funArgs -&gt; selectStmt &middot; [)]\r\n  Shifts: )-&gt;SN595, \r\n<pre>--------------------------------------------------------------------------</pre>\r\n</pre>\r\n<p>(Looking at the states, there are a lot of them that is marked (Inadequate), it that a problem generally?)</p>\r\n<p>When I follow the recommentation, inserting WrapTail() at the pointed out positions, it seems to get into a loop when loading the grammar, it just hangs...</p>\r\n<p>Could you maybe explain how to interpret the different hints for someone that isn't that fluent in grammar parsing :-) ?</p>\r\n<p>What does WrapTail() actually DO, for example? When the parser hits the WrapTail, what does it do, as opposed to what it would have done otherwise?</p>\r\n<p>brgds</p>\r\n<p>J&ouml;rgen</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-04T10:00:43.073-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "208556",
+    "ThreadId": "61182",
+    "Html": "<p>Some additional info:</p>\r\n<p>-I think i managed to get rid of the &quot;)&quot; related statement, I think I had mare than one thing defined as &quot;(&quot; + exprList+ &quot;)&quot;, when I managed to remove those the error stopped showing.</p>\r\n<p>- The other problem I have made some progress with, but now it looks like this:</p>\r\n<pre>Shift-reduce conflict. State SN685, lookaheads: joinKindOpt joinConditionOpt\r\n\r\nParser builder detected parsing conflicts that can be resolved by restructuring.\r\nAdd WrapTail() hint method in place of '.' to the following productions in original grammar: \r\njoined_table -&gt; table_source &middot;joinKindOpt table_source joinConditionOpt \r\njoined_table -&gt; table_source joinKindOpt table_source &middot;joinConditionOpt \r\n</pre>\r\n<pre>I suspect this is because there is a recursive definition here, one of the alternatives for a &quot;table_source&quot; is a &quot;joined_table&quot;</pre>\r\n<pre>table_sourceList\r\n   table_sourceList -&gt; table_source \r\n   table_sourceList -&gt; table_sourceList , table_source \r\ntable_source\r\n   table_source -&gt; Id aliasOpt \r\n   table_source -&gt; funCall aliasOpt \r\n   table_source -&gt; parSelectStmt aliasOpt \r\n   table_source -&gt; joined_table \r\njoined_table\r\n   joined_table -&gt; ( joined_table ) \r\n   joined_table -&gt; table_source joinKindOpt table_source joinConditionOpt \r\njoinKindOpt\r\n   joinKindOpt -&gt; right outer join \r\n   joinKindOpt -&gt; left outer join \r\n   joinKindOpt -&gt; full join \r\n   joinKindOpt -&gt; inner join \r\n   joinKindOpt -&gt; cross join \r\n   joinKindOpt -&gt; cross apply \r\n   joinKindOpt -&gt; outer apply \r\njoinConditionOpt  (Nullable) \r\n   joinConditionOpt -&gt; \r\n   joinConditionOpt -&gt; on logExpression \r\n</pre>\r\n<pre>How to solve this kind of problem?</pre>",
+    "PostedDate": "2009-07-04T13:44:02.06-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "208558",
+    "ThreadId": "61182",
+    "Html": "<p>You're in non-canonical parsing algorithm, don't get into this unless you have some understanding of parsing methods. All these obscure messages you see are result of this.</p>\r\n<p>NLALR method is an extension of classical LALR, but it is for use by more advanced folks; plus, it does not quite work very well yet.</p>\r\n<p>So, first of all, set in grammar constructor:</p>\r\n<p>\r\n<p><span style=\"font-size:x-small;color:#0000ff\"><span style=\"font-size:x-small;color:#0000ff\">this</span></span><span style=\"font-size:x-small\">.ParseMethod = </span><span style=\"font-size:x-small;color:#2b91af\"><span style=\"font-size:x-small;color:#2b91af\">ParseMethod</span></span><span style=\"font-size:x-small\">.Lalr; </span></p>\r\n<p>or remove similar statement that sets method to NLalr. Then see what conflicts you have. See if you can eliminate them by explicitly assigning preferred action using &quot;PrefereShiftHere()&quot;</p>\r\n<p>Roman</p>\r\n</p>",
+    "PostedDate": "2009-07-04T14:00:07.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "208606",
+    "ThreadId": "61182",
+    "Html": "<p>I looked at your grammar and it seems to me that your problem is ambiguity of the grammar in terms of &quot;associativity of join operation&quot;.</p>\r\n<p>If you have expression like:</p>\r\n<p>tA join tB join tC</p>\r\n<p>- how to interpret it?</p>\r\n<p>is it&nbsp;</p>\r\n<p>&nbsp;(tA join tB) join tC</p>\r\n<p>or</p>\r\n<p>&nbsp;tA join (tB join tC)</p>\r\n<p>I think the first version should be preferred. Parser cannot decide by himself what is correct interpretation, so it identifies this as a conflict. You can give explict instruction, hint, to help parser decide in this situation. In technical terms, you must tell parser to prefer &quot;reduce&quot; operation in this situation; you&nbsp;do this by adding &quot;ReduceThis()&quot; call into the grammar rule for the join table:</p>\r\n<p><span style=\"font-size:12pt;font-family:'Times New Roman','serif'\">joined_table.Rule =&nbsp;table_source + &nbsp;joinKindOpt + table_source +&nbsp;joinConditionOpt + ReduceThis();</span></p>\r\n<p><span style=\"font-size:12pt;font-family:'Times New Roman','serif'\">Try this, see if it eliminates the conflict message; then try parsing some samples involving multiple joins</span></p>\r\n<p><span style=\"font-size:12pt;font-family:'Times New Roman','serif'\">Roman&nbsp;</span></p>\r\n<p><span style=\"font-size:12pt;font-family:'Times New Roman','serif'\">PS: and previous message still holds - switch to LALR parsing method.</span></p>",
+    "PostedDate": "2009-07-04T19:46:28.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "208660",
+    "ThreadId": "61182",
+    "Html": "<p>Hi,&nbsp;</p>\r\n<p>Thank you for spending time on this, I should probably read up on parsing instead of asking a lot of questions... :-)</p>\r\n<p>Yes, switching to LALR showed a lot of other errsors that probably were causing all kinds of troubles, and I managed to get rid of them by adding &quot;PrefereShiftHere()&quot;, and that actually cleared up the error for the join as well, but i haven't tested it against any really hairy joins yet..</p>\r\n<p>I am not sure you are right about how i want the joins to evaluate...</p>\r\n<p>If in MS SQL the rules should be (as found on the net):</p>\r\n<pre><em>1) JOINS are (effectively) executed left to right, following the usual\r\nrules for nesting parentheses.  There is no precedence for INNER and\r\nOUTER joins.</em></pre>\r\n<pre><em>2) The ON clause associates with the nearest JOIN clause.</em>\r\n</pre>\r\n<p>But the output I am currently getting, with your recommended ReduceHere() hints seems to work out according to that, so...</p>\r\n<pre>SELECT * FROM tA cross join tB cross Join tC\r\n\r\nSELECT * \r\nFROM tA \r\nINNER JOIN tB ON tA.AffiliationId = tB.AffiliationId \r\nRIGHT OUTER JOIN tC \r\n  CROSS JOIN tD \r\n  INNER JOIN tE ON tD.MediaId = tE.MediaId \r\nON tB.MediaId = tD.MediaId\r\n\r\nGives:\r\n\r\n    SELECT   *\r\n    FROM  ( ( `tA`CROSS JOIN `tB` ) CROSS JOIN `tC` ) ;\r\n\r\n    SELECT   *\r\n    FROM  \r\n          ( \r\n            ( \r\n              `tA`\r\n              INNER JOIN `tB` ON ( `tA`.`AffiliationId`  = `tB`.`AffiliationId` )\r\n            ) \r\n            RIGHT OUTER JOIN \r\n            ( \r\n              ( `tC`CROSS JOIN `tD` ) \r\n              INNER JOIN `tE` ON ( `tD`.`MediaId`  = `tE`.`MediaId` )\r\n            ) \r\n            ON ( `tB`.`MediaId`  = `tD`.`MediaId` )\r\n         );\r\n</pre>\r\n<p>&nbsp;</p>\r\n<p>The reason i was using NLALR was that it seemed to work, as opposed to LALR, wich i suppose it did by hiding my basic problems until they got worse enough, and also that I from your blog entry of Apr 27 mistakenly deduced that ther was something wrong with the LALR implementation and that NLALR was the corrected version.</p>\r\n<p>Re-reading it now, with a little bit more knowledge of the subject, I see my mistake. ( I will try to understand your &quot;NonCanonTestGrammars&quot; samples before i use it... :-) )</p>\r\n<p>Thanks for your help. If I ever get this translator done I will put it up on codeplex.</p>\r\n<p>/J&ouml;rgen</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-05T05:03:53.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "208706",
+    "ThreadId": "61182",
+    "Html": "<p>So, just to confirm, the parser seems to be working correctly, right?</p>\r\n<p>In the last mult-join statement - it is interpreted correctly, according to MS SQL join rules you cited, as far as I can see...</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-05T12:55:11.983-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "208766",
+    "ThreadId": "61182",
+    "Html": "<p>Hi,</p>\r\n<p>Yes, it works as it shold.</p>\r\n<p>Thanks again.</p>\r\n<p>/j&ouml;rgen</p>",
+    "PostedDate": "2009-07-05T18:10:12.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

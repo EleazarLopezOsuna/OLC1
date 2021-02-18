@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1240831",
+    "ThreadId": "544098",
+    "Html": "Hi guys,\r<br />\n<br />\nI have started playing with Irony, and it looks quite easy to work with. But since I am not used to working woth parsers and compilers, there is some terminology, that I need to understand first.\r<br />\n<br />\nI am not quite sure what the difference between a Terminal and a NonTerminal is, and when I need which. \r<br />\n<br />\nWhat I want to do is to take an input string, and transform that into a linq expression. The string is based on the MongoDb query grammer, but I am not trying to implement the full MongoDb query language. I just think the syntax fits my needs.\r<br />\n<br />\nThe input string could look like this:<br />\n<pre><code>name$eq:Roman,age$gt:10</code></pre>\n\nWhich means that name equals Roman and age is greater than 10, and should eventually be translated to this:<br />\n<pre><code>Expression&lt;Func&lt;Person, bool&gt;&gt; personFilter = person =&gt; person.Name == &quot;Roman&quot; &amp;&amp; person.Age &gt; 10;</code></pre>\n\nThe input string is always on a single line as it is passed in through a URL QueryString, and that of course also means I need to do a lot of validation, such as making sure the properties actually exist and allow a certain boolean operator. \r<br />\n<br />\nThis is where I thought Irony would be really helpful. I have written my first little grammer, and it sort of parses what I want. It only parses one single binary expression. I can't really figure out how to make it parse each expression separated by commas.<br />\n<pre><code>public MongoQueryGrammer()\n        {\n            var identifier = TerminalFactory.CreateCSharpIdentifier(&quot;identifier&quot;);\n            var value = new DsvLiteral(&quot;value&quot;, TypeCode.String);\n            var expression = new NonTerminal(&quot;expression&quot;);\n            var binexpr = new NonTerminal(&quot;binexpr&quot;);\n            var binoperator = new NonTerminal(&quot;binoperator&quot;);\n\n            expression.Rule = binexpr;\n            binexpr.Rule = identifier + binoperator + value;\n            binoperator.Rule = ToTerm(&quot;$eq:&quot;) | &quot;$lt:&quot; | &quot;$le:&quot; | &quot;$gt:&quot; | &quot;$ge:&quot;;\n            Root = expression;\n        }</code></pre>\n\nHope someone has a few hints that will get me started on this... or at least tell me that I am crazy, and this totally not a valid usecase for Irony.<br />\n",
+    "PostedDate": "2014-05-02T13:10:26.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1240866",
+    "ThreadId": "544098",
+    "Html": "Ok, so parsing a list of expressions wasn't that hard. After googling a bit I found that <strong>MakePlusRule</strong> is what is needed:<br />\n<pre><code>        public MongoQueryGrammer()\n        {\n\n            var expressionList = new NonTerminal(&quot;expressionList&quot;);\n\n            var identifier = TerminalFactory.CreateCSharpIdentifier(&quot;identifier&quot;);\n            var value = new DsvLiteral(&quot;value&quot;, TypeCode.String);\n            var expression = new NonTerminal(&quot;expression&quot;);\n            var binexpr = new NonTerminal(&quot;binexpr&quot;);\n            var binoperator = new NonTerminal(&quot;binoperator&quot;);\n\n            expressionList.Rule = MakePlusRule(expressionList, null, expression);\n\n            expression.Rule = binexpr;\n            binexpr.Rule = identifier + binoperator + value;\n            binoperator.Rule = ToTerm(&quot;$eq:&quot;) | &quot;$lt:&quot; | &quot;$le:&quot; | &quot;$gt:&quot; | &quot;$ge:&quot;;\n            Root = expressionList;\n        }</code></pre>\n\nNext up is how to actually translate this into a Linq Expression... <br />\n",
+    "PostedDate": "2014-05-02T14:37:33.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1244539",
+    "ThreadId": "544098",
+    "Html": "Just an FYI.\r<br />\n<br />\nMakePlusRule - 1 or more occurrence\r<br />\n<br />\nMakeStarRule - 0 or more occurrence\r<br />\n<br />\nThe plus and star concepts are similar to <a href=\"http://stackoverflow.com/questions/8575281/regex-plus-vs-star-difference\" rel=\"nofollow\">regular expressions</a>.\r<br />\n<br />\n-MindCore<br />\n",
+    "PostedDate": "2014-05-12T13:05:09.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "724416",
+    "ThreadId": "285970",
+    "Html": "\r\n<p>I have the following expression:</p>\r\n<p>null == true</p>\r\n<p>I am running this expression using the SampleExpressionEvaluator grammar. I also added the following lines in the RunSample method of the ExpressionEvaluatorGrammar class:</p>\r\n<p>_evaluator.Globals.Add(&quot;null&quot;, null);<br>\r\n_evaluator.Globals.Add(&quot;true&quot;, true);<br>\r\n_evaluator.Globals.Add(&quot;false&quot;, false);</p>\r\n<p>When I run the expression above with the grammar mentioned above in the Irony Grammar Explorer I get the following error:</p>\r\n<p>Error: Variable unassigned. At (1:1).</p>\r\n<p>What do I need to do so that null objects and other types (in this case a boolean) can be compared to each other?</p>\r\n",
+    "PostedDate": "2012-01-12T11:46:43.307-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "724431",
+    "ThreadId": "285970",
+    "Html": "<p>that's a good question - and it turns out, I do not have an easy answer. For now, the \"null\" and object comparison is not supported in evaluator. I need to think a bit about this, will try to solve and push in the next update. I guess I need to use IEquatable if any of the objects in expression supports this...</p>",
+    "PostedDate": "2012-01-12T12:21:58.707-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "160716",
+    "ThreadId": "48166",
+    "Html": "I am trying to figure out how to implement custom error messages in my grammar.  In YACC, it would look like this:<br>\r\n<br>\r\n<pre style=\"border-right:#3e62a6 0.1em dashed;padding-right:0.5em;border-top:#3e62a6 0.1em dashed;margin-top:0px;overflow-y:auto;padding-left:0.5em;font-size:1em;overflow-x:auto;padding-bottom:0.5em;overflow:auto;border-left:#3e62a6 0.1em dashed;padding-top:0.5em;border-bottom:#3e62a6 0.1em dashed;font-family:consolas, courier new, courier, monospace;height:auto;background-color:#ececec\">Identifier\r\n    : IDENTIFIER\r\n    | Identifier '.' IDENTIFIER\r\n    | Indetifier '.' error { CallHdlr(&quot;expected identifier&quot;, @3; }\r\n    ;\r\n</pre>\r\n<br>\r\nI noticed in the C# Grammar the ErrorRule and the SyntaxError terminal. <br>\r\n<br>\r\n<pre style=\"border-right:#3e62a6 0.1em dashed;padding-right:0.5em;border-top:#3e62a6 0.1em dashed;margin-top:0px;overflow-y:auto;padding-left:0.5em;font-size:1em;overflow-x:auto;padding-bottom:0.5em;overflow:auto;border-left:#3e62a6 0.1em dashed;padding-top:0.5em;border-bottom:#3e62a6 0.1em dashed;font-family:consolas, courier new, courier, monospace;height:auto;background-color:#ececec\">statement.ErrorRule = SyntaxError + semi; //skip all until semicolon</pre>\r\n<br>\r\nHow do you define the custom error message that will be displayed when the ErrorRule is used?\r\n",
+    "PostedDate": "2009-02-22T14:51:49.783-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "161008",
+    "ThreadId": "48166",
+    "Html": "The ErrorRule facility is primarily for error recovery, not for error reporting, to give parser a hint how to recover from error to continue parsing for (possibly) more errors. It tells parser &quot;skip all until next semicolon&quot;, so it is quite coarse-grained in nature. You should try overriding Grammar.GetSyntaxErrorMessage method. It receives compilerContext as parameter, and from it you can get Parser object, and inspect its internal state (stack, current symbol, etc).<br>\r\n",
+    "PostedDate": "2009-02-23T09:18:09.263-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

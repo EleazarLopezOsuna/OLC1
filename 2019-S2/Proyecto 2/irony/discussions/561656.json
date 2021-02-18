@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "1291618",
+    "ThreadId": "561656",
+    "Html": "I have a grammar defined by a legacy scripting language for a CAD system, which largely parses correctly using the following Irony grammar:<br />\n<pre><code>simple_statement.Rule = keyword + argument_list + semicolon;\nargument_list.Rule = MakeListRule(argument_list, comma, named_argument, TermListOptions.AllowEmpty);\nnamed_argument.Rule = identifier + &quot;=&quot; + expression;</code></pre>\n\nThe problem I'm trying to resolve arises from the use of the comma both to separate these &quot;named arguments&quot; as shown above, and also to separate the triple values used for x,y,z coordinate values.\r<br />\n<br />\nSo for example, a valid statement in the language is like this:<br />\n<pre><code>plc_line end1=0,0,0,end2=1,1,1;</code></pre>\n\nI've tried adding the following (including in various other combinations), but I'm not knowledgeable enough to figure out how to resolve the conflicts in the grammar produced.<br />\n<pre><code>named_argument.Rule = identifier + &quot;=&quot; + (expression | coordinate);\ncoordinate.Rule = expression + comma + expression + comma + expression;</code></pre>\n\nI'd appreciate any ideas on how I can resolve this parsing problem?<br />\n",
+    "PostedDate": "2014-08-20T02:39:51.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1291896",
+    "ThreadId": "561656",
+    "Html": "I've made a small amount of progress on this problem, by modifying the coordinate grammar and adding the following custom action handler (largely copied from the included CSharpGrammar example:<br />\n<pre><code>coordinate.Rule = expression + CustomActionHere(this.ResolveCommaConflict) + comma + expression + comma + expression;\n\nprivate void ResolveCommaConflict(ParsingContext context, CustomParserAction customAction)\n{\n    var scanner = context.Parser.Scanner;\n    ParserAction action;\n\n    /* After a comma, we could have either a named argument, or the &quot;y&quot; component of a coordinate value. We\n     * disambiguate the two by skipping ahead two tokens and looking for an equal sign. If we find one, we\n     * assume that we have found a named argument, otherwise that it's a coordinate. */\n    if (context.CurrentParserInput.Term.Name == &quot;comma&quot;)\n    {\n        scanner.BeginPreview();\n        scanner.GetToken();\n        var preview = scanner.GetToken();\n        scanner.EndPreview(true);\n\n        if (preview.Terminal.Name == &quot;=&quot;)\n            action = customAction.ReduceActions.First();\n        else\n            action = customAction.ShiftActions.First(a =&gt; a.Term.Name == &quot;comma&quot;);\n\n        action.Execute(context);\n    }\n}</code></pre>\n\nUnfortunately, while my coordinate values are now parsing correctly, it's making a mess of the non-coordinate argument_list parsing when there's more than one parameter. I'm having trouble understanding what's going wrong, as it appears to me (via debugging at runtime) that the ReduceActions.First() item is precisely the  reduction that I want made, but it doesn't seem to be achieving the result I'm expecting?\r<br />\n<br />\nAny advice would be much appreciated.<br />\n",
+    "PostedDate": "2014-08-20T22:27:03.053-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1291914",
+    "ThreadId": "561656",
+    "Html": "I think the simplest way to handle it is to 'ignore' coordinate lists during parsing, and then rearrange parse tree after parsing. Here's the grammar:<br />\n<pre><code>        Terminal number = new NumberLiteral(&quot;number&quot;);\n        IdentifierTerminal identifier = new IdentifierTerminal(&quot;Identifier&quot;);\n        var simple_statement = new NonTerminal(&quot;simple_statement&quot;);\n        var argument_list = new NonTerminal(&quot;argument_list&quot;);\n        var named_argument = new NonTerminal(&quot;named_argument&quot;);\n        var expression = new NonTerminal(&quot;expression&quot;);\n        var argument = new NonTerminal(&quot;argument&quot;);\n        var keyword = ToTerm(&quot;plc_line&quot;);\n        var semicolon = ToTerm(&quot;;&quot;);\n        var comma = ToTerm(&quot;,&quot;);\n\n        simple_statement.Rule = keyword + argument_list + semicolon;\n        argument_list.Rule = MakeListRule(argument_list, comma, argument, TermListOptions.AllowEmpty);\n        argument.Rule = named_argument | expression; \n        named_argument.Rule = identifier + &quot;=&quot; + expression;\n        expression.Rule = identifier | number;\n\n        MarkTransient(argument); \n        this.Root = simple_statement;      \n</code></pre>\n\n",
+    "PostedDate": "2014-08-20T23:35:09.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1291915",
+    "ThreadId": "561656",
+    "Html": "If you parse a string: <br />\n<pre><code>plc_line end1=0,0,0,end2=1,1,1;</code></pre>\n\n<ul>\n<li>you'll get plain arg list, with named arguments and non-named args. Then you can use a simple visitor to run through the tree and rearrange it - find all 'simple_statement' nodes, iterate thru args, and for each found named_argument, move all simple args that follow it to 'child' list of named argument. \r<br />\nThis stuff is quite difficult to express in LALR(1) grammars - theoretically possible, but quite tricky</li>\n</ul>\n",
+    "PostedDate": "2014-08-20T23:39:19.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1291921",
+    "ThreadId": "561656",
+    "Html": "Thanks for the feedback Roman, but it seems like I was on the right track; the solution above works correctly, and the problem I encountered was being caused by a problem with the scanner. Although it does require the custom hint, I'm pretty satisfied with the result, so unless I find a real issue with it, I'll go with my own solution.\r<br />\n<br />\nRegarding the bug I think I've found, I have two kinds of identifiers allowed in my grammar: regular identifiers (which are purely alphabetic), and &quot;built in&quot; variables, which must begin with a %% prefix. I've defined these as follows:<br />\n<pre><code>var identifier = new IdentifierTerminal(&quot;identifier&quot;);\nvar builtin_variable = new IdentifierTerminal(&quot;builtin_variable&quot;);\nbuiltin_variable.AddPrefix(&quot;%%&quot;, IdOptions.NameIncludesPrefix);</code></pre>\n\nThis works fine normally (i.e. expressions are correctly parsed with references to identifier or builtin_variable as appropriate), but it seems that Scanner.GetToken() doesn't work correctly with the prefixed tokens when running in preview mode?\r<br />\n<br />\nIf I debug my custom action handler code above, the first call to scanner.GetToken() returns different results depending on whether the call to scanner.BeginPreview() is executed or not. If preview mode is inactive, it correctly returns an identifier token; when active, it returns a builtin_variable token.\r<br />\n<br />\nThis behaviour is also apparent if I remove my custom action handler from the grammar altogether, in which case the identifiers are parsed correctly - as soon as I add my handler in, it incorrectly matches identifiers using the builtin_variable rule, which causes reduction problems.\r<br />\n<br />\nThis seems to be a bug, but I can't see any obvious reason from a quick inspection of the scanner code why this might be happening?\r<br />\n<br />\nPS: I also thought that if I used scanner.EndPreview(false), it might discard the incorrectly scanned tokens, and then correctly re-scan them when it continued after the handler, but instead it appears to completely discard them from the input queue? Is there any way to force the scanner to re-scan them?<br />\n",
+    "PostedDate": "2014-08-20T23:52:34.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1299343",
+    "ThreadId": "561656",
+    "Html": "Any suggestions regarding the bug I've identified here?<br />\n",
+    "PostedDate": "2014-09-04T23:01:15.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1299799",
+    "ThreadId": "561656",
+    "Html": "I think the problem is your misunderstanding of prefixes for identifiers. Prefix is an optional (!) thing, which if found is interpreted as additional option for identifier. Scanner assumes that if you defined prefix, there might be identifiers of this kind without prefixes. Then your grammar probably has ambiguity - any identifier without '%%' can be either of two id terminals you defined. Note that this kind of ambiguity does not result in grammar conflict reported in grammar explorer - Irony does not know that in fact two identifiers are internally ambiguous. However, it might parse correctly because during parsing the scanner gets assistance from LALR parser - when scanner sees a string of letters, he has two identifier terminals that are candidates (based on FirstChars() list from both). So scanner asks LALR parser - based on current parser state, which one is allowed? If your grammar/language is structured in such a way that each id type can appear in distinct, its own places, the response from parser allows to choose one correct terminal. \r<br />\nHowever, in scanner preview mode, the parser is frozen in a current state while scanner runs ahead trying to scan and find certain tokens. In this mode it cannot ask parser for assistance, so the scanner left on its own makes wrong decisions. \r<br />\nHere's how to fix it. Allow builtin_var to be scanned as identifier initially, but intercept the scanner and fix it if necessary. So add '%' as allowed first (and internal to account for second %) char in identifier. Hook to identifier.ValidateToken event. In the event handler check if the name starts with '%%' - if yes, replace the Terminal field in resulting token with buitin_var terminal. And remove adding prefix '%'. That should fix it, even in preview mode <br />\n",
+    "PostedDate": "2014-09-05T11:00:55.873-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1300007",
+    "ThreadId": "561656",
+    "Html": "Thanks Roman; I follow your logic and have resolved the problem.\r<br />\n<br />\nWhen I tried to apply the approach you outlined, I found an issue where the scanner was sometimes incorrectly matching my <em>builtin_variable</em> terminal when it should have been an identifier. I could fix this by adding another ValidateToken event handler to the <em>builtin_variable</em>, but I thought it was better to alter the approach slightly:<br />\n<ol>\n<li>Defined the <em>builtin_variable</em> terminal to allow % characters in the first and following set (the <em>identifier</em> terminal does not allow either).</li>\n<li>\nAdded a ValidateTerminal() event handler for the <em>builtin_variable</em> terminal, which rejects any tokens which do <em>not</em> begin with %% (and validates that no additional % characters appear in the token).<br />\n</li>\n</ol>\nThis means the scanner automatically matches _identifier_s in many cases, and only sometimes tries to match a <em>builtin_variable</em> and has to try again if the event handler forces it to reject that match.\r<br />\n<br />\nI've noticed that there seem to be two equally valid methods of rejecting a token, as follows; which is more correct?<br />\n<pre><code>e.RejectToken();\ne.Context.CurrentToken = null;</code></pre>\n\nAlso, is there any particular advantage or disadvantage of explicitly telling the scanner which token to match versus just rejecting it and allowing it to try again?<br />\n",
+    "PostedDate": "2014-09-05T23:46:34.137-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1301891",
+    "ThreadId": "561656",
+    "Html": "hi\r<br />\nthe trouble with builtin_variable - you can fix it by simply making it lower priority (assign Termina.Priority value), lower than identifier. This will force scanner to always first try identifier. Currently, because both have equal priorities, it is a random choice in different parser states. \r<br />\nAs for RejectToken and direct null assignment. Directly assigning CurrentToken is one possibility to replace the token with whatever you need in some tricky logic if you ever need to. If you assign null, you are rejecting it. As far as I recall, RejectToken is doing the same - to give a clear way to express to programmer how to do it. (and avoid extra questions on this forum)\r<br />\nI don't quite understand your last question about 'explicitly telling which token to match'. You mean 'terminal to use to match'? I don't think there's any difference in general in most situations, in many cases just like with RejectToken(), the extra 'different' ways of doing the same thing is an attempt to explicitly express certain common actions. \r<br />\nRoman<br />\n",
+    "PostedDate": "2014-09-06T22:31:45.567-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

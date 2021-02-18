@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "560734",
+    "ThreadId": "244641",
+    "Html": "\r\n<p>Dear all,</p>\r\n<p>I need to create an SQL Server assembly from Irony dll.</p>\r\n<p>Can someone please provide a guide in order to achieve this? Any help would be grateful.</p>\r\n<p>Regards,</p>\r\n<p>Jonimatix</p>\r\n",
+    "PostedDate": "2011-02-04T05:32:19.807-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "561298",
+    "ThreadId": "244641",
+    "Html": "\r\n<p>We tried it in the past, you may find a discussion about this some long time ago. The problem is that SQL Server requires all classes in assembly it loads must be &quot;safe&quot;; among other things it means classes or anything they use from .NET framework must not\r\n be marked with HostProtectionAttribute; I tried to factor out such classes but gave up - many of quite useful and quite &quot;innocent&quot; classes like Hashset are marked with this attribute, so it did not seem reasonable to continue. One stupid thing about this is\r\n that SQL server reports the first offending class, not all of them; so after you remove it, you get next, and it is unknown when the process will end. I gave up on Hashset.&nbsp;</p>\r\n<p>Sorry for bad news</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2011-02-05T11:52:17.34-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1350317",
+    "ThreadId": "579820",
+    "Html": "I have a custom TokenFilter and I'm trying to figure out how to correctly add new tokens in the BeginFiltering method. KeyTerms appear to work properly because I can grab the actual KeyTerm that I want from the grammar and everyone is happy. \r<br />\n<br />\nWhat doesn't work is if I have an IdentifierTerminal named &quot;Term&quot;. If I want to add a new &quot;Term&quot; in my TokenFilter I can't just create a new IdentifierTerminal in the BeginFiltering method because the state machine in the parser only knows about the &quot;Term&quot; that was created in my grammar definition.\r<br />\n<br />\nAny new &quot;Term&quot; that I create won't cause a hit in the currState.Actions hashmap. Am I attempting to do something that is not allowed, or is there a legitimate way to create new tokens like this in a TokenFilter that won't cause the state machine to stop?\r<br />\n<br />\nThanks for any help.<br />\n",
+    "PostedDate": "2015-02-09T09:26:03.177-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1350331",
+    "ThreadId": "579820",
+    "Html": "I think that I fixed this myself. The terminal used still needs to be the one specified in the grammar. The token contains that terminal as well as the text associated with that token. Created a new token using the terminal in the grammar object and that seems to work.<br />\n",
+    "PostedDate": "2015-02-09T09:52:33.08-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

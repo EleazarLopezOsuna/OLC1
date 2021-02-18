@@ -1,0 +1,2645 @@
+digraph G{
+node[shape="box"];
+nodo0[label="INICIO"];
+nodo1[label="GLOBAL"];
+nodo0->nodo1
+nodo2[label="L_INSTRUCCIONES"];
+nodo1->nodo2
+nodo3[label="L_INSTRUCCIONES"];
+nodo2->nodo3
+nodo4[label="L_INSTRUCCIONES"];
+nodo3->nodo4
+nodo5[label="L_INSTRUCCIONES"];
+nodo4->nodo5
+nodo6[label="L_INSTRUCCIONES"];
+nodo5->nodo6
+nodo7[label="L_INSTRUCCIONES"];
+nodo6->nodo7
+nodo8[label="L_INSTRUCCIONES"];
+nodo7->nodo8
+nodo9[label="L_INSTRUCCIONES"];
+nodo8->nodo9
+nodo10[label="L_INSTRUCCIONES"];
+nodo9->nodo10
+nodo11[label="L_INSTRUCCIONES"];
+nodo10->nodo11
+nodo12[label="L_INSTRUCCIONES"];
+nodo11->nodo12
+nodo13[label="L_INSTRUCCIONES"];
+nodo12->nodo13
+nodo14[label="CLASE"];
+nodo13->nodo14
+nodo15[label="Expresiones (id)"];
+nodo14->nodo15
+nodo16[label="L_INSTRUCCIONES"];
+nodo14->nodo16
+nodo17[label="L_DECLARACIONES"];
+nodo16->nodo17
+nodo18[label="ARREGLO"];
+nodo17->nodo18
+nodo19[label="DIM1"];
+nodo18->nodo19
+nodo20[label="descripciones (id)"];
+nodo19->nodo20
+nodo21[label="EXPRESION"];
+nodo19->nodo21
+nodo22[label="DATO"];
+nodo21->nodo22
+nodo23[label="7 (entero)"];
+nodo22->nodo23
+nodo24[label="I_DIM"];
+nodo19->nodo24
+nodo25[label="I_DIM"];
+nodo24->nodo25
+nodo26[label="I_DIM"];
+nodo25->nodo26
+nodo27[label="I_DIM"];
+nodo26->nodo27
+nodo28[label="I_DIM"];
+nodo27->nodo28
+nodo29[label="I_DIM"];
+nodo28->nodo29
+nodo30[label="I_DIM"];
+nodo29->nodo30
+nodo31[label="EXPRESION"];
+nodo30->nodo31
+nodo32[label="DATO"];
+nodo31->nodo32
+nodo33[label="Aritméticas básicas (cadena)"];
+nodo32->nodo33
+nodo34[label="EXPRESION"];
+nodo29->nodo34
+nodo35[label="DATO"];
+nodo34->nodo35
+nodo36[label="Aritméticas avanzadas (cadena)"];
+nodo35->nodo36
+nodo37[label="EXPRESION"];
+nodo28->nodo37
+nodo38[label="DATO"];
+nodo37->nodo38
+nodo39[label="Relacionales básicas (cadena)"];
+nodo38->nodo39
+nodo40[label="EXPRESION"];
+nodo27->nodo40
+nodo41[label="DATO"];
+nodo40->nodo41
+nodo42[label="Relacionales avanzadas (cadena)"];
+nodo41->nodo42
+nodo43[label="EXPRESION"];
+nodo26->nodo43
+nodo44[label="DATO"];
+nodo43->nodo44
+nodo45[label="Lógicas básicas (cadena)"];
+nodo44->nodo45
+nodo46[label="EXPRESION"];
+nodo25->nodo46
+nodo47[label="DATO"];
+nodo46->nodo47
+nodo48[label="Lógicas avanzadas (cadena)"];
+nodo47->nodo48
+nodo49[label="EXPRESION"];
+nodo24->nodo49
+nodo50[label="DATO"];
+nodo49->nodo50
+nodo51[label="Operaciones conjuntas (cadena)"];
+nodo50->nodo51
+nodo52[label="L_DECLARACIONES"];
+nodo12->nodo52
+nodo53[label="ARREGLO"];
+nodo52->nodo53
+nodo54[label="DIM1"];
+nodo53->nodo54
+nodo55[label="notas (id)"];
+nodo54->nodo55
+nodo56[label="EXPRESION"];
+nodo54->nodo56
+nodo57[label="DATO"];
+nodo56->nodo57
+nodo58[label="7 (entero)"];
+nodo57->nodo58
+nodo59[label="I_DIM"];
+nodo54->nodo59
+nodo60[label="I_DIM"];
+nodo59->nodo60
+nodo61[label="I_DIM"];
+nodo60->nodo61
+nodo62[label="I_DIM"];
+nodo61->nodo62
+nodo63[label="I_DIM"];
+nodo62->nodo63
+nodo64[label="I_DIM"];
+nodo63->nodo64
+nodo65[label="I_DIM"];
+nodo64->nodo65
+nodo66[label="EXPRESION"];
+nodo65->nodo66
+nodo67[label="DATO"];
+nodo66->nodo67
+nodo68[label="0 (entero)"];
+nodo67->nodo68
+nodo69[label="EXPRESION"];
+nodo64->nodo69
+nodo70[label="DATO"];
+nodo69->nodo70
+nodo71[label="0 (entero)"];
+nodo70->nodo71
+nodo72[label="EXPRESION"];
+nodo63->nodo72
+nodo73[label="DATO"];
+nodo72->nodo73
+nodo74[label="0 (entero)"];
+nodo73->nodo74
+nodo75[label="EXPRESION"];
+nodo62->nodo75
+nodo76[label="DATO"];
+nodo75->nodo76
+nodo77[label="0 (entero)"];
+nodo76->nodo77
+nodo78[label="EXPRESION"];
+nodo61->nodo78
+nodo79[label="DATO"];
+nodo78->nodo79
+nodo80[label="0 (entero)"];
+nodo79->nodo80
+nodo81[label="EXPRESION"];
+nodo60->nodo81
+nodo82[label="DATO"];
+nodo81->nodo82
+nodo83[label="0 (entero)"];
+nodo82->nodo83
+nodo84[label="EXPRESION"];
+nodo59->nodo84
+nodo85[label="DATO"];
+nodo84->nodo85
+nodo86[label="0 (entero)"];
+nodo85->nodo86
+nodo87[label="METODO"];
+nodo11->nodo87
+nodo88[label="Expresiones (id)"];
+nodo87->nodo88
+nodo89[label="L_INSTRUCCIONES"];
+nodo87->nodo89
+nodo90[label="L_INSTRUCCIONES"];
+nodo89->nodo90
+nodo91[label="L_INSTRUCCIONES"];
+nodo90->nodo91
+nodo92[label="L_INSTRUCCIONES"];
+nodo91->nodo92
+nodo93[label="L_INSTRUCCIONES"];
+nodo92->nodo93
+nodo94[label="L_INSTRUCCIONES"];
+nodo93->nodo94
+nodo95[label="L_INSTRUCCIONES"];
+nodo94->nodo95
+nodo96[label="INSTRUCCION"];
+nodo95->nodo96
+nodo97[label="EOTRO"];
+nodo96->nodo97
+nodo98[label="aritmeticas_basicas (id)"];
+nodo97->nodo98
+nodo99[label="INSTRUCCION"];
+nodo94->nodo99
+nodo100[label="EOTRO"];
+nodo99->nodo100
+nodo101[label="aritmeticas_avanzadas (id)"];
+nodo100->nodo101
+nodo102[label="INSTRUCCION"];
+nodo93->nodo102
+nodo103[label="EOTRO"];
+nodo102->nodo103
+nodo104[label="operaciones_relacionales_basicas (id)"];
+nodo103->nodo104
+nodo105[label="INSTRUCCION"];
+nodo92->nodo105
+nodo106[label="EOTRO"];
+nodo105->nodo106
+nodo107[label="operaciones_relacionales_avanzadas (id)"];
+nodo106->nodo107
+nodo108[label="INSTRUCCION"];
+nodo91->nodo108
+nodo109[label="EOTRO"];
+nodo108->nodo109
+nodo110[label="operaciones_logicas_basicas (id)"];
+nodo109->nodo110
+nodo111[label="INSTRUCCION"];
+nodo90->nodo111
+nodo112[label="EOTRO"];
+nodo111->nodo112
+nodo113[label="operaciones_logicas_avanzadas (id)"];
+nodo112->nodo113
+nodo114[label="INSTRUCCION"];
+nodo89->nodo114
+nodo115[label="EOTRO"];
+nodo114->nodo115
+nodo116[label="operaciones_conjuntas (id)"];
+nodo115->nodo116
+nodo117[label="METODO"];
+nodo10->nodo117
+nodo118[label="aritmeticas_basicas (id)"];
+nodo117->nodo118
+nodo119[label="L_INSTRUCCIONES"];
+nodo117->nodo119
+nodo120[label="L_INSTRUCCIONES"];
+nodo119->nodo120
+nodo121[label="L_INSTRUCCIONES"];
+nodo120->nodo121
+nodo122[label="L_INSTRUCCIONES"];
+nodo121->nodo122
+nodo123[label="L_INSTRUCCIONES"];
+nodo122->nodo123
+nodo124[label="L_INSTRUCCIONES"];
+nodo123->nodo124
+nodo125[label="L_INSTRUCCIONES"];
+nodo124->nodo125
+nodo126[label="L_INSTRUCCIONES"];
+nodo125->nodo126
+nodo127[label="L_INSTRUCCIONES"];
+nodo126->nodo127
+nodo128[label="L_INSTRUCCIONES"];
+nodo127->nodo128
+nodo129[label="LOG"];
+nodo128->nodo129
+nodo130[label="EXPRESION"];
+nodo129->nodo130
+nodo131[label="DATO"];
+nodo130->nodo131
+nodo132[label="1) Operaciones Aritméticas Basicas (cadena)"];
+nodo131->nodo132
+nodo133[label="L_DECLARACIONES"];
+nodo127->nodo133
+nodo134[label="LINEAL"];
+nodo133->nodo134
+nodo135[label="temp1 (id)"];
+nodo134->nodo135
+nodo136[label="EXPRESION"];
+nodo134->nodo136
+nodo137[label="EXPRESION"];
+nodo136->nodo137
+nodo138[label="DATO"];
+nodo137->nodo138
+nodo139[label="10 (entero)"];
+nodo138->nodo139
+nodo140[label="+ (Key symbol)"];
+nodo136->nodo140
+nodo141[label="EXPRESION"];
+nodo136->nodo141
+nodo142[label="EXPRESION"];
+nodo141->nodo142
+nodo143[label="EXPRESION"];
+nodo142->nodo143
+nodo144[label="DATO"];
+nodo143->nodo144
+nodo145[label="45 (entero)"];
+nodo144->nodo145
+nodo146[label="* (Key symbol)"];
+nodo142->nodo146
+nodo147[label="EXPRESION"];
+nodo142->nodo147
+nodo148[label="DATO"];
+nodo147->nodo148
+nodo149[label="78 (entero)"];
+nodo148->nodo149
+nodo150[label="/ (Key symbol)"];
+nodo141->nodo150
+nodo151[label="EXPRESION"];
+nodo141->nodo151
+nodo152[label="DATO"];
+nodo151->nodo152
+nodo153[label="2 (entero)"];
+nodo152->nodo153
+nodo154[label="LOG"];
+nodo126->nodo154
+nodo155[label="EXPRESION"];
+nodo154->nodo155
+nodo156[label="DATO"];
+nodo155->nodo156
+nodo157[label="temp1 (id)"];
+nodo156->nodo157
+nodo158[label="L_DECLARACIONES"];
+nodo125->nodo158
+nodo159[label="LINEAL"];
+nodo158->nodo159
+nodo160[label="temp2 (id)"];
+nodo159->nodo160
+nodo161[label="EXPRESION"];
+nodo159->nodo161
+nodo162[label="EXPRESION"];
+nodo161->nodo162
+nodo163[label="DATO"];
+nodo162->nodo163
+nodo164[label="0 (entero)"];
+nodo163->nodo164
+nodo165[label="+ (Key symbol)"];
+nodo161->nodo165
+nodo166[label="EXPRESION"];
+nodo161->nodo166
+nodo167[label="EXPRESION"];
+nodo166->nodo167
+nodo168[label="EXPRESION"];
+nodo167->nodo168
+nodo169[label="EXPRESION"];
+nodo168->nodo169
+nodo170[label="DATO"];
+nodo169->nodo170
+nodo171[label="10 (entero)"];
+nodo170->nodo171
+nodo172[label="* (Key symbol)"];
+nodo168->nodo172
+nodo173[label="EXPRESION"];
+nodo168->nodo173
+nodo174[label="EXPRESION"];
+nodo173->nodo174
+nodo175[label="EXPRESION"];
+nodo174->nodo175
+nodo176[label="EXPRESION"];
+nodo175->nodo176
+nodo177[label="DATO"];
+nodo176->nodo177
+nodo178[label="8 (entero)"];
+nodo177->nodo178
+nodo179[label="LOG"];
+nodo124->nodo179
+nodo180[label="EXPRESION"];
+nodo179->nodo180
+nodo181[label="DATO"];
+nodo180->nodo181
+nodo182[label="temp2 (id)"];
+nodo181->nodo182
+nodo183[label="L_DECLARACIONES"];
+nodo123->nodo183
+nodo184[label="LINEAL"];
+nodo183->nodo184
+nodo185[label="temp3 (id)"];
+nodo184->nodo185
+nodo186[label="EXPRESION"];
+nodo184->nodo186
+nodo187[label="EXPRESION"];
+nodo186->nodo187
+nodo188[label="EXPRESION"];
+nodo187->nodo188
+nodo189[label="EXPRESION"];
+nodo188->nodo189
+nodo190[label="DATO"];
+nodo189->nodo190
+nodo191[label="8 (entero)"];
+nodo190->nodo191
+nodo192[label="- (Key symbol)"];
+nodo188->nodo192
+nodo193[label="EXPRESION"];
+nodo188->nodo193
+nodo194[label="DATO"];
+nodo193->nodo194
+nodo195[label="7 (entero)"];
+nodo194->nodo195
+nodo196[label="+ (Key symbol)"];
+nodo187->nodo196
+nodo197[label="EXPRESION"];
+nodo187->nodo197
+nodo198[label="EXPRESION"];
+nodo197->nodo198
+nodo199[label="DATO"];
+nodo198->nodo199
+nodo200[label="2 (entero)"];
+nodo199->nodo200
+nodo201[label="pow (Keyword)"];
+nodo197->nodo201
+nodo202[label="EXPRESION"];
+nodo197->nodo202
+nodo203[label="EXPRESION"];
+nodo202->nodo203
+nodo204[label="DATO"];
+nodo203->nodo204
+nodo205[label="3 (entero)"];
+nodo204->nodo205
+nodo206[label="LOG"];
+nodo122->nodo206
+nodo207[label="EXPRESION"];
+nodo206->nodo207
+nodo208[label="DATO"];
+nodo207->nodo208
+nodo209[label="temp3 (id)"];
+nodo208->nodo209
+nodo210[label="IF"];
+nodo121->nodo210
+nodo211[label="EXPRESION"];
+nodo210->nodo211
+nodo212[label="EXPRESION"];
+nodo211->nodo212
+nodo213[label="DATO"];
+nodo212->nodo213
+nodo214[label="temp1 (id)"];
+nodo213->nodo214
+nodo215[label="== (Key symbol)"];
+nodo211->nodo215
+nodo216[label="EXPRESION"];
+nodo211->nodo216
+nodo217[label="DATO"];
+nodo216->nodo217
+nodo218[label="1765 (entero)"];
+nodo217->nodo218
+nodo219[label="IF"];
+nodo120->nodo219
+nodo220[label="EXPRESION"];
+nodo219->nodo220
+nodo221[label="EXPRESION"];
+nodo220->nodo221
+nodo222[label="DATO"];
+nodo221->nodo222
+nodo223[label="temp2 (id)"];
+nodo222->nodo223
+nodo224[label="== (Key symbol)"];
+nodo220->nodo224
+nodo225[label="EXPRESION"];
+nodo220->nodo225
+nodo226[label="DATO"];
+nodo225->nodo226
+nodo227[label="80 (entero)"];
+nodo226->nodo227
+nodo228[label="L_INSTRUCCIONES"];
+nodo219->nodo228
+nodo229[label="REASIGNACION"];
+nodo228->nodo229
+nodo230[label="ARREGLO"];
+nodo229->nodo230
+nodo231[label="DIM1"];
+nodo230->nodo231
+nodo232[label="notas (id)"];
+nodo231->nodo232
+nodo233[label="EXPRESION"];
+nodo231->nodo233
+nodo234[label="DATO"];
+nodo233->nodo234
+nodo235[label="0 (entero)"];
+nodo234->nodo235
+nodo236[label="EXPRESION"];
+nodo229->nodo236
+nodo237[label="EXPRESION"];
+nodo236->nodo237
+nodo238[label="ARREGLO"];
+nodo237->nodo238
+nodo239[label="DIM1"];
+nodo238->nodo239
+nodo240[label="notas (id)"];
+nodo239->nodo240
+nodo241[label="EXPRESION"];
+nodo239->nodo241
+nodo242[label="DATO"];
+nodo241->nodo242
+nodo243[label="0 (entero)"];
+nodo242->nodo243
+nodo244[label="+ (Key symbol)"];
+nodo236->nodo244
+nodo245[label="EXPRESION"];
+nodo236->nodo245
+nodo246[label="DATO"];
+nodo245->nodo246
+nodo247[label="5 (entero)"];
+nodo246->nodo247
+nodo248[label="IF"];
+nodo119->nodo248
+nodo249[label="EXPRESION"];
+nodo248->nodo249
+nodo250[label="EXPRESION"];
+nodo249->nodo250
+nodo251[label="DATO"];
+nodo250->nodo251
+nodo252[label="temp3 (id)"];
+nodo251->nodo252
+nodo253[label="== (Key symbol)"];
+nodo249->nodo253
+nodo254[label="EXPRESION"];
+nodo249->nodo254
+nodo255[label="DATO"];
+nodo254->nodo255
+nodo256[label="9.0 (doble)"];
+nodo255->nodo256
+nodo257[label="L_INSTRUCCIONES"];
+nodo248->nodo257
+nodo258[label="REASIGNACION"];
+nodo257->nodo258
+nodo259[label="ARREGLO"];
+nodo258->nodo259
+nodo260[label="DIM1"];
+nodo259->nodo260
+nodo261[label="notas (id)"];
+nodo260->nodo261
+nodo262[label="EXPRESION"];
+nodo260->nodo262
+nodo263[label="DATO"];
+nodo262->nodo263
+nodo264[label="0 (entero)"];
+nodo263->nodo264
+nodo265[label="EXPRESION"];
+nodo258->nodo265
+nodo266[label="EXPRESION"];
+nodo265->nodo266
+nodo267[label="ARREGLO"];
+nodo266->nodo267
+nodo268[label="DIM1"];
+nodo267->nodo268
+nodo269[label="notas (id)"];
+nodo268->nodo269
+nodo270[label="EXPRESION"];
+nodo268->nodo270
+nodo271[label="DATO"];
+nodo270->nodo271
+nodo272[label="0 (entero)"];
+nodo271->nodo272
+nodo273[label="+ (Key symbol)"];
+nodo265->nodo273
+nodo274[label="EXPRESION"];
+nodo265->nodo274
+nodo275[label="DATO"];
+nodo274->nodo275
+nodo276[label="5 (entero)"];
+nodo275->nodo276
+nodo277[label="METODO"];
+nodo9->nodo277
+nodo278[label="aritmeticas_avanzadas (id)"];
+nodo277->nodo278
+nodo279[label="L_INSTRUCCIONES"];
+nodo277->nodo279
+nodo280[label="L_INSTRUCCIONES"];
+nodo279->nodo280
+nodo281[label="L_INSTRUCCIONES"];
+nodo280->nodo281
+nodo282[label="L_INSTRUCCIONES"];
+nodo281->nodo282
+nodo283[label="L_INSTRUCCIONES"];
+nodo282->nodo283
+nodo284[label="L_INSTRUCCIONES"];
+nodo283->nodo284
+nodo285[label="L_INSTRUCCIONES"];
+nodo284->nodo285
+nodo286[label="L_INSTRUCCIONES"];
+nodo285->nodo286
+nodo287[label="L_INSTRUCCIONES"];
+nodo286->nodo287
+nodo288[label="L_INSTRUCCIONES"];
+nodo287->nodo288
+nodo289[label="LOG"];
+nodo288->nodo289
+nodo290[label="EXPRESION"];
+nodo289->nodo290
+nodo291[label="DATO"];
+nodo290->nodo291
+nodo292[label="2) Operaciones Aritméticas Avanzadas (cadena)"];
+nodo291->nodo292
+nodo293[label="L_DECLARACIONES"];
+nodo287->nodo293
+nodo294[label="LINEAL"];
+nodo293->nodo294
+nodo295[label="temp1 (id)"];
+nodo294->nodo295
+nodo296[label="EXPRESION"];
+nodo294->nodo296
+nodo297[label="EXPRESION"];
+nodo296->nodo297
+nodo298[label="EXPRESION"];
+nodo297->nodo298
+nodo299[label="EXPRESION"];
+nodo298->nodo299
+nodo300[label="DATO"];
+nodo299->nodo300
+nodo301[label="15 (entero)"];
+nodo300->nodo301
+nodo302[label="* (Key symbol)"];
+nodo298->nodo302
+nodo303[label="EXPRESION"];
+nodo298->nodo303
+nodo304[label="DATO"];
+nodo303->nodo304
+nodo305[label="7 (entero)"];
+nodo304->nodo305
+nodo306[label="- (Key symbol)"];
+nodo297->nodo306
+nodo307[label="EXPRESION"];
+nodo297->nodo307
+nodo308[label="EXPRESION"];
+nodo307->nodo308
+nodo309[label="DATO"];
+nodo308->nodo309
+nodo310[label="2 (entero)"];
+nodo309->nodo310
+nodo311[label="/ (Key symbol)"];
+nodo307->nodo311
+nodo312[label="EXPRESION"];
+nodo307->nodo312
+nodo313[label="DATO"];
+nodo312->nodo313
+nodo314[label="2 (entero)"];
+nodo313->nodo314
+nodo315[label="- (Key symbol)"];
+nodo296->nodo315
+nodo316[label="EXPRESION"];
+nodo296->nodo316
+nodo317[label="EXPRESION"];
+nodo316->nodo317
+nodo318[label="DATO"];
+nodo317->nodo318
+nodo319[label="8 (entero)"];
+nodo318->nodo319
+nodo320[label="* (Key symbol)"];
+nodo316->nodo320
+nodo321[label="EXPRESION"];
+nodo316->nodo321
+nodo322[label="EXPRESION"];
+nodo321->nodo322
+nodo323[label="EXPRESION"];
+nodo322->nodo323
+nodo324[label="DATO"];
+nodo323->nodo324
+nodo325[label="5 (entero)"];
+nodo324->nodo325
+nodo326[label="- (Key symbol)"];
+nodo322->nodo326
+nodo327[label="EXPRESION"];
+nodo322->nodo327
+nodo328[label="DATO"];
+nodo327->nodo328
+nodo329[label="6 (entero)"];
+nodo328->nodo329
+nodo330[label="LOG"];
+nodo286->nodo330
+nodo331[label="EXPRESION"];
+nodo330->nodo331
+nodo332[label="DATO"];
+nodo331->nodo332
+nodo333[label="temp1 (id)"];
+nodo332->nodo333
+nodo334[label="L_DECLARACIONES"];
+nodo285->nodo334
+nodo335[label="LINEAL"];
+nodo334->nodo335
+nodo336[label="temp5 (id)"];
+nodo335->nodo336
+nodo337[label="EXPRESION"];
+nodo335->nodo337
+nodo338[label="EXPRESION"];
+nodo337->nodo338
+nodo339[label="EXPRESION"];
+nodo338->nodo339
+nodo340[label="EXPRESION"];
+nodo339->nodo340
+nodo341[label="EXPRESION"];
+nodo340->nodo341
+nodo342[label="DATO"];
+nodo341->nodo342
+nodo343[label="0 (entero)"];
+nodo342->nodo343
+nodo344[label="+ (Key symbol)"];
+nodo340->nodo344
+nodo345[label="EXPRESION"];
+nodo340->nodo345
+nodo346[label="EXPRESION"];
+nodo345->nodo346
+nodo347[label="EXPRESION"];
+nodo346->nodo347
+nodo348[label="DATO"];
+nodo347->nodo348
+nodo349[label="10 (entero)"];
+nodo348->nodo349
+nodo350[label="* (Key symbol)"];
+nodo346->nodo350
+nodo351[label="EXPRESION"];
+nodo346->nodo351
+nodo352[label="DATO"];
+nodo351->nodo352
+nodo353[label="8 (entero)"];
+nodo352->nodo353
+nodo354[label="- (Key symbol)"];
+nodo339->nodo354
+nodo355[label="EXPRESION"];
+nodo339->nodo355
+nodo356[label="DATO"];
+nodo355->nodo356
+nodo357[label="18 (entero)"];
+nodo356->nodo357
+nodo358[label="+ (Key symbol)"];
+nodo338->nodo358
+nodo359[label="EXPRESION"];
+nodo338->nodo359
+nodo360[label="EXPRESION"];
+nodo359->nodo360
+nodo361[label="DATO"];
+nodo360->nodo361
+nodo362[label="3 (entero)"];
+nodo361->nodo362
+nodo363[label="pow (Keyword)"];
+nodo359->nodo363
+nodo364[label="EXPRESION"];
+nodo359->nodo364
+nodo365[label="EXPRESION"];
+nodo364->nodo365
+nodo366[label="DATO"];
+nodo365->nodo366
+nodo367[label="4 (entero)"];
+nodo366->nodo367
+nodo368[label="LOG"];
+nodo284->nodo368
+nodo369[label="EXPRESION"];
+nodo368->nodo369
+nodo370[label="DATO"];
+nodo369->nodo370
+nodo371[label="temp5 (id)"];
+nodo370->nodo371
+nodo372[label="L_DECLARACIONES"];
+nodo283->nodo372
+nodo373[label="LINEAL"];
+nodo372->nodo373
+nodo374[label="temp6 (id)"];
+nodo373->nodo374
+nodo375[label="EXPRESION"];
+nodo373->nodo375
+nodo376[label="EXPRESION"];
+nodo375->nodo376
+nodo377[label="EXPRESION"];
+nodo376->nodo377
+nodo378[label="EXPRESION"];
+nodo377->nodo378
+nodo379[label="EXPRESION"];
+nodo378->nodo379
+nodo380[label="EXPRESION"];
+nodo379->nodo380
+nodo381[label="DATO"];
+nodo380->nodo381
+nodo382[label="8 (entero)"];
+nodo381->nodo382
+nodo383[label="- (Key symbol)"];
+nodo379->nodo383
+nodo384[label="EXPRESION"];
+nodo379->nodo384
+nodo385[label="DATO"];
+nodo384->nodo385
+nodo386[label="7 (entero)"];
+nodo385->nodo386
+nodo387[label="+ (Key symbol)"];
+nodo378->nodo387
+nodo388[label="EXPRESION"];
+nodo378->nodo388
+nodo389[label="EXPRESION"];
+nodo388->nodo389
+nodo390[label="EXPRESION"];
+nodo389->nodo390
+nodo391[label="DATO"];
+nodo390->nodo391
+nodo392[label="2 (entero)"];
+nodo391->nodo392
+nodo393[label="pow (Keyword)"];
+nodo389->nodo393
+nodo394[label="EXPRESION"];
+nodo389->nodo394
+nodo395[label="EXPRESION"];
+nodo394->nodo395
+nodo396[label="DATO"];
+nodo395->nodo396
+nodo397[label="3 (entero)"];
+nodo396->nodo397
+nodo398[label="/ (Key symbol)"];
+nodo388->nodo398
+nodo399[label="EXPRESION"];
+nodo388->nodo399
+nodo400[label="DATO"];
+nodo399->nodo400
+nodo401[label="3 (entero)"];
+nodo400->nodo401
+nodo402[label="* (Key symbol)"];
+nodo376->nodo402
+nodo403[label="EXPRESION"];
+nodo376->nodo403
+nodo404[label="DATO"];
+nodo403->nodo404
+nodo405[label="4 (entero)"];
+nodo404->nodo405
+nodo406[label="LOG"];
+nodo282->nodo406
+nodo407[label="EXPRESION"];
+nodo406->nodo407
+nodo408[label="DATO"];
+nodo407->nodo408
+nodo409[label="temp6 (id)"];
+nodo408->nodo409
+nodo410[label="IF"];
+nodo281->nodo410
+nodo411[label="EXPRESION"];
+nodo410->nodo411
+nodo412[label="EXPRESION"];
+nodo411->nodo412
+nodo413[label="DATO"];
+nodo412->nodo413
+nodo414[label="temp1 (id)"];
+nodo413->nodo414
+nodo415[label="== (Key symbol)"];
+nodo411->nodo415
+nodo416[label="EXPRESION"];
+nodo411->nodo416
+nodo417[label="DATO"];
+nodo416->nodo417
+nodo418[label="112 (entero)"];
+nodo417->nodo418
+nodo419[label="L_INSTRUCCIONES"];
+nodo410->nodo419
+nodo420[label="REASIGNACION"];
+nodo419->nodo420
+nodo421[label="ARREGLO"];
+nodo420->nodo421
+nodo422[label="DIM1"];
+nodo421->nodo422
+nodo423[label="notas (id)"];
+nodo422->nodo423
+nodo424[label="EXPRESION"];
+nodo422->nodo424
+nodo425[label="DATO"];
+nodo424->nodo425
+nodo426[label="1 (entero)"];
+nodo425->nodo426
+nodo427[label="EXPRESION"];
+nodo420->nodo427
+nodo428[label="EXPRESION"];
+nodo427->nodo428
+nodo429[label="ARREGLO"];
+nodo428->nodo429
+nodo430[label="DIM1"];
+nodo429->nodo430
+nodo431[label="notas (id)"];
+nodo430->nodo431
+nodo432[label="EXPRESION"];
+nodo430->nodo432
+nodo433[label="DATO"];
+nodo432->nodo433
+nodo434[label="1 (entero)"];
+nodo433->nodo434
+nodo435[label="+ (Key symbol)"];
+nodo427->nodo435
+nodo436[label="EXPRESION"];
+nodo427->nodo436
+nodo437[label="DATO"];
+nodo436->nodo437
+nodo438[label="5 (entero)"];
+nodo437->nodo438
+nodo439[label="IF"];
+nodo280->nodo439
+nodo440[label="EXPRESION"];
+nodo439->nodo440
+nodo441[label="EXPRESION"];
+nodo440->nodo441
+nodo442[label="DATO"];
+nodo441->nodo442
+nodo443[label="temp5 (id)"];
+nodo442->nodo443
+nodo444[label="== (Key symbol)"];
+nodo440->nodo444
+nodo445[label="EXPRESION"];
+nodo440->nodo445
+nodo446[label="DATO"];
+nodo445->nodo446
+nodo447[label="143.000 (doble)"];
+nodo446->nodo447
+nodo448[label="L_INSTRUCCIONES"];
+nodo439->nodo448
+nodo449[label="REASIGNACION"];
+nodo448->nodo449
+nodo450[label="ARREGLO"];
+nodo449->nodo450
+nodo451[label="DIM1"];
+nodo450->nodo451
+nodo452[label="notas (id)"];
+nodo451->nodo452
+nodo453[label="EXPRESION"];
+nodo451->nodo453
+nodo454[label="DATO"];
+nodo453->nodo454
+nodo455[label="1 (entero)"];
+nodo454->nodo455
+nodo456[label="EXPRESION"];
+nodo449->nodo456
+nodo457[label="EXPRESION"];
+nodo456->nodo457
+nodo458[label="ARREGLO"];
+nodo457->nodo458
+nodo459[label="DIM1"];
+nodo458->nodo459
+nodo460[label="notas (id)"];
+nodo459->nodo460
+nodo461[label="EXPRESION"];
+nodo459->nodo461
+nodo462[label="DATO"];
+nodo461->nodo462
+nodo463[label="1 (entero)"];
+nodo462->nodo463
+nodo464[label="+ (Key symbol)"];
+nodo456->nodo464
+nodo465[label="EXPRESION"];
+nodo456->nodo465
+nodo466[label="DATO"];
+nodo465->nodo466
+nodo467[label="5 (entero)"];
+nodo466->nodo467
+nodo468[label="IF"];
+nodo279->nodo468
+nodo469[label="EXPRESION"];
+nodo468->nodo469
+nodo470[label="EXPRESION"];
+nodo469->nodo470
+nodo471[label="DATO"];
+nodo470->nodo471
+nodo472[label="temp6 (id)"];
+nodo471->nodo472
+nodo473[label="== (Key symbol)"];
+nodo469->nodo473
+nodo474[label="EXPRESION"];
+nodo469->nodo474
+nodo475[label="DATO"];
+nodo474->nodo475
+nodo476[label="14.666666666666666 (doble)"];
+nodo475->nodo476
+nodo477[label="L_INSTRUCCIONES"];
+nodo468->nodo477
+nodo478[label="REASIGNACION"];
+nodo477->nodo478
+nodo479[label="ARREGLO"];
+nodo478->nodo479
+nodo480[label="DIM1"];
+nodo479->nodo480
+nodo481[label="notas (id)"];
+nodo480->nodo481
+nodo482[label="EXPRESION"];
+nodo480->nodo482
+nodo483[label="DATO"];
+nodo482->nodo483
+nodo484[label="1 (entero)"];
+nodo483->nodo484
+nodo485[label="EXPRESION"];
+nodo478->nodo485
+nodo486[label="EXPRESION"];
+nodo485->nodo486
+nodo487[label="ARREGLO"];
+nodo486->nodo487
+nodo488[label="DIM1"];
+nodo487->nodo488
+nodo489[label="notas (id)"];
+nodo488->nodo489
+nodo490[label="EXPRESION"];
+nodo488->nodo490
+nodo491[label="DATO"];
+nodo490->nodo491
+nodo492[label="1 (entero)"];
+nodo491->nodo492
+nodo493[label="+ (Key symbol)"];
+nodo485->nodo493
+nodo494[label="EXPRESION"];
+nodo485->nodo494
+nodo495[label="DATO"];
+nodo494->nodo495
+nodo496[label="5 (entero)"];
+nodo495->nodo496
+nodo497[label="METODO"];
+nodo8->nodo497
+nodo498[label="operaciones_relacionales_basicas (id)"];
+nodo497->nodo498
+nodo499[label="L_INSTRUCCIONES"];
+nodo497->nodo499
+nodo500[label="L_INSTRUCCIONES"];
+nodo499->nodo500
+nodo501[label="L_INSTRUCCIONES"];
+nodo500->nodo501
+nodo502[label="L_INSTRUCCIONES"];
+nodo501->nodo502
+nodo503[label="LOG"];
+nodo502->nodo503
+nodo504[label="EXPRESION"];
+nodo503->nodo504
+nodo505[label="DATO"];
+nodo504->nodo505
+nodo506[label="3) Operaciones Relacionales Basicas (cadena)"];
+nodo505->nodo506
+nodo507[label="L_DECLARACIONES"];
+nodo501->nodo507
+nodo508[label="LINEAL"];
+nodo507->nodo508
+nodo509[label="salida (id)"];
+nodo508->nodo509
+nodo510[label="EXPRESION"];
+nodo508->nodo510
+nodo511[label="DATO"];
+nodo510->nodo511
+nodo512[label="0 (entero)"];
+nodo511->nodo512
+nodo513[label="IF"];
+nodo500->nodo513
+nodo514[label="EXPRESION"];
+nodo513->nodo514
+nodo515[label="EXPRESION"];
+nodo514->nodo515
+nodo516[label="DATO"];
+nodo515->nodo516
+nodo517[label="salida (id)"];
+nodo516->nodo517
+nodo518[label="< (Key symbol)"];
+nodo514->nodo518
+nodo519[label="EXPRESION"];
+nodo514->nodo519
+nodo520[label="DATO"];
+nodo519->nodo520
+nodo521[label="10 (entero)"];
+nodo520->nodo521
+nodo522[label="L_INSTRUCCIONES"];
+nodo513->nodo522
+nodo523[label="L_INSTRUCCIONES"];
+nodo522->nodo523
+nodo524[label="REASIGNACION"];
+nodo523->nodo524
+nodo525[label="salida (id)"];
+nodo524->nodo525
+nodo526[label="EXPRESION"];
+nodo524->nodo526
+nodo527[label="EXPRESION"];
+nodo526->nodo527
+nodo528[label="DATO"];
+nodo527->nodo528
+nodo529[label="5 (entero)"];
+nodo528->nodo529
+nodo530[label="* (Key symbol)"];
+nodo526->nodo530
+nodo531[label="EXPRESION"];
+nodo526->nodo531
+nodo532[label="DATO"];
+nodo531->nodo532
+nodo533[label="9 (entero)"];
+nodo532->nodo533
+nodo534[label="IF"];
+nodo522->nodo534
+nodo535[label="EXPRESION"];
+nodo534->nodo535
+nodo536[label="EXPRESION"];
+nodo535->nodo536
+nodo537[label="DATO"];
+nodo536->nodo537
+nodo538[label="salida (id)"];
+nodo537->nodo538
+nodo539[label="> (Key symbol)"];
+nodo535->nodo539
+nodo540[label="EXPRESION"];
+nodo535->nodo540
+nodo541[label="DATO"];
+nodo540->nodo541
+nodo542[label="44 (entero)"];
+nodo541->nodo542
+nodo543[label="L_INSTRUCCIONES"];
+nodo534->nodo543
+nodo544[label="EXPRESION"];
+nodo543->nodo544
+nodo545[label="EXPRESION"];
+nodo544->nodo545
+nodo546[label="DATO"];
+nodo545->nodo546
+nodo547[label="salida (id)"];
+nodo546->nodo547
+nodo548[label="++ (Key symbol)"];
+nodo544->nodo548
+nodo549[label="ELSE"];
+nodo513->nodo549
+nodo550[label="L_INSTRUCCIONES"];
+nodo549->nodo550
+nodo551[label="REASIGNACION"];
+nodo550->nodo551
+nodo552[label="salida (id)"];
+nodo551->nodo552
+nodo553[label="EXPRESION"];
+nodo551->nodo553
+nodo554[label="DATO"];
+nodo553->nodo554
+nodo555[label="1 (entero)"];
+nodo554->nodo555
+nodo556[label="IF"];
+nodo499->nodo556
+nodo557[label="EXPRESION"];
+nodo556->nodo557
+nodo558[label="EXPRESION"];
+nodo557->nodo558
+nodo559[label="DATO"];
+nodo558->nodo559
+nodo560[label="salida (id)"];
+nodo559->nodo560
+nodo561[label="<> (Key symbol)"];
+nodo557->nodo561
+nodo562[label="EXPRESION"];
+nodo557->nodo562
+nodo563[label="DATO"];
+nodo562->nodo563
+nodo564[label="1 (entero)"];
+nodo563->nodo564
+nodo565[label="L_INSTRUCCIONES"];
+nodo556->nodo565
+nodo566[label="IF"];
+nodo565->nodo566
+nodo567[label="EXPRESION"];
+nodo566->nodo567
+nodo568[label="EXPRESION"];
+nodo567->nodo568
+nodo569[label="DATO"];
+nodo568->nodo569
+nodo570[label="salida (id)"];
+nodo569->nodo570
+nodo571[label="== (Key symbol)"];
+nodo567->nodo571
+nodo572[label="EXPRESION"];
+nodo567->nodo572
+nodo573[label="DATO"];
+nodo572->nodo573
+nodo574[label="46 (entero)"];
+nodo573->nodo574
+nodo575[label="L_INSTRUCCIONES"];
+nodo566->nodo575
+nodo576[label="L_INSTRUCCIONES"];
+nodo575->nodo576
+nodo577[label="LOG"];
+nodo576->nodo577
+nodo578[label="EXPRESION"];
+nodo577->nodo578
+nodo579[label="DATO"];
+nodo578->nodo579
+nodo580[label="Salida CORRECTA!! (cadena)"];
+nodo579->nodo580
+nodo581[label="REASIGNACION"];
+nodo575->nodo581
+nodo582[label="ARREGLO"];
+nodo581->nodo582
+nodo583[label="DIM1"];
+nodo582->nodo583
+nodo584[label="notas (id)"];
+nodo583->nodo584
+nodo585[label="EXPRESION"];
+nodo583->nodo585
+nodo586[label="DATO"];
+nodo585->nodo586
+nodo587[label="2 (entero)"];
+nodo586->nodo587
+nodo588[label="EXPRESION"];
+nodo581->nodo588
+nodo589[label="EXPRESION"];
+nodo588->nodo589
+nodo590[label="ARREGLO"];
+nodo589->nodo590
+nodo591[label="DIM1"];
+nodo590->nodo591
+nodo592[label="notas (id)"];
+nodo591->nodo592
+nodo593[label="EXPRESION"];
+nodo591->nodo593
+nodo594[label="DATO"];
+nodo593->nodo594
+nodo595[label="2 (entero)"];
+nodo594->nodo595
+nodo596[label="+ (Key symbol)"];
+nodo588->nodo596
+nodo597[label="EXPRESION"];
+nodo588->nodo597
+nodo598[label="DATO"];
+nodo597->nodo598
+nodo599[label="15 (entero)"];
+nodo598->nodo599
+nodo600[label="ELSE"];
+nodo566->nodo600
+nodo601[label="L_INSTRUCCIONES"];
+nodo600->nodo601
+nodo602[label="LOG"];
+nodo601->nodo602
+nodo603[label="EXPRESION"];
+nodo602->nodo603
+nodo604[label="DATO"];
+nodo603->nodo604
+nodo605[label="Salida incorrecta!!!! (cadena)"];
+nodo604->nodo605
+nodo606[label="ELSE"];
+nodo556->nodo606
+nodo607[label="L_INSTRUCCIONES"];
+nodo606->nodo607
+nodo608[label="LOG"];
+nodo607->nodo608
+nodo609[label="EXPRESION"];
+nodo608->nodo609
+nodo610[label="DATO"];
+nodo609->nodo610
+nodo611[label="Salida incorrecta!! (cadena)"];
+nodo610->nodo611
+nodo612[label="METODO"];
+nodo7->nodo612
+nodo613[label="operaciones_relacionales_avanzadas (id)"];
+nodo612->nodo613
+nodo614[label="L_INSTRUCCIONES"];
+nodo612->nodo614
+nodo615[label="L_INSTRUCCIONES"];
+nodo614->nodo615
+nodo616[label="LOG"];
+nodo615->nodo616
+nodo617[label="EXPRESION"];
+nodo616->nodo617
+nodo618[label="DATO"];
+nodo617->nodo618
+nodo619[label="4)Operaciones Relacionales Avanzadas (cadena)"];
+nodo618->nodo619
+nodo620[label="IF"];
+nodo614->nodo620
+nodo621[label="EXPRESION"];
+nodo620->nodo621
+nodo622[label="EXPRESION"];
+nodo621->nodo622
+nodo623[label="EXPRESION"];
+nodo622->nodo623
+nodo624[label="DATO"];
+nodo623->nodo624
+nodo625[label="10 (entero)"];
+nodo624->nodo625
+nodo626[label="- (Key symbol)"];
+nodo622->nodo626
+nodo627[label="EXPRESION"];
+nodo622->nodo627
+nodo628[label="DATO"];
+nodo627->nodo628
+nodo629[label="15 (entero)"];
+nodo628->nodo629
+nodo630[label=">= (Key symbol)"];
+nodo621->nodo630
+nodo631[label="EXPRESION"];
+nodo621->nodo631
+nodo632[label="DATO"];
+nodo631->nodo632
+nodo633[label="0 (entero)"];
+nodo632->nodo633
+nodo634[label="L_INSTRUCCIONES"];
+nodo620->nodo634
+nodo635[label="LOG"];
+nodo634->nodo635
+nodo636[label="EXPRESION"];
+nodo635->nodo636
+nodo637[label="DATO"];
+nodo636->nodo637
+nodo638[label="Salida incorrecta!! (cadena)"];
+nodo637->nodo638
+nodo639[label="ELSE"];
+nodo620->nodo639
+nodo640[label="L_INSTRUCCIONES"];
+nodo639->nodo640
+nodo641[label="IF"];
+nodo640->nodo641
+nodo642[label="EXPRESION"];
+nodo641->nodo642
+nodo643[label="EXPRESION"];
+nodo642->nodo643
+nodo644[label="EXPRESION"];
+nodo643->nodo644
+nodo645[label="DATO"];
+nodo644->nodo645
+nodo646[label="15 (entero)"];
+nodo645->nodo646
+nodo647[label="+ (Key symbol)"];
+nodo643->nodo647
+nodo648[label="EXPRESION"];
+nodo643->nodo648
+nodo649[label="DATO"];
+nodo648->nodo649
+nodo650[label="8 (entero)"];
+nodo649->nodo650
+nodo651[label="== (Key symbol)"];
+nodo642->nodo651
+nodo652[label="EXPRESION"];
+nodo642->nodo652
+nodo653[label="EXPRESION"];
+nodo652->nodo653
+nodo654[label="EXPRESION"];
+nodo653->nodo654
+nodo655[label="EXPRESION"];
+nodo654->nodo655
+nodo656[label="DATO"];
+nodo655->nodo656
+nodo657[label="22 (entero)"];
+nodo656->nodo657
+nodo658[label="- (Key symbol)"];
+nodo654->nodo658
+nodo659[label="EXPRESION"];
+nodo654->nodo659
+nodo660[label="DATO"];
+nodo659->nodo660
+nodo661[label="10 (entero)"];
+nodo660->nodo661
+nodo662[label="+ (Key symbol)"];
+nodo653->nodo662
+nodo663[label="EXPRESION"];
+nodo653->nodo663
+nodo664[label="EXPRESION"];
+nodo663->nodo664
+nodo665[label="DATO"];
+nodo664->nodo665
+nodo666[label="5 (entero)"];
+nodo665->nodo666
+nodo667[label="* (Key symbol)"];
+nodo663->nodo667
+nodo668[label="EXPRESION"];
+nodo663->nodo668
+nodo669[label="DATO"];
+nodo668->nodo669
+nodo670[label="3 (entero)"];
+nodo669->nodo670
+nodo671[label="- (Key symbol)"];
+nodo652->nodo671
+nodo672[label="EXPRESION"];
+nodo652->nodo672
+nodo673[label="DATO"];
+nodo672->nodo673
+nodo674[label="4 (entero)"];
+nodo673->nodo674
+nodo675[label="L_INSTRUCCIONES"];
+nodo641->nodo675
+nodo676[label="IF"];
+nodo675->nodo676
+nodo677[label="EXPRESION"];
+nodo676->nodo677
+nodo678[label="EXPRESION"];
+nodo677->nodo678
+nodo679[label="DATO"];
+nodo678->nodo679
+nodo680[label="10 (entero)"];
+nodo679->nodo680
+nodo681[label="<> (Key symbol)"];
+nodo677->nodo681
+nodo682[label="EXPRESION"];
+nodo677->nodo682
+nodo683[label="EXPRESION"];
+nodo682->nodo683
+nodo684[label="DATO"];
+nodo683->nodo684
+nodo685[label="11 (entero)"];
+nodo684->nodo685
+nodo686[label="- (Key symbol)"];
+nodo682->nodo686
+nodo687[label="EXPRESION"];
+nodo682->nodo687
+nodo688[label="DATO"];
+nodo687->nodo688
+nodo689[label="2 (entero)"];
+nodo688->nodo689
+nodo690[label="L_INSTRUCCIONES"];
+nodo676->nodo690
+nodo691[label="L_INSTRUCCIONES"];
+nodo690->nodo691
+nodo692[label="LOG"];
+nodo691->nodo692
+nodo693[label="EXPRESION"];
+nodo692->nodo693
+nodo694[label="DATO"];
+nodo693->nodo694
+nodo695[label="Salida CORRECTA!! (cadena)"];
+nodo694->nodo695
+nodo696[label="REASIGNACION"];
+nodo690->nodo696
+nodo697[label="ARREGLO"];
+nodo696->nodo697
+nodo698[label="DIM1"];
+nodo697->nodo698
+nodo699[label="notas (id)"];
+nodo698->nodo699
+nodo700[label="EXPRESION"];
+nodo698->nodo700
+nodo701[label="DATO"];
+nodo700->nodo701
+nodo702[label="3 (entero)"];
+nodo701->nodo702
+nodo703[label="EXPRESION"];
+nodo696->nodo703
+nodo704[label="EXPRESION"];
+nodo703->nodo704
+nodo705[label="ARREGLO"];
+nodo704->nodo705
+nodo706[label="DIM1"];
+nodo705->nodo706
+nodo707[label="notas (id)"];
+nodo706->nodo707
+nodo708[label="EXPRESION"];
+nodo706->nodo708
+nodo709[label="DATO"];
+nodo708->nodo709
+nodo710[label="3 (entero)"];
+nodo709->nodo710
+nodo711[label="+ (Key symbol)"];
+nodo703->nodo711
+nodo712[label="EXPRESION"];
+nodo703->nodo712
+nodo713[label="DATO"];
+nodo712->nodo713
+nodo714[label="15 (entero)"];
+nodo713->nodo714
+nodo715[label="ELSE"];
+nodo676->nodo715
+nodo716[label="L_INSTRUCCIONES"];
+nodo715->nodo716
+nodo717[label="LOG"];
+nodo716->nodo717
+nodo718[label="EXPRESION"];
+nodo717->nodo718
+nodo719[label="DATO"];
+nodo718->nodo719
+nodo720[label="Salida incorrecta!! (cadena)"];
+nodo719->nodo720
+nodo721[label="ELSE"];
+nodo641->nodo721
+nodo722[label="L_INSTRUCCIONES"];
+nodo721->nodo722
+nodo723[label="IF"];
+nodo722->nodo723
+nodo724[label="EXPRESION"];
+nodo723->nodo724
+nodo725[label="EXPRESION"];
+nodo724->nodo725
+nodo726[label="DATO"];
+nodo725->nodo726
+nodo727[label="1 (entero)"];
+nodo726->nodo727
+nodo728[label="== (Key symbol)"];
+nodo724->nodo728
+nodo729[label="EXPRESION"];
+nodo724->nodo729
+nodo730[label="DATO"];
+nodo729->nodo730
+nodo731[label="1 (entero)"];
+nodo730->nodo731
+nodo732[label="L_INSTRUCCIONES"];
+nodo723->nodo732
+nodo733[label="LOG"];
+nodo732->nodo733
+nodo734[label="EXPRESION"];
+nodo733->nodo734
+nodo735[label="DATO"];
+nodo734->nodo735
+nodo736[label="Salida incorrecta!! (cadena)"];
+nodo735->nodo736
+nodo737[label="ELSE"];
+nodo723->nodo737
+nodo738[label="L_INSTRUCCIONES"];
+nodo737->nodo738
+nodo739[label="LOG"];
+nodo738->nodo739
+nodo740[label="EXPRESION"];
+nodo739->nodo740
+nodo741[label="DATO"];
+nodo740->nodo741
+nodo742[label="Salida incorrecta!! (cadena)"];
+nodo741->nodo742
+nodo743[label="METODO"];
+nodo6->nodo743
+nodo744[label="operaciones_logicas_basicas (id)"];
+nodo743->nodo744
+nodo745[label="L_INSTRUCCIONES"];
+nodo743->nodo745
+nodo746[label="L_INSTRUCCIONES"];
+nodo745->nodo746
+nodo747[label="LOG"];
+nodo746->nodo747
+nodo748[label="EXPRESION"];
+nodo747->nodo748
+nodo749[label="DATO"];
+nodo748->nodo749
+nodo750[label="5) Operaciones Logicas Basicas (cadena)"];
+nodo749->nodo750
+nodo751[label="IF"];
+nodo745->nodo751
+nodo752[label="EXPRESION"];
+nodo751->nodo752
+nodo753[label="EXPRESION"];
+nodo752->nodo753
+nodo754[label="EXPRESION"];
+nodo753->nodo754
+nodo755[label="EXPRESION"];
+nodo754->nodo755
+nodo756[label="EXPRESION"];
+nodo755->nodo756
+nodo757[label="EXPRESION"];
+nodo756->nodo757
+nodo758[label="DATO"];
+nodo757->nodo758
+nodo759[label="true (boleano)"];
+nodo758->nodo759
+nodo760[label="== (Key symbol)"];
+nodo756->nodo760
+nodo761[label="EXPRESION"];
+nodo756->nodo761
+nodo762[label="DATO"];
+nodo761->nodo762
+nodo763[label="true (boleano)"];
+nodo762->nodo763
+nodo764[label="&& (Key symbol)"];
+nodo754->nodo764
+nodo765[label="EXPRESION"];
+nodo754->nodo765
+nodo766[label="EXPRESION"];
+nodo765->nodo766
+nodo767[label="EXPRESION"];
+nodo766->nodo767
+nodo768[label="DATO"];
+nodo767->nodo768
+nodo769[label="true (boleano)"];
+nodo768->nodo769
+nodo770[label="<> (Key symbol)"];
+nodo766->nodo770
+nodo771[label="EXPRESION"];
+nodo766->nodo771
+nodo772[label="DATO"];
+nodo771->nodo772
+nodo773[label="false (boleano)"];
+nodo772->nodo773
+nodo774[label="|| (Key symbol)"];
+nodo752->nodo774
+nodo775[label="EXPRESION"];
+nodo752->nodo775
+nodo776[label="EXPRESION"];
+nodo775->nodo776
+nodo777[label="EXPRESION"];
+nodo776->nodo777
+nodo778[label="EXPRESION"];
+nodo777->nodo778
+nodo779[label="DATO"];
+nodo778->nodo779
+nodo780[label="1 (entero)"];
+nodo779->nodo780
+nodo781[label="> (Key symbol)"];
+nodo777->nodo781
+nodo782[label="EXPRESION"];
+nodo777->nodo782
+nodo783[label="DATO"];
+nodo782->nodo783
+nodo784[label="10 (entero)"];
+nodo783->nodo784
+nodo785[label="&& (Key symbol)"];
+nodo775->nodo785
+nodo786[label="EXPRESION"];
+nodo775->nodo786
+nodo787[label="EXPRESION"];
+nodo786->nodo787
+nodo788[label="EXPRESION"];
+nodo787->nodo788
+nodo789[label="! (Key symbol)"];
+nodo788->nodo789
+nodo790[label="EXPRESION"];
+nodo788->nodo790
+nodo791[label="EXPRESION"];
+nodo790->nodo791
+nodo792[label="DATO"];
+nodo791->nodo792
+nodo793[label="true (boleano)"];
+nodo792->nodo793
+nodo794[label="== (Key symbol)"];
+nodo787->nodo794
+nodo795[label="EXPRESION"];
+nodo787->nodo795
+nodo796[label="DATO"];
+nodo795->nodo796
+nodo797[label="true (boleano)"];
+nodo796->nodo797
+nodo798[label="L_INSTRUCCIONES"];
+nodo751->nodo798
+nodo799[label="L_INSTRUCCIONES"];
+nodo798->nodo799
+nodo800[label="LOG"];
+nodo799->nodo800
+nodo801[label="EXPRESION"];
+nodo800->nodo801
+nodo802[label="DATO"];
+nodo801->nodo802
+nodo803[label="Salida CORRECTA!! (cadena)"];
+nodo802->nodo803
+nodo804[label="REASIGNACION"];
+nodo798->nodo804
+nodo805[label="ARREGLO"];
+nodo804->nodo805
+nodo806[label="DIM1"];
+nodo805->nodo806
+nodo807[label="notas (id)"];
+nodo806->nodo807
+nodo808[label="EXPRESION"];
+nodo806->nodo808
+nodo809[label="DATO"];
+nodo808->nodo809
+nodo810[label="4 (entero)"];
+nodo809->nodo810
+nodo811[label="EXPRESION"];
+nodo804->nodo811
+nodo812[label="EXPRESION"];
+nodo811->nodo812
+nodo813[label="ARREGLO"];
+nodo812->nodo813
+nodo814[label="DIM1"];
+nodo813->nodo814
+nodo815[label="notas (id)"];
+nodo814->nodo815
+nodo816[label="EXPRESION"];
+nodo814->nodo816
+nodo817[label="DATO"];
+nodo816->nodo817
+nodo818[label="4 (entero)"];
+nodo817->nodo818
+nodo819[label="+ (Key symbol)"];
+nodo811->nodo819
+nodo820[label="EXPRESION"];
+nodo811->nodo820
+nodo821[label="DATO"];
+nodo820->nodo821
+nodo822[label="15 (entero)"];
+nodo821->nodo822
+nodo823[label="ELSE"];
+nodo751->nodo823
+nodo824[label="L_INSTRUCCIONES"];
+nodo823->nodo824
+nodo825[label="LOG"];
+nodo824->nodo825
+nodo826[label="EXPRESION"];
+nodo825->nodo826
+nodo827[label="DATO"];
+nodo826->nodo827
+nodo828[label="Salida incorrecta!! (cadena)"];
+nodo827->nodo828
+nodo829[label="METODO"];
+nodo5->nodo829
+nodo830[label="operaciones_logicas_avanzadas (id)"];
+nodo829->nodo830
+nodo831[label="L_INSTRUCCIONES"];
+nodo829->nodo831
+nodo832[label="L_INSTRUCCIONES"];
+nodo831->nodo832
+nodo833[label="LOG"];
+nodo832->nodo833
+nodo834[label="EXPRESION"];
+nodo833->nodo834
+nodo835[label="DATO"];
+nodo834->nodo835
+nodo836[label="6) Operaciones Logicas Avanzadas (cadena)"];
+nodo835->nodo836
+nodo837[label="IF"];
+nodo831->nodo837
+nodo838[label="EXPRESION"];
+nodo837->nodo838
+nodo839[label="EXPRESION"];
+nodo838->nodo839
+nodo840[label="EXPRESION"];
+nodo839->nodo840
+nodo841[label="EXPRESION"];
+nodo840->nodo841
+nodo842[label="DATO"];
+nodo841->nodo842
+nodo843[label="15 (entero)"];
+nodo842->nodo843
+nodo844[label="== (Key symbol)"];
+nodo840->nodo844
+nodo845[label="EXPRESION"];
+nodo840->nodo845
+nodo846[label="DATO"];
+nodo845->nodo846
+nodo847[label="14 (entero)"];
+nodo846->nodo847
+nodo848[label="|| (Key symbol)"];
+nodo838->nodo848
+nodo849[label="EXPRESION"];
+nodo838->nodo849
+nodo850[label="EXPRESION"];
+nodo849->nodo850
+nodo851[label="EXPRESION"];
+nodo850->nodo851
+nodo852[label="EXPRESION"];
+nodo851->nodo852
+nodo853[label="EXPRESION"];
+nodo852->nodo853
+nodo854[label="EXPRESION"];
+nodo853->nodo854
+nodo855[label="EXPRESION"];
+nodo854->nodo855
+nodo856[label="EXPRESION"];
+nodo855->nodo856
+nodo857[label="DATO"];
+nodo856->nodo857
+nodo858[label="15 (entero)"];
+nodo857->nodo858
+nodo859[label="* (Key symbol)"];
+nodo855->nodo859
+nodo860[label="EXPRESION"];
+nodo855->nodo860
+nodo861[label="DATO"];
+nodo860->nodo861
+nodo862[label="2 (entero)"];
+nodo861->nodo862
+nodo863[label=">= (Key symbol)"];
+nodo854->nodo863
+nodo864[label="EXPRESION"];
+nodo854->nodo864
+nodo865[label="DATO"];
+nodo864->nodo865
+nodo866[label="15 (entero)"];
+nodo865->nodo866
+nodo867[label="&& (Key symbol)"];
+nodo852->nodo867
+nodo868[label="EXPRESION"];
+nodo852->nodo868
+nodo869[label="EXPRESION"];
+nodo868->nodo869
+nodo870[label="EXPRESION"];
+nodo869->nodo870
+nodo871[label="DATO"];
+nodo870->nodo871
+nodo872[label="12 (entero)"];
+nodo871->nodo872
+nodo873[label="< (Key symbol)"];
+nodo869->nodo873
+nodo874[label="EXPRESION"];
+nodo869->nodo874
+nodo875[label="DATO"];
+nodo874->nodo875
+nodo876[label="24 (entero)"];
+nodo875->nodo876
+nodo877[label="|| (Key symbol)"];
+nodo850->nodo877
+nodo878[label="EXPRESION"];
+nodo850->nodo878
+nodo879[label="EXPRESION"];
+nodo878->nodo879
+nodo880[label="EXPRESION"];
+nodo879->nodo880
+nodo881[label="EXPRESION"];
+nodo880->nodo881
+nodo882[label="EXPRESION"];
+nodo881->nodo882
+nodo883[label="EXPRESION"];
+nodo882->nodo883
+nodo884[label="DATO"];
+nodo883->nodo884
+nodo885[label="98 (entero)"];
+nodo884->nodo885
+nodo886[label="/ (Key symbol)"];
+nodo882->nodo886
+nodo887[label="EXPRESION"];
+nodo882->nodo887
+nodo888[label="DATO"];
+nodo887->nodo888
+nodo889[label="2 (entero)"];
+nodo888->nodo889
+nodo890[label="== (Key symbol)"];
+nodo881->nodo890
+nodo891[label="EXPRESION"];
+nodo881->nodo891
+nodo892[label="DATO"];
+nodo891->nodo892
+nodo893[label="15 (entero)"];
+nodo892->nodo893
+nodo894[label="|| (Key symbol)"];
+nodo879->nodo894
+nodo895[label="EXPRESION"];
+nodo879->nodo895
+nodo896[label="EXPRESION"];
+nodo895->nodo896
+nodo897[label="! (Key symbol)"];
+nodo896->nodo897
+nodo898[label="EXPRESION"];
+nodo896->nodo898
+nodo899[label="EXPRESION"];
+nodo898->nodo899
+nodo900[label="EXPRESION"];
+nodo899->nodo900
+nodo901[label="DATO"];
+nodo900->nodo901
+nodo902[label="15 (entero)"];
+nodo901->nodo902
+nodo903[label="<> (Key symbol)"];
+nodo899->nodo903
+nodo904[label="EXPRESION"];
+nodo899->nodo904
+nodo905[label="EXPRESION"];
+nodo904->nodo905
+nodo906[label="DATO"];
+nodo905->nodo906
+nodo907[label="6 (entero)"];
+nodo906->nodo907
+nodo908[label="- (Key symbol)"];
+nodo904->nodo908
+nodo909[label="EXPRESION"];
+nodo904->nodo909
+nodo910[label="DATO"];
+nodo909->nodo910
+nodo911[label="1 (entero)"];
+nodo910->nodo911
+nodo912[label="L_INSTRUCCIONES"];
+nodo837->nodo912
+nodo913[label="L_INSTRUCCIONES"];
+nodo912->nodo913
+nodo914[label="LOG"];
+nodo913->nodo914
+nodo915[label="EXPRESION"];
+nodo914->nodo915
+nodo916[label="DATO"];
+nodo915->nodo916
+nodo917[label="Salida CORRECTA!! (cadena)"];
+nodo916->nodo917
+nodo918[label="REASIGNACION"];
+nodo912->nodo918
+nodo919[label="ARREGLO"];
+nodo918->nodo919
+nodo920[label="DIM1"];
+nodo919->nodo920
+nodo921[label="notas (id)"];
+nodo920->nodo921
+nodo922[label="EXPRESION"];
+nodo920->nodo922
+nodo923[label="DATO"];
+nodo922->nodo923
+nodo924[label="5 (entero)"];
+nodo923->nodo924
+nodo925[label="EXPRESION"];
+nodo918->nodo925
+nodo926[label="EXPRESION"];
+nodo925->nodo926
+nodo927[label="ARREGLO"];
+nodo926->nodo927
+nodo928[label="DIM1"];
+nodo927->nodo928
+nodo929[label="notas (id)"];
+nodo928->nodo929
+nodo930[label="EXPRESION"];
+nodo928->nodo930
+nodo931[label="DATO"];
+nodo930->nodo931
+nodo932[label="5 (entero)"];
+nodo931->nodo932
+nodo933[label="+ (Key symbol)"];
+nodo925->nodo933
+nodo934[label="EXPRESION"];
+nodo925->nodo934
+nodo935[label="DATO"];
+nodo934->nodo935
+nodo936[label="15 (entero)"];
+nodo935->nodo936
+nodo937[label="ELSE"];
+nodo837->nodo937
+nodo938[label="L_INSTRUCCIONES"];
+nodo937->nodo938
+nodo939[label="LOG"];
+nodo938->nodo939
+nodo940[label="EXPRESION"];
+nodo939->nodo940
+nodo941[label="DATO"];
+nodo940->nodo941
+nodo942[label="Salida incorrecta!! (cadena)"];
+nodo941->nodo942
+nodo943[label="METODO"];
+nodo4->nodo943
+nodo944[label="operaciones_conjuntas (id)"];
+nodo943->nodo944
+nodo945[label="L_INSTRUCCIONES"];
+nodo943->nodo945
+nodo946[label="L_INSTRUCCIONES"];
+nodo945->nodo946
+nodo947[label="LOG"];
+nodo946->nodo947
+nodo948[label="EXPRESION"];
+nodo947->nodo948
+nodo949[label="DATO"];
+nodo948->nodo949
+nodo950[label="7) Operaciones Conjuntas (cadena)"];
+nodo949->nodo950
+nodo951[label="IF"];
+nodo945->nodo951
+nodo952[label="EXPRESION"];
+nodo951->nodo952
+nodo953[label="EXPRESION"];
+nodo952->nodo953
+nodo954[label="! (Key symbol)"];
+nodo953->nodo954
+nodo955[label="EXPRESION"];
+nodo953->nodo955
+nodo956[label="EXPRESION"];
+nodo955->nodo956
+nodo957[label="EXPRESION"];
+nodo956->nodo957
+nodo958[label="EXPRESION"];
+nodo957->nodo958
+nodo959[label="EXPRESION"];
+nodo958->nodo959
+nodo960[label="DATO"];
+nodo959->nodo960
+nodo961[label="5 (entero)"];
+nodo960->nodo961
+nodo962[label="* (Key symbol)"];
+nodo958->nodo962
+nodo963[label="EXPRESION"];
+nodo958->nodo963
+nodo964[label="DATO"];
+nodo963->nodo964
+nodo965[label="3 (entero)"];
+nodo964->nodo965
+nodo966[label="- (Key symbol)"];
+nodo957->nodo966
+nodo967[label="EXPRESION"];
+nodo957->nodo967
+nodo968[label="DATO"];
+nodo967->nodo968
+nodo969[label="1 (entero)"];
+nodo968->nodo969
+nodo970[label="== (Key symbol)"];
+nodo956->nodo970
+nodo971[label="EXPRESION"];
+nodo956->nodo971
+nodo972[label="DATO"];
+nodo971->nodo972
+nodo973[label="14 (entero)"];
+nodo972->nodo973
+nodo974[label="&& (Key symbol)"];
+nodo952->nodo974
+nodo975[label="EXPRESION"];
+nodo952->nodo975
+nodo976[label="! (Key symbol)"];
+nodo975->nodo976
+nodo977[label="EXPRESION"];
+nodo975->nodo977
+nodo978[label="EXPRESION"];
+nodo977->nodo978
+nodo979[label="! (Key symbol)"];
+nodo978->nodo979
+nodo980[label="EXPRESION"];
+nodo978->nodo980
+nodo981[label="EXPRESION"];
+nodo980->nodo981
+nodo982[label="EXPRESION"];
+nodo981->nodo982
+nodo983[label="DATO"];
+nodo982->nodo983
+nodo984[label="15 (entero)"];
+nodo983->nodo984
+nodo985[label="== (Key symbol)"];
+nodo981->nodo985
+nodo986[label="EXPRESION"];
+nodo981->nodo986
+nodo987[label="EXPRESION"];
+nodo986->nodo987
+nodo988[label="DATO"];
+nodo987->nodo988
+nodo989[label="6 (entero)"];
+nodo988->nodo989
+nodo990[label="- (Key symbol)"];
+nodo986->nodo990
+nodo991[label="EXPRESION"];
+nodo986->nodo991
+nodo992[label="DATO"];
+nodo991->nodo992
+nodo993[label="1 (entero)"];
+nodo992->nodo993
+nodo994[label="L_INSTRUCCIONES"];
+nodo951->nodo994
+nodo995[label="LOG"];
+nodo994->nodo995
+nodo996[label="EXPRESION"];
+nodo995->nodo996
+nodo997[label="DATO"];
+nodo996->nodo997
+nodo998[label="Salida incorrecta!! (cadena)"];
+nodo997->nodo998
+nodo999[label="ELSE"];
+nodo951->nodo999
+nodo1000[label="L_INSTRUCCIONES"];
+nodo999->nodo1000
+nodo1001[label="L_INSTRUCCIONES"];
+nodo1000->nodo1001
+nodo1002[label="L_INSTRUCCIONES"];
+nodo1001->nodo1002
+nodo1003[label="L_INSTRUCCIONES"];
+nodo1002->nodo1003
+nodo1004[label="L_DECLARACIONES"];
+nodo1003->nodo1004
+nodo1005[label="LINEAL"];
+nodo1004->nodo1005
+nodo1006[label="variable (id)"];
+nodo1005->nodo1006
+nodo1007[label="EXPRESION"];
+nodo1005->nodo1007
+nodo1008[label="- (Key symbol)"];
+nodo1007->nodo1008
+nodo1009[label="EXPRESION"];
+nodo1007->nodo1009
+nodo1010[label="EXPRESION"];
+nodo1009->nodo1010
+nodo1011[label="DATO"];
+nodo1010->nodo1011
+nodo1012[label="1 (entero)"];
+nodo1011->nodo1012
+nodo1013[label="* (Key symbol)"];
+nodo1009->nodo1013
+nodo1014[label="EXPRESION"];
+nodo1009->nodo1014
+nodo1015[label="EXPRESION"];
+nodo1014->nodo1015
+nodo1016[label="EXPRESION"];
+nodo1015->nodo1016
+nodo1017[label="EXPRESION"];
+nodo1016->nodo1017
+nodo1018[label="EXPRESION"];
+nodo1017->nodo1018
+nodo1019[label="EXPRESION"];
+nodo1018->nodo1019
+nodo1020[label="DATO"];
+nodo1019->nodo1020
+nodo1021[label="54 (entero)"];
+nodo1020->nodo1021
+nodo1022[label="/ (Key symbol)"];
+nodo1018->nodo1022
+nodo1023[label="EXPRESION"];
+nodo1018->nodo1023
+nodo1024[label="DATO"];
+nodo1023->nodo1024
+nodo1025[label="6 (entero)"];
+nodo1024->nodo1025
+nodo1026[label="+ (Key symbol)"];
+nodo1017->nodo1026
+nodo1027[label="EXPRESION"];
+nodo1017->nodo1027
+nodo1028[label="DATO"];
+nodo1027->nodo1028
+nodo1029[label="9 (entero)"];
+nodo1028->nodo1029
+nodo1030[label="+ (Key symbol)"];
+nodo1016->nodo1030
+nodo1031[label="EXPRESION"];
+nodo1016->nodo1031
+nodo1032[label="DATO"];
+nodo1031->nodo1032
+nodo1033[label="9 (entero)"];
+nodo1032->nodo1033
+nodo1034[label="- (Key symbol)"];
+nodo1015->nodo1034
+nodo1035[label="EXPRESION"];
+nodo1015->nodo1035
+nodo1036[label="EXPRESION"];
+nodo1035->nodo1036
+nodo1037[label="EXPRESION"];
+nodo1036->nodo1037
+nodo1038[label="EXPRESION"];
+nodo1037->nodo1038
+nodo1039[label="DATO"];
+nodo1038->nodo1039
+nodo1040[label="1 (entero)"];
+nodo1039->nodo1040
+nodo1041[label="* (Key symbol)"];
+nodo1037->nodo1041
+nodo1042[label="EXPRESION"];
+nodo1037->nodo1042
+nodo1043[label="DATO"];
+nodo1042->nodo1043
+nodo1044[label="8 (entero)"];
+nodo1043->nodo1044
+nodo1045[label="/ (Key symbol)"];
+nodo1036->nodo1045
+nodo1046[label="EXPRESION"];
+nodo1036->nodo1046
+nodo1047[label="DATO"];
+nodo1046->nodo1047
+nodo1048[label="2 (entero)"];
+nodo1047->nodo1048
+nodo1049[label="* (Key symbol)"];
+nodo1035->nodo1049
+nodo1050[label="EXPRESION"];
+nodo1035->nodo1050
+nodo1051[label="DATO"];
+nodo1050->nodo1051
+nodo1052[label="17 (entero)"];
+nodo1051->nodo1052
+nodo1053[label="L_DECLARACIONES"];
+nodo1002->nodo1053
+nodo1054[label="LINEAL"];
+nodo1053->nodo1054
+nodo1055[label="var2 (id)"];
+nodo1054->nodo1055
+nodo1056[label="EXPRESION"];
+nodo1054->nodo1056
+nodo1057[label="EXPRESION"];
+nodo1056->nodo1057
+nodo1058[label="EXPRESION"];
+nodo1057->nodo1058
+nodo1059[label="EXPRESION"];
+nodo1058->nodo1059
+nodo1060[label="EXPRESION"];
+nodo1059->nodo1060
+nodo1061[label="DATO"];
+nodo1060->nodo1061
+nodo1062[label="48 (entero)"];
+nodo1061->nodo1062
+nodo1063[label="/ (Key symbol)"];
+nodo1059->nodo1063
+nodo1064[label="EXPRESION"];
+nodo1059->nodo1064
+nodo1065[label="DATO"];
+nodo1064->nodo1065
+nodo1066[label="4 (entero)"];
+nodo1065->nodo1066
+nodo1067[label="* (Key symbol)"];
+nodo1058->nodo1067
+nodo1068[label="EXPRESION"];
+nodo1058->nodo1068
+nodo1069[label="DATO"];
+nodo1068->nodo1069
+nodo1070[label="79 (entero)"];
+nodo1069->nodo1070
+nodo1071[label="- (Key symbol)"];
+nodo1057->nodo1071
+nodo1072[label="EXPRESION"];
+nodo1057->nodo1072
+nodo1073[label="DATO"];
+nodo1072->nodo1073
+nodo1074[label="2 (entero)"];
+nodo1073->nodo1074
+nodo1075[label="+ (Key symbol)"];
+nodo1056->nodo1075
+nodo1076[label="EXPRESION"];
+nodo1056->nodo1076
+nodo1077[label="DATO"];
+nodo1076->nodo1077
+nodo1078[label="8 (entero)"];
+nodo1077->nodo1078
+nodo1079[label="L_DECLARACIONES"];
+nodo1001->nodo1079
+nodo1080[label="LINEAL"];
+nodo1079->nodo1080
+nodo1081[label="salida (id)"];
+nodo1080->nodo1081
+nodo1082[label="EXPRESION"];
+nodo1080->nodo1082
+nodo1083[label="EXPRESION"];
+nodo1082->nodo1083
+nodo1084[label="EXPRESION"];
+nodo1083->nodo1084
+nodo1085[label="DATO"];
+nodo1084->nodo1085
+nodo1086[label="variable (id)"];
+nodo1085->nodo1086
+nodo1087[label="+ (Key symbol)"];
+nodo1083->nodo1087
+nodo1088[label="EXPRESION"];
+nodo1083->nodo1088
+nodo1089[label="DATO"];
+nodo1088->nodo1089
+nodo1090[label=" (cadena)"];
+nodo1089->nodo1090
+nodo1091[label="+ (Key symbol)"];
+nodo1082->nodo1091
+nodo1092[label="EXPRESION"];
+nodo1082->nodo1092
+nodo1093[label="DATO"];
+nodo1092->nodo1093
+nodo1094[label="var2 (id)"];
+nodo1093->nodo1094
+nodo1095[label="IF"];
+nodo1000->nodo1095
+nodo1096[label="EXPRESION"];
+nodo1095->nodo1096
+nodo1097[label="EXPRESION"];
+nodo1096->nodo1097
+nodo1098[label="EXPRESION"];
+nodo1097->nodo1098
+nodo1099[label="DATO"];
+nodo1098->nodo1099
+nodo1100[label="salida (id)"];
+nodo1099->nodo1100
+nodo1101[label="== (Key symbol)"];
+nodo1097->nodo1101
+nodo1102[label="EXPRESION"];
+nodo1097->nodo1102
+nodo1103[label="DATO"];
+nodo1102->nodo1103
+nodo1104[label="41954 (cadena)"];
+nodo1103->nodo1104
+nodo1105[label="|| (Key symbol)"];
+nodo1096->nodo1105
+nodo1106[label="EXPRESION"];
+nodo1096->nodo1106
+nodo1107[label="EXPRESION"];
+nodo1106->nodo1107
+nodo1108[label="DATO"];
+nodo1107->nodo1108
+nodo1109[label="salida (id)"];
+nodo1108->nodo1109
+nodo1110[label="== (Key symbol)"];
+nodo1106->nodo1110
+nodo1111[label="EXPRESION"];
+nodo1106->nodo1111
+nodo1112[label="DATO"];
+nodo1111->nodo1112
+nodo1113[label="41.0954 (cadena)"];
+nodo1112->nodo1113
+nodo1114[label="L_INSTRUCCIONES"];
+nodo1095->nodo1114
+nodo1115[label="L_INSTRUCCIONES"];
+nodo1114->nodo1115
+nodo1116[label="LOG"];
+nodo1115->nodo1116
+nodo1117[label="EXPRESION"];
+nodo1116->nodo1117
+nodo1118[label="DATO"];
+nodo1117->nodo1118
+nodo1119[label="Resultado: 41954 (cadena)"];
+nodo1118->nodo1119
+nodo1120[label="REASIGNACION"];
+nodo1114->nodo1120
+nodo1121[label="ARREGLO"];
+nodo1120->nodo1121
+nodo1122[label="DIM1"];
+nodo1121->nodo1122
+nodo1123[label="notas (id)"];
+nodo1122->nodo1123
+nodo1124[label="EXPRESION"];
+nodo1122->nodo1124
+nodo1125[label="DATO"];
+nodo1124->nodo1125
+nodo1126[label="6 (entero)"];
+nodo1125->nodo1126
+nodo1127[label="EXPRESION"];
+nodo1120->nodo1127
+nodo1128[label="EXPRESION"];
+nodo1127->nodo1128
+nodo1129[label="ARREGLO"];
+nodo1128->nodo1129
+nodo1130[label="DIM1"];
+nodo1129->nodo1130
+nodo1131[label="notas (id)"];
+nodo1130->nodo1131
+nodo1132[label="EXPRESION"];
+nodo1130->nodo1132
+nodo1133[label="DATO"];
+nodo1132->nodo1133
+nodo1134[label="6 (entero)"];
+nodo1133->nodo1134
+nodo1135[label="+ (Key symbol)"];
+nodo1127->nodo1135
+nodo1136[label="EXPRESION"];
+nodo1127->nodo1136
+nodo1137[label="DATO"];
+nodo1136->nodo1137
+nodo1138[label="10 (entero)"];
+nodo1137->nodo1138
+nodo1139[label="ELSE"];
+nodo1095->nodo1139
+nodo1140[label="L_INSTRUCCIONES"];
+nodo1139->nodo1140
+nodo1141[label="LOG"];
+nodo1140->nodo1141
+nodo1142[label="EXPRESION"];
+nodo1141->nodo1142
+nodo1143[label="DATO"];
+nodo1142->nodo1143
+nodo1144[label="Salida incorrecta!! (cadena)"];
+nodo1143->nodo1144
+nodo1145[label="METODO"];
+nodo3->nodo1145
+nodo1146[label="ImprimirNotas (id)"];
+nodo1145->nodo1146
+nodo1147[label="L_INSTRUCCIONES"];
+nodo1145->nodo1147
+nodo1148[label="L_INSTRUCCIONES"];
+nodo1147->nodo1148
+nodo1149[label="LOG"];
+nodo1148->nodo1149
+nodo1150[label="EXPRESION"];
+nodo1149->nodo1150
+nodo1151[label="DATO"];
+nodo1150->nodo1151
+nodo1152[label="*********** NOTAS SECCIÓN EXPRESIONES *********** (cadena)"];
+nodo1151->nodo1152
+nodo1153[label="FOR"];
+nodo1147->nodo1153
+nodo1154[label="OPCIONESFOR"];
+nodo1153->nodo1154
+nodo1155[label="CONTROLFOR"];
+nodo1154->nodo1155
+nodo1156[label="L_DECLARACIONES"];
+nodo1155->nodo1156
+nodo1157[label="LINEAL"];
+nodo1156->nodo1157
+nodo1158[label="i (id)"];
+nodo1157->nodo1158
+nodo1159[label="EXPRESION"];
+nodo1157->nodo1159
+nodo1160[label="DATO"];
+nodo1159->nodo1160
+nodo1161[label="0 (entero)"];
+nodo1160->nodo1161
+nodo1162[label="CONDICIONFOR"];
+nodo1154->nodo1162
+nodo1163[label="EXPRESION"];
+nodo1162->nodo1163
+nodo1164[label="EXPRESION"];
+nodo1163->nodo1164
+nodo1165[label="DATO"];
+nodo1164->nodo1165
+nodo1166[label="i (id)"];
+nodo1165->nodo1166
+nodo1167[label="< (Key symbol)"];
+nodo1163->nodo1167
+nodo1168[label="EXPRESION"];
+nodo1163->nodo1168
+nodo1169[label="DATO"];
+nodo1168->nodo1169
+nodo1170[label="7 (entero)"];
+nodo1169->nodo1170
+nodo1171[label="UPDATEFOR"];
+nodo1154->nodo1171
+nodo1172[label="EXPRESION"];
+nodo1171->nodo1172
+nodo1173[label="EXPRESION"];
+nodo1172->nodo1173
+nodo1174[label="DATO"];
+nodo1173->nodo1174
+nodo1175[label="i (id)"];
+nodo1174->nodo1175
+nodo1176[label="++ (Key symbol)"];
+nodo1172->nodo1176
+nodo1177[label="L_INSTRUCCIONES"];
+nodo1153->nodo1177
+nodo1178[label="L_INSTRUCCIONES"];
+nodo1177->nodo1178
+nodo1179[label="L_INSTRUCCIONES"];
+nodo1178->nodo1179
+nodo1180[label="LOG"];
+nodo1179->nodo1180
+nodo1181[label="EXPRESION"];
+nodo1180->nodo1181
+nodo1182[label="EXPRESION"];
+nodo1181->nodo1182
+nodo1183[label="EXPRESION"];
+nodo1182->nodo1183
+nodo1184[label="EXPRESION"];
+nodo1183->nodo1184
+nodo1185[label="ARREGLO"];
+nodo1184->nodo1185
+nodo1186[label="DIM1"];
+nodo1185->nodo1186
+nodo1187[label="descripciones (id)"];
+nodo1186->nodo1187
+nodo1188[label="EXPRESION"];
+nodo1186->nodo1188
+nodo1189[label="DATO"];
+nodo1188->nodo1189
+nodo1190[label="i (id)"];
+nodo1189->nodo1190
+nodo1191[label="+ (Key symbol)"];
+nodo1183->nodo1191
+nodo1192[label="EXPRESION"];
+nodo1183->nodo1192
+nodo1193[label="DATO"];
+nodo1192->nodo1193
+nodo1194[label=" =  (cadena)"];
+nodo1193->nodo1194
+nodo1195[label="+ (Key symbol)"];
+nodo1182->nodo1195
+nodo1196[label="EXPRESION"];
+nodo1182->nodo1196
+nodo1197[label="ARREGLO"];
+nodo1196->nodo1197
+nodo1198[label="DIM1"];
+nodo1197->nodo1198
+nodo1199[label="notas (id)"];
+nodo1198->nodo1199
+nodo1200[label="EXPRESION"];
+nodo1198->nodo1200
+nodo1201[label="DATO"];
+nodo1200->nodo1201
+nodo1202[label="i (id)"];
+nodo1201->nodo1202
+nodo1203[label="+ (Key symbol)"];
+nodo1181->nodo1203
+nodo1204[label="EXPRESION"];
+nodo1181->nodo1204
+nodo1205[label="DATO"];
+nodo1204->nodo1205
+nodo1206[label=" puntos; (cadena)"];
+nodo1205->nodo1206
+nodo1207[label="EXPRESION"];
+nodo1178->nodo1207
+nodo1208[label="EXPRESION"];
+nodo1207->nodo1208
+nodo1209[label="DATO"];
+nodo1208->nodo1209
+nodo1210[label="i (id)"];
+nodo1209->nodo1210
+nodo1211[label="++ (Key symbol)"];
+nodo1207->nodo1211
+nodo1212[label="EXPRESION"];
+nodo1177->nodo1212
+nodo1213[label="EXPRESION"];
+nodo1212->nodo1213
+nodo1214[label="DATO"];
+nodo1213->nodo1214
+nodo1215[label="i (id)"];
+nodo1214->nodo1215
+nodo1216[label="-- (Key symbol)"];
+nodo1212->nodo1216
+nodo1217[label="METODO"];
+nodo2->nodo1217
+nodo1218[label="ImprimirTotal (id)"];
+nodo1217->nodo1218
+nodo1219[label="L_INSTRUCCIONES"];
+nodo1217->nodo1219
+nodo1220[label="L_INSTRUCCIONES"];
+nodo1219->nodo1220
+nodo1221[label="L_INSTRUCCIONES"];
+nodo1220->nodo1221
+nodo1222[label="L_INSTRUCCIONES"];
+nodo1221->nodo1222
+nodo1223[label="L_INSTRUCCIONES"];
+nodo1222->nodo1223
+nodo1224[label="L_INSTRUCCIONES"];
+nodo1223->nodo1224
+nodo1225[label="L_INSTRUCCIONES"];
+nodo1224->nodo1225
+nodo1226[label="L_INSTRUCCIONES"];
+nodo1225->nodo1226
+nodo1227[label="L_DECLARACIONES"];
+nodo1226->nodo1227
+nodo1228[label="LINEAL"];
+nodo1227->nodo1228
+nodo1229[label="i (id)"];
+nodo1228->nodo1229
+nodo1230[label="EXPRESION"];
+nodo1228->nodo1230
+nodo1231[label="DATO"];
+nodo1230->nodo1231
+nodo1232[label="0 (entero)"];
+nodo1231->nodo1232
+nodo1233[label="L_DECLARACIONES"];
+nodo1225->nodo1233
+nodo1234[label="LINEAL"];
+nodo1233->nodo1234
+nodo1235[label="total (id)"];
+nodo1234->nodo1235
+nodo1236[label="EXPRESION"];
+nodo1234->nodo1236
+nodo1237[label="DATO"];
+nodo1236->nodo1237
+nodo1238[label="0 (entero)"];
+nodo1237->nodo1238
+nodo1239[label="WHILE"];
+nodo1224->nodo1239
+nodo1240[label="EXPRESION"];
+nodo1239->nodo1240
+nodo1241[label="DATO"];
+nodo1240->nodo1241
+nodo1242[label="true (boleano)"];
+nodo1241->nodo1242
+nodo1243[label="L_INSTRUCCIONES"];
+nodo1239->nodo1243
+nodo1244[label="L_INSTRUCCIONES"];
+nodo1243->nodo1244
+nodo1245[label="L_INSTRUCCIONES"];
+nodo1244->nodo1245
+nodo1246[label="REASIGNACION"];
+nodo1245->nodo1246
+nodo1247[label="total (id)"];
+nodo1246->nodo1247
+nodo1248[label="EXPRESION"];
+nodo1246->nodo1248
+nodo1249[label="EXPRESION"];
+nodo1248->nodo1249
+nodo1250[label="DATO"];
+nodo1249->nodo1250
+nodo1251[label="total (id)"];
+nodo1250->nodo1251
+nodo1252[label="+ (Key symbol)"];
+nodo1248->nodo1252
+nodo1253[label="EXPRESION"];
+nodo1248->nodo1253
+nodo1254[label="ARREGLO"];
+nodo1253->nodo1254
+nodo1255[label="DIM1"];
+nodo1254->nodo1255
+nodo1256[label="notas (id)"];
+nodo1255->nodo1256
+nodo1257[label="EXPRESION"];
+nodo1255->nodo1257
+nodo1258[label="DATO"];
+nodo1257->nodo1258
+nodo1259[label="i (id)"];
+nodo1258->nodo1259
+nodo1260[label="EXPRESION"];
+nodo1244->nodo1260
+nodo1261[label="EXPRESION"];
+nodo1260->nodo1261
+nodo1262[label="DATO"];
+nodo1261->nodo1262
+nodo1263[label="i (id)"];
+nodo1262->nodo1263
+nodo1264[label="++ (Key symbol)"];
+nodo1260->nodo1264
+nodo1265[label="IF"];
+nodo1243->nodo1265
+nodo1266[label="EXPRESION"];
+nodo1265->nodo1266
+nodo1267[label="EXPRESION"];
+nodo1266->nodo1267
+nodo1268[label="DATO"];
+nodo1267->nodo1268
+nodo1269[label="i (id)"];
+nodo1268->nodo1269
+nodo1270[label="== (Key symbol)"];
+nodo1266->nodo1270
+nodo1271[label="EXPRESION"];
+nodo1266->nodo1271
+nodo1272[label="DATO"];
+nodo1271->nodo1272
+nodo1273[label="7 (entero)"];
+nodo1272->nodo1273
+nodo1274[label="L_INSTRUCCIONES"];
+nodo1265->nodo1274
+nodo1275[label="break (Keyword)"];
+nodo1274->nodo1275
+nodo1276[label="LOG"];
+nodo1223->nodo1276
+nodo1277[label="EXPRESION"];
+nodo1276->nodo1277
+nodo1278[label="EXPRESION"];
+nodo1277->nodo1278
+nodo1279[label="EXPRESION"];
+nodo1278->nodo1279
+nodo1280[label="DATO"];
+nodo1279->nodo1280
+nodo1281[label="**************** NOTA SOBRE 100 =  (cadena)"];
+nodo1280->nodo1281
+nodo1282[label="+ (Key symbol)"];
+nodo1278->nodo1282
+nodo1283[label="EXPRESION"];
+nodo1278->nodo1283
+nodo1284[label="DATO"];
+nodo1283->nodo1284
+nodo1285[label="total (id)"];
+nodo1284->nodo1285
+nodo1286[label="+ (Key symbol)"];
+nodo1277->nodo1286
+nodo1287[label="EXPRESION"];
+nodo1277->nodo1287
+nodo1288[label="DATO"];
+nodo1287->nodo1288
+nodo1289[label=" **************** (cadena)"];
+nodo1288->nodo1289
+nodo1290[label="LOG"];
+nodo1222->nodo1290
+nodo1291[label="EXPRESION"];
+nodo1290->nodo1291
+nodo1292[label="EXPRESION"];
+nodo1291->nodo1292
+nodo1293[label="EXPRESION"];
+nodo1292->nodo1293
+nodo1294[label="DATO"];
+nodo1293->nodo1294
+nodo1295[label="**************** PUNTEO NETO =  (cadena)"];
+nodo1294->nodo1295
+nodo1296[label="+ (Key symbol)"];
+nodo1292->nodo1296
+nodo1297[label="EXPRESION"];
+nodo1292->nodo1297
+nodo1298[label="EXPRESION"];
+nodo1297->nodo1298
+nodo1299[label="DATO"];
+nodo1298->nodo1299
+nodo1300[label="total (id)"];
+nodo1299->nodo1300
+nodo1301[label="* (Key symbol)"];
+nodo1297->nodo1301
+nodo1302[label="EXPRESION"];
+nodo1297->nodo1302
+nodo1303[label="DATO"];
+nodo1302->nodo1303
+nodo1304[label="0.10 (doble)"];
+nodo1303->nodo1304
+nodo1305[label="+ (Key symbol)"];
+nodo1291->nodo1305
+nodo1306[label="EXPRESION"];
+nodo1291->nodo1306
+nodo1307[label="DATO"];
+nodo1306->nodo1307
+nodo1308[label=" **************** (cadena)"];
+nodo1307->nodo1308
+nodo1309[label="LOG"];
+nodo1221->nodo1309
+nodo1310[label="EXPRESION"];
+nodo1309->nodo1310
+nodo1311[label="DATO"];
+nodo1310->nodo1311
+nodo1312[label=" (cadena)"];
+nodo1311->nodo1312
+nodo1313[label="LOG"];
+nodo1220->nodo1313
+nodo1314[label="EXPRESION"];
+nodo1313->nodo1314
+nodo1315[label="DATO"];
+nodo1314->nodo1315
+nodo1316[label=" (cadena)"];
+nodo1315->nodo1316
+nodo1317[label="LOG"];
+nodo1219->nodo1317
+nodo1318[label="EXPRESION"];
+nodo1317->nodo1318
+nodo1319[label="DATO"];
+nodo1318->nodo1319
+nodo1320[label=" (cadena)"];
+nodo1319->nodo1320
+
+}

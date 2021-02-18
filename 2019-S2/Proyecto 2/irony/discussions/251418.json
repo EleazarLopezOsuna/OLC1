@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "587338",
+    "ThreadId": "251418",
+    "Html": "\r\n<p><a href=\"http://vita.codeplex.com/\">http://vita.codeplex.com/</a></p>\r\n",
+    "PostedDate": "2011-03-27T17:48:29.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "589196",
+    "ThreadId": "251418",
+    "Html": "<p>Roman,</p>\r\n<p>Your new project looks very promising, especially the packaging concept. &nbsp;The only real short-coming I see is that LINQ-to-SQL natively supports only MS SQL which you mention and reference two other libraries.</p>\r\n<p>Are you planning on providing some documentation and/or examples on setting up VITA to use databases other than MS SQL?</p>\r\n<p>Thanks,</p>\r\n<p>MindCore</p>",
+    "PostedDate": "2011-03-30T19:54:08.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "589263",
+    "ThreadId": "251418",
+    "Html": "<p><em>When God made time, he made plenty of it &nbsp;(Irish proverb)</em></p>\r\n<p>&nbsp;- and I'm still searching for my fair share :(</p>\r\n<p>Honestly, with 2 open source projects, day-time job - I don't think I can handle this. I was kinda hoping that one of you guys, with vested interest can help with the effort for particular servers. Vested interest, I mean - with need for a decent ORM and having non-MS-SQL database as platform.&nbsp;</p>\r\n<p>Otherwise, I don't see how this might happen.&nbsp;</p>\r\n<p>thanks for your kind words and friendly feedback!</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-03-30T23:51:43.52-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

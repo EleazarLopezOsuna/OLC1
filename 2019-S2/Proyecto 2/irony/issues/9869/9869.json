@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "FastColoredTextBox is used in Grammar Explorer now",
+    "ClosedDate": "2013-02-25T21:15:40.767-08:00",
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "I've recently found a great syntax-highlighting textbox component for WinForms, FastColoredTextBox.\r\nIt's actively developed and supported by its single author, Pavel Torgashov:\r\nhttp://www.codeproject.com/Articles/161871/Fast-Colored-TextBox-for-syntax-highlighting\r\n\r\nRoman has asked for help integrating this control to the GrammarExplorer.\r\n>PS. I don't mind if somebody else takes over this effort, not the original author.\r\n\r\nI've already tried looking into it, seems like it should be easy to do.\r\nI'll integrate FCTB and push the code to my IronyContrib branch.",
+    "LastUpdatedDate": "2013-02-25T21:15:40.767-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2012-03-10T10:56:20.53-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "FastColoredTextBox in GrammarExplorer",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9869
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Done, please pull the changes.",
+      "PostedDate": "2012-03-10T14:46:05.937-08:00",
+      "Id": 57485
+    }
+  ]
+}

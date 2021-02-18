@@ -1,0 +1,75 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Implemented by yallie",
+    "ClosedDate": "2011-09-02T11:48:32.46-07:00",
+    "CommentCount": 7,
+    "Custom": "",
+    "Description": "I really love the grammar explorer, much better than any other GUI out there.  However, when I was playing around with Irony initially I found that if I had my Grammar open in the Explorer, made a change tot he grammar and then tried to recompile I couldn't because the file for the assembly was locked.  I know the NUnit GUI has a way to monitor assemblies and load them when they change.  This would be a great facility to have in the Grammar Explorer GUI.",
+    "LastUpdatedDate": "2011-09-02T11:48:32.46-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2010-11-13T06:51:09.46-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Allow Grammar Explorer to reload an assembly on compilation",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 3,
+    "Id": 9861
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "The biggest problem actually is not watching the directory or keeping assembly file unlocked. To reload the new version of grammar assembly, you need to have it in a separate AppDomain, so you can shut down the domain and create new one. That's the only way to do this in .NET. Which means that all functionality in Grammar Explorer around working with Grammar should be refactored into a separate wrapper class that can run in another domain and communicate through remoting. That's quite an effort.",
+      "PostedDate": "2010-11-14T09:22:37.31-08:00",
+      "Id": 29175
+    },
+    {
+      "Message": "This is true, I took a quick look at it this weekend.  I don't mind taking a crack at it though, I'd love to help out!",
+      "PostedDate": "2010-11-15T09:02:15.65-08:00",
+      "Id": 29176
+    },
+    {
+      "Message": "ok, go ahead. Just wrap everything into a separate class and try running it in a separate domain. \r\nthanks!",
+      "PostedDate": "2010-11-15T10:35:16.973-08:00",
+      "Id": 29177
+    },
+    {
+      "Message": "I've been looking at how NUnit does it in their GUI.  It might not be so bad and I would love to learn some more about AppDomains so I'll give it a shot!",
+      "PostedDate": "2010-11-16T08:28:31.193-08:00",
+      "Id": 29178
+    },
+    {
+      "Message": "Hi, guys!\n\nThere is no need to wrap all grammar stuff in a separate AppDomain, it would add too much overhead.\nWe can't unload an assembly, but we can just load a newer version and keep both of them.\nOlder version can be simply ignored (it will still occupy some memory, though).\n\nAs for keeping the loaded files unlocked, we can use shadow copy feature, available since .NET 1.1.\nASP.NET engine relies on shadow copying, that's why you can easily update binaries for the web apps.\nFor more information on shadow copy, search for AppDomain.ShadowCopyFiles at MSDN.\n\nI've added automatic grammar file reloading, although I hadn't much time to test it extensively.\nIt works on my Windows7 laptop with .NET 3.5 and 4.0, but I didn't try it under WinXP or Linux yet.\nSource code is available here: http://irony.codeplex.com/SourceControl/network/Forks/yallie/IronyContrib ",
+      "PostedDate": "2011-07-07T06:15:54.603-07:00",
+      "Id": 39002
+    },
+    {
+      "Message": "I've added a pull request for this feature:\nhttp://irony.codeplex.com/SourceControl/network/Forks/yallie/IronyContrib/contribution/1329",
+      "PostedDate": "2011-07-07T06:24:57.917-07:00",
+      "Id": 39005
+    },
+    {
+      "Message": "Tested grammar explorer on Linux OpenSUSE 11.4 + Mono 2.10.2, auto-update feature works fine.",
+      "PostedDate": "2011-07-07T06:55:22.803-07:00",
+      "Id": 39009
+    }
+  ]
+}

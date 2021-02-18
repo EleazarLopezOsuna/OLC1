@@ -1,0 +1,122 @@
+[
+  {
+    "Id": "216111",
+    "ThreadId": "63554",
+    "Html": "<p>Hello!</p>\r\n<p>I'm interrested to know if Irony can be used (on Mono) to create a parser for a non .NET language like PHP. What I want is to get code helping me to create features like code completion for PHP in MonoDevelop.</p>\r\n<p>I'm new to lexers/parsers.</p>\r\n<p>-Martin</p>",
+    "PostedDate": "2009-07-26T01:08:49.877-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "216163",
+    "ThreadId": "63554",
+    "Html": "<p>Well, you asked two questions - Irony on Mono, and is it possible to encode a grammar for language like PHP. As for the latter, the answer is definitely yes, I don't see why you can't implement PHP grammar in Irony; you can try it even without Mono</p>\r\n<p>As for Mono, I would like to know it myself. Definitely it is possible to port Irony to Mono, the question is just how many changes will be needed. I suspect that Runtime classes cannot be ported yet, they use lambda expressions which come in .NET 3.5, and Mono is not there yet, as far as I know. As for the rest, it should be portable without big problems. Try it and let everybody know the results, maybe share some code. On my side, I'll try to provide all help I can</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-07-26T09:18:24.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "216326",
+    "ThreadId": "63554",
+    "Html": "<p>They claim: &quot;Develop in&nbsp;<a style=\"color:#0d71c0;text-decoration:none;font-weight:bold\" title=\"CSharp Compiler\" href=\"http://mono-project.com/CSharp_Compiler\">C# 3.0</a>&nbsp;(including LINQ),&quot; and afaik that requires lambda expressions(?)</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-27T04:00:00.363-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "216381",
+    "ThreadId": "63554",
+    "Html": "<p>Mono has supported lambda expressions for quite some time now.</p>",
+    "PostedDate": "2009-07-27T07:19:24.477-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "217761",
+    "ThreadId": "63554",
+    "Html": "<p>I can run the grammar explorer on mono but when I choose a grammar in the dropdown combobox I get an exception:</p>\r\n<p>System.NullReferenceException: Object reference not set to an instance of an object<br>&nbsp; at Irony.GrammarExplorer.fmGrammarExplorer.CreateGrammar () [0x00011] in /home/marlun/tmp/irony-28496/Irony.GrammarExplorer/fmGrammarExplorer.cs:251 <br>&nbsp; at Irony.GrammarExplorer.fmGrammarExplorer.cboGrammars_SelectedIndexChanged (System.Object sender, System.EventArgs e) [0x00013] in /home/marlun/tmp/irony-28496/Irony.GrammarExplorer/fmGrammarExplorer.cs:451 <br>&nbsp; at System.Windows.Forms.ComboBox.OnSelectedIndexChanged (System.EventArgs e) [0x00023] in /home/marlun/src/mono/mono-2.4.2.2/mcs/class/Managed.Windows.Forms/System.Windows.Forms/ComboBox.cs:1207 <br>&nbsp; at System.Windows.Forms.ComboBox.SetSelectedIndex (Int32 value, Boolean supressAutoScroll) [0x000ab] in /home/marlun/src/mono/mono-2.4.2.2/mcs/class/Managed.Windows.Forms/System.Windows.Forms/ComboBox.cs:1765 <br>&nbsp; at (wrapper remoting-invoke-with-check) System.Windows.Forms.ComboBox:SetSelectedIndex (int,bool)<br>&nbsp; at System.Windows.Forms.ComboBox+ComboListBox.OnMouseUp (System.Windows.Forms.MouseEventArgs e) [0x00060] in /home/marlun/src/mono/mono-2.4.2.2/mcs/class/Managed.Windows.Forms/System.Windows.Forms/ComboBox.cs:2740 <br>&nbsp; at System.Windows.Forms.Control.WmLButtonUp (System.Windows.Forms.Message&amp; m) [0x00081] in /home/marlun/src/mono/mono-2.4.2.2/mcs/class/Managed.Windows.Forms/System.Windows.Forms/Control.cs:5595 <br>&nbsp; at System.Windows.Forms.Control.WndProc (System.Windows.Forms.Message&amp; m) [0x0017c] in /home/marlun/src/mono/mono-2.4.2.2/mcs/class/Managed.Windows.Forms/System.Windows.Forms/Control.cs:5332 <br>&nbsp; at System.Windows.Forms.ComboBox+ComboListBox.WndProc (System.Windows.Forms.Message&amp; m) [0x0001a] in /home/marlun/src/mono/mono-2.4.2.2/mcs/class/Managed.Windows.Forms/System.Windows.Forms/ComboBox.cs:2817 <br>&nbsp; at System.Windows.Forms.Control+ControlWindowTarget.OnMessage (System.Windows.Forms.Message&amp; m) [0x00000] in /home/marlun/src/mono/mono-2.4.2.2/mcs/class/Managed.Windows.Forms/System.Windows.Forms/Control.cs:234 <br>&nbsp; at System.Windows.Forms.Control+ControlNativeWindow.WndProc (System.Windows.Forms.Message&amp; m) [0x00000] in /home/marlun/src/mono/mono-2.4.2.2/mcs/class/Managed.Windows.Forms/System.Windows.Forms/Control.cs:215 <br>&nbsp; at System.Windows.Forms.NativeWindow.WndProc (IntPtr hWnd, Msg msg, IntPtr wParam, IntPtr lParam) [0x00085] in /home/marlun/src/mono/mono-2.4.2.2/mcs/class/Managed.Windows.Forms/System.Windows.Forms/NativeWindow.cs:242</p>\r\n<p>Couldn't debug because monodevelop froze when I tried to debug it but I'm showing this so you know :)</p>",
+    "PostedDate": "2009-07-30T13:58:26.93-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "217800",
+    "ThreadId": "63554",
+    "Html": "<p>Hi!</p>\r\n<p>Nice to hear that at least grammar explorer opens! Can you&nbsp;investigate&nbsp;it and provides some more info, maybe using some debug.Write if debugger doesn't work?</p>\r\n<p>thanks</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-30T16:05:34.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218469",
+    "ThreadId": "63554",
+    "Html": "<p>I had the 'Object Reference not set to an instance of the object' error as well...it had to do with the combobox used to choose a grammar.&nbsp;</p>\r\n<p>&nbsp;- In Grammar Explorer, click the 'dotdotdot' button beside the grammar choosing combobox, choose 'Remove All', then click again, choose 'Add Grammar' and point it at Irony.Samples.dll</p>\r\n<p>&nbsp;- Maybe try deleting your copy and checking out a fresh copy from subversion.</p>",
+    "PostedDate": "2009-08-02T07:56:58.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "221445",
+    "ThreadId": "63554",
+    "Html": "<p>If I removed all and added them again like budmandave said I could choose a grammer in the combobox however when I go to Test and start writing something the app closes without any error message.</p>",
+    "PostedDate": "2009-08-10T02:28:46.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "222204",
+    "ThreadId": "63554",
+    "Html": "<p>Sorry, I don't have Mono installation, can't help you with anything... try to debug around, see what's going on and why it crashes. Basically it shouldn't, the form/app have global exception handler, see why it fails...</p>",
+    "PostedDate": "2009-08-11T13:45:02.183-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "465050",
+    "ThreadId": "63554",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>budmandave wrote:</strong><br><p>I had the 'Object Reference not set to an instance of the object' error as well...it had to do with the combobox used to choose a grammar.&nbsp;</p>\r\n<p>&nbsp;- In Grammar Explorer, click the 'dotdotdot' button beside the grammar choosing combobox, choose 'Remove All', then click again, choose 'Add Grammar' and point it at Irony.Samples.dll</p>\r\n<p>&nbsp;- Maybe try deleting your copy and checking out a fresh copy from subversion.</p></blockquote><p></p>\r\n\r\n@Budmandave\r\n@marlun\r\n\r\nIt has been a while since either of you posted on this thread wondering how far you got with mono and php. I have been asked to consider implementing something similar.\r\n\r\n@rivantsov\r\n\r\nI have been using the irony parser as an assembly in SQL server and the extended search capability is great.\r\n\r\n-Michael White",
+    "PostedDate": "2010-07-08T13:05:07.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "465061",
+    "ThreadId": "63554",
+    "Html": "Hello mnwcsult,\r\n\r\nMy foray into parsing with Irony is pretty much dead in the water...I was actually trying to make a visual studio language package for Digital Mars D Language.\r\n\r\nI started with this article at CodeProject if that helps:  http://www.codeproject.com/KB/recipes/VSLanguageService.aspx\r\n\r\nDave",
+    "PostedDate": "2010-07-08T13:42:29.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "465159",
+    "ThreadId": "63554",
+    "Html": "<p>I had looked at using Irony with Mono a while ago.&nbsp; Irony works fine on Mono; unfortunately the Grammar Explorer does not because it has some MS Windows specific code for things like text color and cursor position.&nbsp; I'll have to find the specific place in code and maybe we can find a work around and have Roman add in a #MONO.</p>",
+    "PostedDate": "2010-07-08T18:00:27.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "465192",
+    "ThreadId": "63554",
+    "Html": "<p>Ok, some of the MS Windows specific code is located in RichTextBoxHighlighter.cs under the regions WinAPI and Colorizing Tokens.</p>\r\n<p>I can confirm that the Grammar Explorer runs with some minor glitches on a Mac OSX running Mono 2.6.4 if you do as mentioned earlier, 1) clear the Grammar list first before selecting your grammar and 2) disable syntax highlighting.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-07-08T20:22:14.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "468588",
+    "ThreadId": "63554",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>mindcore wrote:</strong><br>\r\n<p>I had looked at using Irony with Mono a while ago.&nbsp; Irony works fine on Mono; unfortunately the Grammar Explorer does not because it has some MS Windows specific code for things like text color and cursor position.&nbsp; I'll have to find the specific place in code and maybe we can find a work around and have Roman add in a #MONO.</p>\r\n</blockquote>\r\n<p>Hi Mindcore</p>\r\n<p>I had done a&nbsp; Visual Studio / Mono conversion on something else a couple of years ago, the hang up would be in the Visual components. Otherwise Irony would work. So saying that in my production version which does not display anything it just parses text and returns the grammar does work under mono.</p>\r\n<p>&nbsp;</p>\r\n<p>My real issue is ... adapting irony for &quot;FULL TEXT SEARCH&quot; with MYSQL.</p>\r\n<p>&nbsp;</p>\r\n<p>Anyone with hints?</p>",
+    "PostedDate": "2010-07-17T17:03:21.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "477640",
+    "ThreadId": "63554",
+    "Html": "<p>Hello Marlun...have you gone ahead with PHP grammar for Irony?...I'm looking at doing one now :)</p>",
+    "PostedDate": "2010-08-07T09:19:57.903-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

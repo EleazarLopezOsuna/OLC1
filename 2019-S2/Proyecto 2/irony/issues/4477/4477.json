@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2009-06-02T10:26:36.453-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "I realized (due to weird type resolvement) that the result = stack[0].Node in the begining of the parse method in Scanner kan result in result being null causing a nullReferenceException in the line below.\nThis is basically not an Irony error but the error reporting could be better. As it is you'd probably need to debug the Irony source to figure out what caused the null referance. In my case when run out side VS development hive I got an instance of Irony.Grammar instead of my own causing every token to be a syntax error. The weird part was when run in the hive or the Irony explorer everything worked fine. The weirdnees made it very hard to track down which was why I came to think of handling the error cracefully",
+    "LastUpdatedDate": "2009-06-02T10:26:36.453-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-05-25T03:13:26.857-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Possible null reference in Scanner.Parse",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 4477
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I agree, handling situations like this should be better. I guess you're using old alpha release from Downloads page; in current source (refactored) this particular problem should go away; but others do and will appear. I'll try to improve it as much as I can. thank you\r\nRoman",
+      "PostedDate": "2009-05-26T16:12:22.633-07:00",
+      "Id": 29130
+    }
+  ]
+}

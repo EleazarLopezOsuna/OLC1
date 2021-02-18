@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1260569",
+    "ThreadId": "549900",
+    "Html": "Hi<br />\n<br />\nthis language allows multiple statements on the same line or one statement spread out across multiple lines, such as<br />\n<br />\na=1 b=2<br />\n<br />\nc<br />\n =<br />\n1<br />\n<br />\nthere is no end delimiter such as semi &quot;;&quot; to denote end of a statement<br />\n<br />\nI use<br />\nStatementList.Rule = MakePlusRule(StatementList, null, Statement);<br />\n <br />\ncombined with functions definition, I got a lot of conflicts<br />\n<br />\nShift-reduce conflict. State S8, lookaheads [(]. Selected shift as preferred action.  S8<br />\nShift-reduce conflict. State S9, lookaheads [identifier number ( string]. Selected shift as preferred action. S9<br />\nShift-reduce conflict. State S11, lookaheads [endmacro identifier number ( string]. Selected shift as preferred action.   S11<br />\n<br />\nHow do i fix this? thanks much<br />\n",
+    "PostedDate": "2014-06-27T12:11:06.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1261240",
+    "ThreadId": "549900",
+    "Html": "not sure about particular conflicts you have, but I think you should try the following. Use ImpliedSymbolTerminal to express a 'virtual' statement terminator. Use this terminal in expression for statement. This terminal is injected automatically by parser when it sees that it is appropriate and there are no alternatives - read more in comments in source file for the terminal. <br />\n",
+    "PostedDate": "2014-06-30T09:33:55.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

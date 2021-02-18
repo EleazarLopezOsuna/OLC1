@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1168502",
+    "ThreadId": "499902",
+    "Html": "Hello,<br />\n<br />\nI would like to modify the expression grammar that comes with irony.<br />\nI would like to allow the use of spaces within any identifier.<br />\nI naively tried to allow a space by including a space in the AllChars property.<br />\nBut parsing an expression like <br />\n<pre><code>3 * Brazil coffee ... \n</code></pre>\n\ndetects two identifiers (Brazil and coffee) and a syntax error in between:<br />\n<br />\nSyntax error, expected: operator, ), ., [, :, ,<br />\n<br />\nWould there be a possibility to allow one or more spaces in an identifier?<br />\n<br />\nThanks<br />\n<br />\nMichel<br />\n",
+    "PostedDate": "2014-01-15T03:30:41.13-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1170205",
+    "ThreadId": "499902",
+    "Html": "I think the easiest way is to write custom identifier terminal that skips spaces until special symbol; maybe subclass IdentifierTerminal or just copy/modify it.\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-01-15T16:28:32.013-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-01-15T23:26:38.883-08:00"
+  },
+  {
+    "Id": "1170274",
+    "ThreadId": "499902",
+    "Html": "Thanks!<br />\n",
+    "PostedDate": "2014-01-15T23:26:32.223-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

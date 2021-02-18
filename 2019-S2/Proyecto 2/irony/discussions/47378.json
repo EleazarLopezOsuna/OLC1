@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "158564",
+    "ThreadId": "47378",
+    "Html": "Hey, <br>\r\nI'm just getting started. Great stuff! Was hoping to find some more documentation.&nbsp; Am I perhaps missing it?<br>\r\n<br>\r\nSome specific questions: <br>\r\nWhat is AddKeywords() accomplish? What should/should not be in the list?<br>\r\n<br>\r\nPerhaps related. When to use literal in expression vs. symbol. For example (from SqlGrammar)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; whereClauseOpt.Rule = Empty | &quot;WHERE&quot; + expression;<br>\r\nwhy is not<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; whereClauseOpt.Rule = Empty | WHERE + expression; <br>\r\n<br>\r\n\r\n",
+    "PostedDate": "2009-02-17T10:31:17.767-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "158579",
+    "ThreadId": "47378",
+    "Html": "Hi<br>\r\nDocumentation - none, just the source. The article on CodeProject is quite outdated. Sorry, suxx, I know. One of problems is that project is still evolving, so any documents can quickly fall out of date. Your question about WHERE clause. Remember, grammar definition is in c#, so it should be valid c# statement. In this context, what is the meaning of WHERE thing in your proposed version?<br>\r\nAddKeywords - currently is kinda broken. See thread about language service for some more explanation,will fix it soon. <br>\r\nRoman\r\n",
+    "PostedDate": "2009-02-17T10:47:36.353-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "158588",
+    "ThreadId": "47378",
+    "Html": "One note about literal vs symbol.. If you mean explicitly creating Symbol(&quot;WHERE&quot;) vs using &quot;WHERE&quot; directly in expression - then no difference. The &quot;+&quot; operator override converts literal into symbol terminal automatically.<br>\r\n",
+    "PostedDate": "2009-02-17T10:56:52.823-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "158647",
+    "ThreadId": "47378",
+    "Html": "So AddKeywords() is not needed? Does it do anything?<br>\r\nIn terms of Symbol(), is there any reason one would or would not define then explicitly?\r\n",
+    "PostedDate": "2009-02-17T13:05:01.69-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "158655",
+    "ThreadId": "47378",
+    "Html": "It is needed for editor highlighting, to mark the token as keyword so it can be colored properly. <br>\r\nFor Symbol method, it is needed if you have sequence of string literals:<br>\r\nJoin.Rule = &quot;inner&quot; + &quot;join&quot;;<br>\r\nc# compiler would treat it as direct concatenation of two strings, not two symbols that can be separated by spaces; to avoid this, you have to convert one of them explicitly<br>\r\nJoin.Rule = Symbol(&quot;inner&quot;) + &quot;join&quot;;\r\n",
+    "PostedDate": "2009-02-17T13:20:29.167-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "158657",
+    "ThreadId": "47378",
+    "Html": "&gt;Editor highlighting<br>\r\n<br>\r\nI don't know what that means in this context. Do you mean in the Irony Grammar Explorer?<br>\r\n<br>\r\nThanks,<br>\r\nChris<br>\r\n",
+    "PostedDate": "2009-02-17T13:25:20.493-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "158666",
+    "ThreadId": "47378",
+    "Html": "yeah, Grammar Explorer or any other syntax editor that uses Irony to scan/parse the source, like Language Service in VStudio. See other thread and article on CodeProject. \r\n",
+    "PostedDate": "2009-02-17T13:43:43.333-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "158671",
+    "ThreadId": "47378",
+    "Html": "I didn't see any highlighting in the Grammar Explorer, which is why I had asked. \r\n",
+    "PostedDate": "2009-02-17T13:53:09.517-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "158681",
+    "ThreadId": "47378",
+    "Html": "that's strange... just checked latest version 20817, it does highlighting of source files in Test page. Load c# grammar in top box, from Irony.Samples.dll, and open source file from SourceSamples folder - you should see c# code colored in the editor\r\n",
+    "PostedDate": "2009-02-17T14:08:00.03-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "158689",
+    "ThreadId": "47378",
+    "Html": "strange for sure - now I see it (blue highlighting) - Could be my eyes\r\n",
+    "PostedDate": "2009-02-17T14:29:42.253-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

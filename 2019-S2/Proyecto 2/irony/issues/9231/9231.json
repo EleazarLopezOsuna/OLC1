@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "not reproducible, seems to be working OK",
+    "ClosedDate": "2010-11-30T11:17:15.093-08:00",
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "Hi all,\n\nI select a grammar and when I click Tab Parser States,it appears this error:\n\nError al crear identificador de ventana => translate to english: Error when create window Handle.\n\nSystem.ComponentModel.Win32Exception: Error al crear identificador de ventana.\n   en System.Windows.Forms.NativeWindow.CreateHandle(CreateParams cp)\n   en System.Windows.Forms.Control.CreateHandle()\n   en System.Windows.Forms.TextBoxBase.CreateHandle()\n   en System.Windows.Forms.Control.CreateControl(Boolean fIgnoreVisible)\n   en System.Windows.Forms.Control.CreateControl(Boolean fIgnoreVisible)\n   en System.Windows.Forms.Control.CreateControl()\n   en System.Windows.Forms.Control.SetVisibleCore(Boolean value)\n   en System.Windows.Forms.TabPage.set_Visible(Boolean value)\n   en System.Windows.Forms.TabControl.UpdateTabSelection(Boolean updateFocus)\n   en System.Windows.Forms.TabControl.OnSelectedIndexChanged(EventArgs e)\n   en System.Windows.Forms.TabControl.WmSelChange()\n   en System.Windows.Forms.TabControl.WndProc(Message& m)\n   en System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message& m)\n   en System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message& m)\n   en System.Windows.Forms.NativeWindow.Callback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)\n\n\nThanks.",
+    "LastUpdatedDate": "2010-11-30T11:17:15.093-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2010-08-20T03:05:22.8-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Tab Parser States: Win32Exception",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9231
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

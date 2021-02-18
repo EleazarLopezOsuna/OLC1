@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1294535",
+    "ThreadId": "562456",
+    "Html": "I have constructed a language that basically looks like:<br />\n&lt;Program&gt; ::= &lt;AssignmentStmt&gt; + &lt;BooleanCheck&gt;<br />\n<br />\nThe program language is English like:<br />\n&quot;set j = 5;&quot;<br />\n&quot;Check that j == 5;&quot;<br />\n<br />\nI have created a BooleanCheckNode that simply evaluates the BinaryExpression which is the third node (j == 5 in this case).  The Assignment statement seems to work fine on it's own, but the BooleanCheck only works with numbers (like 5 == 5) and seems to think that the identifier 'j' is null and I get a Null Reference Exception.  Why would this be?<br />\n<br />\nHere is a snippet from ProgramNode.cs:<br />\n<pre><code>public class ProgramNode : AstNode\n    {\n\n        public override void Init(AstContext context, ParseTreeNode treeNode)\n        {\n            base.Init(context, treeNode);\n            TreeNode = treeNode;\n        }\n        protected override object DoEvaluate(Irony.Interpreter.ScriptThread thread)\n        {\n            thread.CurrentNode = this;  //standard prolog\n            var assgn = (AssignmentNode)TreeNode.ChildNodes[0].AstNode;\n            var result = assgn.Expression.Evaluate(thread);\n            var bc = (BooleanCheck)TreeNode.ChildNodes[1].AstNode;\n            // binexpr is a BooleanCheck var that simply grabs the third child node\n\n            var result2 = bc.binexpr.Evaluate(thread);\n            thread.CurrentNode = Parent; //standard epilog\n            return result2;\n            //return VBRCheckStmt.Evaluate(thread);\n        }</code></pre>\n\nThanks in advance!<br />\n<br />\n----- Edit ------<br />\nSo it seems that my ScriptApp is without any globals... seems to be a clue.  Still trying to debug.<br />\n",
+    "PostedDate": "2014-08-28T14:58:49.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1294664",
+    "ThreadId": "562456",
+    "Html": "So I think I know what I was doing wrong, and hopefully someone can confirm my hunch.\r<br />\n<br />\nI went and took a look at StatementListNode and in Init it iterates the children and calls AddChild() to add to the list.  Then later when we Evaluate, we are operating on member ChildNodes which are a part of the ScriptApp due to the Init.<br />\n\r<br />\nMy trouble was using use the TreeNode copy, which didn't (but could've) add children to the ProgramNode.\r<br />\n<br />\nWhen I lifted the StatementListNode code, everything worked perfectly - I only had to add a DoEvaluate override to my custom BooleanCheck and it now all works well.\r<br />\n<br />\nSo is my hunch correct?  AddChild is a pretty darn important call for registering Globals?\r<br />\n<br />\nThanks! <br />\n",
+    "PostedDate": "2014-08-28T17:25:06.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1301892",
+    "ThreadId": "562456",
+    "Html": "hi\r<br />\nDon't quite understand what you're doing and your question/smth you want to be confirmed, seems like you try to 'evaluate' expression using some explicit conversions of child nodes, and apparently wasn't doing it correctly. Look at expr evaluator, and get to know how it works. AstNodes form a tree which is 'evaluated' by a 'visitor', while actual data values and results are stored in stack of Frames/Scopes with Globals being top stack frame. <br />\n",
+    "PostedDate": "2014-09-06T22:42:30.72-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

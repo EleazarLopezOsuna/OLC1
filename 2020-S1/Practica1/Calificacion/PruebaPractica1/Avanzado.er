@@ -1,0 +1,64 @@
+{
+
+<!
+\\===================================================================\\
+//===================================================================//
+\\===================================================================\\
+//========================ARCHIVO DE ENTRADA=========================//
+\\===================================================================\\
+//=============================AVANZADO==============================//
+\\===================================================================\\
+//===================================================================//
+!>
+
+//--------------------DEFINICION DE CONJUNTOS------------------------\\
+CONJ: mayusculas -> A~Z;
+CONJ: minusculas -> a~z;
+CONJ: digitos -> 0~9;
+CONJ: vocales_min -> a,e,i,o,u;
+CONJ: vocales_may -> A,E,I,O,U;
+CONJ: simbolos -> !~&;
+<!
+CONJ -> -> -> Un comentario
+multilinea ~ ~ ~ ~ ~ ~ ~
+//Con comentarios unilineas
+!>
+CONJ: otros -> @~};
+CONJ: relacionales -> <~>;
+CONJ: logicos -> &,!,|;
+CONJ: abecedario -> a~z;
+CONJ: conjnum -> 2~6;
+
+
+//------------------------DEFINICION DE ER--------------------------\\
+
+EXP1 -> . {vocales_min} * . | ? {vocales_may} . {minusculas} {mayusculas} * . | {logicos} " " {relacionales};
+EXP2 -> * | . . . {simbolos} {minusculas} " " "TEXTO" ? . {relacionales} | {digitos} * {operadores};
+EXP3 -> . +{abecedario}  . {conjnum} ? . ":" +{abecedario};
+EXP4 -> . . . . . . * | {abecedario} "_" + {conjnum} ">" + {conjnum} " " | "TRUE" "FALSE" "." ;
+
+
+%%
+%%
+
+<!
+	Definicion de lexemas
+!>
+
+//EXP5 : "Es un comentario.";
+EXP1 -> "Un compilador es un programa informatico que se encarga de traducir el codigo fuente de cualquier aplicacion que se este desarrollando";
+EXP1 -> "A | B & C ! c > G ";
+EXP2 -> "";
+EXP3 -> "numero 5: cinco";
+<!{
+EXP0 - > "_"        "_"
+}!>
+EXP3 -> "numero 2";
+EXP2 -> "TEXTO + + - - % ^";
+EXP4 -> "la_expresion  5>4 es TRUE."; //validacion exitosa del lexema
+EXP4 -> "95>4 es FALSE."; //error en la validacion del lexema
+
+<!
+	Fin del archivo
+!>
+}

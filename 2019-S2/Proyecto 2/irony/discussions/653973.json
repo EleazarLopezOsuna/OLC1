@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1471260",
+    "ThreadId": "653973",
+    "Html": "Hi<br />\n<br />\nI have this in my grammar to enable me to set the AST builder for a terminal.<br />\n<pre><code>Dim bracedText = NewTerminal(Function() New QuotedValueLiteral(&quot;bracedString&quot;, &quot;{&quot;, &quot;}&quot;, TypeCode.String), GetType(StringExpr))\n\nPrivate Function NewTerminal(Of TTerm As Terminal)(nodeCreator As Func(Of TTerm), astNodeType As Type) As TTerm\n\n      Dim t = nodeCreator()\n      t.AstConfig.NodeType = astNodeType\n      Return t\n\nEnd Function\n</code></pre>\n\nHowever, I want to go one step further and be able to decide whether to instantiate a StringExpr or some other AST node dependent upon the contents between the braces. Previously I'd been creating specific NonTerminals to do this e.g.<br />\n<pre><code>bracedExpression.Rule =\n       LBRACE + identifier + RBRACE Or\n       LBRACE + functionExpression + RBRACE</code></pre>\n\nI would then instantiate a StringExpr AST node for the identifier and a FuncExpr AST node for the function expression. Perhaps this is the better way to do this. But I am not sure. <br />\n<br />\nWhat would I need to event handle/override on the terminal to enable me to decide which AST node I should chose dependent upon the contents of the string between the braces or should I stick with the bracedExpression-type approach?<br />\n<br />\nIf you could point me to some sample code, even better.<br />\n<br />\nMany thx<br />\n<br />\nS  <br />\n",
+    "PostedDate": "2016-04-25T08:40:35.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1471933",
+    "ThreadId": "653973",
+    "Html": "you could try using transient non-terminal(s), to end up with a single AST node that is either identifier or function. Something like: \r<br />\nidOrFunc.Rule = identifier | functionExpression; \r<br />\nbracedExpr = Lbrace + idOrFunc + RBrace;\r<br />\n<br />\n<br />\nMarkTransient(idOrFunc, braceExpr); \r<br />\n<br />\nYou provide AST node types for identifier and functionExpr, but not idOrFunc and bracedExpr - which are transient so should not have AST. At the end in the AST tree you should end up with AST node for one of functionExpr or identifier in all places where expected bracedExpr.\r<br />\nTry it, I did not test it, this is just from what I remember how it should work - and this is the case why transient nodes are there. <br />\n",
+    "PostedDate": "2016-04-30T14:19:35.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1473746",
+    "ThreadId": "653973",
+    "Html": "Many thx. Very helpful .  (Sorry it took so long to reply)<br />\n",
+    "PostedDate": "2016-05-17T08:23:34.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

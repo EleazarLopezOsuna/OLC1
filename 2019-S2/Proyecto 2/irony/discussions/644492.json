@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "1442828",
+    "ThreadId": "644492",
+    "Html": "I'm using Irony to implement a very basic calculator plus one unusual feature.  The basic operations were simple enough using the built in BinaryOperationNode.  Now I wanted to build in the unusual feature: I want the system to handle die rolls written out as nDm.  E.G. Given the expression &quot;1+2d6&quot; the system simulates the rolling of two six-sided dice, and evaluates to the resulting number plus one.\r<br />\n<br />\nWriting the node class was simple enough, and it works, provided I use a symbol as the operator (E.G. 2%6 instead of 2d6).  If I try to use the character 'd' however I run into a &quot;Invalid character: 'd'.&quot; error in the parse tree.  I have tried setting the 'd' in RegisterOperators, MarkPunctuation, and an overwritten IsWhitespaceOrDelimiter method.<br />\n\r<br />\nWhat am I missing?  What steps do I need to take to fix this?  There are no plans for identifiers or strings in this system, so breaking those features is not a concern, although if it can be done without breaking them it would of course be better, in case plans change later.<br />\n",
+    "PostedDate": "2015-09-02T06:23:44.083-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1442843",
+    "ThreadId": "644492",
+    "Html": "Can you post your grammar file? It's easier to help you with it.<br />\nI suspect the problem is in the tokenization.<br />\n",
+    "PostedDate": "2015-09-02T07:16:04.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1442844",
+    "ThreadId": "644492",
+    "Html": "<pre><code>public class ExpressionGrammar : Grammar {\n        public ExpressionGrammar() : base(caseSensitive: false) {\n            // 1. Terminals\n            var number = new NumberLiteral(&quot;number&quot;);\n            number.DefaultIntTypes = new TypeCode[] { TypeCode.Int32 };\n            number.Options = NumberOptions.AllowSign | NumberOptions.AllowLetterAfter;\n\n            // 2. Non-terminals\n            var expression = new NonTerminal(&quot;Expression&quot;);\n            var term = new NonTerminal(&quot;Term&quot;);\n            var parentheticalExpression = \n                new NonTerminal(&quot;ParentheticalExpression&quot;);\n            var binaryExpression =\n                new NonTerminal(&quot;BinaryExpression&quot;, typeof(BinaryOperationNode));\n            var binaryOperator = new NonTerminal(&quot;BinaryOperator&quot;, &quot;operator&quot;);\n            var rollExpression =\n                new NonTerminal(&quot;RollExpression&quot;, typeof(RollOperationNode));\n            var rollOperator = new NonTerminal(&quot;RollOperator&quot;, &quot;operator&quot;);\n\n            // 3. BNF rules\n            expression.Rule = term | binaryExpression;\n            term.Rule = number | parentheticalExpression;\n            parentheticalExpression.Rule = &quot;(&quot; + expression + &quot;)&quot;;\n            binaryExpression.Rule = expression + binaryOperator + expression;\n            binaryOperator.Rule = ToTerm(&quot;+&quot;) | &quot;-&quot; | &quot;*&quot; | &quot;/&quot;;\n            rollExpression.Rule = expression + rollOperator + expression;\n            rollOperator.Rule = ToTerm(&quot;d&quot;);\n\n            Root = expression;       // Set grammar root\n\n            // 4. Operators precedence\n            RegisterOperators(1, &quot;+&quot;, &quot;-&quot;);\n            RegisterOperators(2, &quot;*&quot;, &quot;/&quot;);\n            RegisterOperators(3, &quot;d&quot;);\n\n            // 5. Punctuation and transient terms\n            MarkPunctuation(&quot;(&quot;, &quot;)&quot;, &quot;d&quot;);\n            RegisterBracePair(&quot;(&quot;, &quot;)&quot;);\n            MarkTransient(term, expression, binaryOperator, parentheticalExpression, rollOperator);\n\n            //6. Language flags. \n            // Automatically add NewLine before EOF so that our BNF rules work correctly when there's no final line break in source\n            LanguageFlags = LanguageFlags.CreateAst;\n        }\n\n        public override void BuildAst(LanguageData language, ParseTree parseTree) {\n            var opHandler = new OperatorHandler(language.Grammar.CaseSensitive);\n            Util.Check(!parseTree.HasErrors(), &quot;ParseTree has errors, cannot build AST.&quot;);\n            var astContext = new InterpreterAstContext(language, opHandler);\n            var astBuilder = new AstBuilder(astContext);\n            astBuilder.BuildAst(parseTree);\n        }\n\n        public override bool IsWhitespaceOrDelimiter(char ch) {\n            if (ch == 'd') return true;\n            return base.IsWhitespaceOrDelimiter(ch);\n        }\n\n        public LanguageRuntime CreateRuntime(LanguageData language) {\n            return new LanguageRuntime(language);\n        }\n    }</code></pre>\n\n",
+    "PostedDate": "2015-09-02T07:26:00.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1442881",
+    "ThreadId": "644492",
+    "Html": "Your rollexpression in not reachable from the start symbol, meaning it isn't a part of your grammar/language`. When I add it it works fine for me.<br />\n<br />\nYour &quot;d&quot; is just another binary operator, so you can add it to that list.<br />\nRemove the override of isWhitespaceOrDelimiter, it's unneccesary. You also don't need to mark &quot;d&quot; as punctuation.<br />\n<br />\nSo either<br />\n<pre><code>expression.Rule = term | binaryExpression | rollExpression;\n</code></pre>\n\nor<br />\n<pre><code>binaryOperator.Rule = ToTerm(&quot;+&quot;) | &quot;-&quot; | &quot;*&quot; | &quot;/&quot; | &quot;d&quot;;\n\n</code></pre>\n\n",
+    "PostedDate": "2015-09-02T12:12:22.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1442882",
+    "ThreadId": "644492",
+    "Html": "I've made the changes you mentioned (whilst banging my head on my desk for missing the first bit...), but I am still getting the &quot;Invalid character: 'd'.&quot; error.<br />\n<pre><code>public class ExpressionGrammar : Grammar {\n        public ExpressionGrammar() : base(caseSensitive: false) {\n            // 1. Terminals\n            var number = new NumberLiteral(&quot;number&quot;);\n            number.DefaultIntTypes = new TypeCode[] { TypeCode.Int32 };\n            number.Options = NumberOptions.AllowSign | NumberOptions.AllowLetterAfter;\n\n            // 2. Non-terminals\n            var expression = new NonTerminal(&quot;Expression&quot;);\n            var term = new NonTerminal(&quot;Term&quot;);\n            var parentheticalExpression = \n                new NonTerminal(&quot;ParentheticalExpression&quot;);\n            var binaryExpression =\n                new NonTerminal(&quot;BinaryExpression&quot;, typeof(BinaryOperationNode));\n            var binaryOperator = new NonTerminal(&quot;BinaryOperator&quot;, &quot;operator&quot;);\n            var rollExpression =\n                new NonTerminal(&quot;RollExpression&quot;, typeof(RollOperationNode));\n            var rollOperator = new NonTerminal(&quot;RollOperator&quot;, &quot;operator&quot;);\n\n            // 3. BNF rules\n            expression.Rule = term | binaryExpression | rollExpression;\n            term.Rule = number | parentheticalExpression;\n            parentheticalExpression.Rule = &quot;(&quot; + expression + &quot;)&quot;;\n            binaryExpression.Rule = expression + binaryOperator + expression;\n            binaryOperator.Rule = ToTerm(&quot;+&quot;) | &quot;-&quot; | &quot;*&quot; | &quot;/&quot;;\n            rollExpression.Rule = expression + rollOperator + expression;\n            rollOperator.Rule = ToTerm(&quot;d&quot;);\n\n            Root = expression;       // Set grammar root\n\n            // 4. Operators precedence\n            RegisterOperators(1, &quot;+&quot;, &quot;-&quot;);\n            RegisterOperators(2, &quot;*&quot;, &quot;/&quot;);\n            RegisterOperators(3, &quot;d&quot;);\n\n            // 5. Punctuation and transient terms\n            MarkPunctuation(&quot;(&quot;, &quot;)&quot;);\n            RegisterBracePair(&quot;(&quot;, &quot;)&quot;);\n            MarkTransient(term, expression, binaryOperator, parentheticalExpression, rollOperator);\n\n            //6. Language flags.\n            LanguageFlags = LanguageFlags.CreateAst;\n        }\n\n        public override void BuildAst(LanguageData language, ParseTree parseTree) {\n            var opHandler = new OperatorHandler(language.Grammar.CaseSensitive);\n            Util.Check(!parseTree.HasErrors(), &quot;ParseTree has errors, cannot build AST.&quot;);\n            var astContext = new InterpreterAstContext(language, opHandler);\n            var astBuilder = new AstBuilder(astContext);\n            astBuilder.BuildAst(parseTree);\n        }\n\n        public LanguageRuntime CreateRuntime(LanguageData language) {\n            return new LanguageRuntime(language);\n        }\n    }</code></pre>\n\n",
+    "PostedDate": "2015-09-02T12:24:30.673-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1442886",
+    "ThreadId": "644492",
+    "Html": "Your exact code (without the AST nodes since I don't have that code) works for me. Did you build again? (and refresh if you use grammar explorer)<br />\n<br />\n<em>edit</em>: Sorry, seems like it doesn't work in all cases yet. I'll take a look at it tomorrow.<br />\n",
+    "PostedDate": "2015-09-02T12:45:17.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1442913",
+    "ThreadId": "644492",
+    "Html": "You need to explicitly tell Irony that alphanumeric characters are allowed after the &quot;d&quot; keyword:<br />\n<pre><code>var rollOperatorTerminal = ToTerm(&quot;d&quot;);\nrollOperatorTerminal.AllowAlphaAfterKeyword = true;\n\nrollOperator.Rule = rollOperatorTerminal;</code></pre>\n\n",
+    "PostedDate": "2015-09-02T15:59:00.43-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1442923",
+    "ThreadId": "644492",
+    "Html": "That did it, thanks!<br />\n",
+    "PostedDate": "2015-09-02T20:16:59.367-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

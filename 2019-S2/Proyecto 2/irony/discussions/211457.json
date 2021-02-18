@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "438601",
+    "ThreadId": "211457",
+    "Html": "<p>I've been trying to get the parser to generate an AST for a script, but when I call Evaluate on my ScriptInterpreter, I get a null reference exception in CoreParser.ExecuteAction - it appears that Context.CurrentParserState is null! Seeing as CurrentParserState is read-only, how do I get the parser to start with some sort of state???</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> g = <span style=\"color:blue\">new</span> Se5Grammar();\r\n<span style=\"color:blue\">var</span> i = <span style=\"color:blue\">new</span> ScriptInterpreter(g);\r\ni.Parser.Scanner.Data.LineTerminatorsArray = <span style=\"color:#a31515\">&quot;\\n&quot;</span>.ToArray();\r\ni.ParseMode = ParseMode.File;\r\ni.Script = File.ReadAllText(<span style=\"color:#a31515\">&quot;Script_Main_ExternalEvents.txt&quot;</span>);\r\ni.Evaluate();\r\n<span style=\"color:blue\">var</span> pms = i.GetParserMessages();\r\n<span style=\"color:blue\">foreach</span> (<span style=\"color:blue\">var</span> pm <span style=\"color:blue\">in</span> pms)\r\n\tConsole.WriteLine(pm);\r\n</pre>\r\n</div>\r\nThe Se5Grammar class is the subclass of Grammar I created for the script language, of course... if you need to see that code too, I can certainly provide it; it's just a bit long! ;)</p>",
+    "PostedDate": "2010-05-03T20:02:04.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "438604",
+    "ThreadId": "211457",
+    "Html": "<p>Well, you certainly do it the wrong way. Look at the code in grammar explorer combined with code in Grammar.RunSample to see how to execute the script for a grammar. Just follow execution of some expression in ExpressionEvaluator grammar, step-by-step in debugger</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-05-03T20:12:59.013-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "438805",
+    "ThreadId": "211457",
+    "Html": "<p>Aha! Thanks, I found that by running this code:</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> g = <span style=\"color:blue\">new</span> Se5Grammar();\r\n<span style=\"color:blue\">var</span> lang = <span style=\"color:blue\">new</span> LanguageData(g);\r\n<span style=\"color:blue\">var</span> p = <span style=\"color:blue\">new</span> Parser(lang);\r\n<span style=\"color:blue\">foreach</span> (<span style=\"color:blue\">var</span> err <span style=\"color:blue\">in</span> p.Language.Errors)\r\n\tConsole.WriteLine(err.Message);\r\n</pre>\r\n</div>\r\nit was revealed that I have an error in the grammar itself (one of my nonterminals had an uninitialized Rule property)!</p>",
+    "PostedDate": "2010-05-04T06:40:41.847-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

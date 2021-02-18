@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "926656",
+    "ThreadId": "399376",
+    "Html": "\r\n<p>Hi,&nbsp;</p>\r\n<p>I am using the irony package for visual studio integration of my language. I am storing all the declarations in one container and then when i do &quot;ctrl&#43; spacebar&quot; for auto completion options i have list of variables declared already. Now the problem is whenever\r\n i delete some lines of declaration i need to remove those entries from the declaration data container. For that i am thinking in two ways&nbsp;</p>\r\n<p>1. handling a delete event or</p>\r\n<p>2. reparsing the contents whenever the auto completion is initiated.</p>\r\n<p>In the 1st method i don't know is there any provision to provide event handlers for keyboard inputs. If there's a way and it is a right way then please guide me.</p>\r\n<p>In the second method i don't know how to reparse the contents for the current language service instance.</p>\r\n<p>Any help will be greatly helpful.</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2012-10-15T05:08:51.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927550",
+    "ThreadId": "399376",
+    "Html": "<p>it's hard to say, your questions are mostly about handling the interaction between editor (VS) and Irony's parser, not about parser itself. As a guess, I would say the code should be re-parsed on any edit change - maybe not every character, but with some delay to&nbsp;accommodate the word/serious of changes, and then reparsing. Maybe not the entire file, but some fragment (proc body), but that's not directly supported in Irony now.&nbsp;&nbsp;</p>",
+    "PostedDate": "2012-10-16T10:08:00.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

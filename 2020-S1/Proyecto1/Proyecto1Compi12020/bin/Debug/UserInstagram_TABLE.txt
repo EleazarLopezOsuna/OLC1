@@ -1,0 +1,29 @@
+digraph G {
+rankdir = LR;
+node[shape=plaintext];
+vacio[label="", pos="0,0!"];
+terminal_@[shape=record, label="@", pos="1,0!"];
+terminal_L[shape=record, label="L", pos="2,0!"];
+terminal_D[shape=record, label="D", pos="3,0!"];
+terminal__[shape=record, label="_", pos="4,0!"];
+transicion_1_2[label="2", pos="1,-1!"];
+estado_1[shape = circle, label="1", pos="0,-1!"];
+transicion_2_3[label="3", pos="2,-2!"];
+estado_2[shape = record, label="2", pos="0,-2!"];
+transicion_3_4[label="4", pos="2,-3!"];
+transicion_3_5[label="5", pos="3,-3!"];
+transicion_3_6[label="6", pos="4,-3!"];
+estado_3[color=green, style= filled, label="3", pos="0,-3!"];
+transicion_4_4[label="4", pos="2,-4!"];
+transicion_4_5[label="5", pos="3,-4!"];
+transicion_4_6[label="6", pos="4,-4!"];
+estado_4[color=green, style= filled, label="4", pos="0,-4!"];
+transicion_5_4[label="4", pos="2,-5!"];
+transicion_5_5[label="5", pos="3,-5!"];
+transicion_5_6[label="6", pos="4,-5!"];
+estado_5[color=green, style= filled, label="5", pos="0,-5!"];
+transicion_6_4[label="4", pos="2,-6!"];
+transicion_6_5[label="5", pos="3,-6!"];
+transicion_6_6[label="6", pos="4,-6!"];
+estado_6[color=green, style= filled, label="6", pos="0,-6!"];
+}

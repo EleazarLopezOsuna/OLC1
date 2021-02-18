@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "416127",
+    "ThreadId": "204379",
+    "Html": "<p>I am trying to write a parser which can take expressions roughly of the form</p>\r\n<p>IdentifierTerminal identifier = new IdentifierTerminal(...);</p>\r\n<p>FreeTextLiteral stringValue = new FreeTextLiteral(...);</p>\r\n<p>KeyTrem opOpenSubExpr = new KeyTerm(&quot;$(&quot;);</p>\r\n<p>... assume the undeclared terms are normal NonTerminals ...</p>\r\n<p>expr.Rule = stringValue exprOpt | subExprOpt;</p>\r\n<p>exprOpt := expr | Empty;</p>\r\n<p>subExprOpt := subExpr + exprOpt;</p>\r\n<p>subExpr := opOpenSubExpr identifier opCloseParen;</p>\r\n<p>The trick is that I want to instruct the system that if subExpr is not properly composed (for instance, if opCloseParen is missing or if identifier has invalid characters, I want to instead re-interpret subExpr as a stringValue and consume everything up to some end point specified by that literal. &nbsp;So for instance, the following inputs would generate a stream of terminals/non-terminals:</p>\r\n<p>bar &nbsp; &nbsp; --&gt; stringValue</p>\r\n<p>$(foo) &nbsp;--&gt; subExpr</p>\r\n<p>bar$(foo &nbsp; &nbsp;--&gt; stringValue &nbsp;(or stringValue stringValue would also be acceptable)</p>\r\n<p>$(foo$(bar) &nbsp;--&gt; stringValue subExpr</p>\r\n<p>foo$(bar) &nbsp; &nbsp;--&gt; stringValue subExpr</p>\r\n<p>It seems like there should be some way to use an error rule to recognize when subExpr is failing to evaluate and then consume all of that text into a stringValue (or similar construct) but somehow I cannot get that to work. &nbsp;Can you offer any suggestions?</p>\r\n<p>P.S. This is a fantastic toolkit. &nbsp;The GrammarExplorer especially is a huge help. &nbsp;Keep up the excellent work!</p>",
+    "PostedDate": "2010-03-09T14:32:37.27-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "417629",
+    "ThreadId": "204379",
+    "Html": "<p>Not sure if it is easy or doable at all in the current version. Try to hack something (modifying Irony classes) and let me know if you can make it work. If the hack is small and generic enough (so it can benefit other cases) - I may put it in the code permanently</p>\r\n<p>Roman</p>",
+    "PostedDate": "2010-03-12T13:22:17.193-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "417660",
+    "ThreadId": "204379",
+    "Html": "<p>Yeah, I am thinking that what I need is a custom literal that can detect the unclosed parens situation and return the whole bit as a literal. &nbsp;As I am coding it up I will consider how it can be made generic. &nbsp;Thanks.</p>",
+    "PostedDate": "2010-03-12T14:51:19.317-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

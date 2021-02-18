@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1414846",
+    "ThreadId": "631096",
+    "Html": "I'm trying to parse Excel grammar, and in all it's wisdom &quot; &quot; (a single space) <a href=\"https://support.office.com/en-us/article/Calculation-operators-and-precedence-48be406d-4975-4d31-b2b8-7af9e0e2878a#bmtypes_of_operators\" rel=\"nofollow\">was designated</a> to be the intersection operator.\r<br />\n<br />\nThis causes problems if implemented straightforwardly:<br />\n<pre><code>FunctionCall.Rule =\n   Formula + InfixOp + Formula          // BinOp\n   | PrefixOp + Formula                  // Prefix Unop\n   | Formula + Formula                   // Intersection\n</code></pre>\n\nHowever this grammar has a reduce-reduce conflict because, 1 + 1 can be parsed as both 1 + 1 and 1 (+1).\r<br />\n<br />\nIs there a way to allow the single whitespace &quot; &quot; to be an operator? That way it would just be a regular binop (which it is)<br />\n",
+    "PostedDate": "2015-04-16T09:02:32.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1414857",
+    "ThreadId": "631096",
+    "Html": "You should use ImpliedSymbolTerminal, read comments there at the top of cs file. <br />\n",
+    "PostedDate": "2015-04-16T09:34:45.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1415205",
+    "ThreadId": "631096",
+    "Html": "That works great, thanks!<br />\n",
+    "PostedDate": "2015-04-17T03:41:33.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1415936",
+    "ThreadId": "631096",
+    "Html": "Unfortunatly I found a problem with this.\r<br />\nI have the following terminals:<br />\n<pre><code>var CellToken = new RegexBasedTerminal(&quot;[$]?[A-Z]{1,4}[$]?[1-9][0-9]*&quot;);\nCellToken.Priority = TerminalPriority.High;\n\nvar NamedRangeToken = new RegexBasedTerminal(&quot;[A-Za-z\\\\_][\\w\\.]*&quot;);\n</code></pre>\n\nNamedRangeToken always matches a CellToken, which is why CellToken has a higher priority because if that matches it should become that.\r<br />\n<br />\nHowever this causes a problem when combined with ImpliedSymbolTerminal:<br />\n<pre><code> &quot;A1A1&quot; // This is a named range\n &quot;A1 A1&quot; // This is an intersection of A1 and A1\n</code></pre>\n\nBoth are parsed as intersections when the implied terminal is added.\r<br />\nIf the named range token gets a higher priority than the cell token the intersection/namedrange behavior is correct, but all cells are parsed as named ranges instead.\r<br />\n<br />\nDo you have a suggestion on how to solve this?<br />\n",
+    "PostedDate": "2015-04-20T06:37:47.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1415940",
+    "ThreadId": "631096",
+    "Html": "Nevermind, it seems solved when I add a third nonterminal that combines them (<code>celltokenregex + namedrangeregex</code>) and give that a higher priority than the celltoken :)<br />\n",
+    "PostedDate": "2015-04-20T06:51:56.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

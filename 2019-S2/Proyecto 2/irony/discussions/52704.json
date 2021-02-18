@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "177244",
+    "ThreadId": "52704",
+    "Html": "Hello everyone,<br>\r\nI'm trying to create a Lua parser and compiler just for fun. <br>\r\nA quick question I hope you have an answer to: if I were to model the following expression with Irony, how would I do?<br>\r\n<br>\r\nchunk ::= {stat [';']} [laststat [';']]<br>\r\n<br>\r\nI'm a bit confused about the usage of MakePlusRule, MakeStarRule, MakeTransientRule (especially about the latter, actually).<br>\r\n<br>\r\nThanks in advance for any insight, and thank you Roman for your work with Irony.<br>\r\n",
+    "PostedDate": "2009-04-08T09:40:47.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "177281",
+    "ThreadId": "52704",
+    "Html": "Do you mean Grammar.MarkTransient() method? It sets the transient flag on non-terminal, so in parse tree construction it will be eliminated and all of its children will be popped up into it's owner child list. This can be used to eliminated intermidiate non-terminal nodes that serve only for expressing the grammar rules but serve no useful purpose in the tree. For example:<br>\r\n<br>\r\nExpression.Rule = Term + bin_op + Term;<br>\r\nTerm.Rule = identifier | number | parenth_expression.<br>\r\n<br>\r\nSo for expression 'x + 5' the parser would generate root expression node with 3 child nodes: Term node with single child x (identifier node), bin_op node with single child +, and Term with child '5'. If you add <br>\r\n<br>\r\nMarkTransient(Term);<br>\r\n<br>\r\n.. then parser would eliminate Term nodes from result tree, and &quot;x&quot; and &quot;5&quot; nodes would be directly under the root expression node. <br>\r\n<br>\r\nAs for your expression, you have to provide some info about meaning of all these braces and brackets - I'm not familiar with this BNF syntax. Square brackets mean optional part I guess? then what is curly braces?<br>\r\n",
+    "PostedDate": "2009-04-08T11:11:15.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "177320",
+    "ThreadId": "52704",
+    "Html": "Hello Roman, thanks for taking the time to answer!<br>\r\n<br>\r\nYou're right, I should have explained better; that expression is copied straight from the Lua website. I think <br>\r\n<br>\r\nchunk ::= {stat [';']} [laststat [';']]<br>\r\n<br>\r\nmeans that a chunk is composed by <br>\r\n1 to n stat elements<br>\r\nand <br>\r\n0 or 1 laststat elements,<br>\r\nboth followed optionally by a semicolon symbol, if I'm not mistaken.<br>\r\n<br>\r\nThank you!<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2009-04-08T12:40:19.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "177409",
+    "ThreadId": "52704",
+    "Html": "<p dir=ltr style=\"margin-right:0px\">You should do something like this:<br>\r\n<br>\r\n<em>  chunk.Rule = stat_list + semi_opt + last_stat_list_opt + semi_opt;<br>\r\n  semi_opt.Rule = Empty|&quot;;&quot;;<br>\r\n  stat_list.Rule = MakePlusRule(stat_list, stat); <br>\r\n  last_stat_list_opt.Rule = MakeStarRule(last_stat_list_opt, last_stat); <br>\r\n<br>\r\n</em>Roman</p>\r\n",
+    "PostedDate": "2009-04-08T16:53:50.56-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "177504",
+    "ThreadId": "52704",
+    "Html": "Thanks again, Roman.<br>\r\n<br>\r\nRob\r\n",
+    "PostedDate": "2009-04-09T01:28:13.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "177539",
+    "ThreadId": "52704",
+    "Html": "<p>\r\n<p>Sorry to be a pain, but I came up with this expression and I was wondering if it's still correct. <br>\r\n </p>\r\n</p>\r\n<p>chunk.Rule = MakeStarRule(stat + (colon | Empty)) + MakePlusRule(lastStat + (color | Empty)); <br>\r\n<br>\r\n<br>\r\n </p>\r\n",
+    "PostedDate": "2009-04-09T04:01:15.167-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "177678",
+    "ThreadId": "52704",
+    "Html": "That wouldn't work simply because MakeStarRule and MakePlusRule functions require at least two parameters, the first of which is the list being setup. So you have to create list non-terminals explicitly and setup their rules with these methods.<br>\r\n",
+    "PostedDate": "2009-04-09T09:39:25.637-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "177754",
+    "ThreadId": "52704",
+    "Html": "That makes perfect sense. I should stop posting when at work, I miss obvious things.<br>\r\nAnd thank you again!\r\n",
+    "PostedDate": "2009-04-09T12:45:10.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "177850",
+    "ThreadId": "52704",
+    "Html": "Check out http://vslua.codeplex.com if you're interested in seeing a Lua language service implemented in Irony.  I'm sure there are plenty of areas for improvement but myself and my coworkers have been using it for about a month and the syntax checking has been pretty accurate.",
+    "PostedDate": "2009-04-09T21:50:32.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "177913",
+    "ThreadId": "52704",
+    "Html": "Interesting, I'll be sure to check it out. Thanks!<br>\r\n",
+    "PostedDate": "2009-04-10T05:16:34.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

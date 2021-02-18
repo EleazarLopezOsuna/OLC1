@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1099089",
+    "ThreadId": "459099",
+    "Html": "I have a scenario where I need to make sure that a NumberLiteral is entered in the correct range. The valid range changes with the addition of an optional unit specified right after the NumberLiteral. Essentially we have:\r<br />\n<br />\nDistance + (Empty | &quot;m&quot; | &quot;mi&quot; | &quot;km&quot;)\r<br />\n<br />\nI need to validate that chunk as a whole. How do I do that? \r<br />\n<br />\nI'm using KeyTerm for the individual units. Each of those is a Terminal, and I've had success validating using the ValidateToken event in conjunction with the args.Context.PreviousToken available there. My Distance also has a ValidateToken that works when the unit is absent. I just don't know how to ignore that Distance validation event when the optional unit is specified.<br />\n",
+    "PostedDate": "2013-09-25T08:58:22.483-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1099327",
+    "ThreadId": "459099",
+    "Html": "you should probably use the Reduced event on parent nonterminal. so if you have \r<br />\n  DistanceSpec.rule = Distance + (Empty | &quot;m&quot; ...);\r<br />\n  DistanceSpec.Reduced += ValidateDistanceMethod;\r<br />\nThere you would have both tokens available<br />\n",
+    "PostedDate": "2013-09-25T12:35:50.817-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1099394",
+    "ThreadId": "459099",
+    "Html": "The Reduced event is working fine. Thanks.<br />\n",
+    "PostedDate": "2013-09-25T14:48:49.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,13 @@
+C:\Users\USER\Desktop\Proyecto2_Compi\PROYECTO2_OLC1-master\[OLC1]Proyecto2\bin\Debug\[OLC1]Proyecto2.exe.config
+C:\Users\USER\Desktop\Proyecto2_Compi\PROYECTO2_OLC1-master\[OLC1]Proyecto2\bin\Debug\[OLC1]Proyecto2.exe
+C:\Users\USER\Desktop\Proyecto2_Compi\PROYECTO2_OLC1-master\[OLC1]Proyecto2\bin\Debug\[OLC1]Proyecto2.pdb
+C:\Users\USER\Desktop\Proyecto2_Compi\PROYECTO2_OLC1-master\[OLC1]Proyecto2\bin\Debug\Irony.dll
+C:\Users\USER\Desktop\Proyecto2_Compi\PROYECTO2_OLC1-master\[OLC1]Proyecto2\obj\Debug\[OLC1]Proyecto2.csprojAssemblyReference.cache
+C:\Users\USER\Desktop\Proyecto2_Compi\PROYECTO2_OLC1-master\[OLC1]Proyecto2\obj\Debug\_OLC1_Proyecto2.Ventana.resources
+C:\Users\USER\Desktop\Proyecto2_Compi\PROYECTO2_OLC1-master\[OLC1]Proyecto2\obj\Debug\_OLC1_Proyecto2.Properties.Resources.resources
+C:\Users\USER\Desktop\Proyecto2_Compi\PROYECTO2_OLC1-master\[OLC1]Proyecto2\obj\Debug\_OLC1_Proyecto2.VisorAST.resources
+C:\Users\USER\Desktop\Proyecto2_Compi\PROYECTO2_OLC1-master\[OLC1]Proyecto2\obj\Debug\[OLC1]Proyecto2.csproj.GenerateResource.cache
+C:\Users\USER\Desktop\Proyecto2_Compi\PROYECTO2_OLC1-master\[OLC1]Proyecto2\obj\Debug\[OLC1]Proyecto2.csproj.CoreCompileInputs.cache
+C:\Users\USER\Desktop\Proyecto2_Compi\PROYECTO2_OLC1-master\[OLC1]Proyecto2\obj\Debug\[OLC1]Proyecto2.csproj.CopyComplete
+C:\Users\USER\Desktop\Proyecto2_Compi\PROYECTO2_OLC1-master\[OLC1]Proyecto2\obj\Debug\[OLC1]Proyecto2.exe
+C:\Users\USER\Desktop\Proyecto2_Compi\PROYECTO2_OLC1-master\[OLC1]Proyecto2\obj\Debug\[OLC1]Proyecto2.pdb

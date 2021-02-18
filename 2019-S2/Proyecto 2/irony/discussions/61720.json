@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "209448",
+    "ThreadId": "61720",
+    "Html": "<p>I'm using irony and absolutely thrilled with the results, except for the fact that I cannot get it to let me have custom escapes that would otherwise render as key characters that match other terminals. For example, I have something that expects a list of comma separated values</p>\r\n<p>&nbsp;</p>\r\n<p>[ABC:1234, DEF:asdf343434, GHi:5kfk9 ]</p>\r\n<p>&nbsp;</p>\r\n<p>I want to be able to have between the colon and the , any number of \\, or \\] without triggering the , and ] to misfire as an early end to the sequence.</p>\r\n<p>I suspect I can do this somehow with Token Filters... but I can't figure it out (since it's not brace matching or whitespace preservation, haha) .. I've been staring at this all night... &nbsp;any ideas?</p>\r\n<p>I realize this makes it look silly, but it's not my data, I'm just parsing it.</p>\r\n<p>&nbsp;</p>\r\n<p>Here's an example of the 'mangled' escaped text I'd like for it to treat the same way as the above.</p>\r\n<p>[ABC:1234, DEF:asdf3[43434\\], GHisds:2\\,5kfk9 ]</p>\r\n<p>&nbsp;listItem.Rule = plain_ident + Symbol(&quot;:&quot;) + tricky_ident_accepting_strange_chars_n_escapes;</p>\r\n<p>&nbsp;listItemList.Rule = MakeStarRule(listItemList, Symbol(&quot;,&quot;), listItem);</p>\r\n<p>&nbsp;bracked_list = Symbol(&quot;[&quot;) + &nbsp;listItemList.Q() + Symbol(&quot;]&quot;);</p>\r\n<p>&nbsp;</p>\r\n<p>Sorry for the incompleteness the first time round.</p>",
+    "PostedDate": "2009-07-07T05:27:46.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "209547",
+    "ThreadId": "61720",
+    "Html": "<p>trying some more things, this didn't quite work, but I think I'm close here...</p>\r\n<p>RegexBasedTerminal accex = new RegexBasedTerminal(&quot;acc&quot;, @&quot;:(([\\S\\w][^,])|(\\\\.))+&quot;, &quot;:&quot;);</p>\r\n<p>listItem.Rule = plain_ident + accex;</p>\r\n<p>still doesn't work. &nbsp;The regex itself matches when I do a RegEx.match by itself, but I can't pick up the tokens with this guy.</p>\r\n<p>--dave</p>",
+    "PostedDate": "2009-07-07T08:59:10.967-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "209553",
+    "ThreadId": "61720",
+    "Html": "<p>You need to create custom terminal class that can read this sequence, I'm afraid&nbsp;none of the standard Irony terminals can do it. As a variation, you can use CustomTerminal and provide a custom Match function, but I think creating custom terminal class would work better.&nbsp;One&nbsp;tricky part is specifying&nbsp;prefixes&nbsp;&nbsp;for the terminal. Irony scanner uses the prefixes list to&nbsp;select candidate terminals for scanning the input based on current character in the input. Here's how it should work. You specify all a-z&nbsp;characters plus digits plus back slash char as prefix. Now the scanner can be confused because this terminal is kinda &quot;i can parse any&quot; thing, so it would be called for almost any input character, including identifiers, numbers etc. However, there's a remedy in this case. If you use latest version of Irony from Sources page, it has a facility called &quot;Scanner-Parser link&quot;. When Scanner has more than one candidate terminal for scanning, it can ask parser &quot;what terminals do you expect in current state?&quot;, and filters out all terminals that are not expected. Look at Basic sample, it uses this facility to distinguish between &quot;number&quot;, &quot;file number&quot; and &quot;line number&quot; terminals - they are all alike if we look at content, but scanner uses parser help to pickup correct terminal. So in your case, when parser reads &quot;:&quot; symbol, it expects only your fancy custom terminal, so it should be correctly picked up.</p>\r\n<p>As for implementation of TryMatch method of the terminal, I think you can easily write it, just scan chars one-by-one and note the escaper backslash, so don't treat the following comma or bracket as the end.</p>\r\n<p>Another note - in the last expression, if you define list as Star-list, you don't need &quot;Q()&quot; part&nbsp;in listItemList.Q() expression - it is already optional list. This extra Q() may in fact bring extra parsing conflicts.</p>\r\n<p>Let me know&nbsp;how it works for you, or if you need any&nbsp; more info.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-07-07T09:19:27.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "209587",
+    "ThreadId": "61720",
+    "Html": "<p>alright I'll give it a shot.</p>\r\n<p>I have to admit I'm a little confused by what I see out there, but I think I can get it. (It took me a while to figure out the type-dispatched constructor logic for the AST nodes etc, it was too clever for me to take in all at once!) &nbsp;</p>\r\n<p>I'm going to start the terminal at the ':' that way I don't have to worry about all the crazy possibilties for prefixes. The left hand side of the ':' doesn't need to support escaping, which is good. &nbsp;(Good call on the .Q() too)</p>\r\n<p>I'll just fire up a custom Terminal class and see how I can rock it.</p>\r\n<p>I'm really anxious to get this to work, cause the parser and tree generation is flawless except for this one bit, and only one out of every 50,000 entries or so that I'm parsing actually has one of these little buggers in it so I don't want to get all drastic and filter them out of the input stream or something. &nbsp;I do have to say that working with irony has been really great. Indeed this is one issue I'm having is tough in any parsing tool, not just irony.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-07T11:01:20.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "209594",
+    "ThreadId": "61720",
+    "Html": "<p>well, good luck</p>\r\n<p>this must be a good call for a &quot;standard&quot; terminal that can flexibly do these kind of things. It might have optional start symbol and end symbols (&quot;]&quot;, &quot;,&quot; in your case) but unlike string literal the end symbol is not part of the token. Plus escape table that code can fill in : {&quot;\\]&quot; -&gt; &quot;]&quot; ; &quot;\\,&quot;-&gt; &quot;,&quot;}, something like this...</p>\r\n<p>I'll probably give it a try - or if you create your terminal in such generic way, you probably can share it? I'll include it in Irony with proper credits</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-07T11:13:37.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "209640",
+    "ThreadId": "61720",
+    "Html": "<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:#0000ff\">Not exactly generic, but it's what I used that worked.  I will perhaps get a chance to pretty it up at some point here.  Thanks again for your help!</span></pre>\r\n<pre><span style=\"color:Blue\">using</span> System;\r\n<span style=\"color:Blue\">using</span> System.Collections.Generic;\r\n<span style=\"color:Blue\">using</span> System.Linq;\r\n<span style=\"color:Blue\">using</span> System.Text;\r\n\r\n<span style=\"color:Blue\">namespace</span> Irony.Compiler {\r\n    <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> AccessTerminal : Terminal </span>{\r\n\r\n        <span style=\"color:Blue\">public</span> AccessTerminal(<span style=\"color:Blue\">string</span> nam)\r\n            : <span style=\"color:Blue\">this</span>(nam, <span style=\"color:Blue\">string</span>.Empty) {\r\n        }\r\n\r\n        <span style=\"color:Blue\">public</span> AccessTerminal(<span style=\"color:Blue\">string</span> nam, <span style=\"color:Blue\">string</span> exTerms) :\r\n            <span style=\"color:Blue\">base</span> (nam, TokenCategory.Content) {\r\n\r\n            <span style=\"color:Blue\">if</span> (!<span style=\"color:Blue\">string</span>.IsNullOrEmpty(exTerms))\r\n                extraTerminators = exTerms;\r\n            <span style=\"color:Blue\">else</span>\r\n                extraTerminators = defaultExtraTerminators;\r\n\r\n        }\r\n\r\n        <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">override</span> IList&lt;<span style=\"color:Blue\">string</span>&gt; GetFirsts() {\r\n            <span style=\"color:Blue\">return</span> <span style=\"color:Blue\">new</span> List&lt;<span style=\"color:Blue\">string</span>&gt;(<span style=\"color:Blue\">new</span> <span style=\"color:Blue\">string</span>[] { <span style=\"color:#A31515\">&quot;:&quot;</span> });\r\n        }\r\n        <span style=\"color:Blue\">const</span> <span style=\"color:Blue\">string</span> defaultExtraTerminators = <span style=\"color:#A31515\">&quot;, \\t\\r\\n\\v]&quot;</span>;\r\n        \r\n            \r\n        <span style=\"color:Blue\">string</span> extraTerminators =  <span style=\"color:Blue\">null</span>;\r\n\r\n        <span style=\"color:Blue\">bool</span> CharIsTerminator(<span style=\"color:Blue\">char</span> c) {\r\n            <span style=\"color:Blue\">return</span> extraTerminators.IndexOf(c) != -1;\r\n        }\r\n\r\n        <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">override</span> Token TryMatch(CompilerContext context, ISourceStream source) {\r\n            \r\n            <span style=\"color:Green\">// the first char must always every time be a ':', makes it simpler.</span>\r\n            <span style=\"color:Blue\">if</span> (source.CurrentChar != <span style=\"color:#A31515\">':'</span>) <span style=\"color:Blue\">return</span> <span style=\"color:Blue\">null</span>;\r\n            <span style=\"color:Blue\">if</span> (<span style=\"color:Blue\">char</span>.IsWhiteSpace(source.NextChar)) <span style=\"color:Blue\">return</span> <span style=\"color:Blue\">null</span>;\r\n            <span style=\"color:Green\">// consume the ':'</span>\r\n            source.Position++;\r\n\r\n            \r\n            <span style=\"color:Green\">//bool breakOff = false;</span>\r\n            <span style=\"color:Blue\">bool</span> isEscaped = <span style=\"color:Blue\">false</span>;\r\n            <span style=\"color:Blue\">while</span> (!source.EOF()) {\r\n                \r\n                    <span style=\"color:Blue\">char</span> c = source.CurrentChar;\r\n                    <span style=\"color:Blue\">if</span> (!isEscaped) { <span style=\"color:Green\">// we are not escaped</span>\r\n                        <span style=\"color:Blue\">if</span> (c == '\\\\') { <span style=\"color:Green\">// starting an escape</span>\r\n                            isEscaped = <span style=\"color:Blue\">true</span>;\r\n                        }\r\n                        <span style=\"color:Blue\">else</span> { <span style=\"color:Green\">// we are not starting an escape, so we might bust out here.</span>\r\n                            <span style=\"color:Blue\">if</span> (CharIsTerminator(c))\r\n                                <span style=\"color:Blue\">break</span>;\r\n                        }\r\n                    }\r\n                    <span style=\"color:Blue\">else</span> { <span style=\"color:Green\">// we are escaped</span>\r\n                        source.Position++;\r\n                        isEscaped = <span style=\"color:Blue\">false</span>; <span style=\"color:Green\">// not anymore</span>\r\n                    }\r\n\r\n                    <span style=\"color:Green\">// increment the position counter</span>\r\n                    source.Position++;\r\n            }\r\n            <span style=\"color:Blue\">return</span> Token.Create(<span style=\"color:Blue\">this</span>, context, source.TokenStart, source.GetLexeme());\r\n        }\r\n    }\r\n}\r\n\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-07T13:18:08.947-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "209658",
+    "ThreadId": "61720",
+    "Html": "<p>Looks ok, except one possible issue - does your input format allow &quot;escaped backslash&quot;? or several escaped backslashes?</p>\r\n<p>If it does, make sure it works correctly. We had this issue in string literal, look there, we have to introduce extra flipping flag; but string literal is implemented differently, it uses search, so your implementation going char by char might be ok as it is.</p>\r\n<p>Also, I&nbsp;guess the escaping&nbsp;backslash itself is not part of the value, you should skip it.&nbsp;Your code&nbsp;blindly includes it into the&nbsp;token when you call GetLexeme() - you grab all chars from token start to current position.</p>\r\n<p>I think you should form the string as you go skipping the escape char.</p>\r\n<p>congrats and good luck</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-07-07T13:51:01.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218589",
+    "ThreadId": "61720",
+    "Html": "<p>The latest source drop contains new FreeTextLiteral that implements this functionality in generic way</p>\r\n<p>Thanks again for suggesting this</p>\r\n<p>have fun!</p>",
+    "PostedDate": "2009-08-02T19:35:40.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218868",
+    "ThreadId": "61720",
+    "Html": "<p>you're the man, roman.&nbsp;</p>",
+    "PostedDate": "2009-08-03T10:13:34.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

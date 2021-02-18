@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "238845",
+    "ThreadId": "70117",
+    "Html": "<p>I've got a grammar that 90% of the time just treats string literals as string literals, however if a string starts with a particular prefix (lets say #), then I want to parse the contents of that string. For example:</p>\r\n<p style=\"padding-left:30px\">&quot;{foo:bar}&quot;</p>\r\n<p>should evaluate to just a string literal token, but</p>\r\n<p style=\"padding-left:30px\">#&quot;{foo:bar}&quot;</p>\r\n<p>should have its contents parsed.</p>\r\n<p>When I try to parse the second example with my grammar, Irony complains that it was expecting a &quot; (at the point where there IS a &quot;), however i can see that the string literal has already been tokenised. No amount of playing with precedence or priority seems to help. If i remove all string literals from my grammar, then the contents of the string will be parsed.</p>\r\n<p>Is this one of the cases mentioned at http://irony-roman.blogspot.com/2009/09/time-to-talk-about-future.html? A Sub-grammar? Or am i just doing it wrong?</p>\r\n<p>If it's not implemented yet, can I help? If this feature is implemented, how do I use it?</p>\r\n<p>P.S. awesome awesome project. 5 stars!</p>",
+    "PostedDate": "2009-09-25T08:44:00.843-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "238980",
+    "ThreadId": "70117",
+    "Html": "<p>You may have to create a custom terminal/literal to handle the functionality that you are describing. I believe Irony examines each character that hasn't been tokenized. Then it creates a list of potential terminals, which it iterates through until one is successful. However, if it's not successful, it moves on to try and determine what you meant.</p>\r\n<p>In your first scenario, Irony comes up to a quotation mark and says, this is a StringLiteral and so it returns a StringLiteral and jumps to the last quotation mark to continue parsing. However, in the second scenario, Irony comes to the # and determines that there are no matching Terminal. Then it looks at the next character and says, I think you meant for this to be a StringLiteral.</p>",
+    "PostedDate": "2009-09-25T14:15:05.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "238991",
+    "ThreadId": "70117",
+    "Html": "<p>Thanks for the suggestion, MindCore, but I hope in this case there may be a solution without custom terminal. I don't know how you arranged your grammar, but here's my guess. You created StringLiteral terminal as usual. You also created non-terminal for fancy #-tagged string:</p>\r\n<p>var strLit = new StringLiteral(&quot;String&quot;, &quot;\\&quot;&quot;);</p>\r\n<p>var exprStr = new NonTerminal(ExprString);</p>\r\n<p>exprStr.Rule = &quot;#\\&quot;&quot; + Expr + &quot;\\&quot;&quot;;</p>\r\n<p>where Expr is an expression literal you already use for other, normal expressions in your grammar. I guess&nbsp;Expr literal also allows expressions&nbsp;involving normal literal strings (strLit)&nbsp;- right? The here's the problem.&nbsp;&nbsp;Parser encounters ending quote, and cannot decide, what is this?&nbsp;the beginning of strLit literal, or the ending quote of&nbsp;exprStr structure. I bet the logic of your language actually does not allow&nbsp;this! So what you need to do is define a separate&nbsp;expression non-terminal defining what&nbsp;actually can be inside the&nbsp;strLit (which excludes strLit):</p>\r\n<p>exprStr.Rule = &quot;#\\&quot;&quot; + embeddedExpr + &quot;\\&quot;&quot;;</p>\r\n<p>embeddedExpr.Rule = (....);</p>\r\n<p>In this case then Irony Scanner will stop at ending quote and will try to decide what terminal to match. It will have two candidates (strLit and stand-alone double quote symbol ending exprStr). It will then ask Parser, which of these&nbsp;two can be expected here, and Parser will respond - only closing double-quote!</p>\r\n<p>Try this, and let me know&nbsp;if it works. &nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-25T14:43:08.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "239004",
+    "ThreadId": "70117",
+    "Html": "<p>One more comment. robfe, answering your question about the need for subgrammars in this case. In general - yes that would require a subgrammar, if you had a free-form string content with embedded expressions, like in Ruby. But if it is ONLY expression inside, without&nbsp;anything else&nbsp;- which is your case as far as I understood - then it might work as I described.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-25T15:23:33.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "239443",
+    "ThreadId": "70117",
+    "Html": "<p>Hi Roman</p>\r\n<p>Thanks for your help. My &quot;embeddedExpr&quot; is already a nonterminal that cannot contain quotes. I think i will have to bite the bullet and post my whole grammar here, if you have time to look at it I'd really appreciate it.</p>\r\n<p>And here's the constructor for my grammar:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>        <span style=\"color:Blue\">public</span> ReproGrammar()\r\n        {\r\n            <span style=\"color:Blue\">var</span> identifier = <span style=\"color:Blue\">new</span> IdentifierTerminal(<span style=\"color:#A31515\">&quot;identifier&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> stringLiteral = <span style=\"color:Blue\">new</span> StringLiteral(<span style=\"color:#A31515\">&quot;stringLiteral&quot;</span>, <span style=\"color:#A31515\">&quot;\\&quot;&quot;</span>);\r\n\r\n            <span style=\"color:Green\">//nonterminals</span>\r\n            <span style=\"color:Blue\">var</span> graph = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;graph&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> ruleList = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;ruleList&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> rule = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;rule&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> state = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;state&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> transition = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;transition&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> attributes = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;attributes&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> attributeList = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;attributeList&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> attribute = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;attribute&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> labelAttribute = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;labelAttribute&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> parameterList = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;parameterList&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> parameters = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;parameters&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> parameter = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;parameter&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> genericAttribute = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;genericAttribute&quot;</span>);\r\n            <span style=\"color:Blue\">var</span> value = <span style=\"color:Blue\">new</span> NonTerminal(<span style=\"color:#A31515\">&quot;value&quot;</span>);\r\n\r\n\r\n\r\n\r\n            graph.Rule = <span style=\"color:#A31515\">&quot;digraph&quot;</span> + identifier + <span style=\"color:#A31515\">&quot;{&quot;</span> + ruleList + <span style=\"color:#A31515\">&quot;}&quot;</span>;\r\n            ruleList.Rule = MakeStarRule(ruleList, rule);\r\n            rule.Rule = (state | transition) + (Empty | <span style=\"color:#A31515\">&quot;;&quot;</span>);\r\n            state.Rule = identifier + attributes;\r\n            transition.Rule = identifier + <span style=\"color:#A31515\">&quot;-&gt;&quot;</span> + identifier + attributes;\r\n            attributes.Rule = Empty | (<span style=\"color:#A31515\">&quot;[&quot;</span> + attributeList + <span style=\"color:#A31515\">&quot;]&quot;</span>);\r\n            attributeList.Rule = MakeStarRule(attributeList, Symbol(<span style=\"color:#A31515\">&quot;,&quot;</span>), attribute);\r\n            attribute.Rule = labelAttribute | genericAttribute;\r\n            labelAttribute.Rule = Symbol(<span style=\"color:#A31515\">&quot;label&quot;</span>) + <span style=\"color:#A31515\">&quot;=&quot;</span> + <span style=\"color:#A31515\">&quot;\\&quot;&quot;</span> + identifier + parameters + Symbol(<span style=\"color:#A31515\">&quot;\\&quot;&quot;</span>);\r\n            parameters.Rule = Empty | (<span style=\"color:#A31515\">&quot;(&quot;</span> + parameterList + <span style=\"color:#A31515\">&quot;)&quot;</span>);\r\n            parameterList.Rule = MakeStarRule(parameterList, Symbol(<span style=\"color:#A31515\">&quot;,&quot;</span>), parameter);\r\n\r\n            parameter.Rule = identifier + identifier;\r\n\r\n            genericAttribute.Rule = identifier + <span style=\"color:#A31515\">&quot;=&quot;</span> + value;\r\n\r\n            value.Rule = identifier | stringLiteral;\r\n\r\n\r\n            RegisterPunctuation(<span style=\"color:#A31515\">&quot;{&quot;</span>, <span style=\"color:#A31515\">&quot;}&quot;</span>, <span style=\"color:#A31515\">&quot;;&quot;</span>, <span style=\"color:#A31515\">&quot;[&quot;</span>, <span style=\"color:#A31515\">&quot;]&quot;</span>, <span style=\"color:#A31515\">&quot;-&gt;&quot;</span>, <span style=\"color:#A31515\">&quot;,&quot;</span>, <span style=\"color:#A31515\">&quot;=&quot;</span>, <span style=\"color:#A31515\">&quot;\\n&quot;</span>);\r\n            MarkTransient(ruleList, rule, attributes, value, parameters);\r\n\r\n            NonGrammarTerminals.Add(<span style=\"color:Blue\">new</span> CommentTerminal(<span style=\"color:#A31515\">&quot;SingleLineComment&quot;</span>, <span style=\"color:#A31515\">&quot;//&quot;</span>, <span style=\"color:#A31515\">&quot;\\r&quot;</span>, <span style=\"color:#A31515\">&quot;\\n&quot;</span>, <span style=\"color:#A31515\">&quot;\\u2085&quot;</span>, <span style=\"color:#A31515\">&quot;\\u2028&quot;</span>, <span style=\"color:#A31515\">&quot;\\u2029&quot;</span>));\r\n            NonGrammarTerminals.Add(<span style=\"color:Blue\">new</span> CommentTerminal(<span style=\"color:#A31515\">&quot;DelimitedComment&quot;</span>, <span style=\"color:#A31515\">&quot;/*&quot;</span>, <span style=\"color:#A31515\">&quot;*/&quot;</span>));\r\n\r\n            Root = graph;\r\n        }\r\n\r\n</pre>\r\n</div>\r\n</p>\r\n<p>I'm trying to treat any node or edge attributes (the comma seperated key value pairs within the square brackets) with a name of &quot;label&quot; differently to the others, parsing the contents as a formal c# method definition. I'm using the latest release of Irony, since there's the comment &quot;All AST/Interpreter stuff is a work in progress, don't try to use it.&quot; in trunk.</p>\r\n<p>I'm trying to parse the following string:</p>\r\n<pre>digraph g{x[foo=&quot;bar&quot;,label=&quot;FooBar(string s, int i)&quot;] y; z x-&gt;z}</pre>\r\n<p>&nbsp;(it's an extension of DOT), but the scanner is picking up a string literal when it gets to the value of the label.</p>\r\n<p>I'll be using this in a new codeplex project, which I'm yet to publish. Cheers - Rob</p>",
+    "PostedDate": "2009-09-28T02:11:51.11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "239565",
+    "ThreadId": "70117",
+    "Html": "<p>Ok, several things. First of all, forget about download release version, move to latest sources. The interpreter part works already to some extent, but I bet you don't need it at all. AST nodes construction works all the way.</p>\r\n<p>Now how to fix it, the easiest thing to try is to mark &quot;label&quot; symbol as a reserved word in your language - because it is, as far as I understand. having &quot;label&quot; as an attribute name signals that its content string should be parsed. Use MarkReservedWords() method in Grammar class. I think then it will work, because&nbsp;with&nbsp;this&nbsp;parser-scanner link parser will assist scanner&nbsp;- but again, in latest sources version only.</p>\r\n<p>finally, if you control the language (as you say, it is new codeplex project), then why don't you slightly change the rules and simply use single quote for strings that should be parsed? It would be easier for parser, and I think easier for programmers. OR use some prefix for double-quoted string like &quot;@&quot;; that's the way they do in c#, only the opposite. String literals without @ trigger some interpretation like treating escape sequences, while strings preceeded by &quot;@&quot; are accepted &quot;as is&quot;.</p>\r\n<p>Let me know what works for you...</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-09-28T08:42:41.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "239607",
+    "ThreadId": "70117",
+    "Html": "<p>Hi Roman</p>\r\n<p>Thanks for all your suggestions, I will try them all out. AST construction is all I need.</p>\r\n<p>I am in fact piggybacking off an existing DSL: &quot;Dot&quot; (<a href=\"http://www.graphviz.org/\">http://www.graphviz.org/</a>), which is already quite a loose language, and I want to be able to parse all Dot files as well as the files with my extra label markup.</p>\r\n<p>Will let you know how it goes</p>\r\n<p>Cheers - Rob</p>",
+    "PostedDate": "2009-09-28T10:07:44.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "240055",
+    "ThreadId": "70117",
+    "Html": "<p>The parser works perfectly even without having to register a keyword. All I had to do was upgrade to trunk.</p>\r\n<p>It was a lot of work to convert over to the new way of building ASTs though! You should do a release as soon as you can so that people who are new to the project dont start working against a codebase that has a lot of pending breaking changes.</p>\r\n<p>P.S. Love Irony. Will be linking to you from my new project :)</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-29T09:00:06.317-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "248913",
+    "ThreadId": "70117",
+    "Html": "<p>Hi Roman, thanks for all your help. If you want to see how I use Irony it's over at http://flit.codeplex.com/</p>",
+    "PostedDate": "2009-10-23T01:51:24.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "249081",
+    "ThreadId": "70117",
+    "Html": "<p>Thanks for the link. As a suggestion, it might be helpful to provide some real life example of Flit use. After browsing Flit wiki pages for some time, I still couldn't get the idea - where and how it can be used. I'm in business software development actually (Irony is just an aberration), so I guess&nbsp;Flit is&nbsp;aimed to solve the problems we have in business application development - huge problems in fact. But I could not get the idea, sorry. Maybe provide a scenario, starting with a simple business process/action description &quot;Customer X buys gadget Y&quot;, or &quot;Invoice must be reviewed by relevant approvers&quot; - and then proceed with technical details how you can do this with Flit.</p>\r\n<p>Thanks, and good luck with your project!</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-10-23T11:20:00.313-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

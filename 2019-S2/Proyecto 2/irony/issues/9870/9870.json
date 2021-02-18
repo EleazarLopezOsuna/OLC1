@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "a simple mistake, no impact",
+    "ClosedDate": "2012-03-11T08:45:44.05-07:00",
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "Now it is Irony_2011_01_22.zip. \r\n\r\nRegards,\r\nOleg.",
+    "LastUpdatedDate": "2012-03-11T08:45:44.05-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2012-03-11T06:18:26.283-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Need to rename zip file from Jan, 22, 2012",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9870
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "thanks, will watch on next upload. I hope it's not a big deal currently",
+      "PostedDate": "2012-03-11T08:45:20.033-07:00",
+      "Id": 57508
+    }
+  ]
+}

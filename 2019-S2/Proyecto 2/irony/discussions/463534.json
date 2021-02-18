@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1111992",
+    "ThreadId": "463534",
+    "Html": "As I have checked NumberLiteral I see you are using strictly only &quot;.&quot; as decimal separator which does not always have to be correct (for different cultures).\r<br />\nWould be really nice to be able to have property where I could inject CultureInfo (there may be some default) which would  set all Culture dependant characters (or to be able to set those characters explicitly).\r<br />\n<br />\nWell you really have there public field DecimalSeparator, but inside of your methods you are using identification of other numberLiterals with decimal separator other than '.' does not work and throws &quot;syntax error, unexpected input&quot;...<br />\n",
+    "PostedDate": "2013-10-25T01:53:36.947-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1120830",
+    "ThreadId": "463534",
+    "Html": "hi\r<br />\nabout DecimalSeparator property - will look at it, thanks.\r<br />\nCulture-aware terminal - well, not so sure. I think Culture is mostly about representation, i.e. converting (binary) -&gt; Text. While Irony and parsers in general is about reverse. So it would be quite risky undertaking, even if this could be done. To put it simply, there's no way to assure that grammar/parser working perfectly in one culture would work in another. Like in some cultures, comma is used instead of dot as decimal separator. But then comma is also commonly used in languages as list delimiter, so switching the Culture-aware NumberLiteral to this culture may actually completely break the parser. Finally, there are just a few (2 at most) props in Culture that concern number parsing, so it's better to have them exposed directly on number literal\r<br />\nthx\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-11-09T09:37:10.237-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

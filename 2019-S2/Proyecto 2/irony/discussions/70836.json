@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "241365",
+    "ThreadId": "70836",
+    "Html": "<p>Roman,</p>\r\n<p>I don't know if I would call this a bug, so I'm going to bring it up in a discussion thread first, but while I was working on a grammar which is case insensitive I notice an inconsistency in the results from an Identifier Terminal.&nbsp; If the Identifier is alone in the expression and it contains Uppercase characters, the result is identical to the original text.&nbsp; However, if the Identifier is part of a larger expression, all of the Uppercase characters become lower case.</p>\r\n<p>I believe this could become an issue when you start working on sub grammars.&nbsp; The most common example is HTML with in-line JavaScript. If my memory serves me correctly, JavaScript is case sensitive while HTML is not - XHTML is case sensitive though =).</p>\r\n<p>Thanks,</p>\r\n<p>MindCore</p>",
+    "PostedDate": "2009-10-02T09:24:33.633-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "241898",
+    "ThreadId": "70836",
+    "Html": "<p>Sounds like an inconsistency at least, will look into this. I know it is important to do this properly, and will try to address it when it comes to symbol table implementation. The other interesting case, in addition to HTML/JavaScript, is a case-insensitive language (VB) with interop with .NET or some other case-sensitive language. Casing does not matter in the language itself, so 'x' and 'X' are the same, but exact casing becomes important when there is a call to external .NET function: System.Char.IsLetter(ch) - because .NET is case sensitive.</p>\r\n<p>Will look into this more, thanks again for pointing this out</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-10-04T10:03:38.72-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "255964",
+    "ThreadId": "70836",
+    "Html": "<p>I'm back to this issue, and I'm able to reproduce it. With GwBasic grammar and script like this:</p>\r\n<p><span style=\"font-size:x-small\"><span lang=EN>\r\n<p>1 x = xX</p>\r\n<p>2 y = xX * 2</p>\r\n<p>The first occurrence of xX shows as &quot;xX&quot; in parse tree, while the second one is &quot;xx&quot;</p>\r\n<p>Will investigate and fix it.</p>\r\n<p>Good catch! - thanks again!</p>\r\n<p>&nbsp;</p>\r\n</span></span></p>",
+    "PostedDate": "2009-11-11T06:44:27.087-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "256177",
+    "ThreadId": "70836",
+    "Html": "<p>Thanks for following up.</p>",
+    "PostedDate": "2009-11-11T17:15:36.95-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "257097",
+    "ThreadId": "70836",
+    "Html": "<p>Hi</p>\r\n<p>The issue is fixed in the latest drop. It turned out the problem was a bit deeper that one would expect, it was actually several problems spread out in several places. Now all identifiers show up &quot;as is&quot;, with original casing even in case-insensitive languages. It became interpreter's responsibility to handle case variations if language is case insensitive - by creating case-insesitive dictionaries for local and global variables</p>\r\n<p>thanks again</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-11-14T08:33:14.097-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

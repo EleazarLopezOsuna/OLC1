@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "186102",
+    "ThreadId": "55130",
+    "Html": "Hey rivantsov,<br>\r\n<br>\r\nI was checking the change sets 24566, 24571 and 24572 to test out the NLALR parser on my project but I got weird errors in the first parser state. If you take your test grammers (NonCanonTestGrammars) you will see what I mean. After this I tried change set 24418 and everything worked as expected.. Did you somehow break the code for NLALR in the last three change sets? \r\n",
+    "PostedDate": "2009-05-02T06:01:34.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "186120",
+    "ThreadId": "55130",
+    "Html": "thanks for reporting this, will fix it asap<br>\r\nRoman\r\n",
+    "PostedDate": "2009-05-02T08:37:14.137-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "186136",
+    "ThreadId": "55130",
+    "Html": "fixed. thanks again<br>\r\nRoman\r\n",
+    "PostedDate": "2009-05-02T10:57:40.523-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

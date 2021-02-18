@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "code fix declined, workaround suggested",
+    "ClosedDate": "2013-02-25T21:07:49.707-08:00",
+    "CommentCount": 3,
+    "Custom": null,
+    "Description": "I updated Irony recently in a project and it break compatibility with this kind of terminal:\r\n\r\n            var columnVariable = new IdentifierTerminal(NodeType.ColumnVariable);\r\n            columnVariable.AllFirstChars = \"[\";\r\n            columnVariable.AddSuffix(\"]\", TypeCode.String);\r\n\r\n[identifier] or {identifier} // the suffix is optional\r\n\r\nI had to override IsWhiteSpaceOrDelimiter and exclude '{', '}', '[', ']' to make it work again, \r\nI guess it could be fixed by exluding these chars in the IsWhiteSpaceOrDelimiter (or perhaps disable QuickParse for Terminals who have WhitespaceOrDelimiters in their syntax, not sure it would work).",
+    "LastUpdatedDate": "2013-02-25T21:07:49.707-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2012-08-27T01:19:55.593-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Exclude FirstChars and Suffixes from IsWhitespaceOrDelimiter",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9875
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Well, thanks for the suggestion, but I thinking of declining this change. \nI think that mechanism of overriding IsWhiteSpaceOrDilimiter works well enough, and it worked for you. I think it is better to require explicit override of this method, rather than making automatic adjustments to this list. \nPrimarily, I doubt you can make it work at all. Identifier terminal allows specifying not only the list of first chars, but also the list of char categories (for languages that allow non-English chars in identifiers like c#). How it would work then if Identifier has a list of Unicode categories?\nIn general, I think certain things should be left for manual tune-up, rather than automatic adjustment by the system. Any smart behavior can become too-smart in some cases, and there's a real risk it would break for some users in yet-unknown cases. \nFinally, your Identifier setup is a bit strange. You want identifier to allow enclosing brackets... You include left bracket into first-chars set, and right bracket into suffix. That's really a hack, using facilities in a way that they were not intended for. I would suggest instead following the method in sample SQL grammar: SQL allows enclosing identifiers in square brackets or in double quotes - have a look. \nthank you\nRoman",
+      "PostedDate": "2012-08-29T09:38:19.113-07:00",
+      "Id": 75779
+    },
+    {
+      "Message": "The last braquet is optional (can't be in last chars). Can I express this by a better method? \nThe issue really is that something that was working before stopped and I had no clue why. I had to step through the source code to find a hint. Should'nt the white spaces and delimiters be explicit? Something like the mark punctuation function? ",
+      "PostedDate": "2012-08-29T10:28:21.59-07:00",
+      "Id": 75784
+    },
+    {
+      "Message": "if closing bracket is optional, then include it into all-chars, and hook to ValidateToken event of the identifier, and validate that id is well formed (right bracket appears only at the end).\nAs for method for identifying delimiters, it used to be a property on grammar - array of chars. But it did not work for some corner cases. Inventing more sophisticated ways seemed to potentially hurt performance - the check for delimiter/whitespace is invoked for almost every char in the source file. So I ended up with this overridable method. The default check is as fast as it can be, and you can override and implement more complex stuff. ",
+      "PostedDate": "2012-09-01T17:58:51.91-07:00",
+      "Id": 76171
+    }
+  ]
+}

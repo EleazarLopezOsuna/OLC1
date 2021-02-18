@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "842505",
+    "ThreadId": "357642",
+    "Html": "\r\n<p>I've read this article (<a href=\"http://www.sqlservercentral.com/articles/Full-Text&#43;Search&#43;(2008)/64248/\">http://www.sqlservercentral.com/articles/Full-Text&#43;Search&#43;(2008)/64248/</a>) that deal on a grammar to parse google-like queries and transform to full\r\n text search operator for sql server.</p>\r\n<p>I tried to compile against the newest version of Irony, but seems that the base class Grammar is changed. Are there any guidelines on how to convert from old version grammar to new version?&nbsp;</p>\r\n",
+    "PostedDate": "2012-05-30T05:25:02.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "842525",
+    "ThreadId": "357642",
+    "Html": "<p>Please forgive my question, I've found that the original code is actually maintained directly inside the Irony.Samples project in source code.&nbsp;</p>\r\n<p>Great work.</p>",
+    "PostedDate": "2012-05-30T06:05:30.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

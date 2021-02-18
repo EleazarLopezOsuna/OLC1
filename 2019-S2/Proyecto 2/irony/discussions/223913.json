@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "481707",
+    "ThreadId": "223913",
+    "Html": "<p>Hi all,</p>\r\n<p>First let me say that this is really a great project!</p>\r\n<p>I'm trying to get Irony running in VS2010. I was able to adopt the Language template from VS2008 to VS2010. After some small modifications I was able to compile it. The Grammar explorer is working well.</p>\r\n<p>Then I tried to start a new VS2010 Hive with the Language Service. But I wasn't successful.</p>\r\n<p>VS2010 comes up but no code highlighting / checks / completions at all.</p>\r\n<p>I think this is an issue while using target framework .NET 3.5!?</p>\r\n<p>I tried to change it to 4.0, changed some reference libs - but no luck getting it work. (No compile errors, but the Grammar Explorer blames about System.BadImageFormatException)...</p>\r\n<p>&nbsp;</p>\r\n<p>Anyway - is there a Irony lib available for VS2010? Was anybody successful getting it run with VS2010 Hive?</p>\r\n<p>Thanks in advance.</p>\r\n<p>&nbsp;</p>\r\n<p>Regards,</p>\r\n<p>wonder123</p>",
+    "PostedDate": "2010-08-17T23:42:28.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "482182",
+    "ThreadId": "223913",
+    "Html": "<p>I did not start moving to VS2010 yet, so can't say what's wrong. Try to debug it and see where it breaks.</p>\r\n<p>Make sure you upgrade all project References to .NET 4.0 libraries</p>",
+    "PostedDate": "2010-08-19T00:26:36.097-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

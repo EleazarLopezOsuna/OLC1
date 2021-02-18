@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1319300",
+    "ThreadId": "571344",
+    "Html": "Hey,\r<br />\n<br />\nWe've been using Irony to parse expressions for a few years. Thank you.\r<br />\n<br />\nAbout time we updated the Irony bits and we're wondering about the status of Irony. I see you're still very active in this forum but the repo hasn't seen any changes in nearly a year. Does that mean you consider Irony &quot;stable&quot; and not needing change or are you engaged elsewhere (VITA perhaps)?\r<br />\n<br />\nAlso, we'd try to use nuget packages as much as possible. I notice that there's a &quot;critical&quot; fix in Dec 2013 that isn't in the current package on nuget. Any chance of an update?\r<br />\n<br />\nCompletely understand is this is just not a focus currently.<br />\n",
+    "PostedDate": "2014-11-05T02:45:07.203-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1321441",
+    "ThreadId": "571344",
+    "Html": "Hi\r<br />\nsorry for late response. Yeah, had been busy with VITA and related stuff. This is the main priority, and this is what pays the bills - the company I work at uses it, so this is my highest priority. Plus have a coming presentation at dev conf in December, so trying to round it up and clean the code\r<br />\n<br />\nI wish I could spend more time with Irony and continue pushing it forward. \r<br />\n I already realize it needs a complete overhaul. The code is outdated (remember &quot;the worst code you ever see is the code you wrote last year&quot;?). If I started it today, I would do it quite differently. But the problem I see is that the whole approach is outdated. The new times bring new challenges. Irony is built on old concepts, created for command-line/batch mode compilers. I modernized the tools and re-implemented LALR automaton using .NET/OOP (BNF-like operator overloading in c#), but the core concepts remain the same - progressive, left-to-right code scanning and quite inflexible parser state automaton. We have now editing with code completion, in Web browser-based editors, and this requires different approaches. \r<br />\nI've been thinking about this for a while and was sketching/prototyping a few things, looking at what it might look like. Unfortunately, in the last few months could not get back to this. The problem is not only the time I have, but the 'thinking energy' - I cannot easily switch contexts. VITA and ORMs and databases take all of my time and energy for now. The problem is not only that it 'pays the bills' but this area (ORMs and databases) is total f-king disaster, EF is a colossal blunder, but so much is at stake here - biz apps that run the economy and everything, need to be written and supported. And this is really screwed up. \r<br />\nIrony, on the other hand, is ok, maybe ugly and outdated but good enough for now. As for future super version - well, don't know. Maybe I'll just publish my random thoughts and invite you folks to chip-in and start prototyping and building the while new shiny thing... \r<br />\nNuget package - sorry, wasn't really proficient with this, fell out of radar. Just compile the binaries and use them. Not a big deal I hope. \r<br />\nthank you\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-11-12T13:07:49.557-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1321890",
+    "ThreadId": "571344",
+    "Html": "No worries. Thank you for the full and frank response. It's appreciated.\r<br />\n<br />\nI know just what you mean about context switching and paying the bills. What do I expect for free? :)\r<br />\n<br />\nIt is a shame though. This approach, c# only without the need for compiler compilers like Antlr, are very rare.<br />\n",
+    "PostedDate": "2014-11-13T11:31:30.13-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "796707",
+    "ThreadId": "342631",
+    "Html": "\r\n<p>I need to parse a Time span based string.&nbsp; something line:</p>\r\n<p style=\"padding-left:30px\">3 hrs 2 minutes baby sitting with sally.</p>\r\n<p>here's the code but it's not working.</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var line = new NonTerminal(&quot;Line&quot;);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var lines = new NonTerminal(&quot;Lines&quot;);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var data = new NonTerminal(&quot;data&quot;);<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Terminals<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var HOUR = ToTerm(&quot;hours&quot;) | &quot;hrs&quot; | &quot;hour&quot; | &quot;hr&quot;;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var MINS = ToTerm(&quot;minutes&quot;) | &quot;mins&quot; | &quot;min&quot;;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NumberLiteral number = new NumberLiteral(&quot;number&quot;);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IdentifierTerminal identifier = new IdentifierTerminal(&quot;identifier&quot;);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NonTerminal TimeInHoursMins = new NonTerminal(&quot;TimeInHoursMins&quot;);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TimeInHoursMins.Rule = number &#43; HOUR | number &#43; MINS | number &#43; HOUR &#43; number &#43; MINS;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var comment = new FreeTextLiteral(&quot;Comment&quot;, &quot;\\n&quot;);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; line.Rule = TimeInHoursMins &#43; comment &#43; NewLine;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lines.Rule = MakeStarRule(lines, line);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data.Rule = lines &#43; NewLineStar; //to allow empty lines after<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Root = data;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.LanguageFlags |= LanguageFlags.NewLineBeforeEOF;</p>\r\n<p>&nbsp;</p>\r\n<p>The problem I'm having is that the 'Comment' is picking up the minutes too.&nbsp;</p>\r\n<p>I want it to parse out the hours and minutes, and either shove everything after that into the 'comment' or just ignore everything else without error.</p>\r\n<p>Any advice would be awesome. :)</p>\r\n<p>thanks!</p>\r\n",
+    "PostedDate": "2012-02-22T19:26:31.14-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "796807",
+    "ThreadId": "342631",
+    "Html": "<p>try setting&nbsp;</p>\r\n<p>comment.Priority = TerminalPriority.MinimalPriority</p>",
+    "PostedDate": "2012-02-22T20:47:07.063-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "797575",
+    "ThreadId": "342631",
+    "Html": "<p>Woohoo!&nbsp; that did the trick!&nbsp;&nbsp;&nbsp;</p>\r\n<p>There wasn't a MinimalPriority but I set it to Low and it worked great.&nbsp;</p>\r\n<p>Is there a help file or something that lists all the members and what they do?&nbsp; I should have been able to figure this out myself.</p>\r\n<p>Thanks again. :)</p>",
+    "PostedDate": "2012-02-23T06:08:52.877-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

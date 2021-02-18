@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "222933",
+    "ThreadId": "65461",
+    "Html": "<p>I am a noobie to grammars/parser/lexers.etc.<br>I just converted and app I'm working on to the latest code drop from the last full release.&nbsp; I had based my code on the examples that can be found on Code Project.&nbsp; Here is my situation.</p>\r\n<p>I have followed the design methodology of the JSBasic example and created nodes inheriting from AstNode and implementing to ToDOM function in my nodes, whose responsiblity is to convert the nodes from the root down to a class DOM.&nbsp; At various points I am tyring to get the actual value for a node.&nbsp; Here is what I was doing:</p>\r\n<p><span style=\"font-size:x-small;color:#008000\"><span style=\"font-size:x-small;color:#008000\">\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>Token myToken = (Token)<span style=\"color:Blue\">this</span>.ChildNodes[0]; \r\nvalue = myToken.Text;\r\n</pre>\r\n</div>\r\n</span></span></p>\r\n<p>This no longer compiles as it complains about not being able to type case AstNode to Token.&nbsp; I understand the value is in the ParseTreeNode.&nbsp; How do I get back to a ParseTreeNode from the AstNode.&nbsp; The AstNode may or may not have children.</p>\r\n<p>Thanks.</p>",
+    "PostedDate": "2009-08-13T06:07:49.527-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223010",
+    "ThreadId": "65461",
+    "Html": "<p>The code in this article no longer applies to latest sources. The AST part is not completed yet (default AST nodes), you have to build the nodes yourself. You&nbsp;are basically free to form your own node hierarchy. &nbsp;</p>\r\n<p>Yes, token is not longer AST node; try directly casting the child, but it depends on how you form the current node:</p>\r\n<p>value = this.ChildNodes[0];</p>\r\n<p>It works only if you have a &quot;constant&quot; as your first node, but might not work if first child is some expression or some non-terminal - it really depends on your grammar.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-13T09:24:16.817-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,174 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Asi.Assets.Models;
+using Asi.Services;
+using Asi.Units;
+using Irony.Parsing;
+
+namespace Asi.Assignments.UI.Procedures
+{
+	public class ProcedureGrammar : Grammar
+	{
+		public ProcedureGrammar(IEnumerable<TelemetryDefinitionModel> telemetryDefinitions, bool allowCancel)
+		{
+			// in BNF:
+			// program := row*
+			// connector = at, +=, = 
+			// row := "set" [actionName] connector actionValue actionUnit? "until" [telmetryName] operator telemetryValue telmetryUnit?
+
+			var program = new NonTerminal("Program");
+			var comment = new CommentTerminal("Comment", "#", "\r", "\n", "\u2085", "\u2028", "\u2029");
+			NonGrammarTerminals.Add(comment);
+
+			foreach (var group in telemetryDefinitions.GroupBy(td => td.Executor))
+			{
+				var telemetryTriples = new NonTerminal("TelemetryTriples." + group.Key);
+				var actionSetTriples = new NonTerminal("ActionSetTriples." + group.Key);
+				var actionDecTriples = new NonTerminal("ActionDecTriples." + group.Key);
+				var actionIncTriples = new NonTerminal("ActionIncTriples." + group.Key);
+				var actionMulTriples = new NonTerminal("ActionMulTriples." + group.Key);
+				var startSection = new NonTerminal("StartSection." + group.Key);
+				var cancelSection = new NonTerminal("CancelSection." + group.Key);
+				var actionTriple = new NonTerminal("ActionTriplet." + group.Key);
+
+				telemetryTriples.Rule = CreateTerminal(group, "until");
+				var optionalTelemetryTriples = new NonTerminal("OptionalTelemetryTriples." + group.Key);
+				optionalTelemetryTriples.Rule = Empty | telemetryTriples;
+
+				var startSectionRow = new NonTerminal("StartSectionRow." + group.Key);
+
+				var actions = group.Where(td => !td.IsReadonly).ToList();
+				if (actions.Count > 0)
+				{
+					actionSetTriples.Rule = CreateTerminal(actions, "set", "at");
+					actionDecTriples.Rule = CreateTerminal(actions, "dec", "by");
+					actionIncTriples.Rule = CreateTerminal(actions, "inc", "by");
+					actionMulTriples.Rule = CreateTerminal(actions, "mul", "by");
+
+					actionTriple.Rule = actionSetTriples | actionIncTriples | actionDecTriples | actionMulTriples;
+					startSectionRow.Rule |= actionTriple + optionalTelemetryTriples + NewLine;
+				}
+
+				startSectionRow.Rule |= optionalTelemetryTriples + NewLine;
+				if (allowCancel)
+					startSectionRow.Rule |= ToTerm("run cancel") + NewLine;
+				startSection.Rule = MakeStarRule(startSection, startSectionRow); // apparently Irony automatically includes EOF as a valid terminal
+
+				var optionalActionTriples = new NonTerminal("OptionalActionTriple." + group.Key);
+				optionalActionTriples.Rule = Empty | actionTriple;
+				var cancelSectionRow = new NonTerminal("CancelSectionRow." + group.Key);
+				cancelSectionRow.Rule = optionalActionTriples + NewLine; // why don't we have a separate NewLine action here? don't question the voodoo; it didn't work
+				cancelSection.Rule = MakeStarRule(cancelSection, cancelSectionRow);
+
+				var cancel = ToTerm("on cancel:") + NewLinePlus;
+				cancel.Precedence = 1;
+
+				BnfExpression expression;
+				if (allowCancel && actions.Count > 0)
+					expression = startSection + ((cancel + cancelSection) | Empty);
+				else
+					expression = startSection;
+
+				MarkTransient(optionalActionTriples, optionalTelemetryTriples, actionTriple, telemetryTriples, actionSetTriples, actionDecTriples, actionMulTriples, actionIncTriples);
+
+				if (program.Rule != null)
+					program.Rule |= expression;
+				else
+					program.Rule = expression;
+			}
+			MarkPunctuation("[", "]", "until", "at", "by");
+			RegisterBracePair("[", "]");
+			LanguageFlags |= LanguageFlags.NewLineBeforeEOF;
+			Root = program;
+		}
+
+		private BnfExpression CreateTerminal(IEnumerable<TelemetryDefinitionModel> telemetryDefinitions, string prefix, string postfix = null)
+		{
+			var um = ServiceRegistry.Get<UnitsManager>();
+			BnfExpression combined = null;
+			var postfixTerm = ToTerm(postfix ?? "at");
+			var prefixTerm = ToTerm(prefix);
+			var namePrefix = postfix != null ? "Action" : "Telemetry";
+			var smallOp = new NonTerminal(namePrefix + ".Operator");
+			smallOp.Rule = ToTerm("==") | "!=";
+			var bigOp = new NonTerminal(namePrefix + ".Operator");
+			bigOp.Rule = smallOp | "<" | "<=" | ">" | ">=";
+			MarkTransient(smallOp, bigOp);
+			foreach (var definition in telemetryDefinitions)
+			{
+				var optionalMetric = new NonTerminal("OptionalMetric");
+				optionalMetric.Rule = Empty;
+				MarkTransient(optionalMetric);
+				if (definition.Metric != PhysicalType.Unitless && um != null)
+				{
+					var abbrevs = um.FindList(definition.Metric).SelectMany(u => u.Abbreviations).ToList();
+					if (abbrevs.Count > 0)
+					{
+						abbrevs.Sort();
+						var metricOp = new NonTerminal(namePrefix + ".Metric");
+						var name = definition.Metric.ToString();
+						metricOp.Rule = new KeyTerm(abbrevs[0], name);
+						for (int i = 1; i < abbrevs.Count; i++)
+							metricOp.Rule |= new KeyTerm(abbrevs[i], name);
+						MarkTransient(metricOp);
+						optionalMetric.Rule |= metricOp;
+					}
+				}
+
+				var t = new NonTerminal(namePrefix);
+				var defTerm = new TelemKeyTerm(definition);
+				var action = ToTerm("[") + defTerm + ToTerm("]");
+				if (definition.TeleType == TelemetryType.String)
+				{
+					var op = postfix != null ? postfixTerm : (BnfTerm) smallOp;
+					var tail = new StringLiteral(namePrefix + ".Value", "\"", StringOptions.AllowsDoubledQuote);
+					t.Rule = prefixTerm + action + op + tail + optionalMetric;
+				}
+				else if (definition.TeleType == TelemetryType.Real)
+				{
+					var op = postfix != null ? postfixTerm : (BnfTerm) bigOp;
+					var tail = new NumberLiteral(namePrefix + ".Value", NumberOptions.AllowStartEndDot);
+					t.Rule = prefixTerm + action + op + tail + optionalMetric;
+				}
+				else if (definition.TeleType == TelemetryType.Integer)
+				{
+					var op = postfix != null ? postfixTerm : (BnfTerm) bigOp;
+					// we can't use the pipe on terminals themselves and have the transients work
+					// that seems to be an issue in Irony, but it's not too much work to make another NonTerminal here and mark it transient
+					var tailRule = new NonTerminal("Tail");
+					MarkTransient(tailRule);
+					if (definition.Enumerations != null && definition.Enumerations.Length > 0)
+					{
+						for (int i = 0; i < definition.Enumerations.Length; i++)
+						{
+							var e = definition.Enumerations[i];
+							var term = new KeyTerm(e, e);
+							if (i == 0) tailRule.Rule = term;
+							else tailRule.Rule |= term;
+						}
+					}
+					else
+					{
+						tailRule.Rule = new NumberLiteral(namePrefix + ".Value", NumberOptions.IntOnly);
+					}
+					t.Rule = prefixTerm + action + op + tailRule + optionalMetric;
+				}
+				else throw new NotImplementedException("definition.Type is out of range");
+
+				if (combined == null) combined = t;
+				else combined |= t;
+			}
+			return combined;
+		}
+
+		internal class TelemKeyTerm: KeyTerm
+		{
+			public readonly TelemetryDefinitionModel TelemetryDefinitionModel;
+			public TelemKeyTerm(TelemetryDefinitionModel tdm) : base(tdm.Name, "Telemetry Item Name")
+			{
+				TelemetryDefinitionModel = tdm;
+			}
+		}
+	}
+}

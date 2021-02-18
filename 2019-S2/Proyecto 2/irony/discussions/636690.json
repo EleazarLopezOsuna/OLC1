@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1422843",
+    "ThreadId": "636690",
+    "Html": "I'm rather new at this, so if the question has been asked already, I apologize- if possible, please direct me to a relevant post/answer.\r<br />\n<br />\nI am working with numerous SQL grammars, and SQL Server, for example, allows brackets to be used/escaped within Identifiers as so:\r<br />\n<br />\n[Field[Name]  // SQL Server just ignores the 2nd open brace\r<br />\n[Field]]Name] // SQL Server doubles the close brace to escape it\r<br />\n<br />\nAlso, I need to work with another SQL grammer that escapes the brackets with backslash:\r<br />\n<br />\n[Field[Name]\r<br />\n[Field]Name]\r<br />\n<br />\nIt's unclear to me how to get Irony to parse/accept this in Identifier Terminals.  Should I be using something like RegexBasedTerminal instead?\r<br />\n<br />\nThank you.<br />\n",
+    "PostedDate": "2015-05-04T16:39:57.32-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1422902",
+    "ThreadId": "636690",
+    "Html": "Look at SQL grammar sample,, it uses TerminalFactory.CreateSqlExtIdentifier helper method to create Id that allows double-quotes or brackets as enclosing elements. \r<br />\nModify it like this: <br />\n<pre><code>public static IdentifierTerminal CreateSqlExtIdentifier(Grammar grammar, string name) {\n  var id = new IdentifierTerminal(name);\n  StringLiteral term = new StringLiteral(name + &quot;_qouted&quot;);\n  term.AddStartEnd(&quot;[&quot;, &quot;]&quot;, StringOptions.AllowsDoubledQuote | StringOptions.AllowsAllEscapes);\n  term.AddStartEnd(&quot;\\&quot;&quot;, StringOptions.AllowsDoubledQuote | StringOptions.AllowsAllEscapes);\n  term.EscapeChar = '\\\\';\n  term.SetOutputTerminal(grammar, id); //term will be added to NonGrammarTerminals automatically \n  return id;\n}\n</code></pre>\n\nwith this, it appears SQL grammar allows your variations.<br />\n",
+    "PostedDate": "2015-05-05T00:06:42.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2015-05-05T10:12:08.19-07:00"
+  },
+  {
+    "Id": "1423058",
+    "ThreadId": "636690",
+    "Html": "That works great- thank you for your help and for the parser.<br />\n",
+    "PostedDate": "2015-05-05T10:12:03.23-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

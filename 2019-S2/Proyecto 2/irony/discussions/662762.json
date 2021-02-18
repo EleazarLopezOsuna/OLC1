@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1495947",
+    "ThreadId": "662762",
+    "Html": "This maybe a high order wish... to be able to run SQL code on CLR via Irony Interpreter... for scenarios that have large amount of &quot;logic&quot; (not necessary &quot;bound&quot; to data) written in SQL\r<br />\n<br />\nSomething like IronPython or Jint<br />\n",
+    "PostedDate": "2017-04-30T07:28:20.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

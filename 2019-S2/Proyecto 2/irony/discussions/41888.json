@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "139004",
+    "ThreadId": "41888",
+    "Html": "I am working on a grammar that has a regular expression between two double quotes, e.g. &quot;[0-9]+.[0-9]+&quot;. I'd like to use the .NET regex code to validate the expression instead of recreating the rex ex grammar in my grammar. Is this something that a filter between the scanner and the parser could handle? it could also emit a single token with the reg ex. I'm thinking the code to handle a single token that could be handed off to the .NET regex would be easier than writing code to interpret the reg expression. If a filter will work, can you point me to the class I should use for a custom filter?<br>\r\n<br>\r\n",
+    "PostedDate": "2008-12-09T09:09:03.037-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "139062",
+    "ThreadId": "41888",
+    "Html": "First try using RegExBasedTerminal - it is created just for the case like yours. <br>\r\nAnother way to go is to create a custom terminal class inherited from StringLiteral. Override it's ConvertValue method, call base.ConvertValue and if it returns true then validate details.Body. If the value is not valid, set details.Error = &quot;&lt;error message&gt;&quot; and return true (still!).\r\n",
+    "PostedDate": "2008-12-09T10:25:21.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "139067",
+    "ThreadId": "41888",
+    "Html": "Thanks for the quick reply. RegExBasedTerminal worked just fine. I'm also using it for column/variable names now. It cut about 100 states out of the tree. <br>\r\n<br>\r\nI created another constructor that included the name. It makes the code cleaner looking and mimics the Terminal class constructor. How do you handle submissions of something like that?<br>\r\n",
+    "PostedDate": "2008-12-09T11:05:58.087-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "139072",
+    "ThreadId": "41888",
+    "Html": "In fact I already did. Your question prompted me to look at the code and I realized that the thing wasn't right. <br>\r\nBy the way, I don't think you can create another constructor with the name - having all string parameters and params string arguments makes it impossible to distringuish two constructors, so you have to extend existing constructor. The new version will be in the next code drop<br>\r\n",
+    "PostedDate": "2008-12-09T11:17:00.99-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "139073",
+    "ThreadId": "41888",
+    "Html": "Here's what I did:<br>\r\n<br>\r\npublic RegexBasedTerminal(string pattern, string name, params string[] prefixes)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : base(&quot;RegEx:{&quot; + pattern + &quot;}&quot;)<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pattern = pattern;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name = name;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Prefixes.AddRange(prefixes);<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\nwith the following code to instantiate an object:<br>\r\n<br>\r\nvar Text_colPattern = new RegexBasedTerminal(&quot;\\&quot;.*\\&quot;&quot;, &quot;Text_colPattern&quot;); <br>\r\n<br>\r\nThe compiler sees that the last string isn't a string array, so it uses the new constructor. At least it works that way in my code. <br>\r\n<br>\r\n<br>\r\n\r\n",
+    "PostedDate": "2008-12-09T11:23:34.85-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "139082",
+    "ThreadId": "41888",
+    "Html": "well, I don't quite undertand... did you add a new constructor - or changed existing one? shouldn't you pass name to the constructor. <br>\r\nAnyway, it is fixed now, the only difference I have is the name parameter is the first:<br>\r\n<br>\r\n<span style=\"font-size:13px\">\r\n<p>&nbsp;</p>\r\n</span>\r\n<p><span style=\"font-size:13px;color:#0000ff\">public</span><span style=\"font-size:13px\"> RegexBasedTerminal(</span><span style=\"font-size:13px;color:#0000ff\">string</span><span style=\"font-size:13px\"> name, </span><span style=\"font-size:13px;color:#0000ff\">string</span><span style=\"font-size:13px\"> pattern, </span><span style=\"font-size:13px;color:#0000ff\">params</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#0000ff\">string</span><span style=\"font-size:13px\">[] prefixes) : </span><span style=\"font-size:13px;color:#0000ff\">base</span><span style=\"font-size:13px\"> (name) { ....<br>\r\n<br>\r\n<br>\r\n<p>&nbsp;</p>\r\n</span></p>\r\n",
+    "PostedDate": "2008-12-09T11:29:49.1-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "139097",
+    "ThreadId": "41888",
+    "Html": "oopss.. surprisingly - for me at list - the c# compiler does allow two constructors, with and without extra string parameter name (?!). I thought it would complain that two overloads are undistinguishable. Whatever, let's stick to a single version with name parameter coming first.\r\n",
+    "PostedDate": "2008-12-09T12:15:13.103-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "139119",
+    "ThreadId": "41888",
+    "Html": "I've already changed my copy of the class to have the name param. at the beginning. I figured that's where you were heading.<br>\r\n<br>\r\nOne other question has arisen as I have been playing with RegExBasedTerminal. It just uses the reg ex to match the terminal, and what I want to do is validate the reg ex inside the quotes. I think that leads me back to a filter, but I can't find an example of how to write one and then to hook it into the scanner-parser stream. Have you got any good examples you can point me to?<br>\r\n",
+    "PostedDate": "2008-12-09T13:08:30.207-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "139137",
+    "ThreadId": "41888",
+    "Html": "I see, you want a quoted string to be recognized as your special token, but add validation if contents are not right. <br>\r\nOne possibility is to hook to Scanner.TokenCreated and check the token - if it is not valid, change its properties to make it error token. (don't replace token itself in args).<br>\r\nThe other way is to subclass StringLiteral, as I explained before. <br>\r\nToken filter - maybe, but in general Token filters are fit for other kind of job -intercepting the stream and injecting/removing tokens in it. You can try it - just follow the pattern in two existing filters. \r\n",
+    "PostedDate": "2008-12-09T14:45:52.32-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "139139",
+    "ThreadId": "41888",
+    "Html": "Correction: with the first method, hooking to Scanner.TokenCreated - don't do anything with token if its not valid, just add error message to CompilerContext.Errors collection.\r\n",
+    "PostedDate": "2008-12-09T14:49:17.103-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

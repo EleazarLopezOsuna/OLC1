@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T11:40:39.223-07:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "If LanguageFlags.CreateAst is set, CoreParser.PopChildNode crashes in Grammar.CreateAstNode with InvalidCastException.\nThis line: \"NonTerminal nt = (NonTerminal) nodeInfo.Term;\" crashes if the node Term is a Terminal (for example, IdentifierTerminal).",
+    "LastUpdatedDate": "2010-03-26T11:40:39.223-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-05-23T11:07:53.983-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "LanguageFlags.CreateAst causes crash on terminals",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 4451
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "thanks for the catch! will fix it asap",
+      "PostedDate": "2009-05-25T23:23:21.803-07:00",
+      "Id": 29127
+    },
+    {
+      "Message": "moved NodeType and NodeCreator to BnfTerm (base class), so AST nodes are created for terminals and non-terminals; for terminals we need to create \"Value\" node for literals. Now should work ok",
+      "PostedDate": "2009-05-31T17:10:03.6-07:00",
+      "Id": 29128
+    },
+    {
+      "Message": "Fixed in changeset 25185\r\n",
+      "PostedDate": "2009-05-31T17:11:11.737-07:00",
+      "Id": 29129
+    }
+  ]
+}

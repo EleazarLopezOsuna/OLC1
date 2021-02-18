@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "681196",
+    "ThreadId": "275080",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>All types dealing with r&eacute;gular expressions are prefixed with Regex (<span style=\"color:#2b91af\">RegexTermOptions,\r\n</span><span style=\"color:#2b91af\">RegexSwitchTable, </span><span style=\"color:#2b91af\">RegexBasedTerminal)\r\n<span style=\"color:#000000\">except Irony.Parsing.</span></span><span style=\"color:#2b91af\">RegExLiteral.</span></p>\r\n<p>Shouldn't it be RegexLiteral instead ?</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-10-07T01:36:47.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "681362",
+    "ThreadId": "275080",
+    "Html": "<p>you're right, will fix it. thx!</p>",
+    "PostedDate": "2011-10-07T09:23:23.123-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

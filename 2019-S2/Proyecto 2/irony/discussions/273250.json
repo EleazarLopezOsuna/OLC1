@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "674437",
+    "ThreadId": "273250",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I know that my question might be weird but I tried to recompile version Irony-2011-09-13 in .NET 3.5 but this does not work (unknown libraries in 3.5).</p>\r\n<p>Since my current development in entirely in 3.5, and 4.0 gives me some incompatibilities (and worst performance), I was wondering whether someone still had a .NET 3.5 version somewhere....</p>\r\n<p>Between us, I only use Irony in the context of &quot;FullTextSearch&quot; (google-like) SQL translation for European languages (FR, EN, IT, ES, DE, PT, NL). [version Irony-51617 did not work with accentuated characters).</p>\r\n<p>In advance, many thanks</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-09-20T15:01:51.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "674445",
+    "ThreadId": "273250",
+    "Html": "<p>take the version from July, it has 3.5 projects:</p>\r\n<p><a href=\"http://irony.codeplex.com/SourceControl/changeset/changes/99afa2622130\">http://irony.codeplex.com/SourceControl/changeset/changes/99afa2622130</a></p>\r\n<p>sorry, had to abandon 3.5, as ExpressionType enum is much shorter in previous version - and I already went too far coding for .NET 4 extended values set.</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-09-20T15:15:30.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "674454",
+    "ThreadId": "273250",
+    "Html": "<p>Thanks a lot. &nbsp;</p>\r\n<p>Before I received your answer, I tried with \"ae65832df6cd\" (28AUG2011) but I wasn't sure this was a stable version.</p>\r\n<p>You don't have to apologize at all. &nbsp;You are going ahead while I am obliged to keep on working with 3.5</p>\r\n<p>Wonderful work you did! &nbsp;Congratulations.</p>\r\n<p>Didier</p>",
+    "PostedDate": "2011-09-20T15:34:34.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

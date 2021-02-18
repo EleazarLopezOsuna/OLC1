@@ -1,0 +1,114 @@
+[
+  {
+    "Id": "189283",
+    "ThreadId": "56048",
+    "Html": "<p>Hello,</p>\r\n<p>This is another bug that has cropped up since the recent build and I'm not entirely sure what I can do to fix it. &nbsp;In Lua, a line comment is &quot;--&quot; &nbsp;while the beginning of a block comment is &quot;--[[&quot;. &nbsp;Using an older build of Irony, I was able to correctly deduce everytime which items were line comments and which items are block comments. &nbsp;It seems now it will always read as a line comment and never a block comment. &nbsp;I've tried increasing the priority of the block comment terminal but that did not have any effect. &nbsp;Any ideas?</p>\r\n<p>-Shaun</p>",
+    "PostedDate": "2009-05-12T06:46:03.487-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "189355",
+    "ThreadId": "56048",
+    "Html": "<p>I'll have a look and let you know; I think I know where the problem may be...</p>",
+    "PostedDate": "2009-05-12T09:01:59.92-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "189377",
+    "ThreadId": "56048",
+    "Html": "<p>Not sure why it's happening for you. I've tried to add &quot;block comment&quot; to SQL grammar and it works fine. Try yourself, change comment definitions in SQL grammar to the following:</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var comment = new CommentTerminal(&quot;comment&quot;, &quot;/*&quot;, &quot;*/&quot;);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var lineComment = new CommentTerminal(&quot;line_comment&quot;, &quot;--&quot;, &quot;\\n&quot;, &quot;\\r\\n&quot;);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var blockComment = new CommentTerminal(&quot;block_comment&quot;, &quot;--[[&quot;, &quot;]]&quot;);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NonGrammarTerminals.Add(comment);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NonGrammarTerminals.Add(lineComment);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NonGrammarTerminals.Add(blockComment);</p>\r\n<p>Then run Grammar Explorer and try the following script with SQL grammar:</p>\r\n<p>-- line comment<br>SELECT Name<br>FROM Product<br>--[[<br>&nbsp;block comment<br>&nbsp; ]]<br>-- line comment<br>where A oR B and C OR D + X * 5;</p>\r\n<p>Everything works fine, block comment is recognized. I've tried changing the order of adding to NonGrammarTerminals - works ok in every case</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-05-12T09:22:20.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "189388",
+    "ThreadId": "56048",
+    "Html": "<p>This is interesting. &nbsp;I tried testing this out in the Grammar Explorer and it was correctly recognizing the line comments and block comments. &nbsp;However, when I go to run the language addon in Visual Studio, it is not working. &nbsp;I stepped through the tokens that are returned by Parser.Scanner.VsReadToken() and it appears that both --[[ and --]] are read as 2 separate line-comments and not as a single block comment. &nbsp;Is it possible that VsReadToken is where the problem is?</p>",
+    "PostedDate": "2009-05-12T09:43:58.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "189403",
+    "ThreadId": "56048",
+    "Html": "<p>it might be. can you send me your sources so I can play with it and fix the remaining issues with integration?</p>",
+    "PostedDate": "2009-05-12T10:19:23.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "189413",
+    "ThreadId": "56048",
+    "Html": "<p>Here ya go: http://www.salec.net/VSLua.zip</p>",
+    "PostedDate": "2009-05-12T10:39:23.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "189435",
+    "ThreadId": "56048",
+    "Html": "<p>got it, will look at it</p>",
+    "PostedDate": "2009-05-12T11:34:15.16-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "191577",
+    "ThreadId": "56048",
+    "Html": "<p>Any luck finding the issue? &nbsp;It seems that VsReadToken is the culprit as it does not take into account any tokens on other lines that could modify the context (such as a block comment). &nbsp;I verified this by removing the line comment terminal and only having the block comment terminal. &nbsp;When the start/end tokens were on separate lines, but coloring was wrong. &nbsp;But when both tokens were on the same line, the coloring was correct. &nbsp;It really stinks that Visual Studio's standard line colorizing process only gives you the source for the specific line it wants to colorize.</p>",
+    "PostedDate": "2009-05-18T11:35:28.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "191595",
+    "ThreadId": "56048",
+    "Html": "<p>Just caught the issue :)&nbsp;</p>\r\n<p>The problem resides in&nbsp;VsScannerStateMap used in CompilerContext&nbsp;which uses bitfields to specify various bits and peices of information. &nbsp;Well 2 of the fields (TerminalIndex, and TerminalSubType) both refer to specific indices (with 0 being a valid index!). &nbsp;This means that whenever the first multiline token is found and the index in ScannerState is set to 0, the Value of ScannerState will still remain 0 (which is wrong since everything checks if Value is nonzero). &nbsp;As a quick fix, I increment both fields by 1 and decrement them when they are used. &nbsp;This is not the most elegant fix but it works :) &nbsp;I'll post a patch once I figure out how to generate a patch from tortoisesvn.</p>",
+    "PostedDate": "2009-05-18T12:19:53.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "191626",
+    "ThreadId": "56048",
+    "Html": "<p>Yes, I've found and fixed this problem already, but there's some more trouble with StringLiteral. I'm trying to revive the integration tests in ScannerTests.cs (now called IntegrationTests). Need to complete all this and then submit the code. Sorry for the delay, had been busy with a lot of side issues (day-time job, you know...)</p>\r\n<p>Will try to push it today or tomorrow</p>\r\n<p>Roman</p>",
+    "PostedDate": "2009-05-18T13:17:25.35-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "191635",
+    "ThreadId": "56048",
+    "Html": "<p>Sounds good :) &nbsp;Let me know if there is any are in particular you'd like some testing on.</p>",
+    "PostedDate": "2009-05-18T13:29:21.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "191743",
+    "ThreadId": "56048",
+    "Html": "<p>ok, uploaded, try it now. It looks like the whole integration thing needs a good refactoring</p>",
+    "PostedDate": "2009-05-18T22:14:47.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "191929",
+    "ThreadId": "56048",
+    "Html": "<p>There seems to be an ArgumentOutOfRangeException occuring when I type in the following line:</p>\r\n<p>asdf --[[ comment<br>nutha comment --]] flibby</p>\r\n<p>I noticed that &quot;nutha comment&quot; is not colored green until a third line is created under this. &nbsp;The exception seems to be a problem with the TokenStart property associated with SourceStream.</p>\r\n<p>&nbsp;</p>\r\n<p>I agree that the integration thing needs some refactoring. &nbsp;I dislike the fact that Visual Studio gives you only the line modified and a state integer to use when coloring a line. &nbsp;While this may be a perceived performance optimization, it seems like the loops you must jump through in order to make it work defeats the purpose but alas there's nothing that can be done in that respect. &nbsp;It seems currently that the VS Integration is too tightly connected with the Irony compiler and parser which will ultimately distort the code and limit the flexibility of the colorizer. &nbsp;It would be nicer to have this functionality in its own class or structure and still work in the single line/state limitation. &nbsp;This way we can use it as a boiler plate that can be expanded. &nbsp;</p>\r\n<p>For example, I'm looking into building a CodeDOM from the ParseTree that Irony generates and then using my own implementation of the IVsColorizer interface, colorize the lines based on that DOM. &nbsp;This way I can colorize not only base on language semantics but also based on content such as declared or missing variables, methods, etc. &nbsp;Also, while the brace matching functionality that is currently in place is nice, it's still limiting as it cannot support multiple or colorize missing braces in a different color. &nbsp;</p>\r\n<p>This all will take time though but so far I really like the progress being made :)</p>",
+    "PostedDate": "2009-05-19T08:00:49.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "191986",
+    "ThreadId": "56048",
+    "Html": "<p>thanks, will try to see into that exception.</p>\r\n<p>Yea, I would like to do just that - move the VsScan functionality away from Scanner, and handle it in more&nbsp;general way; although this partial scanning stuff should still remain in terminals.&nbsp;My plan is to&nbsp;switch to&nbsp;scanning using scanner's&nbsp;pipeline which includes token filters;&nbsp;it would be even better to actually&nbsp;involve parser, even in this case of line scanning; parser would simply work in start-stop mode. In this case you'd have much more info from parser context. That still needs to&nbsp;happen in some future, will try my best.</p>\r\n<p>thanks again</p>\r\n<p>Roman&nbsp;</p>",
+    "PostedDate": "2009-05-19T09:58:45.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

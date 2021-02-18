@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "71307",
+    "ThreadId": "21401",
+    "Html": "\r\nDo you have a sample Expression machine?  I guess that would answer my question.<br /><br />It kinda looks like I want to create a NodeCreator for a BinOp and then have that AstNode add custom Eval/etc methods.  How did you think everyone was going to do that part?  I'm just guessing you had a better idea than me :)<br /><br />Andrew<br />",
+    "PostedDate": "2008-02-01T16:57:01.287-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "72258",
+    "ThreadId": "21401",
+    "Html": "\r\nNo, I don't have anything yet to use as example (Expr machine). Yes, that's the way it will be, with AstNode.Eval method and so on, they are not there yet. They will be - pls dont think that I planned that everybody will be doing this on his own - there will be AST tree iterators and default evaluator. I will try to put some empty virtual methods (and classes for execution context, scope etc) in next code drop (in a week or so); for now - try to cook something yourself along this direction. <br />thanks<br />Roman <br />",
+    "PostedDate": "2008-02-06T21:08:59.73-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "72289",
+    "ThreadId": "21401",
+    "Html": "\r\nAh good,<br />I got something going for the Expression grammar.  There's a lot of code to figure out \"where I am\" in the AST in my BinOp.NodeCreator.<br /><br />With a bigger grammer having NodeCreators on simpler NonTerminals is a little easier to read.   Grabbing the pieces and parts of the grammar is still cumbersome at best.<br />On my SQL grammar I've been grabing the info I need by \"AST XPath\".  Like so...  <br />variable<i>size = GetInfo(\"data</i>type.data_size.Number\", children);}<br /><br />The AstNode / Token / GenericNode hierarchy makes life difficult trying to find the information in the tree.  (Hint, hint :) )<br /><br />I've gotten the compiler / my grammar working with case-insensitivity.  I'd be happy to work on a more permanent fix if you want some help on that.<br /><br />Right, back to breaking things....<br />Andrew<br />",
+    "PostedDate": "2008-02-07T00:08:43.867-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "72409",
+    "ThreadId": "21401",
+    "Html": "\r\nhi<br />I'm really interested in what you're doing - SQL grammar? SQL is a very good case to add to sample grammars so let's work on this. <br />Case-insensitivity - there's a flag for this in Grammar, did you use that? <br />Send me what you have, I will try to help as much as I can. I will try to make Eval/Visit methods for AST tree in next source drop.<br />Roman<br />",
+    "PostedDate": "2008-02-07T10:00:05.317-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

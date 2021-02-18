@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "143104",
+    "ThreadId": "43054",
+    "Html": "I was playing with an SQL grammar and found out that one reason why operator precedence does not work is that named operators are read as &quot;name&quot; IdentifierTerminal instead of Symbol.<div>(Othere reason is <span><a href=\"http://www.codeplex.com/irony/WorkItem/View.aspx?WorkItemId=3529\">Issue 3529</a></span>).</div><div>If I make them Keywords, they are read as keywords, but still lack proper operator Precedence.</div><div><br></div><div>I have lowered &quot;name&quot; priority to -2000 (as it seems the default priority is somewhere around -999), after this the precedence worked, but name 'INT' was incorrectly identified as a broken version of 'IN' Symbol.</div><div>This is because Scanner.MatchTerminals ignores longer 'INT' if 'IN' has more priority. I have removed the </div><div><div>if (result != null &amp;&amp; result.Terminal.Priority &gt; term.Priority)<br></div><div><div>  break;</div><div>since the terminal list is alredy is best priority first order, and does not replace terminal unless it is longer.</div><div>Now everything seem to work well.</div><div><br></div><div>Irony tests also pass, but I am still not sure if I chose a correct solution or maybe I misunderstand how Symbols/Keywords/etc should work.</div></div></div>",
+    "PostedDate": "2008-12-27T02:58:23.98-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "143367",
+    "ThreadId": "43054",
+    "Html": "Well, whatever works for you for now. If the fixes work for your particular case - go for it; they will certainly cause problems in other situations. <br>\r\nThe real fix would be to do a backpatching of identifier tokens matched to literal grammar symbols by parser - to change token's Term to Symbol. And of course to fix SymbolTerminals lookup. And other things... These are all on my to-do list, but this all requires considerate refactoring of the code. <br>\r\nThe basic principle behind current architecture is to let Scanner recognize all tokens as identifiers, even those that are obviously keywords. <br>\r\nIn many existing compiler tools the Scanner is in charge of distinguishing keywords from tokens, which requires extensive lookaheads and preview of text that follows the token. Obviously, this is not a proper job for Scanner; it is Parser who knows the syntactic context, so it can distinguish one from another. So in Irony, Scanner blindly recognizes everyting as Identifiers, and parser tries to match the input in two ways: first by token type (Identifier), then by literal value of the token (as symbol or keyword). Look at Parser.GetCurrentAction method. It worked well for matching the input, but it breaks when you have the language with operators like &quot;AND&quot; and &quot;OR&quot; like in your case, and operator precedence break down. The solution will be to patch the token's terminal - I hope it will work for all cases then, and that's what I'm doing now. I cannot upload the code now, I'm in the middle of other things, the whole thing is broken for now, so for now please use whatever fix works for you. <br>\r\nRoman\r\n",
+    "PostedDate": "2008-12-29T11:20:08.66-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

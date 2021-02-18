@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "283733",
+    "ThreadId": "82551",
+    "Html": "<p>Hi!</p>\r\n<p>I found that EvaluationContext.TryGetValue() always uses dynamic scoping. Consider the following fragment (in Pascal):</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:#0000ff\">procedure</span> Foo()\r\n<span style=\"color:#0000ff\">var </span>bar: <span style=\"color:Blue\">Integer</span>;\r\n\r\n  <span style=\"color:#0000ff\">procedure</span> Quux()\r\n  <span style=\"color:#0000ff\">var </span>bar: <span style=\"color:Blue\">Integer</span>;\r\n  <span style=\"color:#0000ff\">begin</span>\r\n    bar := 2; <span style=\"color:#008080\"><em>{ </em></span><span style=\"color:#008080\"><em>set</em></span><span style=\"color:#008080\"><em> Quux::bar }</em></span>\r\n    Baz();\r\n  <span style=\"color:Blue\">end</span>;\r\n\r\n  <span style=\"color:#0000ff\">procedure </span>Baz()\r\n  <span style=\"color:#0000ff\">begin</span>\r\n    Println(bar); <span style=\"color:#008080\"><em>{ should be Foo::bar }</em></span>\r\n  <span style=\"color:Blue\">end</span>;\r\n\r\n<span style=\"color:#0000ff\">begin</span>\r\n  bar := 1;\r\n  Quux();\r\n<span style=\"color:Blue\">end</span>;</pre>\r\n</div>\r\n<p>In Pascal, Baz() should access &quot;bar&quot; variable from its parent procedure Foo().<br>But in Irony it uses &quot;bar&quot; from Quux() because call stack looks like Foo() -&gt; Quux() -&gt; Baz().</p>\r\n<p>I think, there should be some flag in a grammar to override this behavior of EvaluationContext for statically scoped languages like C, Pascal, etc.</p>",
+    "PostedDate": "2010-01-30T13:06:25.327-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "283747",
+    "ThreadId": "82551",
+    "Html": "<p>I understand your question, but have one for you.&nbsp;</p>\r\n<p>In your grammar, are you defining a &quot;sub&quot; procedure non-terminal that has a parent procedure non-terminal, or are you just parsing procedures under the same non-terminal.&nbsp; I believe a grammar issue could give you the same erroneous result as your call stack should be Foo() -&gt; Quux() and Foo() -&gt; Baz().&nbsp; The scenario Foo() -&gt; Quux() -&gt; Baz() should never be a valid scenario under your grammar, and EvaluationContext should never produce this sort of call stack unless procedure Baz() is a sub procedure of Quux().</p>\r\n<p>Regards,</p>\r\n<p>MindCore</p>",
+    "PostedDate": "2010-01-30T13:41:58.953-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "283781",
+    "ThreadId": "82551",
+    "Html": "<p>MindCore, this is a pretty valid scenario. Just try to run the snippet with Free Pascal Compiler. Once I have fixed a few typos, it compiles and runs OK (it prints &quot;1&quot; as expected):</p>\r\n<pre><span style=\"color:#0000ff\">procedure </span>Foo();\r\n<span style=\"color:#0000ff\">var</span> bar: <span style=\"color:#0000ff\">Integer</span>;\r\n\r\n  <span style=\"color:#0000ff\">procedure</span> Baz();\r\n  <span style=\"color:#0000ff\">begin</span>\r\n    Writeln(bar);<span style=\"color:#008080\"><em> { should be Foo::bar }</em></span>\r\n  <span style=\"color:#0000ff\">end</span>;\r\n\r\n  <span style=\"color:#0000ff\">procedure</span> Quux();\r\n  <span style=\"color:#0000ff\">var </span>bar: Integer;\r\n  <span style=\"color:#0000ff\">begin\r\n    </span>bar := 2;<span style=\"color:#008080\"><em> { set Quux::bar }</em></span>\r\n    Baz()\r\n  <span style=\"color:#0000ff\">end</span>;\r\n\r\n<span style=\"color:#0000ff\">begin\r\n  </span>bar := 1;\r\n  Quux()\r\n<span style=\"color:#0000ff\">end</span>;\r\n\r\n<span style=\"color:#0000ff\">begin</span>\r\n  Foo()\r\n<span style=\"color:#0000ff\">end</span>.\r\n</pre>\r\n<p>Here is the same code in C# (it runs exactly the same way):</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">using</span> System;\r\n\r\n<span style=\"color:Blue\">static</span> <span style=\"color:Blue\">class</span> Program\r\n{\r\n<span style=\"color:Blue\">  </span><span style=\"color:Blue\">static</span> <span style=\"color:Blue\">int</span> bar;\r\n\r\n<span style=\"color:Blue\">  </span><span style=\"color:Blue\">static</span> <span style=\"color:Blue\">void</span> Baz()\r\n  {\r\n    Console.WriteLine(bar);\r\n  }\r\n\r\n<span style=\"color:Blue\">  </span><span style=\"color:Blue\">static</span> <span style=\"color:Blue\">void</span> Quux()\r\n  {\r\n    <span style=\"color:Blue\">int</span> bar = 2;\r\n    Baz();\r\n  }\r\n\r\n<span style=\"color:Blue\">  </span><span style=\"color:Blue\">static</span> <span style=\"color:Blue\">void</span> Main()\r\n  {\r\n    bar = 1;\r\n    Quux();\r\n  }\r\n}\r\n</pre>\r\n</div>\r\n<p>If I were writing Pascal grammar I'd use the same non-terminal for nested procedures as they do have the same syntax. Checking whether certain calls are valid or not is a matter of semantics, not syntax.</p>",
+    "PostedDate": "2010-01-30T15:16:42.387-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "283815",
+    "ThreadId": "82551",
+    "Html": "<p>Yeah, this is an overlook, I never planned to implement dynamic scoping, it's just the incomplete, draft nature of the interpreter in current version. If you look at the StackFrame class, there are two fields - Caller and Parent, both frames. Parent is a lexical parent, and variable lookup should go thru the chain of lexical parents, not callers. But for this, a proper lexical parent should be set for each function - which means functions should be turned into closures over owner frame, and so on, and on and on...&nbsp;</p>\r\n<p>It used to work like this in &quot;old&quot; version, but not done yet in&nbsp;the current version. I'm working on interpreter infrastructure currently, so guys - take a break, don't invest much time into coding over existing stuff. Big changes are coming, hopefully they will be final, and everything wil start working properly. Expect it in 2 - 3 weeks.</p>\r\n<p>Sorry for the inconvenience...</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-30T19:51:50.5-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "283817",
+    "ThreadId": "82551",
+    "Html": "<p>Yallie,</p>\r\n<p>I apologize if you miss understood my last post.&nbsp; I wasn't refuting the validity of the scenario.&nbsp; I was simply stating that an improper grammar implementation could cause the same erroneous effect.&nbsp; If your BNF expressions aren't properly configured, the procedures and sub procedures down the line could have the same scoping issue.&nbsp; It appears that you already have a pretty stable grammar though, so you are in the same boat as I and can't wait to see Roman work his magic.</p>\r\n<p>&nbsp;</p>\r\n<p>Roman,</p>\r\n<p>Thanks for the heads up on the status of the interpreter and its current state.&nbsp; Can't wait to get my hands on your next code drop.</p>\r\n<p>Thanks,<br> MindCore</p>",
+    "PostedDate": "2010-01-30T20:57:41.91-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "283858",
+    "ThreadId": "82551",
+    "Html": "<p>MindCore, sorry if I misunderstood you. I thought that you're stating that call stack like Foo() -&gt; Quux() -&gt; Baz() in my sample should never be a valid scenario.</p>\r\n<p>Roman, there are plenty of dynamically scoped languages. I don't think you should just remove dynamic scoping.</p>\r\n<p>By the way, I figured out that there are languages that support both dynamic and static scoping. I just wrote this example (in Perl):</p>\r\n<pre><span style=\"color:#008080\">#!perl.exe</span>\r\n\r\nfoo();\r\n\r\n<span style=\"color:#0000ff\">sub </span>foo\r\n{\r\n\t<span style=\"color:#0000ff\">my </span>$static = <span style=\"color:#808080\">&quot;value set by foo()&quot;</span>;\r\n\t<span style=\"color:#0000ff\">local </span>$dynamic = <span style=\"color:#808080\">&quot;value set by foo()&quot;</span>;\r\n\r\n\tquux();\r\n\tbar(<span style=\"color:#808080\">&quot;foo()&quot;</span>);\r\n\r\n\t<span style=\"color:#0000ff\">sub</span> quux\r\n\t{\r\n\t\t<span style=\"color:#0000ff\">my </span>$static = <span style=\"color:#808080\">&quot;value set by quux()&quot;</span>;\r\n\t\t<span style=\"color:#0000ff\">local </span>$dynamic = <span style=\"color:#808080\">&quot;value set by quux()&quot;</span>;\r\n\t\tbar(<span style=\"color:#808080\">&quot;quux()&quot;</span>);\r\n\t}\r\n\r\n\t<span style=\"color:#0000ff\">sub </span>bar\r\n\t{\r\n\t\t<span style=\"color:#0000ff\">my</span> $caller = <span style=\"color:#0000ff\">shift</span>;\r\n\t\tprint <span style=\"color:#808080\">&quot;\r\nbar() called by: $caller\r\nstatic scoping:  $static\r\ndynamic scoping: $dynamic\r\n&quot;</span>;\r\n\t}\r\n}\r\n</pre>\r\n<p>It outputs the following:</p>\r\n<pre>bar() called by: quux()\r\nstatic scoping:  value set by foo()\r\ndynamic scoping: value set by quux()\r\n\r\nbar() called by: foo()\r\nstatic scoping:  value set by foo()\r\ndynamic scoping: value set by foo()</pre>",
+    "PostedDate": "2010-01-31T03:38:05.253-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "284441",
+    "ThreadId": "82551",
+    "Html": "<p>Hi</p>\r\n<p>&nbsp;thanks for the example.</p>\r\n<p>One thing that surprised me is &quot;there are plenty of dynamically scoped languages&quot;. Until your post, I was aware of only old, before-Common-Lisp-standard implementations of Lisp, and I think they let it into the standard just to allow implementations to be compatible with old versions. I wouldn't worry about these too much.</p>\r\n<p>From your post, I found out about Perl - quite a surprise for me. What are the others from the &quot;plenty of...&quot;? Wikipedia page on dynamic scoping mentions only Perl and Lisp... Perl in any case is a &quot;weird&quot; language for parsing, it is well known it&nbsp;is not&nbsp;parseable by LALR,&nbsp;only by custom parsers with a lot of custom lookahead&nbsp;tricks.&nbsp;Given this,&nbsp;Perl is also not a good&nbsp;subject for Irony parser, and I wouldn't&nbsp;go for&nbsp;troubles implementing both&nbsp;lexical and dynamic scoping just for perl.</p>\r\n<p>So, what are the others?</p>\r\n<p>thanks</p>\r\n<p>&nbsp;&nbsp;</p>",
+    "PostedDate": "2010-02-01T15:10:31.283-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "284479",
+    "ThreadId": "82551",
+    "Html": "<p>The others include <a href=\"http://www.engin.umd.umich.edu/CIS/course.des/cis400/apl/apl.html\">APL</a> (still <a href=\"http://www.visualapl.com/VisualAPL/default.aspx\">alive</a>), <a href=\"http://www.snobol4.com/report.htm\">Snobol4</a>, <a href=\"http://wiki.tcl.tk/12245\">Tcl</a>, <a href=\"http://portal.acm.org/citation.cfm?id=378795.378857\">TEX, Postscript</a>, <a href=\"http://docs.codehaus.org/display/JASKELL/Dynamic+Scope\">Jaskell</a>, scripting languages of <a href=\"http://almy.us/teco.html\">TECO</a> and <a href=\"http://www.gnu.org/software/emacs/emacs-paper.html#SEC17\">Emacs</a>. Environment variables use dynamic scoping semantics (child process runs within parent's environment) in dos/windows/unix shell languages.</p>\r\n<p>&gt;I wouldn't&nbsp;go for&nbsp;troubles implementing both&nbsp;lexical and dynamic scoping just for perl.</p>\r\n<p>Dynamic scoping (shallow binding version) is already implemented, and it's just a few lines of code. So why not just leave it as is :)</p>",
+    "PostedDate": "2010-02-01T16:58:38.66-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "284891",
+    "ThreadId": "82551",
+    "Html": "<p>Thanks for the links! Yeah, now I see it is something to address in implementation. Will put it into design</p>\r\n<p>thanks again!</p>",
+    "PostedDate": "2010-02-02T11:22:38.923-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

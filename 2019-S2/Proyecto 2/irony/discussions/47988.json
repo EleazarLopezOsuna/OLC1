@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "160094",
+    "ThreadId": "47988",
+    "Html": "Hi, Roman,<br>\r\n<br>\r\nI'm trying to implement my Cobol compiler using Irony. Can you explain some basic stuff, like LanguageCompiler(), CompilerContext(), SourceFile(), EvaluationContext() and context.Runtime? When, where, why and how should I use that?<br>\r\n<br>\r\nKeep your good work.<br>\r\n<br>\r\nThanks.<br>\r\n<br>\r\nNilo<br>\r\n",
+    "PostedDate": "2009-02-20T03:31:06.847-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "160256",
+    "ThreadId": "47988",
+    "Html": "Well, no docs so far, sorry. Just follow samples. Have a look at CodeProject articles, links at home page (codeplex.com/irony).<br>\r\n",
+    "PostedDate": "2009-02-20T11:31:36.947-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

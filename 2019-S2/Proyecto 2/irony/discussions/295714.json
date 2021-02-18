@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "743195",
+    "ThreadId": "295714",
+    "Html": "\r\n<p>Before someone reminds me,- I read the discussion about the excel cell already.</p>\r\n<p>Forget it as an excel cell problem. The&nbsp;issue itself is very basic as in my example:</p>\r\n<p>&nbsp;</p>\r\n<p>var columnLetter = new RegexBasedTerminal(&quot;columnLetter&quot;, @&quot;\\$?([A-Z]$|([A-I][A-V]$))&quot;);</p>\r\n<p>var row = new RegexBasedTerminal(&quot;row&quot;, @&quot;\\$?\\d{1,5}&quot;);</p>\r\n<p>var formula = new NonTerminal(&quot;formula&quot;);</p>\r\n<p>var cell = new NonTerminal(&quot;cell&quot;);</p>\r\n<p>var expression = new NonTerminal(&quot;expression&quot;);</p>\r\n<p>formula.Rule = ToTerm(&quot;=&quot;) &#43; expression;</p>\r\n<p>cell.Rule = columnLetter &#43; row;</p>\r\n<p>expression.Rule = cell;</p>\r\n<p>this.Root = formula;</p>\r\n<p>&nbsp;</p>\r\n<p>Irony simple refuses to know an expression like A23 or $A$23. Please somebody tell me&nbsp;that there is a mistake in my code.</p>\r\n<p>If this example would be to much to solve for Irony, I would have set my hopes on the wrong horse. No hard feelings, just what it means.</p>\r\n",
+    "PostedDate": "2012-02-06T07:20:31.197-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "743576",
+    "ThreadId": "295714",
+    "Html": "<p>My guess - when you specify cell as \"columnLetter + row\", Irony assumes that there's some delimiter between these two tokens, like space. That's what normally happens - terms are separated by delimiters. I suggest you use one Regex terminal for row-col combination. Or even better. Use Identifier terminal instead (add $ as an extra \"first\" char in constructor); then hook to ValidationToken event and check the string using regex or some custom code. I strongly discourage using regex terminal, in general - it is tricky, and quite slow.&nbsp;</p>\r\n<p>If you want to keep your original code, then go in step mode in debugger and see why the input is rejected - that might give you a clue why it is failing, and how to fix it.&nbsp;</p>\r\n<p>Roman</p>",
+    "PostedDate": "2012-02-06T11:20:13.78-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "748271",
+    "ThreadId": "295714",
+    "Html": "<p>Rivantsov,</p>\r\n<p>Thank you for your quick reply. I understood the non delimiter problem and made a terminal 'cell'. That works fine for me so far.</p>\r\n<p>I've seen yesterday that there was an implementation of an '<span>ImpliedSymbolTerminal</span>'(<a href=\"http://irony-roman.blogspot.com/search?updated-min=2010-01-01T00:00:00-08:00&amp;updated-max=2011-01-01T00:00:00-08:00&amp;max-results=1\">http://irony-roman.blogspot.com/search?updated-min=2010-01-01T00:00:00-08:00&amp;updated-max=2011-01-01T00:00:00-08:00&amp;max-results=1</a>). It seems it's deleted. What happened to it?</p>\r\n<p>&nbsp;</p>\r\n<p>Still I use&nbsp;RegexBasedTerminal because I need a very detailed description of the terminals. I cannot see how to do that with&nbsp;<span>Identifier. Because biggest problem with Irony is that there is very pure documentation. I'm simple not aware of the possibilities.</span></p>\r\n<p>Through this I face a few problems:</p>\r\n<p>1. I get an grammar conflict that I do not understand: \"Reduce-reduce conflict. State S52, lookaheads: EOF...Selected reduce on first production in conflict set.\"</p>\r\n<p>State S52 (Inadequate)&nbsp; Shift items:&nbsp; &nbsp; range -&gt; cell &middot;: cell&nbsp;&nbsp; Reduce items:&nbsp; &nbsp; page_param -&gt; cell &middot; [EOF ) ; + - / * % &lt; &lt;= &gt; &gt;= =]&nbsp; &nbsp; range -&gt; cell &middot; [EOF ) ; + - / * % &lt; &lt;= &gt; &gt;= =]&nbsp; Transitions: :-&gt;S37,</p>\r\n<p>2. &nbsp;I know it is possible to strip the tree to just the information I really want to see. Again, I do not exactly how.</p>\r\n<p>It all comes down to lag of information.</p>\r\n<p>S.</p>",
+    "PostedDate": "2012-02-09T03:09:22.763-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "748969",
+    "ThreadId": "295714",
+    "Html": "<p>ImpliedSymbolTerminal is still there, look under Parsing/Terminals folder</p>\r\n<p>The conflict - it means that grammar is ambiguous, at least the way you expressed it. The parser has more than one way to go in the state S52 - two reduce productions, for a given lookahead symbol (EOF). Look closely at productions - the \"cell\" followed by EOF might be interpreted either as page_param, or as \"range\"; try to see how to remove ambiguity by modifying rules for page_param and/or range</p>\r\n<p>Stripping to info \"you just want to see\" - not quite understand. The parse tree is a representation of the input as a tree. You can get rid of punctuation symbols automatically, or with non-terminals you can register some as \"transient\", so they will be removed and replaced by the direct child. That's all auto-stripping facilities.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-02-09T09:26:38.443-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

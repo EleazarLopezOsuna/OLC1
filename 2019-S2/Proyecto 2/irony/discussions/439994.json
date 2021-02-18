@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1029246",
+    "ThreadId": "439994",
+    "Html": "I'm using MakeStarRule(..., NewLinePlus, ...). This works fine except that it is common to have some excess white space on empty lines. I want to ignore those lines. Can I override SkipWhitepsace to ignore all white space at the start of a line? My grammar makes no use of whitespace at the start of a line in any situation.<br />\n",
+    "PostedDate": "2013-04-11T15:38:43.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1029640",
+    "ThreadId": "439994",
+    "Html": "After further review, it seems that whitespace at the start of lines is handled okay. It's just the very last line that is a problem; if I have spaces on the very last line (and nothing else) then I have a failure to match any of my valid line definitions.<br />\n",
+    "PostedDate": "2013-04-12T08:23:35.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1029648",
+    "ThreadId": "439994",
+    "Html": "On this topic, I guess the real question is this: LanguageFlags.NewLineBeforeEOF means &quot;treat the EOF as a newline if necessary&quot; rather than &quot;require that the input end with a newline character&quot; ?<br />\n",
+    "PostedDate": "2013-04-12T08:34:56.05-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

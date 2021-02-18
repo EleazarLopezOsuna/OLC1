@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "80244",
+    "ThreadId": "23939",
+    "Html": "\r\nWhat will the grammar for TypeCasting of Expressions?<br /><br />Example: <br /><br />((string)A)B<br /><br />A and B can be some statements or expressions<br />",
+    "PostedDate": "2008-03-13T01:30:22.16-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "80399",
+    "ThreadId": "23939",
+    "Html": "\r\nWell, just try it! <br />Start with ExpressionGrammar and add rules and non-terminals for type-conversion <br />Good luck<br />",
+    "PostedDate": "2008-03-13T10:53:03.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

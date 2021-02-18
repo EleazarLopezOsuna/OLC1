@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1492378",
+    "ThreadId": "661223",
+    "Html": "Hi, <br />\n<br />\nmy grammar contains something like :<br />\n<br />\nidentifier eq string or number with optional and and the same condition . Data usually look like:<br />\n<br />\nSomeName eq 'foo' and SomeNumber eq 123<br />\n<br />\n<br />\nAll works fine until I use \\ and ' in the string. So <br />\n<br />\nSomeName eq 'fo'o'<br />\nSomeName eq 'fo\\'o'<br />\nSomeName eq 'fo\\o'<br />\nSomeName eq 'fo\\\\o'<br />\n<br />\nall fail. I use string literal and tried also setting the escape options but no luck. <br />\n<br />\nHow can I have Irony parse the string corrrectly ?<br />\n",
+    "PostedDate": "2017-02-08T07:40:20.42-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "940882",
+    "ThreadId": "403020",
+    "Html": "\r\n<p>Hi&nbsp;</p>\r\n<p>I am trying to develop a simple parser to &nbsp;parse a something like</p>\r\n<p>PARAM(arg1,arg2,(Bracketed Literal))</p>\r\n<p>or</p>\r\n<p>PARAM(arg1,arg2,Enter Value (Default=4))</p>\r\n<p>so that the grammar is able to know that the Brackets in argument3 relates to the argument rather than precedence of the expression.</p>\r\n<p>Here are some exerts from my grammar</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">&nbsp;</span></pre>\r\n</div>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">&nbsp;</span><div style=\"color:black; background-color:white\"><pre><span style=\"color:blue\">Dim</span> parameterArgLiteral = <span style=\"color:blue\">New</span> RegexBasedTerminal(<span style=\"color:#a31515\">&quot;parameterArg&quot;</span>, <span style=\"color:#a31515\">&quot;[a-zA-Z0-9 _&lt;&gt;\\-\\(\\)]*&quot;</span>)\n...\n\nparameterOperator.Rule = ToTerm(<span style=\"color:#a31515\">&quot;PARAM&quot;</span>)\nparameterExpression.Rule = parameterOperator &#43; LPAREN &#43; parameterArgsExpression &#43; RPAREN\nparameterArgExpression.Rule = parameterArgLiteral <span style=\"color:blue\">Or</span> Empty\nparameterArgsExpression.Rule = parameterArgExpression &#43; [COMMA] &#43; parameterArgExpression <span style=\"color:blue\">Or</span> \n                               parameterArgExpression &#43; [COMMA] &#43; parameterTypeExpression &#43; [COMMA] &#43; parameterKeyExpression\n\n...\n\n<span style=\"color:green\">'Operator precedence            </span>\nRegisterOperators(10, <span style=\"color:#a31515\">&quot;*&quot;</span>, <span style=\"color:#a31515\">&quot;/&quot;</span>, <span style=\"color:#a31515\">&quot;\\&quot;</span>, <span style=\"color:#a31515\">&quot;%&quot;</span>)\nRegisterOperators(9, <span style=\"color:#a31515\">&quot;&#43;&quot;</span>, <span style=\"color:#a31515\">&quot;-&quot;</span>)\nRegisterOperators(8, <span style=\"color:#a31515\">&quot;=&quot;</span>, <span style=\"color:#a31515\">&quot;&gt;&quot;</span>, <span style=\"color:#a31515\">&quot;&lt;&quot;</span>, <span style=\"color:#a31515\">&quot;&gt;=&quot;</span>, <span style=\"color:#a31515\">&quot;&lt;=&quot;</span>, <span style=\"color:#a31515\">&quot;&lt;&gt;&quot;</span>, <span style=\"color:#a31515\">&quot;!=&quot;</span>, <span style=\"color:#a31515\">&quot;!&lt;&quot;</span>, <span style=\"color:#a31515\">&quot;!&gt;&quot;</span>)\nRegisterOperators(7, <span style=\"color:#a31515\">&quot;^&quot;</span>, <span style=\"color:#a31515\">&quot;&amp;&quot;</span>, <span style=\"color:#a31515\">&quot;|&quot;</span>)\nRegisterOperators(6, <span style=\"color:#a31515\">&quot;NOT&quot;</span>, <span style=\"color:#a31515\">&quot;IS&quot;</span>)\nRegisterOperators(5, <span style=\"color:#a31515\">&quot;LIKE&quot;</span>, <span style=\"color:#a31515\">&quot;IN&quot;</span>)\nRegisterOperators(4, <span style=\"color:#a31515\">&quot;AND&quot;</span>)\nRegisterOperators(3, <span style=\"color:#a31515\">&quot;OR&quot;</span>)\n\nMarkPunctuation(<span style=\"color:#a31515\">&quot;(&quot;</span>, <span style=\"color:#a31515\">&quot;)&quot;</span>, <span style=\"color:#a31515\">&quot;.&quot;</span>, <span style=\"color:#a31515\">&quot;,&quot;</span>)\n\n</pre>\n</div>\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>I'm struggling to see how to set up the grammar to achieve that. Should I be looking at a custom terminal really?</p>\r\n<p>Many thx</p>\r\n<p>Simon</p>\r\n",
+    "PostedDate": "2012-11-13T03:58:13.21-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "941134",
+    "ThreadId": "403020",
+    "Html": "\r\n<p>ParameterArgExpression.Rule is assigned twice - that does not look reasonable, probably a typo</p>\r\n<p>Not quite clear from your explanation what you're trying to achieve. Pls give input samples</p>\r\n",
+    "PostedDate": "2012-11-13T11:20:30.45-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "941443",
+    "ThreadId": "403020",
+    "Html": "\r\n<p>Hi and thx for replying</p>\r\n<p>re ParameterArgExpression - not quite sure where you are seeing that. There is a singular ArgExpression and multiple ArgsExpression</p>\r\n<p>I have an expression I am trying to parse say</p>\r\n<p>MyVar = PARAM([name], [datatype], [prompttext])</p>\r\n<p>where [name] is the name of the parameter, [datatype] is obviously its type and [prompttext] is the text which, say could be displayed to the user if the value is going to be captured via a form or something like that.</p>\r\n<p>The prompt text, though, is the issue since it is pretty free text. It could be quoted, bracketed, or neither. In the case that it is neither bracketed nor quoted, it still could contain free text which itself holds brackets eg consider the text &quot;Please\r\n enter date (default = 1/1/2012)&quot;. it could be used as follows</p>\r\n<p>MyDoB = PARAM(dob,DATE,Please enter date (default = 1/1/2012))</p>\r\n<p>I believe my current parser, ie using a RegExTerminal isn't good enough and &nbsp;the date slashes are getting recognised rather than seeing the text after the second comma as a whole.&nbsp;</p>\r\n<p>I am currently creating a custom terminal to handle this and find the end of the argument, but am wondering if I am doing it wrong. For example, should I force it to be quoted or bracketed? Or how else could I force it to treat the data after the 2nd argument\r\n as a whole</p>\r\n<p>Is that any clearer?</p>\r\n<p>Thx again</p>\r\n<p>S&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-11-14T00:11:43.587-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "942378",
+    "ThreadId": "403020",
+    "Html": "\r\n<p>You need to put an &quot;@&quot; in front of RE patterns so that escape sequences are passed through to RegEx, like so:</p>\r\n<p>@&quot;some pattern text&quot;</p>\r\n",
+    "PostedDate": "2012-11-15T14:56:21.257-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "942496",
+    "ThreadId": "403020",
+    "Html": "\r\n<p>Thx for replying. I'm using VB. Not sure that is still necessary, is it? VB compiler appears to object.</p>\r\n",
+    "PostedDate": "2012-11-15T21:15:43.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "942499",
+    "ThreadId": "403020",
+    "Html": "\r\n<p>So you are - I had not noticed those &quot;dim&quot; keywords. You ma need to double up your back-slashes then, if @ cannot precede te string, as I thought that VB and C# used a common set of DOT NET string special charcaters. I haven't programmed in VB for a while,\r\n so don't remember for sure.</p>\r\n",
+    "PostedDate": "2012-11-15T21:35:15.54-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "942794",
+    "ThreadId": "403020",
+    "Html": "\r\n<p>Sorry ... that should have said &quot;VB compiler does NOT appear to object&quot;! ... completely the opposite of what I wrote!</p>\r\n<p>But still does handle the priority/precedence I am after</p>\r\n<p>Thx</p>\r\n<p>S</p>\r\n",
+    "PostedDate": "2012-11-16T07:04:03.113-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "942837",
+    "ThreadId": "403020",
+    "Html": "\r\n<p>Try replacing the back-slash hyphen near the end of the RE with just a hyphen immediately following the open-square-bracket. I am not sure how the escaped hyphen is going to be treated where it is, but the recommended way to add a hyphen to a set is to start\r\n the set definition with &quot;[-&quot; instead of just &quot;[&quot;.</p>\r\n",
+    "PostedDate": "2012-11-16T08:28:18.587-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "943673",
+    "ThreadId": "403020",
+    "Html": "\r\n<p>I don't understand one basic thing, your initial problem</p>\r\n<p>&nbsp; 1. is it that your Regex-based terminal does not work the way you want - so the problem is just a proper reg expression</p>\r\n<p>&nbsp; 2. OR - beyond the regex, even when it &quot;works&quot;, the parser does not parse and does something wrong.&nbsp;</p>\r\n<p>If it is the case 1, I can hardly help, not a wiz in reg expressions. One thing I noticed. According to the grammar paramArgLiteral can appear in the first parameter, second or the third (inside parenthesis). Then it means that expression terminators should\r\n include &quot;)&quot; (which it does) and comma (delimiter between expressions, when it appears as param #1); and comma is not mentioned in your regex.&nbsp;</p>\r\n<p>If it is #2, then provide more info (are there conflicts? what is the token list produced and what is the parser error?), but I bet it all comes from regex not properly working.&nbsp;</p>\r\n<p>I would definitely recommend going with double-quoted string instead of such free-form string which ends with h.. knows what and where - this may be confusing for user/script writer as well as much as it is confusing for Irony parser.</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2012-11-18T15:38:41.42-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "943750",
+    "ThreadId": "403020",
+    "Html": "\r\n<p>Hi Roman</p>\r\n<p>The problem is not the regex. Sorry to you and pg for not making that clearer. An example of the problem is that the 3rd argument of the function</p>\r\n<p><em>PARAM(dob,DATE,Please enter date (default = 1/1/2012))</em></p>\r\n<p>is not being&nbsp;recognized&nbsp;as a whole argument ie as a ParameterArgExpression but rather is being parsed into numbers, strings split by the brackets and date separators. The grammar is fine (ie loads into the Grammar explorer without error). When\r\n parsing the above, although the parser recognises arguments 1 and 2 as ParameterArgExpression, the final token before the parser reports a problem parsing the string is</p>\r\n<p><em>Please (identifier)</em></p>\r\n<p>so it is already trying to split up the 3rd argument.</p>\r\n<p>If double quoting is the best way to do this, then thats great. I just wasn't sure if that would be the preferable way. I had wondered whether there was a way to construct the grammar in such a way so as to&nbsp;treat the text after the second comma (and\r\n before either the next comma - there are other optional parameters - or the matching bracket) as a whole.&nbsp;</p>\r\n<p>Thx (to both of you)</p>\r\n<p>S</p>\r\n<p><span><br>\r\n</span></p>\r\n",
+    "PostedDate": "2012-11-18T22:43:24.187-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

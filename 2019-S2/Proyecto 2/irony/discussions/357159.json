@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "841001",
+    "ThreadId": "357159",
+    "Html": "\r\n<p>I'm having problems getting my grammar to work with unary operations. For instance, if I enter &quot;-5/2&quot; I get -(5/2), not (-5)/2 which I would like to get. In this particular case the difference does not matter, however, I still think fixing this is&nbsp;important&nbsp;for\r\n the grammar.</p>\r\n<p>However, it's also important that 1-5/2 get's parsed as 1-(5/2) and not (1-5)/2.</p>\r\n<p>Currently I have the following operator's registered:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>            RegisterOperators(1, <span style=\"color:#a31515\">&quot;||&quot;</span>);\r\n            RegisterOperators(2, <span style=\"color:#a31515\">&quot;&amp;&amp;&quot;</span>);\r\n            RegisterOperators(3, <span style=\"color:#a31515\">&quot;|&quot;</span>);\r\n            RegisterOperators(4, <span style=\"color:#a31515\">&quot;^&quot;</span>);\r\n            RegisterOperators(5, <span style=\"color:#a31515\">&quot;&amp;&quot;</span>);\r\n            RegisterOperators(6, <span style=\"color:#a31515\">&quot;==&quot;</span>, <span style=\"color:#a31515\">&quot;!=&quot;</span>);\r\n            RegisterOperators(7, <span style=\"color:#a31515\">&quot;&lt;&quot;</span>, <span style=\"color:#a31515\">&quot;&gt;&quot;</span>, <span style=\"color:#a31515\">&quot;&lt;=&quot;</span>, <span style=\"color:#a31515\">&quot;&gt;=&quot;</span>, <span style=\"color:#a31515\">&quot;is&quot;</span>);\r\n            RegisterOperators(8, <span style=\"color:#a31515\">&quot;&lt;&lt;&quot;</span>, <span style=\"color:#a31515\">&quot;&gt;&gt;&quot;</span>);\r\n            RegisterOperators(9, <span style=\"color:#a31515\">&quot;&#43;&quot;</span>, <span style=\"color:#a31515\">&quot;-&quot;</span>);\r\n            RegisterOperators(10, <span style=\"color:#a31515\">&quot;*&quot;</span>, <span style=\"color:#a31515\">&quot;/&quot;</span>, <span style=\"color:#a31515\">&quot;%&quot;</span>);\r\n            RegisterOperators(11, <span style=\"color:#a31515\">&quot;!&quot;</span>);\r\n            RegisterOperators(-1, <span style=\"color:#a31515\">&quot;?&quot;</span>);\r\n            RegisterOperators(-2, <span style=\"color:#a31515\">&quot;=&quot;</span>, <span style=\"color:#a31515\">&quot;&#43;=&quot;</span>, <span style=\"color:#a31515\">&quot;-=&quot;</span>, <span style=\"color:#a31515\">&quot;*=&quot;</span>, <span style=\"color:#a31515\">&quot;/=&quot;</span>, <span style=\"color:#a31515\">&quot;%=&quot;</span>, <span style=\"color:#a31515\">&quot;&amp;=&quot;</span>, <span style=\"color:#a31515\">&quot;|=&quot;</span>, <span style=\"color:#a31515\">&quot;^=&quot;</span>, <span style=\"color:#a31515\">&quot;&lt;&lt;=&quot;</span>, <span style=\"color:#a31515\">&quot;&gt;&gt;=&quot;</span>);\r\n</pre>\r\n</div>\r\nThe not operator already works as I want it to, however, the &quot;&#43;&quot; and &quot;-&quot; kind of needs to be where they are in order to make sure that the &quot;*&quot;, &quot;/&quot; and &quot;%&quot; is interpreted correctly. How should I solve this? Btw, if you need more of the grammar just let me know,\r\n I just figured I didn't need to drop more code here than&nbsp;necessarily.\r\n<p></p>\r\n",
+    "PostedDate": "2012-05-25T09:16:41.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "841006",
+    "ThreadId": "357159",
+    "Html": "<p>I believe i've made a special feature for this case, \"ImplyPrecedence\" hint that you can put on Unary operator (actually your put it into Unary expression's Rule). Play with it.</p>",
+    "PostedDate": "2012-05-25T09:48:19.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "841011",
+    "ThreadId": "357159",
+    "Html": "<p>I've tried the following:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>UnaryExpr.Rule = LUnOp + Expr;\r\nUnaryExpr.AddHintToAll(ImplyPrecedenceHere(12, Associativity.Right));\r\n</pre>\r\n</div>\r\nwith different values in the ImplyPrecedenceHere (both negative and positive, and using different Associativity), however I cannot seem to get it working nomatter what I pass it. Am I using it wrong?</p>",
+    "PostedDate": "2012-05-25T10:00:33.93-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "841042",
+    "ThreadId": "357159",
+    "Html": "<p>I figured it out:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>UnaryExpr.Rule = ImplyPrecedenceHere(30) + LUnOp + Expr;\r\n</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2012-05-25T11:50:55.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

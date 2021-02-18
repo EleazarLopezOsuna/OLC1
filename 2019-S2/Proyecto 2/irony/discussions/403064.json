@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "941100",
+    "ThreadId": "403064",
+    "Html": "\r\n<p>Hi, &nbsp;I'm not sure if this is the place to ask grammar questions but here goes. &nbsp;I have a grammar that is not recognizing a valid path when a certain alternative is present.</p>\r\n<p>Background definitions (partial):</p>\r\n<p style=\"padding-left:30px\">valueTerm = bracketedProp | optBracketedProp | expr;</p>\r\n<p style=\"padding-left:30px\">optBracketedProp.Rule = bracketedProp &#43; &quot;?&quot;;</p>\r\n<p style=\"padding-left:30px\">expr.Rule = valueExpr | parExpr;</p>\r\n<p style=\"padding-left:30px\">parExpr.Rule = &quot;(&quot; &#43; expr &#43; &quot;)&quot;; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p style=\"padding-left:30px\">valueExpr.Rule = strOrNum | binValueExpr | valueUnExpr;</p>\r\n<p style=\"padding-left:30px\">binValueExpr.Rule = valueTerm &#43; binOpValue &#43; valueTerm;</p>\r\n<p style=\"padding-left:30px\">binOpValue.Rule = ToTerm(&quot;&#43;&quot;) | &quot;-&quot; | &quot;*&quot; | &quot;/&quot; | &quot;%&quot;;&nbsp;</p>\r\n<p style=\"padding-left:30px\">optNot.Rule = Empty | not;</p>\r\n<p>The breaking case is when valueTerm is an optBracketedProp and the optNot is present then the following path is recognized only when the &quot;existsExpr&quot; definition is absent. &nbsp;When the &quot;existsExpr&quot; is included then I get a syntax error &quot;expecting 'exists'&quot;\r\n error during parsing.</p>\r\n<p style=\"padding-left:30px\">inExpr.Rule = valueTerm &#43; optNot &#43; in_ &#43; funcOrParStrOrNumOrNullList; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>\r\n<p>existsExpr:</p>\r\n<p style=\"padding-left:30px\">existsExpr.Rule = optBracketedProp &#43; optNot &#43; &quot;exists&quot;;</p>\r\n<p>Breaking Example: &nbsp;</p>\r\n<p style=\"padding-left:30px\">[1234]? not in (1,2,3)</p>\r\n<p>These always work even when both definitions are present</p>\r\n<p style=\"padding-left:30px\">[1234]? in (1,2,3)</p>\r\n<p style=\"padding-left:30px\">[1234] not in (1,2,3)</p>\r\n<p style=\"padding-left:30px\">[1234] in (1,2,3)</p>\r\n<p>Thanks in advance for any pointers.</p>\r\n",
+    "PostedDate": "2012-11-13T09:45:57.37-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "941136",
+    "ThreadId": "403064",
+    "Html": "\r\n<p>too many things are missing from your rules extract, hard to see what's going on</p>\r\n<p>Main question - when you load the grammar into Grammar Explorer, are there any Grammar Errors (conflicts)?</p>\r\n",
+    "PostedDate": "2012-11-13T11:23:56.74-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "941149",
+    "ThreadId": "403064",
+    "Html": "\r\n<p>Unfortunately, there aren't any conflicts. &nbsp;I was hoping that the required definitions were included.</p>\r\n<p>In the state diagram I do see a few Inadequate's&nbsp;at the point of interest. &nbsp;Here is an attempt to reduce to critical definitions:</p>\r\n<p style=\"padding-left:30px\">X.Rule = val + not + in + list;</p>\r\n<p style=\"padding-left:30px\">Y.Rule = prop + not + exists</p>\r\n<p style=\"padding-left:30px\">val.Rule = prop | expr</p>\r\n<p style=\"padding-left:30px\">expr.Rule = val + op + val</p>\r\n<p style=\"padding-left:30px\">op.Rule = &quot;+&quot; | &quot;-&quot;</p>\r\n<p>And the parser always follows rule &quot;Y&quot; expecting &quot;exists&quot; after &quot;not&quot; (never &quot;in&quot;) unless the Y.Rule is deleted or modified (e.g. add keyword before &quot;not&quot;).</p>\r\n",
+    "PostedDate": "2012-11-13T11:53:31.2-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "941150",
+    "ThreadId": "403064",
+    "Html": "\r\n<p>missing prop.Rule; also, what is the 'root', top-level expression?</p>\r\n",
+    "PostedDate": "2012-11-13T11:55:54.767-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "941168",
+    "ThreadId": "403064",
+    "Html": "\r\n<p>I'm not saying this simplified example will exhibit the problem (it may be close though). &nbsp;I'm just trying to get across the relationships and if you can guess at the problem maybe I can resolve or refactor the original.</p>\r\n<p>Root = statement;</p>\r\n<p>statement.Rule = X | Y;</p>\r\n<p>For prop: &nbsp;Easy version:</p>\r\n<p style=\"padding-left:30px\">prop.Rule =&nbsp;NumberLiteral(&quot;propIntegerId&quot;, NumberOptions.IntOnly);</p>\r\n<p>For prop: &nbsp;Closer to reality:</p>\r\n<p style=\"padding-left:30px\">prop.Rule = bracketedProp | optBracketedProp</p>\r\n<p style=\"padding-left:30px\">optBracketedProp.Rule = bracketedProp + &quot;?&quot;</p>\r\n<p style=\"padding-left:30px\">bracketedProp.Rule = &quot;[&quot; + propId + &quot;]&quot;</p>\r\n<p style=\"padding-left:30px\">propId =&nbsp;NumberLiteral(&quot;propIntegerId&quot;, NumberOptions.IntOnly);</p>\r\n<p style=\"padding-left:30px\">&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-11-13T12:31:14.447-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "941190",
+    "ThreadId": "403064",
+    "Html": "\r\n<p>for this simplified version, looks like there must be a conflict, shift/reduce conflict on 'not' lookahead.&nbsp;</p>\r\n<p>When parser has in stack the 'prop' node containing</p>\r\n<p>&nbsp; [123]</p>\r\n<p>and lookahead (next input) is 'not', it might be beginning of rule X - in this case parser should REDUCE 'val &lt;-- prop', or it might be rule Y - in this case parser should SHIFT the 'not' token.&nbsp;</p>\r\n<p>Does not look like this simplified versions help, you'd better paste the entire grammar if possible.</p>\r\n",
+    "PostedDate": "2012-11-13T13:02:37.76-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "941746",
+    "ThreadId": "403064",
+    "Html": "\r\n<p>I may be able to make a simplified test case from the grammar if I get some time later (doubtful though). &nbsp;</p>\r\n<p>However the problem you found may help to understand... &nbsp;Since both X and Y are valid and the correct choice can be made on encountering the token _after_ the 'not' ('in' vs 'exists'), could you explain how to adjust the simple grammar to support both\r\n X and Y?&nbsp;</p>\r\n",
+    "PostedDate": "2012-11-14T10:53:35.66-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "943678",
+    "ThreadId": "403064",
+    "Html": "\r\n<p>sorry, i'm lost a bit in fragments here and there. Can you please repost a full grammar constructor (simplified and without conflicts in grammar explorer), and with input samples that do not work correctly</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2012-11-18T15:45:00.99-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

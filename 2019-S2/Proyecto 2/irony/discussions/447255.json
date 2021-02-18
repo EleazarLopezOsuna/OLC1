@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1057610",
+    "ThreadId": "447255",
+    "Html": "I'm currently at a project with a template engine that supports conditionals (if/elseif/else) and loops to select and repeat content from the template from the model data. I was thinking about a Razor-like syntax, but without the full Razor dependencies behind it. I've started doing it entirely myself, and I'm now stuck at the point where a found and isolated expression must be evaluated. Examples of this look like: (sorry, editor doesn't let me type the characters I need)\r<br />\n<br />\nNow I thought about using Irony as a parser for it all, but I don't know where to start. The examples are either too trivial (JSON) or overly complex (C#) and the tutorials I can find don't work because of missing type names (seems outdated).\r<br />\n<br />\nLast time I learned about parsers and grammars was in a Parser course at university but I can hardly remember it. And when I read about conflict management here, it sounds too complex for me. But as I turn back ot my own approach, I also don't know how to do it.\r<br />\n<br />\nI need to evaluate expressions to access and compare data. I can lookup identifier and member names from the model object through reflection. But I need expression grouping, operator precedence and expression evaluation. In the end, I need the single resolved value of the expression to work with.\r<br />\n<br />\nI don't think that I'll let Irony handly my entire template language but only the expression parts. I'll do the keywords for conditions and loops myself. But there's no formal end-of-expression but it rather defines itself by matching parentheses or - in a simple form - by a non-identifier character. So I guess I need to preprocess the input to pass the correct region to Irony.\r<br />\n<br />\nAny advice, please?<br />\n",
+    "PostedDate": "2013-06-17T01:47:08.46-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1057839",
+    "ThreadId": "447255",
+    "Html": "The best place to start is expression evaluator sample - it has almost all you need<br />\n",
+    "PostedDate": "2013-06-17T09:52:32.35-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1058103",
+    "ThreadId": "447255",
+    "Html": "Okay, after hours of digging the web, Wikipedia, Irony source code and other sources, I finally cobbled together a working version of it. There's still an issue with putting data into the Irony universe though. I have a model object that exposes public properties, some of which are get-only and compute a value from other data. Irony seems to use a dictionary called Globals where I'm supposed to put all my data in. I've tried to hack-replace that dictionary with my own Properties-to-Dictionary adapter but it didn't find anything. So I just copied all my values over to the Globals dictionary.\r<br />\n<br />\nNow there's loops. When my template contains a loop, I want to access the current item first, and keep data from the parent loop levels (or the root) accessible with a prefix operator.<br />\n<pre><code>&lt;p&gt;[at]Title&lt;/p&gt;\n&lt;ul&gt;\n    [at]for MyList\n        &lt;li&gt;[at]Name in the [at]^Title page&lt;/li&gt;\n    [at]next\n&lt;/ul&gt;</code></pre>\n\n(Replace all [at] with the at character, this forum editor is too stupid to accept it.) Title comes from the global scope which is my main model object. MyList also comes from the model object and contains a list of other objects. Within a list, each name is resolved to the current list item. Name is a property of such an item. But if I want to access the Title property from a loop, I want to put the ^ character in front of the identifier.\r<br />\n<br />\nNow there's two problems: 1. How can I define a syntax that understands this ^ operator? 2. How can I organise data in Irony this way?\r<br />\n<br />\nSince the parser can't handle my entire template language and all the static text between the tags, it only gets everything after an [at]-keyword expression to evaluate. I create new instances of the grammar and the ScriptApp and then call the Evaluate() method for every snippet. There I also copy all model properties into the Globals dictionary. I know the model object for each loop level here (it's a list) but I must decide which level to put into Globals.<br />\n",
+    "PostedDate": "2013-06-18T02:48:24.16-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1059448",
+    "ThreadId": "447255",
+    "Html": "First, about your last paragraph - 'I create new instances of the grammar and scriptApp' - if you create more than 1 instance of grammar - don't; grammar, parser should be static singletons, created once at start - parser (parser data) is very expensive to create.\r<br />\nNow about your problems. I think before you start talking about implementing script, you should design the data model of the running script - like where the data is stored, how 'levels' are represented, etc. For example, for Irony expr evaluator the model is - data/values are stored in frames (like stack method frames); frames are connected as stack/linked list, with the root/end frame as Global frame with global variables. Your template interpreter should have data-storage structure that matches what you describe - then you implement access to this data from Ast nodes.<br />\n",
+    "PostedDate": "2013-06-20T19:24:31.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1059492",
+    "ThreadId": "447255",
+    "Html": "Okay, I've now figured out that keeping the instance of Grammar and ScriptApp throughout the processing of a template file improves performance a lot (from 8 to 1 second for everything). All I still do now is clearing the ScriptApp's Global data and resetting it for every evaluation context.\r<br />\n<br />\nMy model is an object that exposes public properties. Irony expects a string/object dictionary. So I wrote a converter that gives me a list of all properties and their values through reflection. This is less efficient because some properties are computed (for convenience in the template) and may not always be used at all. But it seems to be unnoticeable by time consumption.\r<br />\n<br />\nThen, my global model is always the same within one template file. But within a loop, each list item should be added to that stack, as you say, so that the iterated list's item object properties are accessible at the first level. Currently, I always add the global model object in a separate Globals entry named &quot;Global&quot;, but all intermediate loop levels are still inaccessible, and my short ^ prefix syntax (consider it a unary operator that can appear multiple times at the beginning of an expression, like ! for NOT) is nowhere near implemented.\r<br />\n<br />\nI don't know how to add such a stack frame (found no obvious methods) and I also don't know how to implement my own AstNode to evaluate this operator and how to use that node in the grammar. Should this be documented somewhere, I'd be happy about a link, otherwise, would you please explain it to me?<br />\n",
+    "PostedDate": "2013-06-21T00:01:26.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1060690",
+    "ThreadId": "447255",
+    "Html": "well, as far as I understand how your parser/interpr works, here's what you can do. You have some iterator/visitor/ tree walker that walks the parse tree - right? this tree visitor invokes expr evaluator when it sees an expression. This tree visitor should keep the current node it visits in some linked list (of your custom objects describing an element of template, and with a reference to 'parent' node). \r<br />\nBefore tree walker invokes expr evaluator, it should place the reference to current node into globals under '__current' key. Then, your node implementing '^' operator (your custom AST node) should read this value, retrieve parent node, and property value:<br />\n<pre><code>  var curr = Globals[&quot;__current&quot;]; \n  var par = curr.Parent; \n  var result = par.GetProperty(propName); )</code></pre>\n\nI think you get the idea. As for custom AST node implementation, look at existing nodes for expr evaluator, and do similar thing, it's easy to see what's going on there\r<br />\nRoman<br />\n",
+    "PostedDate": "2013-06-24T22:00:48.63-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

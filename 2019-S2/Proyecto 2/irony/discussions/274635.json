@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "679518",
+    "ThreadId": "274635",
+    "Html": "\r\n<p></p>\r\n<p><span style=\"font-family:Consolas; font-size:x-small\"></p>\r\n<p><span style=\"font-family:Consolas; font-size:x-small\">Say I have a couple of rules for nonterminals in a grammar such as:</span></p>\r\n</span>\r\n<p></p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:green\">    // a statement list consists of any number of statements</span>\r\n    statementList.Rule = MakeStarRule(statementList, <span style=\"color:blue\">null</span>, statement);\r\n    statement.Rule = ifStatement | switchStatement | foreachStatement | withStatement | breakStatement;</pre>\r\n<pre>If I do not want the statement list node to appear in the parse tree, I set:</pre>\r\n</div>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">    this</span>.MarkTransient(statementList);\r\n</pre>\r\n</div>\r\n<p>Using MarkTransient to filter out unwanted nodes in the parse tree works great, except in cases as above where the NonTerminal has a MakeStarRule AND the and child NonTerminal Rule is an OR of various other NonTerminals.&nbsp; Is this a bug, and/or is there\r\n a workaround for allowing these types of nodes to be filtered?</p>\r\n<p>Thanks!</p>\r\n<p>Dave</p>\r\n<div id=\"_mcePaste\" style=\"width:1px; height:1px; overflow:hidden; top:0px; left:-10000px\">\r\n&#65279;</div>\r\n",
+    "PostedDate": "2011-10-03T15:08:56.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "679548",
+    "ThreadId": "274635",
+    "Html": "<p>As far as I get it, you want StatementList to be there if you have 2 or more statements, but to disappear if there's just one, so that this single statement appears directly under list's parent. That's not how it supposed to work. These Parse tree adjustments using Transient flag are supposed to be \"stable\", not depending on particular source input. So that if a non-terminal is marked transient, it NEVER appears in the output tree. It does not work in the manner \"sometimes yes, sometimes no\". That's by design. You should filter out the statementList node at the time of AST construction I think. I do this sometimes&nbsp;in my projects for optimization purposes:&nbsp;adjusting AST tree, not Parse tree.</p>",
+    "PostedDate": "2011-10-03T16:23:36.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "679557",
+    "ThreadId": "274635",
+    "Html": "<p>Thanks Roman,</p>\r\n<p>My desire is for the ParseTree to NEVER have nodes such as statement lists, but they ALWAYS appear.&nbsp; I'm not desiring it to be conditional based on source input.</p>\r\n<p>The behavior I'm seeing is if a NonTerminal has a MakeStar rule, and the subrule is an \"OR\" rule, then&nbsp;that NonTerminal cannot be filtered from the ParseTree by marking as transient.&nbsp; Other NonTerminals that use MakeStar or have an \"OR\" rule can be filtered out just fine (the statement above can be filtered out fine, for example).</p>\r\n<p>Is there something else that can cause nodes marked transient to appear in the ParseTree?</p>\r\n<p>Dave</p>",
+    "PostedDate": "2011-10-03T16:52:00.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "679567",
+    "ThreadId": "274635",
+    "Html": "<p>Ok, sorry - misunderstood you.</p>\r\n<p>All I can say is that it's not a bug, I never intended lists to be transient. So the situation you're describing was never \"had in mind\". Therefore I would advise against using this, even in the cases when it does work. As for why it does not work in one particular case - my guess is that star-list is in fact more than a simple list. Look at MakeSTarRule, the method creates \"plus\" list first then wraps it into star list after that, the reasons are explained there in comments. So my guess is that this multi-level structure somehow does not work with transient flag, the way you expect it to work. Look at the code and try to step thru with debugger if you're curious.</p>\r\n<p>Anyway, advising not to use this combination (transient lists).</p>\r\n<p>Roman</p>",
+    "PostedDate": "2011-10-03T17:01:51.177-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "679568",
+    "ThreadId": "274635",
+    "Html": "<p>by the way, there's some diagnostics in parser builder for transient nodes, it verifies that transient node is properly constructed. An error would show up as grammar error (like shift reduce conflicts). Do you see any errors on Grammar Errors page in Gr explorer?</p>",
+    "PostedDate": "2011-10-03T17:04:55.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "679570",
+    "ThreadId": "274635",
+    "Html": "<p>OK, I'll keep the extra hierarchy for the lists.</p>\n<p>Thanks, Dave</p>",
+    "PostedDate": "2011-10-03T17:14:56.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "679575",
+    "ThreadId": "274635",
+    "Html": "<p>Yes, looking at Parser.Language.Errors, I get explicit messages to not mark lists as transient :-). \"List non-terminals cannot be marked transient; list: (statementList)\"</p>\r\n<p>I also see some \"Reduce-reduce\" conflicts and a \"Shift-reduce\" conflict I'll have to explore...</p>",
+    "PostedDate": "2011-10-03T17:47:19.37-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

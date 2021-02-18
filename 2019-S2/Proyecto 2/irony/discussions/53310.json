@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "179355",
+    "ThreadId": "53310",
+    "Html": "Hi Roman,<div><br></div><div>Thanks for your tool it great.   What opinion have you about &quot;OSLO&quot; ?   It's can work with Grammar free-context by example ..</div><div><br></div><div>I see that Daniel Flower build an DSL perfectly with Irony ... <span style=\"white-space:pre-wrap;font-style:italic;font-family:'-webkit-monospace'\">into yacc-like syntax with Irony!</span><br></div><div><br></div>Best Regards!, <div>Jorge</div>",
+    "PostedDate": "2009-04-14T20:55:24.587-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "179801",
+    "ThreadId": "53310",
+    "Html": "Hi<br>\r\nI would prefer to abstain from commenting on similar or competing technologies, at least on this site. You guys decide for yourself - all bits are there, Irony here, OSLO at msdn site, download, build, compare, decide.<br>\r\nthanks<br>\r\n<br>\r\n",
+    "PostedDate": "2009-04-15T13:12:04.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "180194",
+    "ThreadId": "53310",
+    "Html": "<div><span style=\"font-family:'-webkit-monospace';white-space:pre-wrap\">Hi Roman, </span><br></div><div><span style=\"font-family:'-webkit-monospace';white-space:pre-wrap\"><br></span></div><div><span style=\"font-family:'-webkit-monospace';white-space:pre-wrap\">I am sorry please recieve my apologies... But my intention is know the direction and future of the Irony, if possible update your roadmap in special adoption of new features C#3.0 and so on.Thanks!</span><br></div><div><span style=\"font-family:'-webkit-monospace';white-space:pre-wrap\">Jorge</span></div>",
+    "PostedDate": "2009-04-16T08:43:10.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "180255",
+    "ThreadId": "53310",
+    "Html": "no need to apologise, just normal exchange &quot;what's your take?&quot; - &quot;no comments&quot;<br>\r\nAs for Irony future, it is bright, it continues, hopefully get to official 1.0 release this year. Roadmap - thanks for reminding, will update it.<br>\r\nRoman\r\n",
+    "PostedDate": "2009-04-16T12:22:05.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,130 @@
+[
+  {
+    "Id": "661037",
+    "ThreadId": "269822",
+    "Html": "<p>I've implemented Heredoc terminals for Irony. &nbsp;The implementation works by modifying the source, and follows the Ruby standard shown in the example. &nbsp;I ran a series of tests through irb to ensure the behavior was correct to the way Ruby handles it. &nbsp;I found  the following set of rules for heredocs in ruby:</p>\n<p>1) The start tag (&lt;&lt;TOKEN) counts as a string on the same line, which is why you can start more than one heredoc and intersperse another string between them using concatenation.</p>\n<p>2) The text for the heredoc must start of the line following the start tag, it cannot be on the same line as the start tag.</p>\n<p>3) When more than one heredoc is started on a line, their ending tokens must follow the same pattern, i.e, &lt;&lt;BEGIN + &lt;&lt;END would need the BEGIN end tag before the END end tag.</p>\n<p>This led me to believe that Ruby parses the expression &lt;&lt;BEGIN + \"&lt;--- this is the middle ---&gt;\\n\" + &lt;&lt;END</p>\n<p>This is the beginning.</p>\n<p>BEGIN</p>\n<p>And now it's over!</p>\n<p>END</p>\n<p>Like this:</p>\n<p>Encountering the &lt;&lt;BEGIN tag, we first retrieve the token, which is everything after the start symbol and before the first space, and then store the location right after the entire start tag. &nbsp;We then skip the end of the line, and begin processing the heredoc  there. &nbsp;We check for the presence of the end tag based on whether or not indentation is allowed, and if it is not encountered, we add the entire line to the heredoc and continue processing at the next line. &nbsp;Errors happen when the end tag is not encountered  before EOF, and this includes the case where the END tag is indented on a heredoc that does not allow it.</p>\n<p>The implementation can be found at <a href=\"http://bitbucket.org/shadowphoenix/irony\">http://bitbucket.org/shadowphoenix/irony</a> in Irony/Parsing/Terminals/HeredocTerminal.cs</p>\n<p>&nbsp;</p>\n<p>You create it by calling new Heredoc(string name) which creates a default non-indenting heredoc with the start symbol \"&lt;&lt;\", or new Heredoc(string name, string startSymbol, HeredocFlags flags) with the specified name and start symbol. &nbsp;The flags are either  HeredocFlags.None or HeredocFlags.AllowIndentedEndTag. &nbsp;A few tests are included to test it works for simple heredocs including error processing.</p>",
+    "PostedDate": "2011-08-20T12:31:40.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661073",
+    "ThreadId": "269822",
+    "Html": "<p>Hi</p>\r\n<p>this is great! I will look at this as soon as I can.</p>\r\n<p>thank you!</p>\r\n<p>Roman&nbsp;</p>",
+    "PostedDate": "2011-08-20T16:26:27.093-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661088",
+    "ThreadId": "269822",
+    "Html": "<p>Got a look at it, and I'm afraid that wouldn't work. Replacing source text is not a good idea. Aside from issues of efficiency (creating long strings - subcopies of source text is bad enough) - the problem is that replacing source text messes up token positions for all source after the hereDoc. For example, if there's a syntax error in the following text, it's reported position would point to a wrong position in the original text.&nbsp;</p>\r\n<p>One small thing that scared sh... out of me - file header in HeredocTerminal.cs file. That's a true open source project, no MS-copyrighted stuff please. I hope that's just an oversight, your VS template probably created this header by default.&nbsp;</p>\r\n<p>Other things</p>\r\n<ol>\r\n<li>You don't need to inherit from CompoundTerminalBase, you don't use any of the functionality in this class. Inherit from Terminal</li>\r\n<li>Terminal for created token - do not use this static singleton. The whole point of using different OutputTerminal (other than \"this\") is to make the token seem the same as some other \"regular\" terminal, like StringLiteral already defined in the grammar. So by default use this.OutputTerminal (it is initialized to the terminal itself). Grammar writer can assign reference to other string literal if he needs. Alternatively, you can add constructor with outputTerminal parameter.</li>\r\n<li>Do not use underscore prefix for local variables (_token)</li>\r\n<li>Change HeredocFlags to HereDocOptions, to be consistent with other terminal option enums. Do not check _flags field for equality (if (_flags == ...), check individual flag using HasFlag method. It works for a \"one-value\" enum you have now, but will stop working if you add more flags.&nbsp;</li>\r\n<li>Change casing to HereDocTerminal</li>\r\n<li>As for \"allow indent option\". As far as I understand, grammar writer would have to define 2 HereDocTerminals for language like Ruby. I would prefer one terminal with a list of startSymbol/options pairs. Look at StringLiteral and StringSubType option class.</li>\r\n<li>Remove Init method, it does not add anything</li>\r\n<li>Good practice: when you have more than one constructor, make only one (main) constructor call \"base\" constructor; all other constructors should call this \"main\" constructor.</li>\r\n</ol>\r\n<p>Anyway, thanks so much, hope to see a new version soon!</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-08-20T18:21:58.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661255",
+    "ThreadId": "269822",
+    "Html": "<p>The header in the file was a template and an oversight, I'm terribly sorry for that. One issue I have though is how do we handle the Ruby style heredoc's without replacing the source? &nbsp;Does irony have  a way to mark tokens as consumed?</p>\n<p>&nbsp;</p>\n<p>For example, in the text:</p>\n<p>&nbsp;</p>\n<pre>&lt;&lt;BEGIN + \"&lt;--- this is the middle ---&gt;\\n\" + &lt;&lt;END\nThis is the beginning.\nBEGIN\nAnd now it's over!\nEND</pre>\n<p>The terminal would consume</p>\n<pre>&lt;&lt;BEGIN This is the beginning. BEGIN</pre>\n<p>, but the offset would be set back to the + sign. &nbsp;The + plus sign, the following literal, and the next plus sign would be treated okay, but our END heredoc would end up like this:</p>\n<pre>&lt;&lt;END\nThis is the beginning.\nBEGIN\nAnd now it's over!\nEND</pre>\n<p>Giving our end heredoc the value:</p>\n<pre>This is the beginning.\nBEGIN\nAnd now it's over!</pre>\n<p>This isn't so bad when facing simple heredocs, but given that the tokens have already been consumed, how can I tell another terminal to skip that text without removing it?</p>\n<p>I have updated the code with your other suggestions though, and appreciate you looking it over for me.</p>",
+    "PostedDate": "2011-08-21T11:33:29.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661283",
+    "ThreadId": "269822",
+    "Html": "<p>Well, looks like you should keep some variable that keeps the position of already consumed here doc lines, I guess. That's the thing to figure out. You can keep this variable in ParsingContext, there's a dictionary there for shared variables.</p>\r\n<p>Alternatively, you can try to consume all hereDocs from one line in one hereDocTerminal.TryMatch call - then you have to handle concatenation with the middle part inside this call.</p>",
+    "PostedDate": "2011-08-21T12:59:49.657-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661304",
+    "ThreadId": "269822",
+    "Html": "<p>Thank you for the suggestion. &nbsp;I now store each line that gets consumed by a heredoc with the text and offset, and during processing I check to see if that line is already consumed, and if not, consume it and add it. &nbsp;I also store the offset and text of each line containing an ending tag so that the tag is also skipped to avoid the scenario shown in my post above. &nbsp;The new code is up on my bitbucket if you would like to take a look at it.</p>",
+    "PostedDate": "2011-08-21T13:36:19.97-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661348",
+    "ThreadId": "269822",
+    "Html": "<p>&nbsp;</p>\n<p>Looks good! But there are some problems:</p>\n<ol>\n<li>Don't sort subtypes in TryMatch, do it once in Init method </li>\n<li>Don't use Dict.ContainsKey followed by getItem, use TryGetValue method. Refactor reading ConsumedLines dictionary into a separate method. </li>\n<li>When matching subtype, instead of \"source.Text.IndexOf(s.Start, source.PreviewPosition) == source.PreviewPosition\" - use source.MatchSymbol. IndexOf involves search thru the whole text </li>\n<li>Rename AddStart method to AddSubType </li>\n<li>Remove outputTerminal field, there's already OutputTerminal public field in Terminal, use it. Assume it is set by grammar writer or has default value (==this) </li>\n<li>Remove endOfLineMarkers, use context.Grammar.LineTerminators instead </li>\n<li>All private fields should start with \"_\" </li>\n<li>When you find end of line, after locating the terminator (\\r or \\n), take into account that terminator might be in fact both '\\r\\n' (standard in Windows text files I think) - so you'd need an extra Pos++ to reach the start of the next line. </li>\n<li>When you try to find indented endTag, you actually try to find it anywhere inside the line - even if it is inside the sentence and preceeded by some non-space chars. What you should do I think is Left-Trim the line and check if it starts with endTag.&nbsp; </li>\n<li>When you try to search for a substring in text, you should take into account case sensitivity of the language (Grammar.CaseSensitive) - it might be not necessarily Ruby. </li>\n<li>Avoid things like \"line.Substring(0, tag.Length) == tag\" - Substring generates a new string, which is an extra garbage for GC. Use source.MatchSymbol or string methods that check symbol at position without generating new strings. </li>\n<li>Method LongerStartFirst - use String.Compare static method. </li>\n<li>At the very end of TryMatch you use \"newPos\" variable to set source.PreviewPosition - and it makes it a bit unclear; you have to scroll way back to the place you set it and then understand what is the value. Suggest to rename newPos to something more explicit.&nbsp; </li>\n<li>General note. I would kindly ask to alter the style and avoid this multiple \"if\" in TryMatch. There's some repeating code there - either collapse in one fragment or refactor into a separate method. In general, when you have a fragment that does some isolated  operation, it is better to refactor it out into a separate method - so the method name would clearly identify what the fragment is doing, and the whole code structure would become more clear. I advocate code with many small methods, rather than few big ones.  &nbsp; </li>\n</ol>\n<p>General algorithm question.&nbsp;</p>\n<p>&nbsp;I do not quite get the logic around using ConsumedLines list. As far as I understand, you have to keep track of all lines you already included in previous HereDocs, and skip them while you're reading lines for current HereDoc. So it seems that instead of  HereDocConsumedLine object, you might keep track of all consumed lines in a HashSet&lt;int&gt; that contains all first positions of consumed lines. The remaining issue is the following: when you finish processing a line containing start tags of HereDocs, you must  force Scanner to jump over all consumed lines. Note that this line with start tags might not necessarily end with a HereDoc start tag - it might be a string literal for example. So the problem is - how to catch the moment when scanner finishes the line, and  then force a jump over all consumed lines. I don't know the answer out of my head, and suggest to do some research around scanner workflow. Either find an event that HereDoc code can hook into, or suggest some new event. Maybe hook to NewLineTerminal? It is  singleton terminal in Grammar, it will be used to produce the final NewLine token, so at this moment you can do the jump.</p>\n<p>Good job so far, you're on the right track!</p>\n<p>thank you</p>\n<p>Roman &nbsp;</p>",
+    "PostedDate": "2011-08-21T19:21:23.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661586",
+    "ThreadId": "269822",
+    "Html": "<p>I'm working on refactoring the code to your suggestions, and thanks for the suggestion about NewLineTerminal. &nbsp;That was an issue I was aware of, the case where we have something like</p>\r\n<pre>&lt;&lt;BEGIN + \"&lt;--- this is the middle ---&gt;\\n\"\r\nThis is the beginning\r\nBEGIN</pre>\r\n<p>The scanner would be reset to the + as before, but after parsing the string, it would be at the This, which was already consumed. &nbsp;I'll take a look at Scanner workflow and hooking an event to reset the preview position after a line containing a heredoc is processed.</p>",
+    "PostedDate": "2011-08-22T08:29:39.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661593",
+    "ThreadId": "269822",
+    "Html": "<p>A couple of thoughts. Each terminal has ValidateToken event, fired when token is produced. So you can hook to this event (Grammar.NewLine.ValidateToken += (handler in HereDoc)). The handler will be invoked when NewLine token is produced - this is the time to force jump scanner over all consumed lines.&nbsp;</p>\r\n<p>Another thing. Looks like you don't even need to keep dictionary of consumed lines or \"first positions\" of these lines. You can keep just the position of \"beyond consumed lines\", the start of the first non-consumed line. Just an int, instead of a dictionary.</p>\r\n<p>Good luck</p>",
+    "PostedDate": "2011-08-22T08:40:15.433-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661674",
+    "ThreadId": "269822",
+    "Html": "<p>I have a version up on bitbucket if you'd like to take a look at it. &nbsp;I hooked into ParsingContext.TokenCreated, if ValidateToken would be better, let me know. &nbsp;And I will change the code to store the start of the first non-consumed line which would simplify everything quite a bit.</p>",
+    "PostedDate": "2011-08-22T11:25:40.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661751",
+    "ThreadId": "269822",
+    "Html": "<p>I changed it to use ValidateToken. &nbsp;Also, I did some debug runs when the tests were failing, and I did a check for \\r\\n like you suggested, and it seemed to not matter. &nbsp;Keep in mind that I developing this on Windows, where \\r\\n is the standard newline, and I never saw the extra +1 being needed.</p>",
+    "PostedDate": "2011-08-22T13:06:40.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "664276",
+    "ThreadId": "269822",
+    "Html": "<p>I have what I believe to be a working version up on bitbucket. &nbsp;It uses a combination of a newline token event, storing the next line after a heredoc, plus the ability to force a preview position on the scanner to work. &nbsp;The changes to the scanner and source stream were minimal with just the addition and honoring of the property to force a specific preview position.</p>",
+    "PostedDate": "2011-08-27T10:18:26.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "664277",
+    "ThreadId": "269822",
+    "Html": "<p>thanks, will look at this!</p>",
+    "PostedDate": "2011-08-27T10:20:27.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "664469",
+    "ThreadId": "269822",
+    "Html": "<p>Okay, I can completely attest to the version now on bitbucket as working. &nbsp;The following is the test grammar, followed by the test cases with the resulting parse tree and combined string.</p>\r\n<p>&nbsp;</p>\r\n<pre>var heredoc = new HereDocTerminal(\"HereDoc\", \"&lt;&lt;\", HereDocOptions.None);\r\nheredoc.AddSubType(\"&lt;&lt;-\", HereDocOptions.AllowIndentedEndToken);\r\nvar @string = new StringLiteral(\"string\",\"\\\"\");\r\nvar program = new NonTerminal(\"program\");\r\nprogram.Rule = heredoc + @\"+\" + @string + this.NewLine + @\"+\" + @string \r\n             | heredoc + @\"+\" + heredoc + @\"+\" + @string + this.NewLine \r\n             | heredoc + @\"+\" + @string + this.NewLine \r\n             | heredoc + @\"+\" + @string + @\"+\" + heredoc \r\n             | heredoc + @\"+\" + heredoc \r\n             | heredoc;\r\nthis.Root = program;\r\nthis.MarkPunctuation(\"+\");\r\n\r\nTest 1:\r\np.Parse(@\"&lt;&lt;HELLO + \"\"&lt;--- this is the middle ---&gt;\\n\"\"\r\nThis is the beginning.\r\nIt is two lines long.\r\nHELLO \r\n+ \"\"And now it's over!\"\"\");\r\n\r\n&lt;ParseTree&gt;\r\n  &lt;Node Term=\"program\"&gt;\r\n    &lt;Node Term=\"HereDoc\" Terminal=\"HereDocTerminal\" Value=\"\r\nThis is the beginning.\r\nIt is two lines long.\r\n\" /&gt;\r\n    &lt;Node Term=\"string\" AstNodeType=\"LiteralValueNode\" Terminal=\"StringLiteral\" Value=\"&lt;--- this is the middle ---&gt;\r\n\" /&gt;\r\n    &lt;Node Term=\"string\" AstNodeType=\"LiteralValueNode\" Terminal=\"StringLiteral\" Value=\"And now it's over!\" /&gt;\r\n  &lt;/Node&gt;\r\n&lt;/ParseTree&gt;\r\n\r\nThis is the beginning.\r\nIt is two lines long.\r\n&lt;--- this is the middle ---&gt;\r\nAnd now it's over!\r\n\r\nTest 2:\r\np.Parse(@\"&lt;&lt;HELLO + \"\"&lt;--- this is the middle ---&gt;\\n\"\" + &lt;&lt;END\r\nThis is the beginning.\r\nIt is more than two lines long.\r\nIt is three lines long.\r\nHELLO \r\nAnd now it's over!\r\nBut we have three lines left.\r\nNow two more lines.\r\nOops, last line! :(\r\nEND\");\r\n\r\n&lt;ParseTree&gt;\r\n  &lt;Node Term=\"program\"&gt;\r\n    &lt;Node Term=\"HereDoc\" Terminal=\"HereDocTerminal\" Value=\"\r\nThis is the beginning.\r\nIt is more than two lines long.\r\nIt is three lines long.\r\n\" /&gt;\r\n    &lt;Node Term=\"string\" AstNodeType=\"LiteralValueNode\" Terminal=\"StringLiteral\" Value=\"&lt;--- this is the middle ---&gt;\r\n\" /&gt;\r\n    &lt;Node Term=\"HereDoc\" Terminal=\"HereDocTerminal\" Value=\"\r\nAnd now it's over!\r\nBut we have three lines left.\r\nNow two more lines.\r\nOops, last line! :(\" /&gt;\r\n  &lt;/Node&gt;\r\n&lt;/ParseTree&gt;\r\n\r\nThis is the beginning.\r\nIt is more than two lines long.\r\nIt is three lines long.\r\n&lt;--- this is the middle ---&gt;\r\nAnd now it's over!\r\nBut we have three lines left.\r\nNow two more lines.\r\nOops, last line! :(\r\n\r\nTest 3:\r\np.Parse(@\"&lt;&lt;HELLO + &lt;&lt;END\r\nThis is the beginning.\r\nHow are you doing?\r\nHELLO \r\nI'm fine.\r\nAnd now it's over!\r\nEND\");\r\n\r\n&lt;ParseTree&gt;\r\n  &lt;Node Term=\"program\"&gt;\r\n    &lt;Node Term=\"HereDoc\" Terminal=\"HereDocTerminal\" Value=\"\r\nThis is the beginning.\r\nHow are you doing?\r\n\" /&gt;\r\n    &lt;Node Term=\"HereDoc\" Terminal=\"HereDocTerminal\" Value=\"\r\nI'm fine.\r\nAnd now it's over!\" /&gt;\r\n  &lt;/Node&gt;\r\n&lt;/ParseTree&gt;\r\n\r\nThis is the beginning.\r\nHow are you doing?\r\nI'm fine.\r\nAnd now it's over!\r\n\r\nTest 4:\r\np.Parse(@\"&lt;&lt;HELLO\r\nThis is the beginning.\r\nI hope you enjoyed these tests.\r\nHELLO\");\r\n\r\n&lt;ParseTree&gt;\r\n  &lt;Node Term=\"program\"&gt;\r\n    &lt;Node Term=\"HereDoc\" Terminal=\"HereDocTerminal\" Value=\"\r\nThis is the beginning.\r\nI hope you enjoyed these tests.\" /&gt;\r\n  &lt;/Node&gt;\r\n&lt;/ParseTree&gt;\r\n\r\nThis is the beginning.\r\nI hope you enjoyed these tests.\r\n\r\nTest 5:\r\np.Parse(@\"&lt;&lt;HELLO + &lt;&lt;MIDDLE + \"\"&lt;--- And now it's over ---&gt;\"\"\r\nThis is the beginning.\r\nHELLO\r\nAnd this is the middle.\r\nMIDDLE\");\r\n\r\n&lt;ParseTree&gt;\r\n  &lt;Node Term=\"program\"&gt;\r\n    &lt;Node Term=\"HereDoc\" Terminal=\"HereDocTerminal\" Value=\"\r\nThis is the beginning.\r\n\" /&gt;\r\n    &lt;Node Term=\"HereDoc\" Terminal=\"HereDocTerminal\" Value=\"\r\nAnd this is the middle.\r\n\" /&gt;\r\n    &lt;Node Term=\"string\" AstNodeType=\"LiteralValueNode\" Terminal=\"StringLiteral\" Value=\"&lt;--- And now it's over ---&gt;\" /&gt;\r\n  &lt;/Node&gt;\r\n&lt;/ParseTree&gt;\r\n\r\nThis is the beginning.\r\nAnd this is the middle.\r\n&lt;--- And now it's over ---&gt;\r\n\r\nTest 6:\r\np.Parse(@\"&lt;&lt;HELLO + \"\"&lt;--- this is the end ---&gt;\"\"\r\nThis is the beginning.\r\nHELLO\");\r\n\r\n&lt;ParseTree&gt;\r\n  &lt;Node Term=\"program\"&gt;\r\n    &lt;Node Term=\"HereDoc\" Terminal=\"HereDocTerminal\" Value=\"\r\nThis is the beginning.\r\n\" /&gt;\r\n    &lt;Node Term=\"string\" AstNodeType=\"LiteralValueNode\" Terminal=\"StringLiteral\" Value=\"&lt;--- this is the end ---&gt;\" /&gt;\r\n  &lt;/Node&gt;\r\n&lt;/ParseTree&gt;\r\n\r\nThis is the beginning.\r\n&lt;--- this is the end ---&gt;\r\n</pre>",
+    "PostedDate": "2011-08-28T07:33:19.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "664941",
+    "ThreadId": "269822",
+    "Html": "<p>Ok, thanks for the good news!</p>",
+    "PostedDate": "2011-08-29T10:25:29.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "668854",
+    "ThreadId": "269822",
+    "Html": "<p>Hi</p>\n<p>I looked at the code, in fact keep looking at it and keep thinking. Some things I don't quite get - why you need to add this flag ForcePreviewPosition? I assume you can't get without it, but it's not so good to change scanner interface because of a single  terminal. Overall, I start to think we should try different approach - what we have now is a bit tricky, and a bit too much code. I believe we can get it better. Here's the plan.</p>\n<p>We implement the functionality using a combination of a terminal and token filter. Terminal is used to scan/produce header tokens in the expressions (those that start with \"&lt;&lt;&lt;\"). At the same time the token filter listens to the token stream from scanner  and notices HereDoc terminals. It accumulates them in array (but passes to the parser also) and waits for NewLine token. At this moment it jumps into action. It goes through the list of accumulated HereDoc tokens, takes the \"end tag\" from each, finds it in  the input text after current position, grabs the text and puts it into token.Value field of hereDoc token. After running thru all hereDoc tokens, it pushes the scanner position beyond the last position of HereDoc text(s), clears the accumulated HereDoc token  list and - that's it. It starts listening for new HereDoc tokens.</p>\n<p>I think this should result in more clear and understandable code. And you won't need to interfere with scanner working so much. Good thing your unit tests don't need to be changed.</p>\n<p>One interesting extra twist: to define ITokenFilter interface (instead of base class), and then combine HereDocTerminal and token filter (make terminal implement ITokenFilter) - making a single self-contained class instead of two.</p>\n<p>Can you please try this? I understand, that's a bit frustrating, to change the course when code is already completed and seems to be working ok. Sorry and thanks in advance.</p>\n<p>Roman &nbsp;&nbsp;</p>",
+    "PostedDate": "2011-09-07T17:21:50.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

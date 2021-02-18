@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "459935",
+    "ThreadId": "217316",
+    "Html": "<p>I'm working on a project which involves a bunch of external Dll. I have wrappers around these Dlls and have a bunch of API calls I would like to get at through a custom language, where would I start to look/ what challenges might I face if I were to try and glue in custom commands in this way?</p>",
+    "PostedDate": "2010-06-25T06:37:01.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "459939",
+    "ThreadId": "217316",
+    "Html": "<p>Even from a basic point of view if I want to wire a simple command such a:</p>\r\n<p style=\"padding-left:30px\">print(&quot;Hello World&quot;)</p>\r\n<p>So it was linked to C#'s:</p>\r\n<p style=\"padding-left:30px\">MessageBox.Show()</p>\r\n<p>Being able to do that would probably give me some clues as to how I might wire in my API commands.</p>",
+    "PostedDate": "2010-06-25T06:44:57.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "460016",
+    "ThreadId": "217316",
+    "Html": "Have a look at this article:\r\nhttp://intellect.dk/post/Writing-a-calculator-in-C-using-Irony.aspx\r\n\r\nit shows how to add calls to selected math functions inside expressions, custom impl of FunctionCallNode",
+    "PostedDate": "2010-06-25T10:11:37.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "460548",
+    "ThreadId": "217316",
+    "Html": "<p>That looks like it might do the trick. Thanks, I'll get back to you to tell you how it goes.</p>",
+    "PostedDate": "2010-06-28T01:41:07.1-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

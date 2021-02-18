@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "268503",
+    "ThreadId": "78448",
+    "Html": "<p>Hi</p>\r\n<p>Just encountered Irony and having played around with several other parser-types, I think I'll be settling here. I was wondering though, it is would be possible to feed the grammar rules from an XML file or equivalent - or even have an &quot;Irony Grammar&quot; Grammar or something with would read a standard BNF-type text file.&nbsp; Has it been done already?</p>\r\n<p>Thanks very much again though.</p>\r\n<p>Simon</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-17T07:24:30.863-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "268525",
+    "ThreadId": "78448",
+    "Html": "<p>Hi,</p>\r\n<p>&nbsp;and welcome on board!</p>\r\n<p>About your question, defining grammar in XML - what's the point? Just to make it harder? :)</p>\r\n<p>&quot;Standard BNF-type text file&quot; - what's that? Ironically, BNF is a thing without BNF. Bumm, double irony, intended. There's no &quot;standard&quot; there, at least not I'm aware of. In general, &quot;all in c#&quot; is one of the key strengths of Irony, compared to other parser technologies. BNF itself (grammar rules) is only part of language definition, you have to provide much more in most cases - action snippets, custom event handlers, precedence rules, error handlers - it is much easier to do directly in c# than in external artificial language. Irony's method of representing BNF is good enough, I think - compact, precise and matching the original BNFs as they are listed in language specs</p>\r\n<p>Roman</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-17T08:26:55.76-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "268579",
+    "ThreadId": "78448",
+    "Html": "<p>OK. Fair enough. In my enthusiasm in coming across Irony (I've been looking for a while now), perhaps I spoke before thinking.</p>\r\n<p>One other thing ... your SQL grammar example, in C# I can see the overloaded pipe operator. In VB.Net I can't. I've searched the object browser and it doesn't appear to be visible. Am I doing something daft (highly likely) or is it a shortcoming of VB.Net?</p>\r\n<p>Thx</p>\r\n<p>Simon</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-17T11:08:43.19-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "268583",
+    "ThreadId": "78448",
+    "Html": "<p>OK ... so I'm doing something dumb!&nbsp; There's the OR!</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-17T11:19:20.67-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "268861",
+    "ThreadId": "78448",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>SWoods2009 wrote:</strong><br>\r\n<p>Hi</p>\r\n<p>Just encountered Irony and having played around with several other parser-types, I think I'll be settling here. I was wondering though, it is would be possible to feed the grammar rules from an XML file or equivalent - or even have an &quot;Irony Grammar&quot; Grammar or something with would read a standard BNF-type text file.&nbsp; Has it been done already?</p>\r\n<p>Thanks very much again though.</p>\r\n<p>Simon</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</blockquote>\r\n<p>Hi there, SWoods.</p>\r\n<p>I think I may have what you want.</p>\r\n<p>Rivantsov, I've been messing around with Irony and came up with a few things I would be glad to share/contribute, if you thought them useful for the project:</p>\r\n<p>1- A &quot;converter&quot;, that takes in a BnF text file (heavily based upon the ones consumed by the Gold Parser Project) and outputs a .cs grammar file</p>\r\n<p>2- A dynamic grammar class, that takes a slightly modified version of the Gold BnF and initializes a new grammar in runtime. The alterations in the BnF notation were made in order to replace the standar terminator declaration in favor of the way Irony declares them, allowing you to delcare, say, quoted identifiers, as simlple as <strong>NTerminal&nbsp;&nbsp;&nbsp; = QuotedValue(&quot;&lt;&quot;, &quot;&gt;&quot;)</strong>. I'm also using the parameter syntax to finish up the configuration of the grammar, declaring stuf like Punctuation, Operator precedence, Transient and Not Reported Symbols, Keywords, etc.</p>\r\n<p>My personal reasons to make this were, first, to have a challenge in hand, in order to explore Irony, and second, to crate a concise form to create dynamic grammars, so that I could, in runtime, define a set of rules for reading complex textual data. Also, having a grammar's grammar is going to be useful in a tool for documenting my parsers/languages, something I've been postponing for quite some time now.</p>\r\n<p>I'm still amazed at how much it has been acomplished with Irony with such a clean and concise code, and I'm really considering dropping some of my old parsers and re-writing them in Irony, and the least I can do is share what little I can to make this project even better!</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-18T03:33:32.697-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "268978",
+    "ThreadId": "78448",
+    "Html": "<p>Hi Sygnus</p>\r\n<p>I must admit your 2) was exactly what I had in mind. I hadn't considered 1) but can see that for existing grammars it'd be useful.</p>\r\n<p>I completely agree with the sentiments of your last paragraph (well the first bit - since I have nothing to contribute!).</p>\r\n<p>Thx</p>\r\n<p>Simon</p>",
+    "PostedDate": "2009-12-18T09:05:45.703-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

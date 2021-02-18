@@ -1,0 +1,15 @@
+digraph G {
+rankdir = LR;
+S1 -> S2 [label = "D"];
+S2 -> S2 [label = "D"];
+S2 -> S3 [label = ","];
+S3 -> S4 [label = "D"];
+S4 -> S4 [label = "D"];
+S4 -> S5 [label = ","];
+S5 -> S6 [label = "D"];
+S6 -> S6 [label = "D"];
+S6 -> S7 [label = ","];
+S7 -> S8 [label = "D"];
+S8 -> S8 [label = "D"];
+S8[shape=doublecircle];
+}

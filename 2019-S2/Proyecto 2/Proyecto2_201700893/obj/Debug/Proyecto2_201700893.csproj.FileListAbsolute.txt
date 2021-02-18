@@ -1,0 +1,14 @@
+C:\Users\USER\Desktop\USAC - CYS\2019 - Segundo Semestre\Compiladores 1\Proyecto 2\Proyecto2_201700893\bin\Debug\Proyecto2_201700893.exe.config
+C:\Users\USER\Desktop\USAC - CYS\2019 - Segundo Semestre\Compiladores 1\Proyecto 2\Proyecto2_201700893\bin\Debug\Proyecto2_201700893.exe
+C:\Users\USER\Desktop\USAC - CYS\2019 - Segundo Semestre\Compiladores 1\Proyecto 2\Proyecto2_201700893\bin\Debug\Proyecto2_201700893.pdb
+C:\Users\USER\Desktop\USAC - CYS\2019 - Segundo Semestre\Compiladores 1\Proyecto 2\Proyecto2_201700893\bin\Debug\Irony.dll
+C:\Users\USER\Desktop\USAC - CYS\2019 - Segundo Semestre\Compiladores 1\Proyecto 2\Proyecto2_201700893\bin\Debug\Irony.Interpreter.dll
+C:\Users\USER\Desktop\USAC - CYS\2019 - Segundo Semestre\Compiladores 1\Proyecto 2\Proyecto2_201700893\bin\Debug\Irony.pdb
+C:\Users\USER\Desktop\USAC - CYS\2019 - Segundo Semestre\Compiladores 1\Proyecto 2\Proyecto2_201700893\bin\Debug\Irony.Interpreter.pdb
+C:\Users\USER\Desktop\USAC - CYS\2019 - Segundo Semestre\Compiladores 1\Proyecto 2\Proyecto2_201700893\obj\Debug\Proyecto2_201700893.csprojAssemblyReference.cache
+C:\Users\USER\Desktop\USAC - CYS\2019 - Segundo Semestre\Compiladores 1\Proyecto 2\Proyecto2_201700893\obj\Debug\Proyecto2_201700893.Form1.resources
+C:\Users\USER\Desktop\USAC - CYS\2019 - Segundo Semestre\Compiladores 1\Proyecto 2\Proyecto2_201700893\obj\Debug\Proyecto2_201700893.Properties.Resources.resources
+C:\Users\USER\Desktop\USAC - CYS\2019 - Segundo Semestre\Compiladores 1\Proyecto 2\Proyecto2_201700893\obj\Debug\Proyecto2_201700893.csproj.GenerateResource.cache
+C:\Users\USER\Desktop\USAC - CYS\2019 - Segundo Semestre\Compiladores 1\Proyecto 2\Proyecto2_201700893\obj\Debug\Proyecto2_201700893.csproj.CopyComplete
+C:\Users\USER\Desktop\USAC - CYS\2019 - Segundo Semestre\Compiladores 1\Proyecto 2\Proyecto2_201700893\obj\Debug\Proyecto2_201700893.exe
+C:\Users\USER\Desktop\USAC - CYS\2019 - Segundo Semestre\Compiladores 1\Proyecto 2\Proyecto2_201700893\obj\Debug\Proyecto2_201700893.pdb

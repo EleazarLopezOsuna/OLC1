@@ -1,0 +1,65 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T11:46:11.163-07:00",
+    "CommentCount": 5,
+    "Custom": "",
+    "Description": "When CurrentCulture does not use '.' as decimal separator, the NumberLiteral class fails to parse fractions.\n\nSteps to reproduce:\n1) Set CurrentCulture e.g. to de-DE or run GrammarExplorer on a german windows (german uses ',' as decimal separator)\n2) Enter text \"10.1\" \n3) Set breakpoint to the end of NumberLiteral.ConvertValue method\n4) Parse using ExpressionGrammar\n4) Look at the parsed value (debugger), which will be 101.0f\n\n(remarks: The Output Syntax Tree within Grammar Explorer shows the correct value 10.1 - it just prints the input string => other issue: Also print <ParsedValue>.ToString())\n\n\nDetails:\n\nInternally NumberLiteral uses the .Net Convert class to parse number literals. No IFormatProvider is passed to the convertion method, thus CurrentCulture is implicitly used. However using culture de-DE, '.' is just ignored (it is the thousands separator). \n\nSolution:\n\n(When neccessary) pass an IFormatProvider. CultureInfo.InvariantCulture should be used.\n\n(1) -> not tested.\nIn NumberLiteral.cs, line 154 (\"value = Convert.ChangeType(details.Body, details.TypeCode);\") and line 177 (\"if (double.TryParse(details.Body, out dbl))\") are affected. Pass CultureInfo.InvariantCulture.\n\n(2) -> some tests\nRewrite NumberLiteral class (especially the ConvertValue method). I attached an edited version of the NumberLiteral.cs source file. Its benefits are:\n\n + DecimalSeparator can be set (default is '.')\n + Uses InvariantCulture internally\n + BigInteger values can be Hex or Octal",
+    "LastUpdatedDate": "2010-03-26T11:46:11.163-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2008-03-09T13:30:59.44-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "[NumberLiteral] Issue with CurrentCulture using '.' as decimal separator",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 1678
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Sorry, missunderstood the Save button. Only wanted to upload the file...\r\n\r\n... now the title is wrong. Should be \"[NumberLiteral] Issue with CurrentCulture not using '.' as decimal separator\"\r\n... I also uploaded an old file. The right one is attached to this comment.",
+      "PostedDate": "2008-03-09T13:41:09.223-07:00",
+      "Id": 29071
+    },
+    {
+      "Message": "Hi\r\nSorry, I misunderstood the meaning of \"x\" symbol next to the attached file, and accidentally deleted the attachments. Can you please re-add them?\r\nAbout the bug - great catch!!! Congratulations and thank you!\r\nAbout the fix. #1 is definitely the simplest and I will go with this for a start.\r\n#2. That's a bigger rewrite. Several things here. \r\n1. Enabling Hex and Octal for BigInts - great\r\n2. I like the idea of separating converting methods of float and int. As for method names ParseFraction and ParseInteger - I would change to ConvertFloat and ConvertInteger\r\n3. Using NumberFormatInfo property - not sure about that, seems to be overkill; 99% of formal languages would operate in Neutral/US culture, and for the remaining 1% dev could subclass the standard NumberLiteral class and introduce such thing there\r\n4. Big issue: in your code, BigInteger object is created FIRST and ALWAYS, even if big ints are out of the picture - not sure about that. Seems to be a huge performance overhead for majority of cases which are simple small numbers.\r\n5. Implementation of TryParseBigInt - can it be done faster? Ops on big ints are VERY expensive, and what method does is performs multiplication / adding on every digit. I think there may be some way to make things faster.\r\n\r\nIf you wanna continue with this and take over this literal, I can supply some other \"issues\" that came up \r\nthanks again\r\nRoman  \r\n \r\n",
+      "PostedDate": "2008-03-11T00:54:43.71-07:00",
+      "Id": 29072
+    },
+    {
+      "Message": "Hey Roman,\r\n\r\nI will take care of the issues identified by you. Once I have done that, I will upload the attachment again. I'd also try to investigate other issues related to the NumberLiteral class. Just post them...\r\n\r\nKabelsalat",
+      "PostedDate": "2008-03-12T04:14:59.363-07:00",
+      "Id": 29073
+    },
+    {
+      "Message": "Design question: Should integer values support exponents?\r\n\r\n => Is e.g. 1234E12 with integer type suffix a valid number? Should there be an option to enable this? Always accepting such numbers wouldn't be a good choice, as e.g. C# doesn't accept 1234E12ul!\r\n => Should there be an option for setting the default type of numbers with exponent, thus allowing to parse e.g. 1234E12 to be parsed as DefaultIntType instead of DefaultFloatType?",
+      "PostedDate": "2008-03-12T06:45:30.597-07:00",
+      "Id": 29074
+    },
+    {
+      "Message": "Hi\r\nI've contacted you directly regarding these issues, see your mailbox\r\n",
+      "PostedDate": "2008-03-12T20:28:40.97-07:00",
+      "Id": 29075
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "fixed",
+    "ClosedDate": "2010-03-26T09:13:59.773-07:00",
+    "CommentCount": 5,
+    "Custom": "",
+    "Description": "Hey Roman,\n\nFirst of all, I must say, great work!  I've been using Irony for a little over a month with awesome results, but I finally ran into this bug.\n\nI have two terminals, a CustomTerminal and a FreeTextLiteral.  It seems that the terminals are being sorted by token name rather than priority.  (They are stored in alphanumerically ascending order in Scanner::Data.FallbackTerminals).  During the Scanner::SelectTerminals(char) function call, the terminals are just copied from Data.FallbackTerminals into termList (line #202), and no other sorting takes place in this function.\n\nIn my grammar, the terminals are declared as:\n\nvar endOfLineText = new CustomTerminal(\"EndOfLineText_Custom\", EndOfLineTextMatcher);\nvar messageText = new FreeTextLiteral(\"MessageText\", \"{\");\nmessageText.Priority = Terminal.HighestPriority;\n\nI have tried reodering the declarations, adjusting the priorities on both, but with no luck.  The current work-around that I'm using is to name them as \"A_MessageText\" and \"Z_EndOfLineText_Custom\" in order to get them to \"sort\" correctly (alphanumerically where \"A_***\" ends up with a higher 'priority' than \"Z_***\".\n\nIf you could get it so that it takes the priorities into consideration, I would greatly appreciate it.  Thanks!",
+    "LastUpdatedDate": "2010-03-26T09:13:59.773-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2009-11-17T06:56:46.153-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Custom & FreeTextLiteral Terminals are not sorted by priority",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 6291
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi\r\n  - that's a valid point for sure. All this fallback terminals business needs some rework and reshape, there are some other issues there. It is on my todo list, will try to get to this item in some near future. For now, it workaround works for you - great, when the fix comes you'll just remove these strange names.\r\nthanks for finding and reporting this!\r\nRoman",
+      "PostedDate": "2009-11-18T08:22:24.05-08:00",
+      "Id": 29139
+    },
+    {
+      "Message": "Fixed in latest code drop (Nov 21)",
+      "PostedDate": "2009-11-21T17:39:33.473-08:00",
+      "Id": 29140
+    },
+    {
+      "Message": "Fixed in latest source drop\r\n\n\n** Closed by rivantsov 11/30/2009 12:57 AM",
+      "PostedDate": "2010-02-03T11:59:09.163-08:00",
+      "Id": 29141
+    },
+    {
+      "Message": "The latest code drop (change set #42496 on Jan 26, 2009) still does not fix this issue.\r\n\r\nSee the discussion thread:\r\nhttp://irony.codeplex.com/Thread/View.aspx?ThreadId=83058\r\nfor a proposed solution.",
+      "PostedDate": "2010-02-03T11:59:09.993-08:00",
+      "Id": 29142
+    },
+    {
+      "Message": "should be fixed in latest drop. please verify",
+      "PostedDate": "2010-03-14T22:38:08.443-07:00",
+      "Id": 29143
+    }
+  ]
+}

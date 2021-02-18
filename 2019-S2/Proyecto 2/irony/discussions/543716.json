@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1239261",
+    "ThreadId": "543716",
+    "Html": "I'm attempting to use Irony to make a parser for the Lucene Query Syntax (see links at the end for more info). The current version of my grammar is here <a href=\"https://gist.github.com/mattwarren/11398785\" rel=\"nofollow\">https://gist.github.com/mattwarren/11398785</a>.\r<br />\n<br />\nAs a starting point, I'm trying to make it make this BNF definition:<br />\n<pre><code>Query -&gt; Clause (And Clause | Or Clause | NotClause | Clause)*;\nNotClause -&gt; Not Clause;\nClause -&gt; (SubClause | Term);\nSubClause -&gt; (PLUS Query) | (MINUS Query) | (OPEN_PAREN Query CLOSE_PAREN);\n\nTerm -&gt; Range | QualifiedTerm | UnqualifiedTerm;\nQualifiedTerm -&gt; FIELD_NAME ( Range | TEXT_VALUE | STRING_LITERAL );\nRange -&gt; OPEN_SQUARE UnqualifiedTerm TO UnqualifiedTerm CLOSE_SQUARE;\nUnqualifiedTerm -&gt; (STRING_LITERAL | TEXT_VALUE);</code></pre>\n\nBut I'm struggling with the definition of the top-level query, I'm not sure how to properly make (optional) BinaryExpressions, with an implied OR operator. Can anyone give me any pointers?\r<br />\n<br />\nThese are the queries I'm currently testing with:<br />\n<ul>\n<li>title:(+return +&quot;pink panther&quot;)</li>\n<li>&quot;jakarta apache&quot; -&quot;Apache Lucene&quot;</li>\n<li>(jakarta OR apache) AND website</li>\n<li>jakarta apache website matt name:bob age:123</li>\n<li>+(Term:bar Term2:baz) +Term3:foo -Term4:rob</li>\n<li>mod_date:[20020101 TO 20030101] Name:bob</li>\n<li>title:(Do AND it)</li>\n<li>\ntitle:&quot;Do it right&quot; AND (right:go OR matt:no)<br />\n</li>\n</ul>\nThere is some info on the grammar in these links:<br />\n<ol>\n<li><a href=\"http://lucene.apache.org/core/2_9_4/queryparsersyntax.html\" rel=\"nofollow\">http://lucene.apache.org/core/2_9_4/queryparsersyntax.html</a></li>\n<li><a href=\"https://today.java.net/pub/a/today/2003/11/07/QueryParserRules.html\" rel=\"nofollow\">https://today.java.net/pub/a/today/2003/11/07/QueryParserRules.html</a></li>\n<li><a href=\"https://lucene.apache.org/core/3_5_0/api/contrib-queryparser/org/apache/lucene/queryParser/standard/StandardQueryParser.html\" rel=\"nofollow\">https://lucene.apache.org/core/3_5_0/api/contrib-queryparser/org/apache/lucene/queryParser/standard/StandardQueryParser.html</a></li>\n</ol>\n",
+    "PostedDate": "2014-04-29T05:41:00.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1239409",
+    "ThreadId": "543716",
+    "Html": "Look at FullTextSearch grammar sample, your grammar seems similar to FTS/Google search language, start from this grammar<br />\n",
+    "PostedDate": "2014-04-29T09:29:42.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

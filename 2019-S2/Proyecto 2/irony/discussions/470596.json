@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1127094",
+    "ThreadId": "470596",
+    "Html": "My apologies if this has been answered elsewhere.  I tried searching around but didn't find an answer.  I have my grammar done so that is parses properly without conflicts, but I'm trying to influence how it decides to match expressions.  I have a statement like the following:<br />\n2d6+12+#18<br />\nBoth + and +# are valid operators.  I have a binary expression that is fairly typical.  I also have what I call a threshold expression that is made up of an expression on the left and a number on the right, while the operator in the middle is either # or +#.  In the above example, the parser sees the threshold expression as 12+#18, where it is then the right hand value in an addition binary operation and the 2d6 is the left.  My desire is for the parser to favor parsing 2d6+12 as a binary expression that is then the left hand value in the threshold expression (essentially matching the most expansive expression possible on the left hand side of the +# operator).  Is there some simple application of the PreferShiftHere() or ReduceHere() methods that accomplishes this?  I'm still reading/learning about lalr parsers and there is a lot I don't yet understand.  Thank you for your time.<br />\n",
+    "PostedDate": "2013-11-20T07:21:54.41-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1127163",
+    "ThreadId": "470596",
+    "Html": "I think all you need to do is set appropriately the operator precedence: the value for '+' should be hire than for '+#'; just like * has higher prec than +<br />\n",
+    "PostedDate": "2013-11-20T09:55:23.527-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1127230",
+    "ThreadId": "470596",
+    "Html": "Actually I have already set the precedence in just that fashion.  I had hoped doing so would fix my problem, but it did not.  I have included my rather short grammar in case it helps.  Thank you by the way for building such a nice community project.<br />\n<pre><code>         this.Root = expression;\n\n         binOp.Rule = ToTerm(&quot;+&quot;) | &quot;-&quot; | &quot;/&quot; | &quot;*&quot;;\n\n         explodeDirectiveExpr.Rule = explodeOp + number | explodeOp;\n         compoundDirectiveExpr.Rule = compoundOp + number | compoundOp;\n         rollOptionExpr.Rule = Empty | compoundDirectiveExpr | explodeDirectiveExpr | increasedOp;\n         dieCodeExpr.Rule = dieOp + number;\n         diceRollExpr.Rule = number + dieCodeExpr + rollOptionExpr;\n         binModExpr.Rule = MakePlusRule(binModExpr, binOp + number);\n         modDiceExpr.Rule = lbrk + diceRollExpr + binModExpr + rbrk;\n         dropDiceExpr.Rule = (diceRollExpr | modDiceExpr) + (dropOp | keepOp) + number;\n         highDieExpr.Rule = (diceRollExpr | modDiceExpr) + highDieOp;\n         lowDieExpr.Rule = (diceRollExpr | modDiceExpr) + lowDieOp;\n         complexDiceRollExpr.Rule = (diceRollExpr | modDiceExpr | dropDiceExpr | highDieExpr | lowDieExpr);\n         \n         targetExpr.Rule = ToTerm(&quot;#&quot;) | &quot;+#&quot;;\n         thresholdExpr.Rule = expression + targetExpr + number;      \n\n         conditionalExpr.Rule = thresholdExpr + conditionalOp + min_opt + binOp + expression;\n\n         parExpression.Rule = lpar + expression + rpar;\n         binExpr.Rule = expression + binOp + expression;\n         expression.Rule = complexDiceRollExpr | parExpression | binExpr | number | thresholdExpr | conditionalExpr;\n\n         RegisterOperators(4, &quot;d&quot;);\n         RegisterOperators(3, &quot;*&quot;, &quot;/&quot;);\n         RegisterOperators(2, &quot;+&quot;, &quot;-&quot;);\n         RegisterOperators(1, &quot;+#&quot;, &quot;#&quot;);</code></pre>\n\n",
+    "PostedDate": "2013-11-20T12:45:36.223-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1127235",
+    "ThreadId": "470596",
+    "Html": "try marking binOp as transient, it might be an old bug that still sits there<br />\n",
+    "PostedDate": "2013-11-20T12:56:19.333-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2013-11-20T13:34:43.593-08:00"
+  },
+  {
+    "Id": "1127251",
+    "ThreadId": "470596",
+    "Html": "Thank you, it looks like that solved the problem :)<br />\n",
+    "PostedDate": "2013-11-20T13:34:39.583-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

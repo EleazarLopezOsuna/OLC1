@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1288184",
+    "ThreadId": "560628",
+    "Html": "I'm parsing a configuration file that includes blocks like this:<br />\n<pre><code>rule MyConfigurationRule {\n    when HTTP_REQUEST {\n        if {[string tolower [HTTP::host]] contains &quot;dev-&quot; } {\n            pool dev-pool\n        }\n        elseif {[string tolower [HTTP::host]] contains &quot;beta-&quot; } {\n            pool beta-pool\n        }\n    }\n}</code></pre>\n\nI don't actually care about parsing the details of the rule- I just need it back as a string so I can tell if it has changed. I would ideally like to have a rule defined like this:<br />\n<pre><code>RuleDefinition.Rule\n    = ToTerm(&quot;rule&quot;) + Identifier + &quot;{&quot; + RuleBody + &quot;}&quot;;</code></pre>\n\nI've tried FreeTextLiteral and StringLiteral, but the embedded closing brackets keep causing issues. Any suggestions would be appreciated.<br />\n",
+    "PostedDate": "2014-08-08T12:35:39.47-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1288306",
+    "ThreadId": "560628",
+    "Html": "I don't think it is a reasonable approach. You want to grab all until closing brace as one plain text, but the braces must be counted to account for blocks ( {..} ). So the parser/scanner should analyze the content and count braces. An what about occurrences inside string literals - which should not be counted I guess?! (what if &quot;dev-&quot; constant was &quot;dev-{abc}{&quot; ?\r<br />\nIf you insist on going with a terminal, you have to create a custom terminal (similar to FreeTextLiteral or HereDoc) and add some tricky logic inside which detects which is the final closing brace\r<br />\nRoman<br />\n",
+    "PostedDate": "2014-08-08T22:09:26.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1288314",
+    "ThreadId": "560628",
+    "Html": "I found a nice regex in the <a href=\"http://msdn.microsoft.com/en-us/library/bs2twtah(v=vs.110).aspx#balancing_group_definition\" rel=\"nofollow\">regex documentation on msdn</a> that does capture balancing. With the RuleDefinition above, it works really well: <br />\n<pre><code>Terminal RuleBody = new RegexBasedTerminal(&quot;RuleBody&quot;, &quot;[^{}]*(((?'Open'{)[^{}]*)+((?'Close-Open'})[^{}]*)+)*(?(Open)(?!))&quot;);</code></pre>\n\nAs you mentioned, the one caveat: curly brackets embedded in strings. These are going to require even more special handling.<br />\n<br />\nThanks for the response Roman- I appreciate you taking time to answer questions.<br />\n",
+    "PostedDate": "2014-08-08T22:29:56.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-08-08T22:30:20.763-07:00"
+  },
+  {
+    "Id": "1290524",
+    "ThreadId": "560628",
+    "Html": "Here's the regex I've ended up with that handles curly brackets that are escaped like: { }<br />\n<pre><code>Terminal RuleBody = new RegexBasedTerminal(&quot;RuleBody&quot;, &quot;([^\\\\\\\\{}]|\\\\\\\\{|\\\\\\\\})*(((?'Open'(?!\\\\\\\\{){)([^\\\\\\\\{}]|\\\\\\\\{|\\\\\\\\})*)+((?'Close-Open'(?!\\\\\\\\})})([^\\\\\\\\{}]|\\\\\\\\{|\\\\\\\\})*)+)*(?(Open)(?!))&quot;);</code></pre>\n\n",
+    "PostedDate": "2014-08-15T10:15:15.36-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

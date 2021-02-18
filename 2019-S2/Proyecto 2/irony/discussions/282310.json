@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "709521",
+    "ThreadId": "282310",
+    "Html": "\r\n<p>10000000000 is too long to be an integer, but it will work in a float. However, when parsing, I get the following exception:</p>\r\n<pre>Error Cannot convert literal 10000000000 to type Int32.<br></pre>\r\n<p>In NumberLiteral.AssignTypeCodes it could look at the length of the string- if greater than 10 characters, then set isFloat. &nbsp;Though that's certainly not very clean.</p>\r\n<p>I think I can get by by adding TypeCode.<span>Single to NumberLiteral.DefaultIntTypes; is there a better solution?</span></p>\r\n",
+    "PostedDate": "2011-12-08T13:22:19.773-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "709555",
+    "ThreadId": "282310",
+    "Html": "<p>Look at ExpressionEvaluatorGrammar:</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp; &nbsp; &nbsp; number.DefaultIntTypes = new TypeCode[] { TypeCode.Int32, TypeCode.Int64, NumberLiteral.TypeCodeBigInt };</p>\r\n<p>&nbsp;</p>\r\n<p>This tells parser to use Int64 or even BigInt types when values are too large. That would solve your problem.</p>",
+    "PostedDate": "2011-12-08T14:13:37.647-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,240 @@
+/*--------- 1ra Area: Codigo de Usuario ---------*/
+
+//--------> Paquetes e importaciones
+package Analizadores.CSS;
+import java_cup.runtime.Symbol;
+import Estructuras.Cola;
+import java.util.ArrayList;
+import Modelos.*;
+import java.awt.Color;
+
+//--------> Codigo para el parser, variables, metodos
+parser code
+{:
+    public Cola TodosLosErrores = new Cola();
+    public ArrayList<Estilo> estilos = new ArrayList<>();
+    public Estilo nuevo = new Estilo("asd");
+
+    //Metodo al que se llama automaticamente ante algun error sintactico
+    public void syntax_error(Symbol s){
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        System.out.println("ERROR SINTACTICO: " + lexema + " LINEA: " + fila + " COLUMNA: " + columna);
+        Errores error = new Errores(lexema,fila,columna,"Token " + lexema + " No esperado", "Sintactico");
+        TodosLosErrores.insertar(error);
+    }
+
+    //Metodo al que se llama en el momento en el que ya no es posible una recuperacion de errores
+    public void unrecovered_syntax_error(Symbol s){
+
+    }
+:}
+
+//--------> Codigo para las acciones gramaticales
+action code
+{:
+    
+:}
+
+/*--------- 2da Area: Declaraciones ---------*/
+
+//--------> Declaracion de terminales
+terminal parentesisA, parentesisC, puntoComa, dosPuntos;
+terminal llaveA, llaveC, coma;
+terminal background, border, borderColor, borderWidth, align;
+terminal font, fontSize, fontColor, hight, width, rgb;
+terminal hexadecimal, colorrgb;
+terminal String booleano;
+terminal red, pink, orange, yellow, purple, magenta;
+terminal green, blue, brown, white, gray, black;
+terminal ALIright, ALIleft, ALIcenter;
+terminal String identificador, subidentificador, cadena;
+terminal String numero;
+
+//--------> Declaracion de no terminales
+non terminal S, INICIO;
+non terminal CARACTERISTICA, CUERPO, OPCIONES, L_OPCIONES;
+non terminal String ALINEACION, COLORES;
+non terminal Color TIPOSCOLOR;
+
+start with S;
+
+/*--------- 3ra Area: Reglas Semanticas ---------*/
+
+S ::= INICIO
+    |
+    ;
+INICIO ::= INICIO CARACTERISTICA
+{:
+    nuevo = new Estilo("asd");
+:}
+    | CARACTERISTICA
+{:
+    nuevo = new Estilo("asd");
+:}
+    ;
+
+CARACTERISTICA ::= identificador:a llaveA L_OPCIONES llaveC
+{:
+    nuevo.setNombre(a);
+    estilos.add(nuevo);
+:}
+    | subidentificador:a llaveA L_OPCIONES llaveC
+{:
+    a = a.replace(".","");
+    nuevo.setNombre(a);
+    estilos.add(nuevo);
+:}
+    ;
+
+L_OPCIONES ::= L_OPCIONES OPCIONES
+    | OPCIONES
+    ;
+
+OPCIONES ::= border dosPuntos booleano:a puntoComa
+{:
+    boolean retorno = false;
+    if(a.toLowerCase().equals("true")){
+        retorno = true;
+    }
+    nuevo.setBorde(retorno);
+:}
+    | borderColor dosPuntos TIPOSCOLOR:a puntoComa
+{:
+    nuevo.setColorBorde(a);
+:}
+    | borderWidth dosPuntos numero:a puntoComa
+{:
+    int hola = Integer.parseInt(a);
+    nuevo.setAnchoBorde(hola);
+:}
+    | background dosPuntos TIPOSCOLOR:a puntoComa
+{:
+    nuevo.setBackground(a);
+:}
+    | align dosPuntos ALINEACION:a puntoComa
+{:
+    nuevo.setAlineacion(a);
+:}
+    | font dosPuntos cadena:a puntoComa
+{:
+    a = a.replace("'","");
+    nuevo.setFuente(a);
+:}
+    | fontSize dosPuntos numero:a puntoComa
+{:
+    int hola = Integer.parseInt(a);
+    nuevo.setAlturaFuente(hola);
+:}
+    | fontColor dosPuntos TIPOSCOLOR:a puntoComa
+{:
+    nuevo.setColorFuente(a);
+:}
+    | hight dosPuntos numero:a puntoComa
+{:
+    int hola = Integer.parseInt(a);
+    nuevo.setAlto(hola);
+:}
+    | width dosPuntos numero:a puntoComa
+{:
+    int hola = Integer.parseInt(a);
+    nuevo.setAncho(hola);
+:}
+    ;
+TIPOSCOLOR ::= rgb parentesisA numero:a coma numero:b coma numero:c parentesisC
+{:
+    int hola = Integer.parseInt(a);
+    int hola1 = Integer.parseInt(b);
+    int hola2 = Integer.parseInt(c);
+    RESULT = new Color(hola,hola1,hola2);
+:}
+    | COLORES:a
+{:
+    Color color = Color.black;
+    switch(a.toLowerCase()){
+        case "red":
+            color = Color.red;
+            break;
+        case "pink":
+            color = Color.pink;
+            break;
+        case "orange":
+            color = Color.orange;
+            break;
+        case "yellow":
+            color = Color.yellow;
+            break;
+        case "purple":
+            color = new Color(87,35,100);
+            break;
+        case "magenta":
+            color = Color.magenta;
+            break;
+        case "green":
+            color = Color.green;
+            break;
+        case "blue":
+            color = Color.blue;
+            break;
+        case "brown":
+            color = new Color(138,114,104);
+            break;
+        case "white":
+            color = Color.white;
+            break;
+        case "gray":
+            color = Color.gray;
+            break;
+        case "black":
+            color = Color.black;
+            break;
+        default:
+            if(a.contains("#")){
+                color = Color.decode(a);
+            }
+            break;
+    }
+    RESULT = color;
+:}
+    ;
+COLORES ::= red
+{: RESULT = "red"; :}
+    | pink
+{: RESULT = "pink"; :}
+    | orange
+{: RESULT = "orange"; :}
+    | yellow
+{: RESULT = "yellow"; :}
+    | purple
+{: RESULT = "purple"; :}
+    | magenta
+{: RESULT = "magenta"; :}
+    | green
+{: RESULT = "green"; :}
+    | blue
+{: RESULT = "blue"; :}
+    | brown
+{: RESULT = "brown"; :}
+    | white
+{: RESULT = "white"; :}
+    | gray
+{: RESULT = "gray"; :}
+    | black
+{: RESULT = "black"; :}
+    | hexadecimal:a
+{: RESULT = String.valueOf(a); :}
+    ;
+ALINEACION ::= ALIleft
+{:
+    RESULT = "left";
+:}
+    | ALIright
+{:
+    RESULT = "right";
+:}
+    | ALIcenter
+{:
+    RESULT = "center";
+:}
+    ;

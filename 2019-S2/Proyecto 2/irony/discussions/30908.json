@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "102809",
+    "ThreadId": "30908",
+    "Html": "Irony is a very promising parser engine but its license agreement limits its usefulness for commercial software.&nbsp; The license agreement says that the software may be used without restriction but that this same permission must be included in all copies of the software.&nbsp; Thus, if Irony is included with a larger software program, that program would inherit this license agreement.<br>\r\n<br>\r\nBy contrast, popular parser generators like GOLD allow&nbsp;use of the software for any purpose.&nbsp; Irony could very well become a defacto standard in this field.&nbsp; However, its design requires&nbsp;full integration of the software into the host program.&nbsp; Therefore, its license agreement&nbsp;becomes as serious a consideration as the library itself.<br>\r\n<br>\r\nSome great alternative license agreements:<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"http://www.codeproject.com/info/cpol10.aspx\">http://www.codeproject.com/info/cpol10.aspx</a><br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"http://www.devincook.com/goldparser/about/license.htm\">http://www.devincook.com/goldparser/about/license.htm</a><br>\r\n<br>\r\nPlease let me know if a change to the license agreement is possible.<br>\r\n<br>\r\nThanks!<br>\r\n",
+    "PostedDate": "2008-07-05T00:16:43.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "102846",
+    "ThreadId": "30908",
+    "Html": "I don't think this is the case. MIT (X11) is the least restrictive of most popular licenses. You can include&nbsp;Irony into bigger software product and sell the bigger product. See more details here:&nbsp;<a href=\"http://en.wikipedia.org/wiki/MIT_License\">http://en.wikipedia.org/wiki/MIT_License</a><br>\r\n",
+    "PostedDate": "2008-07-05T08:57:40.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "102858",
+    "ThreadId": "30908",
+    "Html": "The link you sent me says that&nbsp;&quot;the <b>MIT License</b>...permits reuse within <a title=\"Proprietary software\" href=\"http://en.wikipedia.org/wiki/Proprietary_software\">proprietary software</a> <span style=\"text-decoration:underline\">on the condition that the license is distributed with that software</span>...&quot; (underline added).&nbsp; It is the underlined portion that kills this license for commercial software if the vendor prefers a different license for their software program.<br>\r\n<br>\r\nMy assumption is that you want a license that strictly governs&nbsp;Irony, not a license that extends to other software programs that might use Irony.&nbsp; The MIT license is too ambiguous to know for certain which software program the license agreement covers.<br>\r\n<br>\r\n",
+    "PostedDate": "2008-07-05T12:32:26.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "102897",
+    "ThreadId": "30908",
+    "Html": "Requiring distributing Irony's license together with Irony&nbsp;as part of a bigger project does not mean Irony's license would apply to this bigger project - it will have its own license.<br>\r\n<br>\r\nIt is well explained here:<br>\r\n<a href=\"http://producingoss.com/html-chunk/license-quickstart.html\">http://producingoss.com/html-chunk/license-quickstart.html</a><br>\r\n",
+    "PostedDate": "2008-07-05T21:00:48.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "102946",
+    "ThreadId": "30908",
+    "Html": "<span style=\"background-color:#fffbf0\">Thank you for your patience in this discussion.&nbsp; So how could you distinguish Irony from the host program if Irony is compiled with the host program or merged into the host program with tools like&nbsp;<a href=\"http://www.microsoft.com/downloads/details.aspx?FamilyID=22914587-B4AD-4EAE-87CF-B14AE6A939B0&displaylang=en\">ILMerge</a>?&nbsp; At that point, there is no practical way to &quot;deal in the Software [Irony] without restriction&quot;&nbsp;per the license agreement&nbsp;because there is no physical distinction between Irony and the larger work.&nbsp; Merging binaries is a common security measure in commercial .NET deployment.<br>\r\n<br>\r\n<br>\r\n<br>\r\n</span>\r\n",
+    "PostedDate": "2008-07-06T10:15:53.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "103152",
+    "ThreadId": "30908",
+    "Html": "MIT license intent is to say: do whatever you want with the code, just don't pretend it is your invention, so don't restrict others in using it. So in case of IL-merge, a simple aknowledgment (&quot;we use Irony internally&quot; or &quot;we borrow code/ideas from Irony&quot;)&nbsp;and a link to Irony page in Reame file&nbsp;would&nbsp;satisfy&nbsp;this presumed&nbsp;intent of the license - and this was my intent when I chose&nbsp;it.<br>\r\n&nbsp;So stop worrying and start coding -)))\r\n",
+    "PostedDate": "2008-07-07T13:07:46.623-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "103251",
+    "ThreadId": "30908",
+    "Html": "OK, I will rely on your interpretation of&nbsp;the Irony&nbsp;license agreement in the situation I described.&nbsp;<br>\r\n",
+    "PostedDate": "2008-07-07T22:18:09.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

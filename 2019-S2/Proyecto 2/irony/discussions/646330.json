@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1448939",
+    "ThreadId": "646330",
+    "Html": "Hi All,\r<br />\nSorry if my question might sound stupid but why do I need to create or subclass AstNode for my non-terminals?<br />\n",
+    "PostedDate": "2015-10-17T18:15:36.12-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1449166",
+    "ThreadId": "646330",
+    "Html": "you don't have to, but if you need to generate abstract syntax tree (AST) then you need all these custom nodes. Google and read about concrete/abstract syntax trees in parsing<br />\n",
+    "PostedDate": "2015-10-20T10:20:43.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1449786",
+    "ThreadId": "646330",
+    "Html": "Got it. Thank you very much for your reply.<br />\n",
+    "PostedDate": "2015-10-26T16:48:45.08-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

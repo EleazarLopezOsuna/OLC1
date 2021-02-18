@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "527466",
+    "ThreadId": "236166",
+    "Html": "\r\n<p>Imagine two rules:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>A.Rule = C &#43; (Empty | D) &#43; E;\r\n\r\nB.Rule = C &#43; D &#43; E;\r\nB.Rule |= C &#43; E;\r\n</pre>\r\n</div>\r\n<p>To the untrained eye (e.g. mine), these two rules should be equivalent. But they aren't. Most of the conflicts I have revolve around optional parts (be they star rules or optional rules). I can resolve them by changing them from the form of rule A into rule\r\n B.</p>\r\n<p>I understand the technical reason why this happens but is there a way to fix the state generator so that these two rules are the same?</p>\r\n<p>Thanks,<br>\r\nJere&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-26T11:25:45.967-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "527485",
+    "ThreadId": "236166",
+    "Html": "\r\n<p>This automatic resolution is known and called GLR:</p>\r\n<p><a href=\"http://en.wikipedia.org/wiki/GLR_parser\">http://en.wikipedia.org/wiki/GLR_parser</a></p>\r\n<p>this is still in TODO list - GLR elements...&nbsp;</p>\r\n<p>The trouble is that you got to be really careful about relying on GLR to resolve conflicts; some conflicts (like &quot;dangling else&quot;) are intrinsic to grammar and must be resolved explicitly by extra resolution rules; others (like the ones you encounter) are\r\n result of limitations of parsing method.&nbsp;</p>\r\n<p>OSLO parser (now defunct and abandoned by MS) used GLR, but did not detect properly the nature of the conflict, or even reported conflicts, hoping to resolve them at parsing time through GLR... this approach seems unacceptable to me.</p>\r\n<p>So the proper implementation requires some research</p>\r\n<p>Roman</p>\r\n",
+    "PostedDate": "2010-11-26T12:21:21.437-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "527514",
+    "ThreadId": "236166",
+    "Html": "\r\n<p>I agree that the GLR approach is unacceptable. &nbsp;I prefer to know if my grammar is ambiguous. &nbsp;</p>\r\n<p>My point is that if I can resolve a conflict by spelling out the options (as in my original post) then there shouldn't have been a conflict in the first place because I haven't (or shouldn't have) changed the grammar at all, only how I express it.</p>\r\n<p>Jere</p>\r\n",
+    "PostedDate": "2010-11-26T13:25:40.007-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "527607",
+    "ThreadId": "236166",
+    "Html": "\r\n<p>&quot;Spelling out the options&quot; - you simply express the GLR paths to take - with middle element and without it.&nbsp;</p>\r\n<p>I was actually a bit imprecise. This is in fact Non-Canonical Parser (not GLR), when you try to continue parsing with both alternatives in mind. The main difference between NonCanonical and GLR parser is that in NonCanonical parser we try to modify the state\r\n automaton (at parser construction time) to &quot;delay&quot; conflict resolution by parsing both alternatives. In GLR, we do not modify state machine (change productions, etc), we use the same LALR state set, but we explore various alternatives (either in parallel or\r\n sequentially) until we find error-free path.&nbsp;</p>\r\n<p>I spent about 6 months last year researching and implementing non-canonical algorithms in Irony; it did not work well, parser builder was going into infinite loops, number of states often exploded, and it never worked beyond primitive samples. I did release\r\n the code, it had been in Irony for a while (as an option), but finally I pulled the plug and removed it. Maybe I'll have more luck with GLR</p>\r\n<p>A small comment on your last statement:&nbsp;&nbsp;&quot;I haven't ..... changed the grammar at all, only how I express it.&quot; Well, you did in fact&nbsp;change the grammar, what you did not change is the language described by the grammar. For a given language,\r\n there are many grammars that describe (define) it. Next, there are several parsing algorithms (LR, LL, LALR, etc); parser implementing an algorithm is guided by the language grammar, but this grammar is not just any grammar out of many that describe the language.\r\n Each method requires special kind of grammar, with certain properties. For ex, LL parser cannot handle left recursion in grammar rules (it goes into infinite loop). So usually, when you construct a parser for a language, you go into 2 steps:</p>\r\n<p>1 - obtain/write a grammar describing the language;</p>\r\n<p>2 - adjust the grammar (restructure it) to fit the parsing method.</p>\r\n<p>So that's exactly what you do now - adjusting the grammar to fit LALR parser. It is part of a normal, standard process, nothing unusual.&nbsp;</p>\r\n<p>Roman&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-27T00:48:10.083-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "527766",
+    "ThreadId": "236166",
+    "Html": "\r\n<p>Ok. &nbsp;That makes sense. &nbsp;I have noticed that Irony does seem to put off making a decision for as long as possible. &nbsp;For example, the following rules don't conflict:</p>\r\n<p>&nbsp;</p>\r\n<pre>A.Rule = B &#43; C &#43; D &#43; &quot;Bob&quot; &#43; F;\r\nG.Rule = B &#43; C &#43; D &#43; &quot;Jim&quot; &#43; F;</pre>\r\n<p>&nbsp;</p>\r\n<p>The more I work with Irony the more impressed I am. &nbsp;Thanks for your patience with me. :-)</p>\r\n<p>Jere</p>\r\n",
+    "PostedDate": "2010-11-27T17:12:47.183-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "187161",
+    "ThreadId": "55429",
+    "Html": "Hey Roman,<br>\r\n<br>\r\ngreat work on the new april 2009 version. I like the new project and all the refactoring you have done, it also makes some things easier to understand and to figure out whats going on.<br>\r\nYou wrote in change set 24373 that the interpreter is broken and almost all my samples and unit tests use AstNodes (or as it is called now ParseTreeNode.AstNode), but those are always null because Grammar.CreateAstNode's implementation is commented out.<br>\r\n<br>\r\nAny ideas when this will work again or how I can fix it maybe myself (just need the AstNodes to be the types I specify when creating NonTerminals and a way to execute DoEvaluate for all AstNodes).<br>\r\n<br>\r\nThanks,<br>\r\nBenjamin<br>\r\n",
+    "PostedDate": "2009-05-05T17:46:04.673-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "187185",
+    "ThreadId": "55429",
+    "Html": "thanks!. <br>\r\nabout AstNode creation - yeah, you're right, that shouldn't be commented. Interpreter is broken, but parser still can create AstNodes, whatever they are. <br>\r\n Just uncomment the body of method Grammar.CreateAstNode. But remember that nodes themselves should accomodate new IAstNodeInit interface for initialization. I will uncomment it soon, right now fixing other stuff, and not ready to upload<br>\r\nhave fun!<br>\r\nRoman\r\n",
+    "PostedDate": "2009-05-05T20:33:58.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "187334",
+    "ThreadId": "55429",
+    "Html": "Okay, that sounds good, will try this evening. Should be easier than I thought. Yesterday I was still all confused about all the namespace and class name changes, new stuff like ParseTree.<br>\r\nThanks,<br>\r\nBenjamin<br>\r\n",
+    "PostedDate": "2009-05-06T05:44:19.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

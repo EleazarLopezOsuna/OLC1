@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "no resolution for now. Future version might have direct VS integration support",
+    "ClosedDate": "2013-02-25T21:06:15.233-08:00",
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "Hi, \r\n\r\nI am using the irony package for visual studio integration of my language. I am storing all the declarations in one container and then when i do \"ctrl+ spacebar\" for auto completion options i have list of variables declared already. Now the problem is whenever i delete some lines of declaration i need to remove those entries from the declaration data container. For that i am thinking in two ways \r\n\r\n1. handling a delete event or\r\n\r\n2. reparsing the contents whenever the auto completion is initiated.\r\n\r\nIn the 1st method i don't know is there any provision to provide event handlers for keyboard inputs. If there's a way and it is a right way then please guide me.\r\n\r\nIn the second method i don't know how to reparse the contents for the current language service instance.\r\n\r\nAny help will be greatly helpful.\r\n\r\nThanks.\r\n",
+    "LastUpdatedDate": "2013-02-25T21:06:15.233-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "irony",
+    "ReportedDate": "2012-10-15T05:10:21.157-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Difficulty in support for autocompletion",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9876
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "sorry, not quite expert in VS integration. Rudimentary support for VS was added following some advice from Ben Morrison (who wrote CodeProject article about VS package with Irony).\n",
+      "PostedDate": "2013-02-25T21:05:50.617-08:00",
+      "Id": 91525
+    }
+  ]
+}

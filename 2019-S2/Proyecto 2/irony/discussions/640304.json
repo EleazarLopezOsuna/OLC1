@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1431394",
+    "ThreadId": "640304",
+    "Html": "I have the following grammar:<br />\n<pre><code>            StringLiteral STRING = new StringLiteral(&quot;string&quot;, &quot;'&quot;, StringOptions.AllowsDoubledQuote);\n            KeyTerm WITH = ToTerm(&quot;WITH&quot;);\n            KeyTerm LIKE = ToTerm(&quot;LIKE&quot;);\n            KeyTerm AND = ToTerm(&quot;AND&quot;);\n            KeyTerm OR = ToTerm(&quot;OR&quot;);\n            KeyTerm BY = ToTerm(&quot;BY&quot;);\n\n            NonTerminal expression = new NonTerminal(&quot;expression&quot;);\n\n            IdentifierTerminal id = new IdentifierTerminal(&quot;id&quot;);\n\n            NonTerminal filterList = new NonTerminal(&quot;filterList&quot;);\n            NonTerminal filter = new NonTerminal(&quot;filter&quot;);\n\n            NonTerminal connectionFilter = new NonTerminal(&quot;connectionFilter&quot;);\n\n            NonTerminal stringFilter = new NonTerminal(&quot;stringFilter&quot;);\n            NonTerminal stringQuery = new NonTerminal(&quot;stringQuery&quot;);\n            NonTerminal stringOperator = new NonTerminal(&quot;stringOperator&quot;);\n\n            var Column = new NonTerminal(&quot;Column&quot;, id);\n            var Table = new NonTerminal(&quot;Table&quot;, id);\n\n            connectionFilter.Rule = Column + BY + Table | WITH + Table;\n\n            stringFilter.Rule = Column + stringQuery\n                              | WITH + Column + stringQuery;\n\n            stringQuery.Rule = STRING\n                             | LIKE + STRING;\n\n            var linker = new NonTerminal(&quot;linker&quot;, AND | OR | Empty);\n\n            filterList.Rule = MakePlusRule(filterList, linker, filter);\n\n            filter.Rule = connectionFilter | stringFilter;\n\n            var RootTable = new NonTerminal(&quot;RootTable&quot;, id);\n\n            expression.Rule = RootTable + filterList;\n\n            \n\n            Root = expression;</code></pre>\n\nFeeding it &quot;Employees with email address like 'abc' &quot;, I get:<br />\n<pre><code>Employees   with email    address    like   'abc' \nTable       with table    column     LIKE  STRING</code></pre>\n\nHowever I want all text (including spaces) up to the &quot;LIKE&quot; term to be extracted in the following manner, knowing that none of the terms within the column will contain the LIKE key term :<br />\n<pre><code>Employees   with                email address                        like     'abc' \nTable       with                   column                            LIKE    STRING</code></pre>\n\nIs there a possibility to enforce the grammar to get multiple tokens (basically all free text) into the column non-terminal (column=&quot;email address&quot;) up to the LIKE key term?<br />\n<br />\nOr more general, having something like:<br />\n<pre><code>&gt; Expression.Rule = TERM_ONE + InnerExpression + TERM_TWO</code></pre>\n\nand knowing that InnerExpression will never contain TERM_ONE or TERM_TWO, to force the parser to take all free text between these 2 terms?<br />\n",
+    "PostedDate": "2015-06-22T12:38:34.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1431470",
+    "ThreadId": "640304",
+    "Html": "There's a terminal FreeTextLiteral that does what you need - all text until certain terminator(s)<br />\n",
+    "PostedDate": "2015-06-23T00:33:43.497-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

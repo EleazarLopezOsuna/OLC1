@@ -1,0 +1,154 @@
+[
+  {
+    "Id": "127845",
+    "ThreadId": "38543",
+    "Html": "I attempted to add this assembly to sql server 2008 and got the following error:<br>\r\n<span style=\"font-size:10px\">\r\n<p>CREATE ASSEMBLY failed because type 'Irony.Compiler.Scanner' in safe assembly 'Irony' has a static field '_tab_arr'. Attributes of static fields in safe assemblies must be marked readonly in Visual C#, ReadOnly in Visual Basic, or initonly in Visual C++ and intermediate language.<br>\r\n<br>\r\nI can see the value of adding this functionality directly to Sql Server. Any suggestions on the best way to work around the above problem?<br>\r\n<br>\r\nThanks<br>\r\nRoyal</p>\r\n</span>\r\n",
+    "PostedDate": "2008-10-26T09:12:06.96-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "127920",
+    "ThreadId": "38543",
+    "Html": "Hi<br>\r\nThanks for finding it - never thought such a little thing could make such a big trouble. A workaround - just make it local variable of the method that follows (it's the only place it is used).<br>\r\nLike this:<br>\r\n<span style=\"font-size:13px\">\r\n<p>&nbsp;</p>\r\n</span>\r\n<p><span style=\"font-size:13px;color:#0000ff\">char</span><span style=\"font-size:13px\">[] tab_arr = { </span><span style=\"font-size:13px;color:#a31515\">'\\t'</span><span style=\"font-size:13px\"> };<br>\r\n<br>\r\n(better to remove the leading underscore) I will change it in the next code drop. <br>\r\nLet me know if there are any more troubles<br>\r\n<br>\r\nRoman\r\n<p>&nbsp;</p>\r\n</span></p>\r\n",
+    "PostedDate": "2008-10-26T19:20:23.11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128141",
+    "ThreadId": "38543",
+    "Html": "That fixed one problem but there must be quite a few of these below is the next error<br>\r\n<br>\r\n<span style=\"font-size:10px\">\r\n<p>CREATE ASSEMBLY failed because method 'ResizeArrayTo' on type 'Irony.Runtime.Unassigned' in safe assembly 'Irony' is storing to a static field. Storing to a static field is not allowed in safe assemblies.<br>\r\n<br>\r\nThanks<br>\r\nRoyal</p>\r\n</span>\r\n",
+    "PostedDate": "2008-10-27T15:47:10.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128207",
+    "ThreadId": "38543",
+    "Html": "Hi<br>\r\nCan we somehow get all these violations in one list? Is there some FxCop-like setting, or special tool that would hilight all these at compile time? That's the first time I hear about these special requirement to &quot;safe&quot; assemblies. Can you please provide more, from SQL 2008 docs maybe?<br>\r\nthanks<br>\r\nRoman\r\n",
+    "PostedDate": "2008-10-27T23:44:48.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128568",
+    "ThreadId": "38543",
+    "Html": "I tried to add your code to a sql server project in Visual Studio but Sql server doesn't have a reference to system.core. The idea was to see what errors I got when compiling in that environment. I also tried using fxcop and it wasn't able to find the system.core reference. I am new to fxcop so not sure what I did wrong. I submitted a request on a Sql Server forum about this but not getting any responses.<br>\r\nI did find the following article on MSDN about CLR Programming Restrictions:<br>\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ms403273.aspx\">http://msdn.microsoft.com/en-us/library/ms403273.aspx</a><br>\r\n<br>\r\nWill post more later if I learn anything.<br>\r\n<br>\r\nThanks<br>\r\nRoyal \r\n",
+    "PostedDate": "2008-10-29T04:51:26.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128669",
+    "ThreadId": "38543",
+    "Html": "That link doesn't help much - it's about something different. I've tried to go through and fix all static fields, so try the latest checkin version. Let me know about any new violations.<br>\r\nRoman\r\n",
+    "PostedDate": "2008-10-29T10:32:17.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128745",
+    "ThreadId": "38543",
+    "Html": "Well it looks like not all .net assemblies can be added to sql server. I got the below error when trying to add system.windows.forms.dll to sql server. I had to do this before I could add your assembly.<br>\r\n<span style=\"font-size:10px\">\r\n<p>Warning: The Microsoft .NET Framework assembly 'system.windows.forms, version=2.0.0.0, culture=neutral, publickeytoken=b77a5c561934e089, processorarchitecture=msil.' you are registering is not fully tested in the SQL Server hosted environment and is not supported. In the future, if you upgrade or service this assembly or the .NET Framework, your CLR integration routine may stop working. Please refer SQL Server Books Online for more details.</p>\r\n<p>Warning: The Microsoft .NET Framework assembly 'system.drawing, version=2.0.0.0, culture=neutral, publickeytoken=b03f5f7f11d50a3a, processorarchitecture=msil.' you are registering is not fully tested in the SQL Server hosted environment and is not supported. In the future, if you upgrade or service this assembly or the .NET Framework, your CLR integration routine may stop working. Please refer SQL Server Books Online for more details.</p>\r\n<p>Msg 6218, Level 16, State 2, Line 1</p>\r\n<p>CREATE ASSEMBLY for assembly 'System.Windows.Forms' failed because assembly 'System.Drawing' failed verification. Check if the referenced assemblies are up-to-date and trusted (for external_access or unsafe) to execute in the database. CLR Verifier error messages if any will follow this message</p>\r\n<p>I removed all the errors because they are specific to the assembly. <br>\r\n<br>\r\nThanks or trying to make this work in Sql Server.<br>\r\n<br>\r\nRoyal</p>\r\n</span>\r\n",
+    "PostedDate": "2008-10-29T16:27:30.87-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128766",
+    "ThreadId": "38543",
+    "Html": "Well, your bad luck - I've just added reference to Windows.Forms assembly a few days ago, to implement classes in EditorServices namespace. I didn't think it will do any harm - Windows.Forms is available on any computer with .NET installed so devs would have no problem recompiling Irony; and when used in server process, the application wouldn't invoke any classes in EditorServices namespace, so WindowsForms assembly will never be actually loaded.  <br>\r\nBut it looks like SQL server process is a special case - SQL Server is a bit paranoic about this stuff, it wants verification of all referenced assemblies. <br>\r\nLet's try the following. On both files in EditorServices (EditorAdapter.cs and EditorViewAdapter.cs), set Build Action attribute to None. Remove reference to Windows Forms assembly, and rebuild Irony. Then try loading it into SQL Server. Let me know if it works<br>\r\n",
+    "PostedDate": "2008-10-29T17:34:52.37-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128788",
+    "ThreadId": "38543",
+    "Html": "Looks like another static field<br>\r\n<span style=\"font-size:10px\">\r\n<p>CREATE ASSEMBLY failed because type 'Irony.Compiler.SymbolTerminal' in safe assembly 'Irony' has a static field '_symbols'. Attributes of static fields in safe assemblies must be marked readonly in Visual C#, ReadOnly in Visual Basic, or initonly in Visual C++ and intermediate language.<br>\r\n<br>\r\nThanks<br>\r\nRoyal</p>\r\n</span>\r\n",
+    "PostedDate": "2008-10-29T20:39:24.027-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128791",
+    "ThreadId": "38543",
+    "Html": "Well, that's strange. Here's declaration line for _symbols:<br>\r\n<br>\r\n<span style=\"font-size:13px;color:#0000ff\">\r\n<p>private</p>\r\n</span>\r\n<p><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#0000ff\">static</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#0000ff\">readonly</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">SymbolTerminalTable</span><span style=\"font-size:13px\"> _symbols = </span><span style=\"font-size:13px;color:#0000ff\">new</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">SymbolTerminalTable</span><span style=\"font-size:13px\">();<br>\r\n<br>\r\nIt IS read-only. Please check you use the latest, and load the latest into SQL process. Other than that - have no idea<br>\r\nRoman\r\n<p>&nbsp;</p>\r\n</span></p>\r\n",
+    "PostedDate": "2008-10-29T20:56:28.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128964",
+    "ThreadId": "38543",
+    "Html": "I guess I grabbed the wrong version. I did find a couple more that I set to read only but now I have a new error. Don't know if I can exclude this from the build<br>\r\n<br>\r\n<span style=\"font-size:10px\">\r\n<p>CREATE ASSEMBLY failed because type &quot;Irony.Runtime.SlimLock&quot; in safe assembly &quot;Irony&quot; has a pinvokeimpl method. P/Invoke is not allowed in safe assemblies.<br>\r\n<br>\r\nThanks<br>\r\nRoyal</p>\r\n</span>\r\n",
+    "PostedDate": "2008-10-30T09:21:01.527-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128971",
+    "ThreadId": "38543",
+    "Html": "SlimLock is not actually used, it is included prematurely. Just remove it from project and try again\r\n",
+    "PostedDate": "2008-10-30T09:29:49.303-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128991",
+    "ThreadId": "38543",
+    "Html": "That did it. I was able to register the assembly and then when into my database project and added it as a reference.<br>\r\n<br>\r\nThanks<br>\r\nRoyal\r\n",
+    "PostedDate": "2008-10-30T10:30:42.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128997",
+    "ThreadId": "38543",
+    "Html": "Great. <br>\r\nNow I have to think how to provide SQL Server-compatible version, so you don't have to exclude EditorServices classes. Well, maybe just put them in another assembly. <br>\r\nAnother thing, you mentioned you found couple more static fields that you made read-only - can you please tell me which ones?<br>\r\nThanks<br>\r\nRoman\r\n",
+    "PostedDate": "2008-10-30T10:57:53.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "129006",
+    "ThreadId": "38543",
+    "Html": "Below are the 2 error messages. These are together on in the code.<br>\r\n<br>\r\n<p>CREATE ASSEMBLY failed because type 'Microsoft.Scripting.Math.BigInteger' in safe assembly 'Irony' has a static field 'maxCharsPerDigit'. Attributes of static fields in safe assemblies must be marked  readonly in Visual C#, ReadOnly in Visual Basic, or initonly in Visual C++ and intermediate language.<br>\r\nCREATE ASSEMBLY failed because type 'Microsoft.Scripting.Math.BigInteger' in safe assembly 'Irony' has a static field 'groupRadixValues'. Attributes of static fields in safe assemblies must be marked  readonly in Visual C#, ReadOnly in Visual Basic, or initonly in Visual C++ and intermediate language.</p>\r\n<p>FYI. I am planning on following the sample code from <a href=\"http://www.sqlservercentral.com/articles/Full-Text+Search+(2008)/64248/\">http://www.sqlservercentral.com/articles/Full-Text+Search+(2008)/64248/</a> to create a assembly I can add to sql server and use in a UDF to do searches. The sql version of your assembly may not require as much functionality.<br>\r\n<br>\r\n Thanks<br>\r\nRoyal</p>\r\n",
+    "PostedDate": "2008-10-30T11:16:23.483-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "129096",
+    "ThreadId": "38543",
+    "Html": "thanks, these are original Microsoft classes, will fix them. <br>\r\nRoman\r\n",
+    "PostedDate": "2008-10-30T21:11:00.783-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "129140",
+    "ThreadId": "38543",
+    "Html": "Below is the error I get when I try to use the assembly in sql server. getContainsString is my function. The error seems to be that the items referred to may leak when aborted.<br>\r\n<br>\r\n<span style=\"font-size:10px\">\r\n<p>Msg 6522, Level 16, State 2, Line 4</p>\r\n<p>A .NET Framework error occurred during execution of user-defined routine or aggregate &quot;getContainsString&quot;: </p>\r\n<p>System.Security.HostProtectionException: Attempted to perform an operation that was forbidden by the CLR host.</p>\r\n<p>The protected resources (only available with full trust) were: All</p>\r\n<p>The demanded resources were: MayLeakOnAbort</p>\r\n<p>System.Security.HostProtectionException: </p>\r\n<p>at Irony.StringSet..ctor()</p>\r\n<p>at Irony.Compiler.Grammar..ctor()</p>\r\n<p>at iFTSSearch.SearchGrammar..ctor()</p>\r\n<p>at iFTSSearch.UserDefinedFunctions.getContainsString(String textInput)</p>\r\n<p>Here's an explanation I found about this error<br>\r\n MayLeakOnAbort Might cause a resource leak on an abort, <br>\r\n                       if not protected by a safe handle or some other means <br>\r\n                       of assuring the release of resources. <br>\r\n<br>\r\n.Thanks<br>\r\n<br>\r\nRoyal</p>\r\n</span>\r\n",
+    "PostedDate": "2008-10-31T04:54:42.73-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "129258",
+    "ThreadId": "38543",
+    "Html": "Well, I have to throw in a towell here - not much I can do. The StringSet class is a specialization HashSet&lt;string&gt; of generic template Hashset, which has this troubled HostProtection attribute on it. This effectively prohibits it from using in safe assemblies in server environment. The StringSet is too deeply used in Irony to try to replace it with something. It is really frustrating to see such a general purpose &quot;innocent&quot; class to bear an indicator of possibility of such a host-hostile behavior. <br>\r\nThe only thing I can suggest is to try to<strong> load Irony as unsafe assembly.</strong> In this case SQL Server bypasses all these programmatic checks. According to documentation it is SQL Server admin's choice to rely on his own judgement about assembly and tell SQL to trust it. Irony doesn't do any dangerous tricks with unmanaged code and system APIs, so probably it won't harm server in any way. And you have full source code - so no hidden surprises (trojans) there.<br>\r\nRoman<br>\r\n  \r\n",
+    "PostedDate": "2008-10-31T12:12:26.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "129316",
+    "ThreadId": "38543",
+    "Html": "If i set both the irony assembly and my assembly to unsafe, the code will execute with no errors. I don't know if anyone would want to have these assemblies running in unsafe mode. I will have to also look into the memory management which the warning was giving me and see if I can do anything in my code.<br>\r\n<br>\r\nThanks<br>\r\nRoyal \r\n",
+    "PostedDate": "2008-10-31T17:44:35.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

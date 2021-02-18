@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1429008",
+    "ThreadId": "639343",
+    "Html": "I was wondering if anyone has written a grammar class for Angel Script. Its a scripting language that has a syntax very similar to C++ but without the use of pointers. It's a lot more simple it doesn't use any of the template stuff or other more complex syntax. I tried just updating the MyC example but had no luck and I also tried working from scratch by using the BNF that is defined in the parser source but ended up with a lot of shift reduce errors.<br />\n<br />\nIf anyone has worked on it and could share that would be great, if not and anyone is interested in helping me out I would greatly appreciate it. Im using the babelua source as an example to write a visual studio extension for it being that it is a popular scripting engine.<br />\n<br />\nThe source to the parser is here which you can find the BNF.<br />\n<a href=\"http://svn.code.sf.net/p/angelscript/code/trunk/sdk/angelscript/source/as_parser.cpp\" rel=\"nofollow\">http://svn.code.sf.net/p/angelscript/code/trunk/sdk/angelscript/source/as_parser.cpp</a><br />\n<br />\nHere is a link to the manual so you can see examples and test the syntax.<br />\n<a href=\"http://www.angelcode.com/angelscript/sdk/docs/manual/doc_script.html\" rel=\"nofollow\">http://www.angelcode.com/angelscript/sdk/docs/manual/doc_script.html</a><br />\n<br />\nI am even willing to pay someone to do it if they are interested. So if you want a couple hundred bucks in USD Ill be more then happy to send it through paypal.<br />\n<br />\nAny help is greatly appreciated, even if you have a more complete MyC example that I can try to work from.<br />\n<br />\nMy email is <a href=\"mailto:Anth0ny229@live.com\" rel=\"nofollow\">Anth0ny229@live.com</a> <br />\n<br />\nThank you<br />\n-Anthony<br />\n",
+    "PostedDate": "2015-06-04T23:02:16.847-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]
